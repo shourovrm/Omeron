@@ -21,6 +21,18 @@
         android:contentDescription="@null"
         tools:src="@tools:sample/backgrounds/scenic"/>
 
+    <com.omeron.ui.common.widget.CardButton
+        android:id="@+id/button_gallery_type_indicator"
+        android:layout_width="@dimen/app_bar_button_size"
+        android:layout_height="@dimen/app_bar_button_size"
+        app:layout_constraintStart_toStartOf="@id/image_gallery_preview"
+        app:layout_constraintBottom_toBottomOf="@id/image_gallery_preview"
+        android:layout_margin="@dimen/post_type_indicator_margin"
+        android:focusable="false"
+        android:clickable="false"
+        style="@style/CardButtonStyle"
+        tools:icon="@drawable/ic_play"/>
+
     <TextView
         android:id="@+id/text_gallery_title"
         android:layout_width="0dp"

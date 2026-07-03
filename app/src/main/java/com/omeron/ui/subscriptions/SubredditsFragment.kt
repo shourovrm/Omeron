@@ -11,8 +11,13 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.omeron.R
+import com.omeron.data.model.db.MultiredditMemberType
+import com.omeron.data.model.db.Subscription
 import com.omeron.databinding.FragmentSubredditsBinding
 import com.omeron.ui.base.BaseFragment
+import com.omeron.ui.common.dialog.MultiredditPickerDialog
 import com.omeron.util.extension.applyWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,7 +51,8 @@ class SubredditsFragment : BaseFragment() {
     private fun initRecyclerView() {
         subscriptionsAdapter = SubscriptionsAdapter(
             listener = { openSubreddit(it) },
-            onToggleHidden = { viewModel.toggleSubscriptionHidden(it) }
+            onToggleHidden = { viewModel.toggleSubscriptionHidden(it) },
+            onLongClick = { showSubscriptionContextMenu(it) }
         )
         followedUsersAdapter = FollowedUsersAdapter(
             onClick = { openUser(it) },
@@ -79,6 +85,42 @@ class SubredditsFragment : BaseFragment() {
                     updateEmptyState()
                 }
         }
+    }
+
+    // ponytail: plain setItems dialog instead of a PopupMenu - one fewer file (no menu xml)
+    // and the "Hide"/"Show" label swap is just a string pick, no menu-item title mutation.
+    private fun showSubscriptionContextMenu(subscription: Subscription) {
+        val hideLabel = if (subscription.hidden) {
+            R.string.subscription_menu_show
+        } else {
+            R.string.subscription_menu_hide
+        }
+        val actions = arrayOf(
+            getString(R.string.add_to_multireddit),
+            getString(hideLabel),
+            getString(R.string.subreddit_button_unsubscribe)
+        )
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(subscription.name)
+            .setItems(actions) { _, which ->
+                when (which) {
+                    0 -> MultiredditPickerDialog.show(
+                        context = requireContext(),
+                        scope = viewLifecycleOwner.lifecycleScope,
+                        layoutInflater = layoutInflater,
+                        target = subscription.name,
+                        type = MultiredditMemberType.SUBREDDIT,
+                        getMultireddits = { viewModel.getMultiredditsSnapshot() },
+                        addMember = { multiId -> viewModel.addTargetToMultireddit(multiId, subscription.name) },
+                        removeMember = { multiId -> viewModel.removeTargetFromMultireddit(multiId, subscription.name) },
+                        createMultireddit = { name -> viewModel.createMultiredditWithTarget(name, subscription.name) }
+                    )
+                    1 -> viewModel.toggleSubscriptionHidden(subscription)
+                    2 -> viewModel.unsubscribe(subscription.name)
+                }
+            }
+            .show()
     }
 
     // ponytail: empty view reacts to the unfiltered lists only, ignoring an in-progress

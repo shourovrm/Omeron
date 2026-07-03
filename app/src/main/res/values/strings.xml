@@ -106,6 +106,8 @@
     <string name="tab_search_user">Users</string>
 
     <string name="subreddit_button_unsubscribe">Unsubscribe</string>
+    <string name="subscription_menu_hide">Hide from feed</string>
+    <string name="subscription_menu_show">Show on feed</string>
     <string name="subreddit_button_subscribe">Subscribe</string>
     <string name="subreddit_subscribers">Subscribers</string>
     <string name="subreddit_active_users">Online</string>

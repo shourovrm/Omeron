@@ -3,6 +3,7 @@ package com.omeron.ui.subscriptions
 import androidx.lifecycle.viewModelScope
 import com.omeron.data.model.db.FollowedUser
 import com.omeron.data.model.db.Multireddit
+import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.Subscription
 import com.omeron.data.repository.PostListRepository
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -56,6 +58,36 @@ class SubscriptionsViewModel @Inject constructor(
         viewModelScope.launch {
             currentProfile.latest?.let {
                 repository.setSubscriptionHidden(subscription.name, it.id, !subscription.hidden)
+            }
+        }
+    }
+
+    fun unsubscribe(name: String) {
+        viewModelScope.launch {
+            currentProfile.latest?.let { repository.unsubscribe(name, it.id) }
+        }
+    }
+
+    // ponytail: same one-shot-snapshot pattern as SubredditViewModel.getMultiredditsSnapshot -
+    // the picker dialog doesn't need a live flow while it's open.
+    suspend fun getMultiredditsSnapshot(): List<MultiredditWithMembers> {
+        val profileId = currentProfile.latest?.id ?: return emptyList()
+        return repository.getMultireddits(profileId).first()
+    }
+
+    fun addTargetToMultireddit(multiId: Long, target: String) {
+        viewModelScope.launch { repository.addMember(multiId, target, MultiredditMemberType.SUBREDDIT) }
+    }
+
+    fun removeTargetFromMultireddit(multiId: Long, target: String) {
+        viewModelScope.launch { repository.removeMember(multiId, target, MultiredditMemberType.SUBREDDIT) }
+    }
+
+    fun createMultiredditWithTarget(name: String, target: String) {
+        viewModelScope.launch {
+            currentProfile.latest?.let { profile ->
+                val multiId = repository.createMultireddit(name, profile.id)
+                repository.addMember(multiId, target, MultiredditMemberType.SUBREDDIT)
             }
         }
     }

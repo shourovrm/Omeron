@@ -14,7 +14,8 @@ import com.omeron.databinding.ItemSubscriptionBinding
 
 class SubscriptionsAdapter(
     private val listener: (String) -> Unit,
-    private val onToggleHidden: (Subscription) -> Unit
+    private val onToggleHidden: (Subscription) -> Unit,
+    private val onLongClick: (Subscription) -> Unit
 ) : ListAdapter<Subscription, SubscriptionsAdapter.SubscriptionViewHolder>(
     SUBSCRIPTION_COMPARATOR
 ) {
@@ -51,6 +52,10 @@ class SubscriptionsAdapter(
 
             itemView.setOnClickListener {
                 listener(subscription.name)
+            }
+            itemView.setOnLongClickListener {
+                onLongClick(subscription)
+                true
             }
         }
     }

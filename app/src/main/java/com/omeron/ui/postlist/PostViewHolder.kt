@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.R
 import com.omeron.data.model.MediaType
+import com.omeron.data.model.PostType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.databinding.IncludePostFlairsBinding
@@ -330,6 +331,27 @@ abstract class PostViewHolder(
             ) {
                 error(R.drawable.preview_image_fallback)
                 fallback(R.drawable.preview_image_fallback)
+            }
+
+            // ponytail: single reused CardButton, same as ImagePostViewHolder/VideoPostViewHolder's
+            // buttonTypeIndicator - video and gallery/album are mutually exclusive on a post, so
+            // one icon slot covers both instead of two overlapping ImageViews.
+            binding.buttonGalleryTypeIndicator.apply {
+                when {
+                    postEntity.type == PostType.VIDEO -> {
+                        visibility = View.VISIBLE
+                        setIcon(R.drawable.ic_play)
+                    }
+
+                    postEntity.mediaType == MediaType.REDDIT_GALLERY ||
+                        postEntity.mediaType == MediaType.IMGUR_ALBUM ||
+                        postEntity.mediaType == MediaType.IMGUR_GALLERY -> {
+                        visibility = View.VISIBLE
+                        setIcon(R.drawable.ic_gallery)
+                    }
+
+                    else -> visibility = View.GONE
+                }
             }
         }
     }
