@@ -130,11 +130,16 @@ class PostScraper(
 
         val media = when {
             isVideo -> {
+                // Real signed DASH/HLS url is in the expando's cachedhtml. The old
+                // hardcoded "$url/DASH_720.mp4" guess is unsigned -> Reddit CDN 403s it.
+                val videoUrl = expando?.selectFirst("[data-mpd-url]")?.attr("data-mpd-url")?.ifBlank { null }
+                    ?: expando?.selectFirst("[data-hls-url]")?.attr("data-hls-url")?.ifBlank { null }
+                    ?: "$url/DASH_720.mp4" // ponytail: legacy fallback if signed url absent
                 Media(
                     null,
                     null,
                     RedditVideoPreview(
-                        "$url/DASH_720.mp4",
+                        videoUrl,
                         0,
                         0,
                         0,

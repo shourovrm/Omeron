@@ -99,7 +99,7 @@ class MediaViewerViewModel
             }
             MediaType.REDDIT_VIDEO -> {
                 setMedia(
-                    GalleryMedia.singleton(Type.VIDEO, link, LinkUtil.getRedditSoundTrack(link))
+                    GalleryMedia.singleton(Type.VIDEO, link, LinkUtil.getRedditSoundTrackOrNull(link))
                 )
             }
             MediaType.GFYCAT -> {

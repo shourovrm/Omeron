@@ -58,6 +58,16 @@ object LinkUtil {
         return link.replace(REDDIT_VIDEO_REGEX, REDDIT_SOUNDTRACK_NAME)
     }
 
+    // Only legacy progressive DASH_<n>.mp4 videos have a separate audio file.
+    // DASH/HLS manifests (.mpd/.m3u8) mux their own audio -> no soundtrack.
+    fun getRedditSoundTrackOrNull(link: String): String? {
+        return if (REDDIT_VIDEO_REGEX.containsMatchIn(link)) {
+            link.replace(REDDIT_VIDEO_REGEX, REDDIT_SOUNDTRACK_NAME)
+        } else {
+            null
+        }
+    }
+
     fun isRedditSoundTrack(link: String): Boolean {
         return link.contains(REDDIT_SOUNDTRACK_NAME)
     }
