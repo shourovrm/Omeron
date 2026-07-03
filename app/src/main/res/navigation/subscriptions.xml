@@ -5,8 +5,6 @@
     android:id="@+id/subscriptions"
     app:startDestination="@id/subscriptionsFragment">
 
-    <include app:graph="@navigation/search" />
-
     <fragment
         android:id="@+id/subscriptionsFragment"
         android:name="com.omeron.ui.subscriptions.SubscriptionsFragment"

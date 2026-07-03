@@ -55,16 +55,15 @@ class PostListViewModel
     private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
     val sorting: StateFlow<Sorting> = _sorting
 
-    val subreddit: Flow<List<String>> = subscriptionsNames
-        .distinctUntilChanged()
-        .map { subscriptions ->
-            if (subscriptions.isNotEmpty()) {
-                subscriptions.shuffled()
-            } else {
-                listOf(DEFAULT_SUBREDDIT)
-            }
-        }
-        .flowOn(defaultDispatcher)
+    private val _feedMode: MutableStateFlow<FeedMode> = MutableStateFlow(FeedMode.HOME)
+    val feedMode: StateFlow<FeedMode> = _feedMode
+
+    val subreddit: Flow<List<String>> = combine(
+        _feedMode,
+        subscriptionsNames.distinctUntilChanged()
+    ) { feedMode, subscriptions ->
+        resolveSubreddit(feedMode, subscriptions).shuffled()
+    }.flowOn(defaultDispatcher)
 
     val postDataFlow: Flow<PagingData<PostEntity>>
 
@@ -116,6 +115,10 @@ class PostListViewModel
         _sorting.updateValue(sorting)
     }
 
+    fun setFeedMode(mode: FeedMode) {
+        _feedMode.updateValue(mode)
+    }
+
     fun setPostLayout(layout: PostLayout) {
         viewModelScope.launch { preferencesRepository.setPostLayout(layout = layout) }
     }
@@ -126,8 +129,18 @@ class PostListViewModel
         }
     }
 
+    enum class FeedMode { HOME, POPULAR }
+
     companion object {
         private const val DEFAULT_SUBREDDIT = "popular"
         private val DEFAULT_SORTING = Sorting(Sort.HOT)
+
+        // Pulled out of the `subreddit` flow so FeedMode -> subreddit resolution is
+        // unit-testable without instantiating the whole ViewModel.
+        internal fun resolveSubreddit(mode: FeedMode, subscriptions: List<String>): List<String> =
+            when (mode) {
+                FeedMode.POPULAR -> listOf(DEFAULT_SUBREDDIT)
+                FeedMode.HOME -> subscriptions.ifEmpty { listOf(DEFAULT_SUBREDDIT) }
+            }
     }
 }

@@ -73,7 +73,9 @@ class SearchFragment : BaseFragment() {
 
         lifecycleScope.launch {
             delay(250)
-            showSearchInput(false)
+            // Bottom-nav tap arrives with a blank query; open the input right away instead of
+            // showing an empty results screen.
+            showSearchInput(query.isBlank())
         }
     }
 

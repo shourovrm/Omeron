@@ -215,6 +215,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         when (destination.id) {
             R.id.postListFragment,
+            R.id.searchFragment,
             R.id.subscriptionsFragment,
             R.id.profileFragment,
             R.id.preferencesFragment -> {

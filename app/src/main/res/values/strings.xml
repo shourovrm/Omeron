@@ -186,9 +186,13 @@
     <string name="about_section_contributors">Contributors</string>
 
     <string name="navigation_label_home">Home</string>
+    <string name="navigation_label_search">Search</string>
     <string name="navigation_label_subscriptions">Subscriptions</string>
     <string name="navigation_label_settings">Preferences</string>
     <string name="navigation_label_profile">Profile</string>
+
+    <string name="tab_home_feed">Feed</string>
+    <string name="tab_home_popular">Popular</string>
 
     <string name="save">Save</string>
     <string name="unsave">Unsave</string>

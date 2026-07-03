@@ -42,6 +42,7 @@ import com.omeron.util.extension.onRefreshFromNetwork
 import com.omeron.util.extension.setNavigationListener
 import com.omeron.util.extension.setSortingListener
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -283,6 +284,34 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             title.setOnClickListener { scrollToTop() }
         }
         binding.appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener)
+        initTabs()
+    }
+
+    private fun initTabs() {
+        binding.tabs.apply {
+            addTab(newTab().setText(R.string.tab_home_feed))
+            addTab(newTab().setText(R.string.tab_home_popular))
+
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    viewModel.setFeedMode(
+                        if (tab.position == 0) {
+                            PostListViewModel.FeedMode.HOME
+                        } else {
+                            PostListViewModel.FeedMode.POPULAR
+                        }
+                    )
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    // Ignore
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    scrollToTop()
+                }
+            })
+        }
     }
 
     private fun toggleLayout() {

@@ -36,6 +36,13 @@
                     app:layout_scrollFlags="scroll|enterAlways"
                     layout="@layout/layout_appbar" />
 
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    style="@style/TabLayoutStyle"/>
+
             </com.google.android.material.appbar.AppBarLayout>
 
             <com.omeron.ui.common.widget.PullToRefreshLayout
