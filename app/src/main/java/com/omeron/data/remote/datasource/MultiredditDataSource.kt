@@ -69,6 +69,11 @@ class MultiredditDataSource(
     }
 
     private suspend fun getData(params: LoadParams<List<String>>): LoadResult<List<String>, Child> {
+        // Empty multireddit (no subreddits, no users) -> nothing to page.
+        if (subredditChunks.isEmpty() && users.isEmpty()) {
+            return LoadResult.Page(emptyList(), null, null)
+        }
+
         // Subreddit chunks occupy key slots [0, subredditChunks.size), users occupy the rest.
         val subredditJobs = subredditChunks.mapIndexed { index, chunk ->
             scope.async {
