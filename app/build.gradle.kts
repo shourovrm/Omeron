@@ -33,6 +33,11 @@ android {
         versionCode = Config.versionCode
         versionName = Config.versionName
 
+        // Light sideload APK: arm64-v8a only, no other/universal ABI.
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
@@ -82,6 +87,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs = listOf("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+    }
+}
+
+// Release-only: drop the debug variant entirely (no debug APK built).
+androidComponents {
+    beforeVariants(selector().withBuildType("debug")) { variant ->
+        variant.enable = false
     }
 }
 
