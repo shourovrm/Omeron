@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/preferencesFragment"
-        android:name="com.cosmos.unreddit.ui.preferences.PreferencesFragment">
+        android:name="com.omeron.ui.preferences.PreferencesFragment">
         <action
             android:id="@+id/openAbout"
             app:destination="@id/aboutFragment"/>
@@ -25,11 +25,11 @@
 
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="com.cosmos.unreddit.ui.about.AboutFragment"
+        android:name="com.omeron.ui.about.AboutFragment"
         tools:layout="@layout/fragment_about"/>
 
     <fragment
         android:id="@+id/privacyEnhancerFragment"
-        android:name="com.cosmos.unreddit.ui.privacyenhancer.PrivacyEnhancerFragment"/>
+        android:name="com.omeron.ui.privacyenhancer.PrivacyEnhancerFragment"/>
 
 </navigation>

@@ -1,8 +1,8 @@
 <img src="stealth.png">
 
-# Stealth for Reddit
+# Omeron for Reddit
 
-Stealth is an account-free, privacy-oriented, and feature-rich Reddit client. 
+Omeron is an account-free, privacy-oriented, and feature-rich Reddit client. Forked from [Stealth](https://gitlab.com/cosmosapps/stealth).
 
 It provides features from Reddit, without the need for an account. In fact, the app doesn't even let you log in with a Reddit account.
 

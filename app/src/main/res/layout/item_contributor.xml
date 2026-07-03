@@ -6,7 +6,7 @@
     <data>
         <variable
             name="contributor"
-            type="com.cosmos.unreddit.data.model.CreditItem.Contributor" />
+            type="com.omeron.data.model.CreditItem.Contributor" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

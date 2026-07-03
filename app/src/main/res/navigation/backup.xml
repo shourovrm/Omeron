@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/backupFragment"
-        android:name="com.cosmos.unreddit.ui.backup.BackupFragment"
+        android:name="com.omeron.ui.backup.BackupFragment"
         tools:layout="@layout/fragment_backup"/>
 
 </navigation>

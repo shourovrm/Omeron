@@ -4,11 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.cosmos.unreddit.util.DateUtil"/>
+        <import type="com.omeron.util.DateUtil"/>
         <import type="android.graphics.Color"/>
         <variable
             name="post"
-            type="com.cosmos.unreddit.data.model.db.PostEntity" />
+            type="com.omeron.data.model.db.PostEntity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
             android:textColor="@color/colorPrimary"
             tools:text="author"/>
 
-        <com.cosmos.unreddit.ui.common.widget.RedditFlairView
+        <com.omeron.ui.common.widget.RedditFlairView
             android:id="@+id/post_flair"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

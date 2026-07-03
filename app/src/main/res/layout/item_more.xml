@@ -6,7 +6,7 @@
     <data>
         <variable
             name="more"
-            type="com.cosmos.unreddit.data.model.Comment.MoreEntity" />
+            type="com.omeron.data.model.Comment.MoreEntity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

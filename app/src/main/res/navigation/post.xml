@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/postDetailsFragment"
-        android:name="com.cosmos.unreddit.ui.postdetails.PostDetailsFragment"
+        android:name="com.omeron.ui.postdetails.PostDetailsFragment"
         tools:layout="@layout/fragment_post_details">
         <deepLink
             android:id="@+id/deepLinkPost"

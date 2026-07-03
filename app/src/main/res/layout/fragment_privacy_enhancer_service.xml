@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.cosmos.unreddit.data.model.db.Redirect.RedirectMode"/>
-        <import type="com.cosmos.unreddit.util.extension.StringExtKt"/>
+        <import type="com.omeron.data.model.db.Redirect.RedirectMode"/>
+        <import type="com.omeron.util.extension.StringExtKt"/>
         <variable
             name="redirect"
-            type="com.cosmos.unreddit.data.model.db.Redirect" />
+            type="com.omeron.data.model.db.Redirect" />
         <variable
             name="service"
-            type="com.cosmos.unreddit.data.model.ServiceExternal" />
+            type="com.omeron.data.model.ServiceExternal" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -5,13 +5,13 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.cosmos.unreddit.ui.commentmenu.CommentMenuFragment.MenuType"/>
+        <import type="com.omeron.ui.commentmenu.CommentMenuFragment.MenuType"/>
         <variable
             name="comment"
-            type="com.cosmos.unreddit.data.model.Comment.CommentEntity" />
+            type="com.omeron.data.model.Comment.CommentEntity" />
         <variable
             name="type"
-            type="com.cosmos.unreddit.ui.commentmenu.CommentMenuFragment.MenuType" />
+            type="com.omeron.ui.commentmenu.CommentMenuFragment.MenuType" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

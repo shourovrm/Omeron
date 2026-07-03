@@ -1,0 +1,32 @@
+package com.omeron
+
+import androidx.lifecycle.ViewModel
+import com.omeron.data.repository.PreferencesRepository
+import com.omeron.util.extension.updateValue
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import javax.inject.Inject
+
+@HiltViewModel
+class UiViewModel @Inject constructor(
+    preferencesRepository: PreferencesRepository
+) : ViewModel() {
+
+    val leftHandedMode: Flow<Boolean> = preferencesRepository
+        .getLeftHandedMode()
+        .distinctUntilChanged()
+
+    val policyDisclaimerShown: Flow<Boolean> = preferencesRepository
+        .getPolicyDisclaimerShown(false)
+        .distinctUntilChanged()
+
+    private val _navigationVisibility = MutableStateFlow(true)
+    val navigationVisibility: StateFlow<Boolean> = _navigationVisibility
+
+    fun setNavigationVisibility(visible: Boolean) {
+        _navigationVisibility.updateValue(visible)
+    }
+}

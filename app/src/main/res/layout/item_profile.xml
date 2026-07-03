@@ -7,14 +7,14 @@
     <data>
         <variable
             name="profile"
-            type="com.cosmos.unreddit.data.model.db.Profile" />
+            type="com.omeron.data.model.db.Profile" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.cosmos.unreddit.ui.common.widget.AvatarView
+        <com.omeron.ui.common.widget.AvatarView
             android:id="@+id/profile_avatar"
             android:layout_width="@dimen/user_image_size_expanded"
             android:layout_height="@dimen/user_image_size_expanded"

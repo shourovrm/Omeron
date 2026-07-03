@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/subscriptionsFragment"
-        android:name="com.cosmos.unreddit.ui.subscriptions.SubscriptionsFragment"
+        android:name="com.omeron.ui.subscriptions.SubscriptionsFragment"
         tools:layout="@layout/fragment_subscriptions">
         <action
             android:id="@+id/openSearch"

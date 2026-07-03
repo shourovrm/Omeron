@@ -6,7 +6,7 @@
     <data>
         <variable
             name="subreddit"
-            type="com.cosmos.unreddit.data.model.db.SubredditEntity" />
+            type="com.omeron.data.model.db.SubredditEntity" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

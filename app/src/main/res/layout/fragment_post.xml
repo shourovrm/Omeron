@@ -38,25 +38,25 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <com.cosmos.unreddit.ui.common.widget.PullToRefreshLayout
+            <com.omeron.ui.common.widget.PullToRefreshLayout
                 android:id="@+id/pull_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <com.cosmos.unreddit.ui.common.widget.PostRecyclerView
+                <com.omeron.ui.common.widget.PostRecyclerView
                     android:id="@+id/list_post"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:overScrollMode="never" />
-            </com.cosmos.unreddit.ui.common.widget.PullToRefreshLayout>
+            </com.omeron.ui.common.widget.PullToRefreshLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.cosmos.unreddit.ui.common.widget.CradleView
+                <com.omeron.ui.common.widget.CradleView
                     android:id="@+id/loading_cradle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.cosmos.unreddit.ui.common.widget.InfoBarView
+                <com.omeron.ui.common.widget.InfoBarView
                     android:id="@+id/info_retry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

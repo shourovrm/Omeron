@@ -7,7 +7,7 @@
     <data>
         <variable
             name="profile"
-            type="com.cosmos.unreddit.data.model.db.Profile" />
+            type="com.omeron.data.model.db.Profile" />
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/user_header_height" />
 
-        <com.cosmos.unreddit.ui.common.widget.AvatarView
+        <com.omeron.ui.common.widget.AvatarView
             android:id="@+id/profile_image"
             android:layout_width="@dimen/user_image_size_expanded"
             android:layout_height="@dimen/user_image_size_expanded"
@@ -42,7 +42,7 @@
             android:requiresFadingEdge="horizontal"
             tools:text="User"/>
 
-        <com.cosmos.unreddit.ui.common.widget.CardButton
+        <com.omeron.ui.common.widget.CardButton
             android:id="@+id/users_card"
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"

@@ -35,7 +35,7 @@
         tools:visibility="visible"
         tools:text="@string/backup_loading_success_backup"/>
 
-    <com.cosmos.unreddit.ui.common.widget.CradleView
+    <com.omeron.ui.common.widget.CradleView
         android:id="@+id/loading_cradle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

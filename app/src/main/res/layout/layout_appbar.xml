@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorSurface">
 
-    <com.cosmos.unreddit.ui.common.widget.AvatarView
+    <com.omeron.ui.common.widget.AvatarView
         android:id="@+id/profile_image"
         android:layout_width="@dimen/profile_home_app_bar_size"
         android:layout_height="@dimen/profile_home_app_bar_size"
@@ -30,7 +30,7 @@
         android:letterSpacing="0.2"
         android:text="@string/app_name"/>
 
-    <com.cosmos.unreddit.ui.common.widget.CardButton
+    <com.omeron.ui.common.widget.CardButton
         android:id="@+id/sort_card"
         android:layout_width="@dimen/app_bar_button_size"
         android:layout_height="@dimen/app_bar_button_size"
@@ -41,7 +41,7 @@
         app:icon="@drawable/ic_sort"
         style="@style/CardButtonStyle"/>
 
-    <com.cosmos.unreddit.ui.common.widget.SortIconView
+    <com.omeron.ui.common.widget.SortIconView
         android:id="@+id/sort_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

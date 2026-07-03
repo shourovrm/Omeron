@@ -5,13 +5,13 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.cosmos.unreddit.ui.postmenu.PostMenuFragment.MenuType"/>
+        <import type="com.omeron.ui.postmenu.PostMenuFragment.MenuType"/>
         <variable
             name="post"
-            type="com.cosmos.unreddit.data.model.db.PostEntity" />
+            type="com.omeron.data.model.db.PostEntity" />
         <variable
             name="type"
-            type="com.cosmos.unreddit.ui.postmenu.PostMenuFragment.MenuType" />
+            type="com.omeron.ui.postmenu.PostMenuFragment.MenuType" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

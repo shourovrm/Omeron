@@ -7,7 +7,7 @@
     <data>
         <variable
             name="subreddit"
-            type="com.cosmos.unreddit.data.model.db.SubredditEntity" />
+            type="com.omeron.data.model.db.SubredditEntity" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <com.cosmos.unreddit.util.DrawerContent
+        <com.omeron.util.DrawerContent
             android:id="@+id/drawer_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -34,7 +34,7 @@
 
             </androidx.cardview.widget.CardView>
 
-        </com.cosmos.unreddit.util.DrawerContent>
+        </com.omeron.util.DrawerContent>
 
         <include
             android:id="@+id/subreddit_about"

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="post"
-            type="com.cosmos.unreddit.data.model.db.PostEntity" />
+            type="com.omeron.data.model.db.PostEntity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,7 +80,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_more"/>
 
-        <com.cosmos.unreddit.ui.common.widget.CheckableImageView
+        <com.omeron.ui.common.widget.CheckableImageView
             android:id="@+id/button_save"
             android:layout_width="@dimen/post_icon_size"
             android:layout_height="@dimen/post_icon_size"

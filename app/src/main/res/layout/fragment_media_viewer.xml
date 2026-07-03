@@ -89,7 +89,7 @@
             app:tint="@android:color/white"
             app:srcCompat="@drawable/ic_download"/>
 
-        <com.cosmos.unreddit.ui.common.widget.CheckableImageView
+        <com.omeron.ui.common.widget.CheckableImageView
             android:id="@+id/button_mute"
             android:layout_width="@dimen/exoplayer_small_button_size"
             android:layout_height="@dimen/exoplayer_small_button_size"
@@ -100,7 +100,7 @@
             tools:visibility="visible"/>
     </LinearLayout>
 
-    <com.cosmos.unreddit.ui.common.widget.InfoBarView
+    <com.omeron.ui.common.widget.InfoBarView
         android:id="@+id/info_retry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <com.cosmos.unreddit.ui.common.widget.CradleView
+    <com.omeron.ui.common.widget.CradleView
         android:id="@+id/loading_cradle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

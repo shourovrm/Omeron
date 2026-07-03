@@ -1,7 +1,7 @@
 object Config {
-    const val namespace = "com.cosmos.unreddit"
+    const val namespace = "com.omeron"
 
-    const val applicationId = "com.cosmos.unreddit"
+    const val applicationId = "com.omeron"
 
     const val minSdk = 23
     const val compileSdk = 33

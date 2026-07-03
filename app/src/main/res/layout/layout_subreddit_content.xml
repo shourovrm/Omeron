@@ -7,7 +7,7 @@
     <data>
         <variable
             name="subreddit"
-            type="com.cosmos.unreddit.data.model.db.SubredditEntity" />
+            type="com.omeron.data.model.db.SubredditEntity" />
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
@@ -64,7 +64,7 @@
             app:layout_constrainedWidth="true"
             tools:text="Title"/>
 
-        <com.cosmos.unreddit.ui.common.widget.CardButton
+        <com.omeron.ui.common.widget.CardButton
             android:id="@+id/back_card"
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"
@@ -75,7 +75,7 @@
             app:icon="@drawable/ic_arrow_back"
             style="@style/CardButtonStyle"/>
 
-        <com.cosmos.unreddit.ui.common.widget.CardButton
+        <com.omeron.ui.common.widget.CardButton
             android:id="@+id/more_card"
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"
@@ -86,7 +86,7 @@
             app:icon="@drawable/ic_more"
             style="@style/CardButtonStyle"/>
 
-        <com.cosmos.unreddit.ui.common.widget.CardButton
+        <com.omeron.ui.common.widget.CardButton
             android:id="@+id/sort_card"
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"
@@ -97,7 +97,7 @@
             app:icon="@drawable/ic_sort"
             style="@style/CardButtonStyle"/>
 
-        <com.cosmos.unreddit.ui.common.widget.SortIconView
+        <com.omeron.ui.common.widget.SortIconView
             android:id="@+id/sort_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="?attr/actionBarSize" />
 
-        <com.cosmos.unreddit.ui.common.widget.PullToRefreshLayout
+        <com.omeron.ui.common.widget.PullToRefreshLayout
             android:id="@+id/pull_refresh"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -123,13 +123,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/subreddit_metrics_header">
 
-            <com.cosmos.unreddit.ui.common.widget.PostRecyclerView
+            <com.omeron.ui.common.widget.PostRecyclerView
                 android:id="@+id/list_post"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:overScrollMode="never"/>
-        </com.cosmos.unreddit.ui.common.widget.PullToRefreshLayout>
+        </com.omeron.ui.common.widget.PullToRefreshLayout>
 
         <TextView
             android:id="@+id/subreddit_subscribers"

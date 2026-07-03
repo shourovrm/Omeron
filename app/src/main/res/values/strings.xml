@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stealth</string>
+    <string name="app_name">Omeron</string>
     <string name="app_version_name" translatable="false">Blackbird</string>
     <string name="app_description">An account-free, privacy-oriented, feature-rich Reddit client</string>
 
@@ -247,11 +247,11 @@
 
     <string name="backup_location_button_pick">Pick File</string>
     <string name="backup_location_explanation_backup">Select a file to back up your profiles, subscriptions, and saved items</string>
-    <string name="backup_location_explanation_restore_stealth">Select a Stealth backup file to restore your profiles, subscriptions, and saved items</string>
-    <string name="backup_location_explanation_restore_reddit">Select Reddit\'s "mine.json" file to import your Reddit\'s subscriptions to Stealth</string>
+    <string name="backup_location_explanation_restore_stealth">Select an Omeron backup file to restore your profiles, subscriptions, and saved items</string>
+    <string name="backup_location_explanation_restore_reddit">Select Reddit\'s "mine.json" file to import your Reddit\'s subscriptions to Omeron</string>
 
     <string name="backup_loading_success_backup">Backup complete!</string>
-    <string name="backup_loading_success_restore_stealth">Stealth backup restored successfully!</string>
+    <string name="backup_loading_success_restore_stealth">Omeron backup restored successfully!</string>
     <string name="backup_loading_success_restore_reddit">Reddit data imported successfully!</string>
 
     <string name="backup_loading_failed_backup">Something went wrong while backing up your data.\nPlease try again.</string>
@@ -275,7 +275,7 @@
     <string name="toast_clipboard_copied_email">Email copied to clipboard</string>
 
     <string name="dialog_policy_disclaimer_title">Reddit\'s API Policy Change</string>
-    <string name="dialog_policy_disclaimer_message">In the coming weeks, a new policy regarding Reddit\'s API will come into effect. Reddit will stop providing a free API (among other things), thus putting a stop to most third-party apps, including Stealth.\n\nTo try to circumvent that issue, a new source for the content has been implemented (available in the preferences, under Reddit Source) based on old.reddit.com. It might not work for long after the policy change, or even at all, but at least it does not rely on any API.\n\nYou can find more information about the new policy <a href="https://www.reddit.com/r/reddit/comments/12qwagm/an_update_regarding_reddits_api/">here</a>.\n\nPlease feel free to use the contact information available in the About section (email, GitLab, or the Matrix channel) if you have any questions.</string>
+    <string name="dialog_policy_disclaimer_message">In the coming weeks, a new policy regarding Reddit\'s API will come into effect. Reddit will stop providing a free API (among other things), thus putting a stop to most third-party apps, including Omeron.\n\nTo try to circumvent that issue, a new source for the content has been implemented (available in the preferences, under Reddit Source) based on old.reddit.com. It might not work for long after the policy change, or even at all, but at least it does not rely on any API.\n\nYou can find more information about the new policy <a href="https://www.reddit.com/r/reddit/comments/12qwagm/an_update_regarding_reddits_api/">here</a>.\n\nPlease feel free to use the contact information available in the About section (email, GitLab, or the Matrix channel) if you have any questions.</string>
 
     <string name="snackbar_policy_disclaimer_message">%1$s might stop working soon</string>
     <string name="snackbar_policy_disclaimer_action">Learn More</string>

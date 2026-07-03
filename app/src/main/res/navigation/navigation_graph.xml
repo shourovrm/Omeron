@@ -22,7 +22,7 @@
         app:destination="@id/viewer">
         <argument
             android:name="images"
-            app:argType="com.cosmos.unreddit.data.model.GalleryMedia[]"/>
+            app:argType="com.omeron.data.model.GalleryMedia[]"/>
     </action>
 
     <action
@@ -33,7 +33,7 @@
             app:argType="string"/>
         <argument
             android:name="type"
-            app:argType="com.cosmos.unreddit.data.model.MediaType"/>
+            app:argType="com.omeron.data.model.MediaType"/>
     </action>
 
     <action
