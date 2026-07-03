@@ -6,13 +6,18 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.omeron.data.local.dao.CommentDao
+import com.omeron.data.local.dao.FollowedUserDao
 import com.omeron.data.local.dao.HistoryDao
+import com.omeron.data.local.dao.MultiredditDao
 import com.omeron.data.local.dao.PostDao
 import com.omeron.data.local.dao.ProfileDao
 import com.omeron.data.local.dao.RedirectDao
 import com.omeron.data.local.dao.SubscriptionDao
 import com.omeron.data.model.Comment
+import com.omeron.data.model.db.FollowedUser
 import com.omeron.data.model.db.History
+import com.omeron.data.model.db.Multireddit
+import com.omeron.data.model.db.MultiredditMember
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.db.Redirect
@@ -25,9 +30,12 @@ import com.omeron.data.model.db.Subscription
         Profile::class,
         PostEntity::class,
         Comment.CommentEntity::class,
-        Redirect::class
+        Redirect::class,
+        FollowedUser::class,
+        Multireddit::class,
+        MultiredditMember::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -44,6 +52,10 @@ abstract class RedditDatabase : RoomDatabase() {
     abstract fun commentDao(): CommentDao
 
     abstract fun redirectDao(): RedirectDao
+
+    abstract fun followedUserDao(): FollowedUserDao
+
+    abstract fun multiredditDao(): MultiredditDao
 
     class Callback : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
@@ -183,6 +195,55 @@ abstract class RedditDatabase : RoomDatabase() {
                         PRIMARY KEY(`service`)
                     )
                     """.trimIndent())
+            }
+        }
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE subscription ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0"
+                )
+
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `followed_user` (
+                        `name` TEXT NOT NULL COLLATE NOCASE,
+                        `icon` TEXT,
+                        `time` INTEGER NOT NULL,
+                        `hidden` INTEGER NOT NULL DEFAULT 0,
+                        `profile_id` INTEGER NOT NULL,
+                    PRIMARY KEY(`name`, `profile_id`),
+                    FOREIGN KEY(`profile_id`) REFERENCES `profile`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent())
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_followed_user_profile_id` ON `followed_user` (`profile_id`)"
+                )
+
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `multireddit` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `name` TEXT NOT NULL,
+                        `hidden` INTEGER NOT NULL DEFAULT 0,
+                        `profile_id` INTEGER NOT NULL,
+                    FOREIGN KEY(`profile_id`) REFERENCES `profile`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent())
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_multireddit_profile_id` ON `multireddit` (`profile_id`)"
+                )
+
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `multireddit_member` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `multireddit_id` INTEGER NOT NULL,
+                        `target_name` TEXT NOT NULL,
+                        `type` INTEGER NOT NULL,
+                    FOREIGN KEY(`multireddit_id`) REFERENCES `multireddit`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent())
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_multireddit_member_multireddit_id` ON `multireddit_member` (`multireddit_id`)"
+                )
             }
         }
     }

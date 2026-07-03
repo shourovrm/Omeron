@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "subscription",
+    tableName = "followed_user",
     primaryKeys = ["name", "profile_id"],
     foreignKeys = [
         ForeignKey(
@@ -16,19 +16,19 @@ import androidx.room.ForeignKey
         )
     ]
 )
-data class Subscription (
+data class FollowedUser(
     @ColumnInfo(name = "name", collate = ColumnInfo.NOCASE)
     val name: String,
-
-    @ColumnInfo(name = "time")
-    val time: Long,
 
     @ColumnInfo(name = "icon")
     val icon: String?,
 
-    @ColumnInfo(name = "profile_id", index = true)
-    var profileId: Int = 1,
+    @ColumnInfo(name = "time")
+    val time: Long,
 
     @ColumnInfo(name = "hidden", defaultValue = "0")
-    var hidden: Boolean = false
+    var hidden: Boolean = false,
+
+    @ColumnInfo(name = "profile_id", index = true)
+    var profileId: Int = 1
 )

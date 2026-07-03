@@ -6,7 +6,12 @@ import androidx.paging.PagingData
 import com.omeron.data.local.RedditDatabase
 import com.omeron.data.model.Comment
 import com.omeron.data.model.Sorting
+import com.omeron.data.model.db.FollowedUser
 import com.omeron.data.model.db.History
+import com.omeron.data.model.db.Multireddit
+import com.omeron.data.model.db.MultiredditMember
+import com.omeron.data.model.db.MultiredditMemberType
+import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.db.Subscription
@@ -17,6 +22,7 @@ import com.omeron.data.remote.api.reddit.model.Listing
 import com.omeron.data.remote.api.reddit.model.MoreChildren
 import com.omeron.data.remote.api.reddit.source.CurrentSource
 import com.omeron.data.remote.datasource.CommentsDataSource
+import com.omeron.data.remote.datasource.MultiredditDataSource
 import com.omeron.data.remote.datasource.SearchPostDataSource
 import com.omeron.data.remote.datasource.SearchSubredditDataSource
 import com.omeron.data.remote.datasource.SearchUserDataSource
@@ -97,6 +103,10 @@ class PostListRepository @Inject constructor(
         return redditDatabase.subscriptionDao().getSubscriptionsNamesFromProfile(profileId)
     }
 
+    fun getVisibleSubscriptionsNames(profileId: Int): Flow<List<String>> {
+        return redditDatabase.subscriptionDao().getVisibleSubscriptionsNamesFromProfile(profileId)
+    }
+
     suspend fun subscribe(name: String, profileId: Int, icon: String? = null) {
         redditDatabase.subscriptionDao().insert(
             Subscription(name, System.currentTimeMillis(), icon, profileId)
@@ -105,6 +115,96 @@ class PostListRepository @Inject constructor(
 
     suspend fun unsubscribe(name: String, profileId: Int) {
         redditDatabase.subscriptionDao().deleteFromNameAndProfile(name, profileId)
+    }
+
+    suspend fun setSubscriptionHidden(name: String, profileId: Int, hidden: Boolean) {
+        redditDatabase.subscriptionDao().setHidden(name, profileId, hidden)
+    }
+
+    //endregion
+
+    //region Followed users
+
+    fun getFollowedUsers(profileId: Int): Flow<List<FollowedUser>> {
+        return redditDatabase.followedUserDao().getFromProfile(profileId)
+    }
+
+    fun getVisibleFollowedUserNames(profileId: Int): Flow<List<String>> {
+        return redditDatabase.followedUserDao().getVisibleNamesFromProfile(profileId)
+    }
+
+    fun isUserFollowed(name: String, profileId: Int): Flow<Boolean> {
+        return redditDatabase.followedUserDao().isFollowed(name, profileId)
+    }
+
+    suspend fun followUser(name: String, profileId: Int, icon: String? = null) {
+        redditDatabase.followedUserDao().insert(
+            FollowedUser(name, icon, System.currentTimeMillis(), profileId = profileId)
+        )
+    }
+
+    suspend fun unfollowUser(name: String, profileId: Int) {
+        redditDatabase.followedUserDao().deleteFromNameAndProfile(name, profileId)
+    }
+
+    suspend fun setUserHidden(name: String, profileId: Int, hidden: Boolean) {
+        redditDatabase.followedUserDao().setHidden(name, profileId, hidden)
+    }
+
+    //endregion
+
+    //region Multireddits
+
+    fun getMultireddits(profileId: Int): Flow<List<MultiredditWithMembers>> {
+        return redditDatabase.multiredditDao().getMultisWithMembersFromProfile(profileId)
+    }
+
+    fun getVisibleMultireddits(profileId: Int): Flow<List<MultiredditWithMembers>> {
+        return redditDatabase.multiredditDao().getVisibleMultisWithMembersFromProfile(profileId)
+    }
+
+    suspend fun createMultireddit(name: String, profileId: Int): Long {
+        return redditDatabase.multiredditDao().insert(Multireddit(name = name, profileId = profileId))
+    }
+
+    suspend fun renameMultireddit(id: Long, name: String) {
+        redditDatabase.multiredditDao().rename(id, name)
+    }
+
+    suspend fun deleteMultireddit(id: Long) {
+        redditDatabase.multiredditDao().deleteFromId(id)
+    }
+
+    suspend fun setMultiredditHidden(id: Long, hidden: Boolean) {
+        redditDatabase.multiredditDao().setHidden(id, hidden)
+    }
+
+    suspend fun addMember(multiId: Long, targetName: String, type: MultiredditMemberType) {
+        redditDatabase.multiredditDao().addMember(
+            MultiredditMember(multiredditId = multiId, targetName = targetName, type = type.value)
+        )
+    }
+
+    suspend fun removeMember(multiId: Long, targetName: String, type: MultiredditMemberType) {
+        redditDatabase.multiredditDao().removeMember(multiId, targetName, type.value)
+    }
+
+    fun getMultiredditPosts(
+        subreddits: List<String>,
+        users: List<String>,
+        sorting: Sorting,
+        pageSize: Int = DEFAULT_LIMIT
+    ): Flow<PagingData<Child>> {
+        return Pager(PagingConfig(pageSize = pageSize)) {
+            MultiredditDataSource(
+                source,
+                subreddits,
+                users,
+                sorting,
+                defaultDispatcher,
+                mainImmediateDispatcher
+            )
+        }.flow
     }
 
     //endregion

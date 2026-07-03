@@ -19,4 +19,10 @@ abstract class SubscriptionDao : BaseDao<Subscription> {
 
     @Query("SELECT name FROM subscription WHERE profile_id = :profileId")
     abstract fun getSubscriptionsNamesFromProfile(profileId: Int): Flow<List<String>>
+
+    @Query("SELECT name FROM subscription WHERE profile_id = :profileId AND hidden = 0")
+    abstract fun getVisibleSubscriptionsNamesFromProfile(profileId: Int): Flow<List<String>>
+
+    @Query("UPDATE subscription SET hidden = :hidden WHERE name = :name AND profile_id = :profileId")
+    abstract suspend fun setHidden(name: String, profileId: Int, hidden: Boolean)
 }
