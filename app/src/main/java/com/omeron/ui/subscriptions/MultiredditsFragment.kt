@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -25,6 +27,11 @@ import com.omeron.ui.base.BaseFragment
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.text
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -50,7 +57,7 @@ class MultiredditsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         bindViewModel()
-        binding.fabCreateMultireddit.setOnClickListener { showCreateDialog() }
+        binding.buttonCreateMultireddit.setOnClickListener { showCreateDialog() }
     }
 
     private fun initRecyclerView() {
@@ -148,12 +155,37 @@ class MultiredditsFragment : BaseFragment() {
                 }
         }
 
-        editBinding.buttonAddSubreddit.setOnClickListener {
-            val name = editBinding.inputAddSubreddit.text?.toString()?.trim().orEmpty()
-            if (name.isNotBlank()) {
-                viewModel.addMember(item.multireddit.id, name, MultiredditMemberType.SUBREDDIT)
-                editBinding.inputAddSubreddit.text?.clear()
-            }
+        // Search-then-select: type a subreddit name, pick from scraped results instead of
+        // free-text (free text can't be verified against a real subreddit anyway).
+        val searchAdapter = MultiredditSubredditSearchAdapter { name ->
+            viewModel.addMember(item.multireddit.id, name, MultiredditMemberType.SUBREDDIT)
+            editBinding.inputAddSubreddit.text?.clear()
+            editBinding.listSubredditSearchResults.isVisible = false
+        }
+        editBinding.listSubredditSearchResults.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = searchAdapter
+        }
+
+        val searchQuery = MutableStateFlow("")
+        @OptIn(kotlinx.coroutines.FlowPreview::class)
+        val searchJob = viewLifecycleOwner.lifecycleScope.launch {
+            searchQuery
+                .debounce(300)
+                .distinctUntilChanged()
+                .flatMapLatest { query ->
+                    if (query.isBlank()) flowOf(PagingData.empty()) else viewModel.searchSubreddits(query)
+                }
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { pagingData ->
+                    searchAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
+                }
+        }
+
+        editBinding.inputAddSubreddit.doOnTextChanged { text, _, _, _ ->
+            val query = text?.toString().orEmpty()
+            editBinding.listSubredditSearchResults.isVisible = query.isNotBlank()
+            searchQuery.value = query
         }
 
         editBinding.buttonAddUser.setOnClickListener {
@@ -172,7 +204,10 @@ class MultiredditsFragment : BaseFragment() {
             }
             .setNeutralButton(R.string.dialog_delete_multireddit_button) { _, _ -> confirmDelete(item) }
             .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
-            .setOnDismissListener { job.cancel() }
+            .setOnDismissListener {
+                job.cancel()
+                searchJob.cancel()
+            }
             .show()
             .apply {
                 getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {

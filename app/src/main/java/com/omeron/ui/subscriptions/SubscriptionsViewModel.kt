@@ -1,11 +1,15 @@
 package com.omeron.ui.subscriptions
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import com.omeron.data.model.Sort
+import com.omeron.data.model.Sorting
 import com.omeron.data.model.db.FollowedUser
 import com.omeron.data.model.db.Multireddit
 import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.Subscription
+import com.omeron.data.remote.api.reddit.model.Child
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
@@ -93,6 +97,13 @@ class SubscriptionsViewModel @Inject constructor(
         viewModelScope.launch {
             repository.setMultiredditHidden(multireddit.id, !multireddit.hidden)
         }
+    }
+
+    // ponytail: skip SubredditMapper2 (it parses html descriptions we never render here) -
+    // the search-select dropdown only needs displayName + icon, so the adapter reads AboutData
+    // straight off the scraped Child.
+    fun searchSubreddits(query: String): Flow<PagingData<Child>> {
+        return repository.searchSubreddit(query, Sorting(Sort.RELEVANCE))
     }
 
     fun addMember(multiId: Long, targetName: String, type: MultiredditMemberType) {

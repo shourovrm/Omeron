@@ -82,9 +82,10 @@
 
     <string name="multireddit_subreddits_header">Subreddits</string>
     <string name="multireddit_users_header">Users</string>
-    <string name="multireddit_add_subreddit_hint">Add subreddit</string>
-    <string name="multireddit_add_user_hint">Add user</string>
+    <string name="multireddit_add_subreddit_hint">Search subreddit</string>
+    <string name="multireddit_add_user_hint">Add user (u/name)</string>
     <string name="multireddit_member_count">%d members</string>
+    <string name="multireddit_create">Create multireddit</string>
 
     <string name="search_hint">Search through Reddit</string>
     <string name="search_hint_subreddit">Search in %1$s</string>

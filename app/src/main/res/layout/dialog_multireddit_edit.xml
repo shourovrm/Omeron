@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true">
@@ -38,31 +39,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"/>
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/input_add_subreddit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:maxLines="1"
+            android:inputType="text"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:hint="@string/multireddit_add_subreddit_hint"/>
 
-            <EditText
-                android:id="@+id/input_add_subreddit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:inputType="text"
-                android:hint="@string/multireddit_add_subreddit_hint"/>
-
-            <ImageButton
-                android:id="@+id/button_add_subreddit"
-                android:layout_width="@dimen/app_bar_button_size"
-                android:layout_height="@dimen/app_bar_button_size"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:tint="@color/icon_tint"
-                android:contentDescription="@string/multireddit_add_subreddit_hint"
-                android:src="@drawable/ic_add"/>
-
-        </LinearLayout>
+        <!-- ponytail: plain RecyclerView, no swipe-refresh/paging-footer chrome - this is a
+             small in-dialog pick list, not a full screen. Fixed height (not wrap_content) so it
+             behaves inside the outer ScrollView instead of fighting it for nested scroll. -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_subreddit_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:overScrollMode="never"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:listitem="@layout/item_multireddit_subreddit_result"/>
 
         <TextView
             android:layout_width="wrap_content"

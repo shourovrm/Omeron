@@ -5,13 +5,25 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ImageButton
+        android:id="@+id/button_create_multireddit"
+        android:layout_width="@dimen/app_bar_button_size"
+        android:layout_height="@dimen/app_bar_button_size"
+        android:layout_margin="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="@color/icon_tint"
+        android:contentDescription="@string/multireddit_create"
+        android:src="@drawable/ic_add"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_multireddits"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_create_multireddit"
         app:layout_constraintBottom_toBottomOf="parent"
         android:clipToPadding="false"
         android:overScrollMode="never"/>
@@ -22,7 +34,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_create_multireddit"
         app:layout_constraintBottom_toTopOf="@id/text_empty_data"
         app:layout_constraintVertical_chainStyle="packed"
         android:src="@drawable/empty"
@@ -39,15 +51,5 @@
         android:text="@string/empty_data_multireddits"
         android:gravity="center"
         android:visibility="gone"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_create_multireddit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="@string/dialog_create_multireddit_title"
-        app:srcCompat="@drawable/ic_add"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
