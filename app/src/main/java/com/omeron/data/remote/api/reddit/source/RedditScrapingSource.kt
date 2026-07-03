@@ -11,10 +11,10 @@ import com.omeron.data.remote.api.reddit.model.ListingData
 import com.omeron.data.remote.api.reddit.model.MoreChildren
 import com.omeron.data.remote.api.reddit.scraper.CommentScraper
 import com.omeron.data.remote.api.reddit.scraper.PostScraper
+import com.omeron.data.remote.api.reddit.scraper.PostSearchScraper
 import com.omeron.data.remote.api.reddit.scraper.SubredditScraper
 import com.omeron.data.remote.api.reddit.scraper.SubredditSearchScraper
 import com.omeron.data.remote.api.reddit.scraper.UserScaper
-import com.omeron.data.remote.api.reddit.scraper.UserSearchScraper
 import com.omeron.di.DispatchersModule.IoDispatcher
 import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import com.omeron.di.NetworkModule.RedditScrap
@@ -112,17 +112,19 @@ class RedditScrapingSource @Inject constructor(
         after: String?
     ): Listing {
         val response = redditApi.searchPost(query, sort, timeSorting, after)
-        return PostScraper(ioDispatcher).scrap(response.string())
+        return PostSearchScraper(ioDispatcher).scrap(response.string())
     }
 
+    // ponytail: old.reddit's /search?type=user renders no user rows at all (confirmed
+    // against a live sample - only an empty "people" facet), so it can't be scraped without
+    // the API. Stub satisfies BaseRedditSource; unreachable from UI (Users tab removed).
     override suspend fun searchUser(
         query: String,
         sort: Sort?,
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        val response = redditApi.searchUser(query, sort, timeSorting, after)
-        return UserSearchScraper(ioDispatcher).scrap(response.string())
+        return Listing("t2", ListingData(null, null, emptyList(), null, null))
     }
 
     override suspend fun searchSubreddit(

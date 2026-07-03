@@ -116,15 +116,14 @@ class SearchFragment : BaseFragment() {
             FragmentAdapter.Page(
                 R.string.tab_search_subreddit,
                 SearchSubredditFragment::class.java
-            ),
-            FragmentAdapter.Page(R.string.tab_search_user, SearchUserFragment::class.java)
+            )
         )
 
         val fragmentAdapter = FragmentAdapter(this, fragments)
 
         binding.viewPager.apply {
             adapter = fragmentAdapter
-            offscreenPageLimit = 2
+            offscreenPageLimit = 1
             getRecyclerView()?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
 
