@@ -13,24 +13,30 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.omeron.R
 import com.omeron.data.model.Comment
+import com.omeron.data.model.SavedItem
 import com.omeron.ui.commentmenu.CommentMenuFragment
 import com.omeron.ui.common.fragment.ListFragment
 import com.omeron.ui.postdetails.PostDetailsFragment
 import com.omeron.ui.user.UserCommentsAdapter
 import com.omeron.util.extension.currentNavigationFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
-class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
+// ponytail: two thin leaf fragments (below) pick the tab's flow, since
+// FragmentAdapter.Page instantiates via Class.newInstance() with no args.
+// Base is not @AndroidEntryPoint - Hilt only needs it on the leaf classes.
+abstract class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
     UserCommentsAdapter.CommentClickListener {
 
     override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.profile)
 
     override val enablePullToRefresh: Boolean
         get() = false
+
+    protected abstract val savedFlow: Flow<List<SavedItem>>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,7 +61,7 @@ class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
 
     private fun bindViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            combine(viewModel.savedItems, viewModel.contentPreferences) { items, preferences ->
+            combine(savedFlow, viewModel.contentPreferences) { items, preferences ->
                 adapter.run {
                     contentPreferences = preferences
                     submitList(items)
@@ -93,4 +99,14 @@ class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
     override fun createAdapter(): ProfileSavedAdapter {
         return ProfileSavedAdapter(requireContext(), this, this, this)
     }
+}
+
+@AndroidEntryPoint
+class ProfileSavedPostsFragment : ProfileSavedFragment() {
+    override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedPosts
+}
+
+@AndroidEntryPoint
+class ProfileSavedCommentsFragment : ProfileSavedFragment() {
+    override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedComments
 }

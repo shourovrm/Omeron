@@ -190,6 +190,8 @@
     <string name="unsave">Unsave</string>
 
     <string name="tab_profile_saved">Saved</string>
+    <string name="tab_profile_posts">Posts</string>
+    <string name="tab_profile_comments">Comments</string>
 
     <string name="dialog_create_profile_title">Create Profile</string>
     <string name="dialog_create_profile_button">Create</string>

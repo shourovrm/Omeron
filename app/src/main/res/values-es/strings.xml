@@ -47,6 +47,8 @@
      <string name="search_hint">Buscar en Reddit</string>
      <string name="search_hint_subreddit">Buscar en %1$s</string>
      <string name="fragment_preferences_label">Preferencias</string>
+     <string name="tab_profile_posts">Publicaciones</string>
+     <string name="tab_profile_comments">Comentarios</string>
      <string name="tab_search_post">Posts</string>
      <string name="tab_search_subreddit">Subreddits</string>
      <string name="tab_search_user">Usuarios</string>

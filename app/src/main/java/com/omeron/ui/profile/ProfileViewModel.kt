@@ -13,13 +13,10 @@ import com.omeron.ui.base.BaseViewModel
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -56,31 +53,19 @@ class ProfileViewModel @Inject constructor(
         profiles.find { it.id == currentProfile.id } ?: currentProfile
     }
 
-    val savedItems: Flow<List<SavedItem>> = combineTransform(
+    val savedPosts: Flow<List<SavedItem>> = combine(
         _savedPosts,
-        _savedComments,
         contentPreferences
-    ) { _posts, _comments, preferences ->
-        coroutineScope {
-            val posts = async {
-                savedMapper.postsToEntities(_posts).filter {
-                    preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
-                }
-            }
-
-            val comments = async {
-                savedMapper.commentsToEntities(_comments)
-            }
-
-            val items = mutableListOf<SavedItem>().apply {
-                addAll(posts.await())
-                addAll(comments.await())
-            }
-
-            emit(items)
+    ) { posts, preferences ->
+        savedMapper.postsToEntities(posts).filter {
+            preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
         }
     }.map { items ->
         items.sortedByDescending { it.timestamp }
+    }.flowOn(defaultDispatcher)
+
+    val savedComments: Flow<List<SavedItem>> = _savedComments.map { comments ->
+        savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }
     }.flowOn(defaultDispatcher)
 
     fun setPage(position: Int) {

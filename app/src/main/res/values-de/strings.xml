@@ -57,6 +57,9 @@
 
     <string name="fragment_preferences_label">Einstellungen</string>
 
+    <string name="tab_profile_posts">Beiträge</string>
+    <string name="tab_profile_comments">Kommentare</string>
+
     <string name="tab_search_post">Beiträge</string>
     <string name="tab_search_subreddit">Subreddits</string>
     <string name="tab_search_user">Benutzer</string>
