@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
 import com.omeron.UiViewModel
+import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
@@ -86,6 +87,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
     private lateinit var postListAdapter: PostListAdapter
 
     private lateinit var profileAdapter: ProfileAdapter
+
+    // Kept in sync with viewModel.visibleMultireddits so the sub-tab strip can rebuild
+    // itself and so tab selection survives list updates (renames, additions, deletions).
+    private var latestMultis: List<MultiredditWithMembers> = emptyList()
 
     @Inject
     lateinit var repository: PostListRepository
@@ -183,7 +188,17 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
                     binding.appBar.profileImage.setText(it.name)
                 }
             }
-            
+
+            launch {
+                viewModel.visibleMultireddits.collect { multis ->
+                    latestMultis = multis
+                    rebuildMultiTabs(multis)
+                    if (viewModel.feedMode.value == PostListViewModel.FeedMode.MULTI) {
+                        showMultiTabsOrEmptyState()
+                    }
+                }
+            }
+
             launch { 
                 viewModel.lastRefresh.collect {
                     val time = getString(R.string.last_refresh, DateUtil.getLocalizedTime(it))
@@ -291,16 +306,15 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         binding.tabs.apply {
             addTab(newTab().setText(R.string.tab_home_feed))
             addTab(newTab().setText(R.string.tab_home_popular))
+            addTab(newTab().setText(R.string.tab_home_multis))
 
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    viewModel.setFeedMode(
-                        if (tab.position == 0) {
-                            PostListViewModel.FeedMode.HOME
-                        } else {
-                            PostListViewModel.FeedMode.POPULAR
-                        }
-                    )
+                    when (tab.position) {
+                        0 -> selectFeedMode(PostListViewModel.FeedMode.HOME)
+                        1 -> selectFeedMode(PostListViewModel.FeedMode.POPULAR)
+                        else -> selectMultisMode()
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -311,6 +325,77 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
                     scrollToTop()
                 }
             })
+        }
+
+        binding.multiTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                (tab.tag as? MultiredditWithMembers)?.let { viewModel.setSelectedMulti(it) }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                // Ignore
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                scrollToTop()
+            }
+        })
+    }
+
+    private fun selectFeedMode(mode: PostListViewModel.FeedMode) {
+        viewModel.setFeedMode(mode)
+        viewModel.setSelectedMulti(null)
+        binding.multiTabs.isVisible = false
+        binding.emptyMultireddits.isVisible = false
+        binding.pullRefresh.isVisible = true
+    }
+
+    private fun selectMultisMode() {
+        viewModel.setFeedMode(PostListViewModel.FeedMode.MULTI)
+        showMultiTabsOrEmptyState()
+    }
+
+    // Reflects latestMultis into multi_tabs visibility / empty state, and re-syncs the
+    // ViewModel's selected multi with whatever sub-tab is currently selected (covers both
+    // "just switched to the Multis top-tab" and "list changed while already on it").
+    private fun showMultiTabsOrEmptyState() {
+        if (latestMultis.isEmpty()) {
+            binding.multiTabs.isVisible = false
+            binding.emptyMultireddits.isVisible = true
+            // ponytail: hide the shared list instead of plumbing a "no source" pager state.
+            binding.pullRefresh.isVisible = false
+            viewModel.setSelectedMulti(null)
+        } else {
+            binding.emptyMultireddits.isVisible = false
+            binding.multiTabs.isVisible = true
+            binding.pullRefresh.isVisible = true
+            val selected = binding.multiTabs.getTabAt(binding.multiTabs.selectedTabPosition)
+                ?.tag as? MultiredditWithMembers
+            viewModel.setSelectedMulti(selected ?: latestMultis.first())
+        }
+    }
+
+    // Rebuilds the sub-tab strip from the latest multireddit list, preserving the
+    // currently selected multi (by id) if it still exists, else falling back to the first.
+    private fun rebuildMultiTabs(multis: List<MultiredditWithMembers>) {
+        val previousId = (binding.multiTabs.getTabAt(binding.multiTabs.selectedTabPosition)
+            ?.tag as? MultiredditWithMembers)?.multireddit?.id
+
+        binding.multiTabs.removeAllTabs()
+        multis.forEach { multi ->
+            binding.multiTabs.addTab(
+                binding.multiTabs.newTab().apply {
+                    text = multi.multireddit.name
+                    tag = multi
+                },
+                false
+            )
+        }
+
+        if (multis.isNotEmpty()) {
+            val indexToSelect = multis.indexOfFirst { it.multireddit.id == previousId }
+                .let { if (it >= 0) it else 0 }
+            binding.multiTabs.getTabAt(indexToSelect)?.select()
         }
     }
 

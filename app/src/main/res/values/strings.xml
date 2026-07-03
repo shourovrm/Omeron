@@ -220,6 +220,8 @@
 
     <string name="tab_home_feed">Feed</string>
     <string name="tab_home_popular">Popular</string>
+    <string name="tab_home_multis">Multis</string>
+    <string name="empty_multireddits">No multireddits yet — create one in Subscriptions</string>
 
     <string name="save">Save</string>
     <string name="unsave">Unsave</string>

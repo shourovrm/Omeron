@@ -7,6 +7,8 @@ import com.omeron.data.local.mapper.PostMapper2
 import com.omeron.data.model.Data
 import com.omeron.data.model.Sort
 import com.omeron.data.model.Sorting
+import com.omeron.data.model.db.MultiredditMemberType
+import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.preferences.ContentPreferences
@@ -35,6 +37,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Abstracts what the pager reads from: plain subreddit list (Feed/Popular) or a merged
+// multireddit (subs + users).
+sealed interface FeedSource {
+    data class Subs(val subreddits: List<String>) : FeedSource
+    data class Multi(val subreddits: List<String>, val users: List<String>) : FeedSource
+}
+
 @HiltViewModel
 class PostListViewModel
 @Inject constructor(
@@ -58,29 +67,52 @@ class PostListViewModel
     private val _feedMode: MutableStateFlow<FeedMode> = MutableStateFlow(FeedMode.HOME)
     val feedMode: StateFlow<FeedMode> = _feedMode
 
+    private val _selectedMulti: MutableStateFlow<MultiredditWithMembers?> = MutableStateFlow(null)
+
     // #9: hidden subs must not feed the Home posts source.
     private val visibleSubscriptionsNames: Flow<List<String>> = currentProfile.flatMapLatest {
         repository.getVisibleSubscriptionsNames(it.id)
     }
 
-    val subreddit: Flow<List<String>> = combine(
+    val visibleMultireddits: Flow<List<MultiredditWithMembers>> = currentProfile.flatMapLatest {
+        repository.getVisibleMultireddits(it.id)
+    }
+
+    private val feedSource: Flow<FeedSource> = combine(
         _feedMode,
+        _selectedMulti,
         visibleSubscriptionsNames.distinctUntilChanged()
-    ) { feedMode, subscriptions ->
-        resolveSubreddit(feedMode, subscriptions).shuffled()
+    ) { mode, multi, subs ->
+        if (mode == FeedMode.MULTI && multi != null) {
+            val subList = multi.members
+                .filter { MultiredditMemberType.fromValue(it.type) == MultiredditMemberType.SUBREDDIT }
+                .map { it.targetName }
+            val userList = multi.members
+                .filter { MultiredditMemberType.fromValue(it.type) == MultiredditMemberType.USER }
+                .map { it.targetName }
+            FeedSource.Multi(subList, userList)
+        } else {
+            // MULTI with no multi selected (e.g. no multireddits yet) degrades to the
+            // Home/Popular resolver harmlessly; the fragment hides the list in that case.
+            FeedSource.Subs(resolveSubreddit(mode, subs).shuffled())
+        }
     }.flowOn(defaultDispatcher)
 
     val postDataFlow: Flow<PagingData<PostEntity>>
 
-    val fetchData: StateFlow<Data.FetchMultiple> = combine(
-        subreddit,
+    // ponytail: internal holder, not the shared Data.kt sealed class, so the data layer
+    // stays untouched while still carrying FeedSource (subs+users) alongside sorting.
+    internal data class FeedFetch(val source: FeedSource, val sorting: Sorting)
+
+    internal val fetchData: StateFlow<FeedFetch> = combine(
+        feedSource,
         sorting
-    ) { subreddit, sorting ->
-        Data.FetchMultiple(subreddit, sorting)
+    ) { source, sorting ->
+        FeedFetch(source, sorting)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        Data.FetchMultiple(listOf(DEFAULT_SUBREDDIT), DEFAULT_SORTING)
+        FeedFetch(FeedSource.Subs(listOf(DEFAULT_SUBREDDIT)), DEFAULT_SORTING)
     )
 
     private var latestUser: Data.User? = null
@@ -109,11 +141,18 @@ class PostListViewModel
             .cachedIn(viewModelScope)
     }
 
-    private fun getPosts(data: Data.FetchMultiple, user: Data.User): Flow<PagingData<PostEntity>> {
-        return repository.getPosts(data.query, data.sorting)
-            .map { pagingData ->
-                PostUtil.filterPosts(pagingData, latestUser ?: user, postMapper, defaultDispatcher)
-            }
+    private fun getPosts(data: FeedFetch, user: Data.User): Flow<PagingData<PostEntity>> {
+        val posts = when (val source = data.source) {
+            is FeedSource.Subs -> repository.getPosts(source.subreddits, data.sorting)
+            is FeedSource.Multi -> repository.getMultiredditPosts(
+                source.subreddits,
+                source.users,
+                data.sorting
+            )
+        }
+        return posts.map { pagingData ->
+            PostUtil.filterPosts(pagingData, latestUser ?: user, postMapper, defaultDispatcher)
+        }
     }
 
     fun setSorting(sorting: Sorting) {
@@ -122,6 +161,10 @@ class PostListViewModel
 
     fun setFeedMode(mode: FeedMode) {
         _feedMode.updateValue(mode)
+    }
+
+    fun setSelectedMulti(multi: MultiredditWithMembers?) {
+        _selectedMulti.updateValue(multi)
     }
 
     fun setPostLayout(layout: PostLayout) {
@@ -134,18 +177,20 @@ class PostListViewModel
         }
     }
 
-    enum class FeedMode { HOME, POPULAR }
+    enum class FeedMode { HOME, POPULAR, MULTI }
 
     companion object {
         private const val DEFAULT_SUBREDDIT = "popular"
         private val DEFAULT_SORTING = Sorting(Sort.HOT)
 
-        // Pulled out of the `subreddit` flow so FeedMode -> subreddit resolution is
+        // Pulled out of the `feedSource` flow so FeedMode -> subreddit resolution is
         // unit-testable without instantiating the whole ViewModel.
         internal fun resolveSubreddit(mode: FeedMode, subscriptions: List<String>): List<String> =
             when (mode) {
                 FeedMode.POPULAR -> listOf(DEFAULT_SUBREDDIT)
                 FeedMode.HOME -> subscriptions.ifEmpty { listOf(DEFAULT_SUBREDDIT) }
+                // Only reached via feedSource's fallback when MULTI has no multi selected yet.
+                FeedMode.MULTI -> listOf(DEFAULT_SUBREDDIT)
             }
     }
 }

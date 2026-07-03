@@ -43,6 +43,16 @@
                     app:layout_scrollFlags="scroll|enterAlways"
                     style="@style/TabLayoutStyle"/>
 
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/multi_tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:tabMode="scrollable"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    style="@style/TabLayoutStyle"/>
+
             </com.google.android.material.appbar.AppBarLayout>
 
             <com.omeron.ui.common.widget.PullToRefreshLayout
@@ -84,6 +94,20 @@
                     app:textMessage="@string/network_retry_message"
                     app:textAction="@string/network_retry_action"
                     android:visibility="gone"
+                    tools:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/empty_multireddits"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="32dp"
+                    android:gravity="center"
+                    android:text="@string/empty_multireddits"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tools:visibility="visible"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
