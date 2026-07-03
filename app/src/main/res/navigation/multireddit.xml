@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/multireddit"
+    app:startDestination="@id/multiredditFragment">
+
+    <fragment
+        android:id="@+id/multiredditFragment"
+        android:name="com.omeron.ui.multireddit.MultiredditFragment"
+        android:label="MultiredditFragment"
+        tools:layout="@layout/fragment_multireddit">
+        <argument
+            android:name="multireddit_id"
+            app:argType="long" />
+    </fragment>
+
+</navigation>

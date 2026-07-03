@@ -11,6 +11,7 @@ import com.omeron.databinding.ItemMultiredditBinding
 
 class MultiredditsAdapter(
     private val onClick: (MultiredditWithMembers) -> Unit,
+    private val onLongClick: (MultiredditWithMembers) -> Unit,
     private val onToggleHidden: (MultiredditWithMembers) -> Unit,
     private val onDelete: (MultiredditWithMembers) -> Unit
 ) : ListAdapter<MultiredditWithMembers, MultiredditsAdapter.MultiredditViewHolder>(MULTIREDDIT_COMPARATOR) {
@@ -43,6 +44,10 @@ class MultiredditsAdapter(
             binding.buttonDelete.setOnClickListener { onDelete(item) }
 
             itemView.setOnClickListener { onClick(item) }
+            itemView.setOnLongClickListener {
+                onLongClick(item)
+                true
+            }
         }
     }
 

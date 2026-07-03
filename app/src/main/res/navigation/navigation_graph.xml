@@ -14,6 +14,7 @@
     <!-- Global Destinations -->
     <include app:graph="@navigation/post" />
     <include app:graph="@navigation/subreddit" />
+    <include app:graph="@navigation/multireddit" />
     <include app:graph="@navigation/user" />
     <include app:graph="@navigation/viewer" />
 
@@ -51,6 +52,14 @@
         <argument
             android:name="user"
             app:argType="string"/>
+    </action>
+
+    <action
+        android:id="@+id/openMultireddit"
+        app:destination="@id/multireddit">
+        <argument
+            android:name="multireddit_id"
+            app:argType="long" />
     </action>
 
 </navigation>
