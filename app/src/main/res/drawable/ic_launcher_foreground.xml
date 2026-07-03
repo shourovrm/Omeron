@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Omeron mark: orbit ring (O) + node dot at 12 o'clock. Content kept inside 66dp safe zone. -->
+    <path
+        android:pathData="M28,54 A26,26 0 1 0 80,54 A26,26 0 1 0 28,54 Z"
+        android:strokeColor="#F5F7FF"
+        android:strokeWidth="9"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M49,28 A5,5 0 1 0 59,28 A5,5 0 1 0 49,28 Z"
+        android:fillColor="#3DD7F0"/>
+</vector>

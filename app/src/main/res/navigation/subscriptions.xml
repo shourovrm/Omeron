@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subscriptions"
+    app:startDestination="@id/subscriptionsFragment">
+
+    <include app:graph="@navigation/search" />
+
+    <fragment
+        android:id="@+id/subscriptionsFragment"
+        android:name="com.cosmos.unreddit.ui.subscriptions.SubscriptionsFragment"
+        tools:layout="@layout/fragment_subscriptions">
+        <action
+            android:id="@+id/openSearch"
+            app:destination="@id/search">
+            <argument
+                android:name="query"
+                app:argType="string"/>
+        </action>
+    </fragment>
+
+</navigation>

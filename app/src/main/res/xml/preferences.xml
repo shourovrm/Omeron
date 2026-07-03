@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="ui_category"
+        app:title="@string/preference_category_ui">
+
+        <Preference
+            app:key="night_mode"
+            app:title="@string/preference_night_mode"
+            app:persistent="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="left_handed_mode"
+            app:title="@string/preference_left_handed_mode"
+            app:persistent="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="content_category"
+        app:title="@string/preference_category_content">
+
+        <SwitchPreferenceCompat
+            app:key="show_nsfw"
+            app:title="@string/preference_show_nsfw"
+            app:persistent="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="show_nsfw_preview"
+            app:title="@string/preference_show_nsfw_preview"
+            app:enabled="false"
+            app:persistent="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="show_spoiler_preview"
+            app:title="@string/preference_show_spoiler_preview"
+            app:persistent="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="data_category"
+        app:title="@string/preference_category_data">
+
+        <Preference
+            app:key="reddit_source"
+            app:title="@string/preference_reddit_source"
+            app:persistent="false"/>
+
+        <Preference
+            app:key="privacy_enhancer"
+            app:title="@string/preference_privacy_enhancer"
+            app:persistent="false"/>
+
+        <Preference
+            app:key="backup"
+            app:title="@string/preference_backup"
+            app:persistent="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="misc_category"
+        app:title="@string/preference_category_misc">
+
+        <Preference
+            app:key="about"
+            app:title="@string/preference_about"
+            app:persistent="false"/>
+
+        <Preference
+            app:key="policy_disclaimer"
+            app:title="@string/preference_policy_disclaimer"
+            app:persistent="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

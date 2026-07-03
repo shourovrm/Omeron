@@ -1,0 +1,282 @@
+<resources>
+    <string name="app_name">Stealth</string>
+    <string name="app_version_name" translatable="false">Blackbird</string>
+    <string name="app_description">An account-free, privacy-oriented, feature-rich Reddit client</string>
+
+    <string name="gitlab_link" translatable="false">https://gitlab.com/cosmosapps/stealth</string>
+    <string name="matrix_link" translatable="false">https://matrix.to/#/#stealth-app:matrix.org</string>
+    <string name="email" translatable="false">cosmos.dev@protonmail.com</string>
+
+    <string name="ok">OK</string>
+
+    <string name="post_ratio">%1$d%%</string>
+
+    <string name="time_difference_now">now</string>
+    <string name="time_difference_minute">%1$dm ago</string>
+    <string name="time_difference_hour">%1$dh ago</string>
+    <string name="time_difference_day">%1$dd ago</string>
+    <string name="time_difference_year">%1$dy ago</string>
+
+    <string name="time_difference_minute_short">%1$dm</string>
+    <string name="time_difference_hour_short">%1$dh</string>
+    <string name="time_difference_day_short">%1$dd</string>
+    <string name="time_difference_year_short">%1$dy</string>
+
+    <string name="award_count">x%1$d</string>
+
+    <string name="tab_user_comments">Comments</string>
+    <string name="tab_user_submitted">Submitted</string>
+    <string name="tab_user_gilded">Gilded</string>
+
+    <string name="sort_time_hour">Now</string>
+    <string name="sort_time_day">Today</string>
+    <string name="sort_time_week">This Week</string>
+    <string name="sort_time_month">This Month</string>
+    <string name="sort_time_year">This Year</string>
+    <string name="sort_time_all">All Time</string>
+
+    <string name="sort_time_hour_short">Now</string>
+    <string name="sort_time_day_short">Day</string>
+    <string name="sort_time_week_short">Week</string>
+    <string name="sort_time_month_short">Month</string>
+    <string name="sort_time_year_short">Year</string>
+    <string name="sort_time_all_short">All</string>
+
+    <string name="sort_title">Sort</string>
+    <string name="sort_time_title">Time</string>
+
+    <string name="sort_hot">Hot</string>
+    <string name="sort_new">New</string>
+    <string name="sort_top">Top</string>
+    <string name="sort_rising">Rising</string>
+    <string name="sort_controversial">Controversial</string>
+    <string name="sort_relevance">Relevance</string>
+    <string name="sort_comments">Comments</string>
+    <string name="sort_best">Best</string>
+    <string name="sort_old">Old</string>
+    <string name="sort_qa">Q&amp;A</string>
+
+    <string name="fragment_subscriptions_label">Subscriptions</string>
+    <string name="subscriptions_search_hint">Search through Reddit</string>
+
+    <string name="search_hint">Search through Reddit</string>
+    <string name="search_hint_subreddit">Search in %1$s</string>
+
+    <string name="fragment_preferences_label">Preferences</string>
+
+    <string name="tab_search_post">Posts</string>
+    <string name="tab_search_subreddit">Subreddits</string>
+    <string name="tab_search_user">Users</string>
+
+    <string name="subreddit_button_unsubscribe">Unsubscribe</string>
+    <string name="subreddit_button_subscribe">Subscribe</string>
+    <string name="subreddit_subscribers">Subscribers</string>
+    <string name="subreddit_active_users">Online</string>
+
+    <string name="user_post_karma">Post Karma</string>
+    <string name="user_comment_karma">Comment Karma</string>
+    <string name="user_cake_day">Cake Day</string>
+
+    <string name="flair_nsfw">NSFW</string>
+    <string name="flair_spoiler">Spoiler</string>
+    <string name="flair_oc">OC</string>
+
+    <string name="comment_score">%1$s pts</string>
+    <string name="comment_more">More (%1$d)</string>
+    <string name="comment_more_error">Error loading more comments. Tap to retry.</string>
+    <string name="comment_date_edited">%1$s* (%2$s)</string>
+    <string name="comment_controversiality">✝</string>
+    <string name="comment_op">OP</string>
+
+    <string name="comment_link_info">%1$s - u/%2$s</string>
+
+    <string name="media_page_counter_label">of</string>
+
+    <string name="reddit_user_prefixed">u/%1$s</string>
+
+    <string name="menu_open_link">Open Externally</string>
+    <string name="menu_share_link">Share Link</string>
+    <string name="menu_copy_link">Copy Link</string>
+    <string name="menu_share_post">Share Post</string>
+
+    <string name="post_load_discussion">View Entire Discussion</string>
+    <string name="post_crosspost">Crosspost</string>
+
+    <string name="network_retry_message">Something went wrong</string>
+    <string name="network_retry_action">Retry</string>
+
+    <string name="dialog_subreddit_not_found_title">Subreddit not found</string>
+    <string name="dialog_subreddit_not_found_body">This subreddit does not exist or may have been banned.</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_subreddit_unauthorized_title">Subreddit is private</string>
+    <string name="dialog_subreddit_unauthorized_body">You do not have access to this subreddit.</string>
+
+    <string name="dialog_user_not_found_title">User not found</string>
+    <string name="dialog_user_not_found_body">This user does not exist.</string>
+    <string name="dialog_user_unauthorized_title">User is suspended</string>
+    <string name="dialog_user_unauthorized_body">This user has been suspended.</string>
+
+    <string name="dialog_media_not_found_title">Media not found</string>
+    <string name="dialog_media_not_found_body">This image or video you are looking for does not exist or may have been removed.</string>
+
+    <string name="dialog_night_mode_title">Theme</string>
+
+    <string name="dialog_credit_show_website">Show Website</string>
+    <string name="dialog_credit_show_license">Show License</string>
+
+    <string name="dialog_reddit_source_title">Reddit Source</string>
+
+    <string name="dialog_reddit_source_disclaimer_title">Disclaimer</string>
+    <string name="dialog_reddit_source_disclaimer_body">This is an experimental feature.\nTeddit doesn\'t provide an API for all of Reddit\'s content. Therefore, some requests will still be sent to reddit.com.</string>
+    <string name="dialog_reddit_source_scrap_disclaimer_body">This is an experimental feature.\nSome data are missing compared to the official APIs, and some features are not implemented/implementable.\nThis source uses old.reddit.com.</string>
+
+    <string name="empty_data">Nothing to see here…</string>
+    <string name="empty_data_subscriptions">You have no subscriptions yet.\nUse the search feature to look for Subreddits.</string>
+
+    <string name="preference_category_ui">UI</string>
+    <string name="preference_category_content">CONTENT</string>
+    <string name="preference_category_data">DATA</string>
+    <string name="preference_category_misc">MISC.</string>
+
+    <string name="preference_night_mode">Theme</string>
+    <string name="preference_night_mode_light">Light Theme</string>
+    <string name="preference_night_mode_dark">Dark Theme</string>
+    <string name="preference_night_mode_system">Follow System</string>
+    <string name="preference_night_mode_amoled">Amoled</string>
+
+    <string name="preference_left_handed_mode">Left-handed mode</string>
+
+    <string name="preference_show_nsfw">Show NSFW content</string>
+    <string name="preference_show_nsfw_preview">Show NSFW preview</string>
+    <string name="preference_show_spoiler_preview">Show Spoiler preview</string>
+
+    <string name="preference_reddit_source">Reddit Source</string>
+    <string name="preference_reddit_source_reddit">Reddit</string>
+    <string name="preference_reddit_source_reddit_scrap">Reddit (Web Scraping)</string>
+    <string name="preference_reddit_source_teddit">Teddit</string>
+
+    <string name="preference_backup">Import/Export</string>
+
+    <string name="preference_about">About</string>
+    <string name="preference_policy_disclaimer">Reddit\'s API Policy Change</string>
+
+    <string name="preference_privacy_enhancer">Privacy Enhancer</string>
+    <string name="preference_privacy_enhancer_summary">Redirect links to privacy-friendly frontends</string>
+    <string name="preference_privacy_enhancer_enabled">Enabled</string>
+    <string name="preference_privacy_enhancer_disabled">Disabled</string>
+
+    <string name="preference_privacy_enhancer_service_summary">%1$s - %2$s</string>
+
+    <string name="instance_hint">Instance</string>
+    <string name="instance_empty_error">Instance cannot be empty</string>
+    <string name="instance_invalid_error">Instance URL is invalid</string>
+
+    <string name="redirect_mode_on">ON</string>
+    <string name="redirect_mode_off">OFF</string>
+    <string name="redirect_mode_ask">Always Ask</string>
+
+    <string name="fragment_about_label">About</string>
+
+    <string name="about_section_credits">Credits</string>
+    <string name="about_section_libraries">Libraries</string>
+    <string name="about_section_contributors">Contributors</string>
+
+    <string name="navigation_label_home">Home</string>
+    <string name="navigation_label_subscriptions">Subscriptions</string>
+    <string name="navigation_label_settings">Preferences</string>
+    <string name="navigation_label_profile">Profile</string>
+
+    <string name="save">Save</string>
+    <string name="unsave">Unsave</string>
+
+    <string name="tab_profile_saved">Saved</string>
+
+    <string name="dialog_create_profile_title">Create Profile</string>
+    <string name="dialog_create_profile_button">Create</string>
+    <string name="dialog_create_profile_hint">Name</string>
+
+    <string name="dialog_rename_profile_title">Rename Profile</string>
+    <string name="dialog_rename_profile_button">Rename</string>
+
+    <string name="dialog_delete_profile_title">Delete Profile</string>
+    <string name="dialog_delete_profile_message">Are you sure you want to delete this profile?\nSubscriptions, history and saved items for this profile will be lost.</string>
+
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+
+    <string name="dialog_privacy_enhancer_title">Privacy Enhancer</string>
+    <string name="dialog_privacy_enhancer_message">Would you like to redirect %1$s to %2$s?</string>
+
+    <string name="dialog_restart_required_title">Restart Required</string>
+    <string name="dialog_restart_required_message">A restart of the app is required to take the change into account.\nWould you like to restart now?</string>
+    <string name="dialog_restart_required_later">Maybe Later</string>
+
+    <string name="profile_name_length_error">Profile name must be between 3 and 20 characters</string>
+    <string name="profile_already_exists_error">Profile already exists</string>
+    <string name="profile_blank_error">Profile name cannot be blank</string>
+
+    <string name="profile_manager_add_profile">Add Profile</string>
+
+    <string name="contributor_uDEV2019_description">German translation</string>
+    <string name="contributor_anothersapiens_description">Spanish translation</string>
+    <string name="contributor_mwiggins_description">Developer</string>
+
+    <string name="notification_download_title">Download Manager</string>
+    <string name="notification_download_content_pending">Download in progress</string>
+    <string name="notification_download_content_failed">Download failed</string>
+    <string name="notification_download_content_success">Download completed</string>
+
+    <string name="notification_download_action_retry">Retry</string>
+    <string name="notification_download_action_cancel">Cancel</string>
+
+    <string name="notification_download_channel_name">Download Manager</string>
+    <string name="notification_download_channel_description">Media downloader</string>
+
+    <string name="file_date_format">yyyyMMdd_HHmmss</string>
+
+    <string name="snackbar_permission_storage_request_message">Permission to write to external storage is required</string>
+    <string name="snackbar_permission_storage_denied_message">Permission to write to external storage was denied</string>
+
+    <string name="toast_download_started">Download in progress…</string>
+
+    <string name="fragment_backup_label">Import/Export</string>
+
+    <string name="backup_operation_backup">Backup</string>
+    <string name="backup_operation_restore">Restore</string>
+
+    <string name="backup_location_button_pick">Pick File</string>
+    <string name="backup_location_explanation_backup">Select a file to back up your profiles, subscriptions, and saved items</string>
+    <string name="backup_location_explanation_restore_stealth">Select a Stealth backup file to restore your profiles, subscriptions, and saved items</string>
+    <string name="backup_location_explanation_restore_reddit">Select Reddit\'s "mine.json" file to import your Reddit\'s subscriptions to Stealth</string>
+
+    <string name="backup_loading_success_backup">Backup complete!</string>
+    <string name="backup_loading_success_restore_stealth">Stealth backup restored successfully!</string>
+    <string name="backup_loading_success_restore_reddit">Reddit data imported successfully!</string>
+
+    <string name="backup_loading_failed_backup">Something went wrong while backing up your data.\nPlease try again.</string>
+    <string name="backup_loading_failed_restore_stealth">Something went wrong while restoring up your data.\nPlease try again.</string>
+    <string name="backup_loading_failed_restore_reddit">Something went wrong while importing your data.\nPlease try again.</string>
+
+    <string name="backup_button_previous">Previous</string>
+    <string name="backup_button_next">Next</string>
+    <string name="backup_button_lets_go">Let\'s Go</string>
+    <string name="backup_button_finish">Finish</string>
+
+    <string name="shelf_card_transition_name" translatable="false">shelf_transition_%1$d</string>
+    <string name="post_list_transition_name" translatable="false">post_list_transition</string>
+
+    <string name="menu_search">Search</string>
+    <string name="menu_sidebar">Sidebar</string>
+    <string name="menu_refresh">Refresh</string>
+
+    <string name="last_refresh">Last refresh: %s</string>
+
+    <string name="toast_clipboard_copied_email">Email copied to clipboard</string>
+
+    <string name="dialog_policy_disclaimer_title">Reddit\'s API Policy Change</string>
+    <string name="dialog_policy_disclaimer_message">In the coming weeks, a new policy regarding Reddit\'s API will come into effect. Reddit will stop providing a free API (among other things), thus putting a stop to most third-party apps, including Stealth.\n\nTo try to circumvent that issue, a new source for the content has been implemented (available in the preferences, under Reddit Source) based on old.reddit.com. It might not work for long after the policy change, or even at all, but at least it does not rely on any API.\n\nYou can find more information about the new policy <a href="https://www.reddit.com/r/reddit/comments/12qwagm/an_update_regarding_reddits_api/">here</a>.\n\nPlease feel free to use the contact information available in the About section (email, GitLab, or the Matrix channel) if you have any questions.</string>
+
+    <string name="snackbar_policy_disclaimer_message">%1$s might stop working soon</string>
+    <string name="snackbar_policy_disclaimer_action">Learn More</string>
+</resources>
