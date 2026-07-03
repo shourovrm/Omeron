@@ -21,6 +21,7 @@ import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule
 import com.omeron.ui.base.BaseViewModel
 import com.omeron.util.PostUtil
+import com.omeron.util.extension.latest
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,7 +34,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.dropWhile
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -74,6 +77,14 @@ class UserViewModel @Inject constructor(
     val about: StateFlow<Resource<User>> = _about
 
     var layoutState: Int? = null
+
+    val isFollowed: Flow<Boolean> = user.flatMapLatest { name ->
+        if (name.isBlank()) {
+            flowOf(false)
+        } else {
+            currentProfile.flatMapLatest { repository.isUserFollowed(name, it.id) }
+        }
+    }
 
     private val savedCommentIds: Flow<List<String>> = currentProfile.flatMapLatest {
         repository.getSavedCommentIds(it.id)
@@ -198,6 +209,22 @@ class UserViewModel @Inject constructor(
 
     fun setUser(user: String) {
         _user.updateValue(user)
+    }
+
+    fun toggleFollow() {
+        val name = _user.value
+        if (name.isBlank()) return
+
+        viewModelScope.launch {
+            currentProfile.latest?.let { profile ->
+                if (repository.isUserFollowed(name, profile.id).first()) {
+                    repository.unfollowUser(name, profile.id)
+                } else {
+                    val icon = (about.value as? Resource.Success)?.data?.icon
+                    repository.followUser(name, profile.id, icon)
+                }
+            }
+        }
     }
 
     fun setPage(position: Int) {

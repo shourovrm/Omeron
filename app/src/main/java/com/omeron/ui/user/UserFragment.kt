@@ -105,6 +105,14 @@ class UserFragment : BaseFragment() {
             }
 
             launch {
+                viewModel.isFollowed.collect { followed ->
+                    binding.followCard.setIcon(
+                        if (followed) R.drawable.ic_person_remove else R.drawable.ic_person_add
+                    )
+                }
+            }
+
+            launch {
                 viewModel.about.collect {
                     when (it) {
                         is Resource.Success -> bindInfo(it.data)
@@ -161,6 +169,7 @@ class UserFragment : BaseFragment() {
             sortCard.setOnClickListener { showSortDialog() }
             layoutToggleCard.setOnClickListener { toggleLayout() }
             backCard.setOnClickListener { onBackPressed() }
+            followCard.setOnClickListener { viewModel.toggleFollow() }
         }
     }
 

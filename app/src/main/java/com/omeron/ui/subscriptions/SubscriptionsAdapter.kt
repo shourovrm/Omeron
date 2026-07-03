@@ -13,7 +13,8 @@ import com.omeron.data.model.db.Subscription
 import com.omeron.databinding.ItemSubscriptionBinding
 
 class SubscriptionsAdapter(
-    private val listener: (String) -> Unit
+    private val listener: (String) -> Unit,
+    private val onToggleHidden: (Subscription) -> Unit
 ) : ListAdapter<Subscription, SubscriptionsAdapter.SubscriptionViewHolder>(
     SUBSCRIPTION_COMPARATOR
 ) {
@@ -42,6 +43,11 @@ class SubscriptionsAdapter(
                 error(R.drawable.icon_reddit_placeholder)
                 fallback(R.drawable.icon_reddit_placeholder)
             }
+
+            binding.buttonHide.setImageResource(
+                if (subscription.hidden) R.drawable.ic_visibility_off else R.drawable.ic_visibility
+            )
+            binding.buttonHide.setOnClickListener { onToggleHidden(subscription) }
 
             itemView.setOnClickListener {
                 listener(subscription.name)

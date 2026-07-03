@@ -7,18 +7,17 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.omeron.NavigationGraphDirections
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.omeron.R
 import com.omeron.databinding.FragmentSubscriptionsBinding
 import com.omeron.ui.base.BaseFragment
+import com.omeron.ui.common.adapter.FragmentAdapter
 import com.omeron.util.SearchUtil
-import com.omeron.util.extension.applyWindowInsets
+import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.hideSoftKeyboard
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SubscriptionsFragment : BaseFragment() {
@@ -27,8 +26,6 @@ class SubscriptionsFragment : BaseFragment() {
     private val binding get() = _binding!!
 
     override val viewModel: SubscriptionsViewModel by activityViewModels()
-
-    private lateinit var subscriptionsAdapter: SubscriptionsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +39,7 @@ class SubscriptionsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAppBar()
-        initRecyclerView()
-        bindViewModel()
+        initViewPager()
     }
 
     override fun onResume() {
@@ -53,27 +49,22 @@ class SubscriptionsFragment : BaseFragment() {
         }
     }
 
-    private fun bindViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.filteredSubscriptions
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { subscriptions ->
-                    subscriptionsAdapter.submitList(subscriptions)
-                    if (binding.appBar.searchInput.isQueryEmpty()) {
-                        binding.emptyData.isVisible = subscriptions.isEmpty()
-                        binding.textEmptyData.isVisible = subscriptions.isEmpty()
-                    }
-                }
-        }
-    }
+    private fun initViewPager() {
+        val fragments = listOf(
+            FragmentAdapter.Page(R.string.tab_subscriptions_subreddits, SubredditsFragment::class.java),
+            FragmentAdapter.Page(R.string.tab_subscriptions_multireddits, MultiredditsFragment::class.java)
+        )
 
-    private fun initRecyclerView() {
-        subscriptionsAdapter = SubscriptionsAdapter { onClick(it) }
-        binding.listSubscriptions.apply {
-            applyWindowInsets(left = false, top = false, right = false)
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = subscriptionsAdapter
+        val fragmentAdapter = FragmentAdapter(this, fragments)
+
+        binding.viewPager.apply {
+            adapter = fragmentAdapter
+            getRecyclerView()?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
+
+        TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
+            tab.setText(fragments[position].title)
+        }.attach()
     }
 
     private fun initAppBar() {
@@ -113,10 +104,6 @@ class SubscriptionsFragment : BaseFragment() {
         navigate(SubscriptionsFragmentDirections.openSearch(query))
 
         binding.appBar.searchInput.clear()
-    }
-
-    private fun onClick(subreddit: String) {
-        navigate(NavigationGraphDirections.openSubreddit(subreddit))
     }
 
     private fun handleSearchAction(query: String) {

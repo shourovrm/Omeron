@@ -4,10 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.omeron.util.DateUtil"/>
         <variable
-            name="subscription"
-            type="com.omeron.data.model.db.Subscription" />
+            name="multi"
+            type="com.omeron.data.model.db.Multireddit" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -21,50 +20,51 @@
             android:padding="@dimen/subscriptions_padding"
             android:background="@drawable/card_background">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/subscription_image"
-                android:layout_width="@dimen/subscriptions_image_size"
-                android:layout_height="@dimen/subscriptions_image_size"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:shapeAppearanceOverlay="@style/CircularImageViewStyle"
-                tools:src="@tools:sample/avatars"/>
-
             <TextView
-                android:id="@+id/subscription_name"
+                android:id="@+id/multireddit_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/subscription_image"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/button_hide"
-                android:layout_marginStart="@dimen/subscriptions_margin_horizontal"
                 android:textAppearance="@style/TextAppearanceSubscription"
-                android:text="@{subscription.name}"
-                tools:text="Subscription"/>
+                android:text="@{multi.name}"
+                tools:text="Multireddit"/>
 
             <TextView
-                android:id="@+id/subscription_date"
+                android:id="@+id/multireddit_members_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@null"
                 android:textAppearance="@style/TextAppearanceSubscriptionTime"
-                android:text="@{DateUtil.getTimeDifference(context, subscription.time)}"
-                tools:text="5h ago"/>
+                tools:text="3 members"/>
 
             <ImageButton
                 android:id="@+id/button_hide"
                 android:layout_width="@dimen/app_bar_button_size"
                 android:layout_height="@dimen/app_bar_button_size"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/button_delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="@color/icon_tint"
                 android:contentDescription="@string/toggle_visibility"
                 app:srcCompat="@drawable/ic_visibility"/>
+
+            <ImageButton
+                android:id="@+id/button_delete"
+                android:layout_width="@dimen/app_bar_button_size"
+                android:layout_height="@dimen/app_bar_button_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/icon_tint"
+                android:contentDescription="@string/dialog_delete_multireddit_button"
+                app:srcCompat="@drawable/ic_delete"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

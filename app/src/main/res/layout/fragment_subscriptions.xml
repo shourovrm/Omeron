@@ -9,39 +9,22 @@
         android:id="@+id/app_bar"
         layout="@layout/layout_appbar_subscriptions"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_subscriptions"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        style="@style/TabLayoutStyle"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:clipToPadding="false"
-        android:overScrollMode="never"/>
-
-    <ImageView
-        android:id="@+id/empty_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar"
-        app:layout_constraintBottom_toTopOf="@id/text_empty_data"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:src="@drawable/empty"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/text_empty_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/empty_data"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="@string/empty_data_subscriptions"
-        android:gravity="center"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@id/tabs"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

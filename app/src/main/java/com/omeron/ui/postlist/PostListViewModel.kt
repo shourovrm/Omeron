@@ -58,9 +58,14 @@ class PostListViewModel
     private val _feedMode: MutableStateFlow<FeedMode> = MutableStateFlow(FeedMode.HOME)
     val feedMode: StateFlow<FeedMode> = _feedMode
 
+    // #9: hidden subs must not feed the Home posts source.
+    private val visibleSubscriptionsNames: Flow<List<String>> = currentProfile.flatMapLatest {
+        repository.getVisibleSubscriptionsNames(it.id)
+    }
+
     val subreddit: Flow<List<String>> = combine(
         _feedMode,
-        subscriptionsNames.distinctUntilChanged()
+        visibleSubscriptionsNames.distinctUntilChanged()
     ) { feedMode, subscriptions ->
         resolveSubreddit(feedMode, subscriptions).shuffled()
     }.flowOn(defaultDispatcher)
