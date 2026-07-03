@@ -13,6 +13,8 @@ import com.omeron.data.model.Resource
 import com.omeron.data.model.Sort
 import com.omeron.data.model.Sorting
 import com.omeron.data.model.User
+import com.omeron.data.model.db.MultiredditMemberType
+import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.model.preferences.PostLayout
@@ -229,6 +231,30 @@ class UserViewModel @Inject constructor(
 
     fun setPage(position: Int) {
         _page.updateValue(position)
+    }
+
+    // ponytail: picker asks for a one-shot snapshot instead of exposing a live multireddits
+    // flow to the fragment - the dialog doesn't need to stay in sync while it's open.
+    suspend fun getMultiredditsSnapshot(): List<MultiredditWithMembers> {
+        val profileId = currentProfile.latest?.id ?: return emptyList()
+        return repository.getMultireddits(profileId).first()
+    }
+
+    fun addTargetToMultireddit(multiId: Long, target: String) {
+        viewModelScope.launch { repository.addMember(multiId, target, MultiredditMemberType.USER) }
+    }
+
+    fun removeTargetFromMultireddit(multiId: Long, target: String) {
+        viewModelScope.launch { repository.removeMember(multiId, target, MultiredditMemberType.USER) }
+    }
+
+    fun createMultiredditWithTarget(name: String, target: String) {
+        viewModelScope.launch {
+            currentProfile.latest?.let { profile ->
+                val multiId = repository.createMultireddit(name, profile.id)
+                repository.addMember(multiId, target, MultiredditMemberType.USER)
+            }
+        }
     }
 
     companion object {

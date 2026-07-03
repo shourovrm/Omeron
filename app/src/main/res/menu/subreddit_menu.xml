@@ -6,4 +6,7 @@
 
     <item android:id="@+id/sidebar"
         android:title="@string/menu_sidebar" />
+
+    <item android:id="@+id/add_to_multireddit"
+        android:title="@string/add_to_multireddit" />
 </menu>

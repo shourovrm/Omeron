@@ -16,11 +16,13 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
 import com.omeron.data.model.Resource
+import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.SubredditEntity
 import com.omeron.data.model.preferences.PostLayout
@@ -29,6 +31,7 @@ import com.omeron.databinding.FragmentSubredditBinding
 import com.omeron.databinding.LayoutSubredditAboutBinding
 import com.omeron.databinding.LayoutSubredditContentBinding
 import com.omeron.ui.base.BaseFragment
+import com.omeron.ui.common.dialog.MultiredditPickerDialog
 import com.omeron.ui.common.widget.PullToRefreshLayout
 import com.omeron.ui.common.widget.PullToRefreshView
 import com.omeron.ui.loadstate.NetworkLoadStateAdapter
@@ -417,6 +420,21 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         binding.drawerLayout.openDrawer(GravityCompat.END)
     }
 
+    private fun showMultiredditPicker() {
+        val target = viewModel.subreddit.value
+        MultiredditPickerDialog.show(
+            context = requireContext(),
+            scope = viewLifecycleOwner.lifecycleScope,
+            layoutInflater = layoutInflater,
+            target = target,
+            type = MultiredditMemberType.SUBREDDIT,
+            getMultireddits = { viewModel.getMultiredditsSnapshot() },
+            addMember = { multiId -> viewModel.addTargetToMultireddit(multiId, target) },
+            removeMember = { multiId -> viewModel.removeTargetFromMultireddit(multiId, target) },
+            createMultireddit = { name -> viewModel.createMultiredditWithTarget(name, target) }
+        )
+    }
+
     private fun DialogInterface.handleUserAcknowledgement() {
         if (viewModel.isSubscribed.value) {
             // Allow the user to unsubscribe
@@ -430,6 +448,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         when (menuItem.itemId) {
             R.id.search -> showSearchFragment()
             R.id.sidebar -> openDrawer()
+            R.id.add_to_multireddit -> showMultiredditPicker()
             else -> {
                 return false
             }

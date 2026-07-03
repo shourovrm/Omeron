@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -16,11 +17,13 @@ import coil.size.Scale
 import com.omeron.R
 import com.omeron.data.model.Resource
 import com.omeron.data.model.User
+import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.databinding.FragmentUserBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
+import com.omeron.ui.common.dialog.MultiredditPickerDialog
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.extension.clearCommentListener
@@ -170,7 +173,23 @@ class UserFragment : BaseFragment() {
             layoutToggleCard.setOnClickListener { toggleLayout() }
             backCard.setOnClickListener { onBackPressed() }
             followCard.setOnClickListener { viewModel.toggleFollow() }
+            addToMultiCard.setOnClickListener { showMultiredditPicker() }
         }
+    }
+
+    private fun showMultiredditPicker() {
+        val target = viewModel.user.value
+        MultiredditPickerDialog.show(
+            context = requireContext(),
+            scope = viewLifecycleOwner.lifecycleScope,
+            layoutInflater = layoutInflater,
+            target = target,
+            type = MultiredditMemberType.USER,
+            getMultireddits = { viewModel.getMultiredditsSnapshot() },
+            addMember = { multiId -> viewModel.addTargetToMultireddit(multiId, target) },
+            removeMember = { multiId -> viewModel.removeTargetFromMultireddit(multiId, target) },
+            createMultireddit = { name -> viewModel.createMultiredditWithTarget(name, target) }
+        )
     }
 
     private fun toggleLayout() {

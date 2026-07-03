@@ -77,6 +77,17 @@
             app:icon="@drawable/ic_person_add"
             style="@style/CardButtonStyle"/>
 
+        <com.omeron.ui.common.widget.CardButton
+            android:id="@+id/add_to_multi_card"
+            android:layout_width="@dimen/app_bar_button_size"
+            android:layout_height="@dimen/app_bar_button_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/follow_card"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:contentDescription="@string/add_to_multireddit"
+            app:icon="@drawable/ic_add"
+            style="@style/CardButtonStyle"/>
+
         <com.omeron.ui.common.widget.SortIconView
             android:id="@+id/sort_icon"
             android:layout_width="wrap_content"
