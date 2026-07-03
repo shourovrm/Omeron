@@ -1,5 +1,7 @@
 package com.omeron
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
@@ -62,6 +64,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
         initNavigation()
 
+        if (savedInstanceState == null) {
+            handleIncomingIntent(intent)
+        }
+
         launchRepeat(Lifecycle.State.STARTED) {
             launch {
                 viewModel.navigationVisibility
@@ -89,6 +95,45 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    /**
+     * Routes an externally received VIEW (tapped link) or SEND (share sheet) intent to the
+     * matching reddit destination, reusing the same deep links [BaseFragment.openRedditLink]
+     * relies on for in-app link taps (see navigation_graph.xml / subreddit.xml / user.xml /
+     * post.xml deepLinks).
+     */
+    private fun handleIncomingIntent(intent: Intent) {
+        val uri = when (intent.action) {
+            Intent.ACTION_VIEW -> intent.data
+            Intent.ACTION_SEND -> intent.takeIf { it.type == "text/plain" }
+                ?.getStringExtra(Intent.EXTRA_TEXT)
+                ?.let { REDDIT_URL_REGEX.find(it)?.value }
+                ?.let(Uri::parse)
+            else -> null
+        } ?: return
+
+        try {
+            navController.navigate(normalizeShortUserUri(uri))
+        } catch (e: IllegalArgumentException) {
+            // Not a URL our deep links cover (e.g. wiki/live/chat pages) -> just open to home.
+        }
+    }
+
+    // "/u/name" isn't declared as a deep link (only "/user/name" is) -> rewrite before matching.
+    private fun normalizeShortUserUri(uri: Uri): Uri {
+        val path = uri.path ?: return uri
+        return if (path.startsWith("/u/")) {
+            uri.buildUpon().path("/user/${path.removePrefix("/u/")}").build()
+        } else {
+            uri
         }
     }
 
@@ -243,5 +288,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             .timeInMillis
 
         private const val POLICY_DISCLAIMER_DELAY: Long = 5000
+
+        private val REDDIT_URL_REGEX = Regex("""https?://\S+""")
     }
 }
