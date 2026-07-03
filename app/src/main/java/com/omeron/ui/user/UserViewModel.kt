@@ -15,6 +15,7 @@ import com.omeron.data.model.Sorting
 import com.omeron.data.model.User
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule
@@ -47,7 +48,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val repository: PostListRepository,
-    preferencesRepository: PreferencesRepository,
+    private val preferencesRepository: PreferencesRepository,
     private val postMapper: PostMapper2,
     private val commentMapper: CommentMapper2,
     private val userMapper: UserMapper2,
@@ -56,6 +57,9 @@ class UserViewModel @Inject constructor(
 
     val contentPreferences: Flow<ContentPreferences> =
         preferencesRepository.getContentPreferences()
+
+    // User post listings aren't scoped to one subreddit, so this is always the global default.
+    val postLayout: Flow<PostLayout> = preferencesRepository.getPostLayout()
 
     private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
     val sorting: StateFlow<Sorting> = _sorting
@@ -186,6 +190,10 @@ class UserViewModel @Inject constructor(
 
     fun setSorting(sorting: Sorting) {
         _sorting.updateValue(sorting)
+    }
+
+    fun setPostLayout(layout: PostLayout) {
+        viewModelScope.launch { preferencesRepository.setPostLayout(layout = layout) }
     }
 
     fun setUser(user: String) {

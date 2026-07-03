@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.omeron.data.model.PostType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
+import com.omeron.databinding.ItemPostGalleryBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
 import com.omeron.databinding.ItemPostTextBinding
@@ -81,6 +83,15 @@ class PostListAdapter(
             }
         }
 
+    // Card vs gallery is a full re-layout (every view type changes), so a full rebind is fine here.
+    var postLayout: PostLayout = PostLayout.CARD
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
     private val listener = object : Listener {
         override fun onClick(position: Int, isLong: Boolean) {
             getItem(position)?.let {
@@ -126,6 +137,11 @@ class PostListAdapter(
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
+            // Gallery tile (any post type, when postLayout == GALLERY)
+            GALLERY_VIEW_TYPE -> PostViewHolder.GalleryPostViewHolder(
+                ItemPostGalleryBinding.inflate(inflater, parent, false),
+                listener
+            )
             // Text post
             PostType.TEXT.value -> PostViewHolder.TextPostViewHolder(
                 ItemPostTextBinding.inflate(inflater, parent, false),
@@ -152,6 +168,7 @@ class PostListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
+        if (postLayout == PostLayout.GALLERY) return GALLERY_VIEW_TYPE
         return getItem(position)?.type?.value ?: -1
     }
 
@@ -159,6 +176,11 @@ class PostListAdapter(
         val item = getItem(position) ?: return
 
         when (getItemViewType(position)) {
+            // Gallery tile
+            GALLERY_VIEW_TYPE -> (holder as PostViewHolder.GalleryPostViewHolder).bind(
+                item,
+                contentPreferences
+            )
             // Text post
             PostType.TEXT.value -> (holder as PostViewHolder.TextPostViewHolder).bind(
                 item,
@@ -202,6 +224,10 @@ class PostListAdapter(
     }
 
     companion object {
+        // Distinct from every PostType.value (0..3) so gallery mode can unify all post types
+        // into a single compact view type.
+        const val GALLERY_VIEW_TYPE = 100
+
         private val POST_COMPARATOR = object : DiffUtil.ItemCallback<PostEntity>() {
             override fun areItemsTheSame(oldItem: PostEntity, newItem: PostEntity): Boolean {
                 return oldItem.id == newItem.id

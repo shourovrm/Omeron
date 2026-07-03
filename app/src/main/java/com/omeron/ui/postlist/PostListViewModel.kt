@@ -10,6 +10,7 @@ import com.omeron.data.model.Sorting
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
@@ -45,6 +46,9 @@ class PostListViewModel
 
     val contentPreferences: Flow<ContentPreferences> =
         preferencesRepository.getContentPreferences()
+
+    // Home has no single subreddit, so it always reads/writes the global default.
+    val postLayout: Flow<PostLayout> = preferencesRepository.getPostLayout()
 
     val profiles: Flow<List<Profile>> = repository.getAllProfiles()
 
@@ -110,6 +114,10 @@ class PostListViewModel
 
     fun setSorting(sorting: Sorting) {
         _sorting.updateValue(sorting)
+    }
+
+    fun setPostLayout(layout: PostLayout) {
+        viewModelScope.launch { preferencesRepository.setPostLayout(layout = layout) }
     }
 
     fun selectProfile(profile: Profile) {

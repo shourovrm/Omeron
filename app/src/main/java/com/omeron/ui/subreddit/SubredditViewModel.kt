@@ -12,6 +12,7 @@ import com.omeron.data.model.Sorting
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.SubredditEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
@@ -44,7 +45,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SubredditViewModel @Inject constructor(
     private val repository: PostListRepository,
-    preferencesRepository: PreferencesRepository,
+    private val preferencesRepository: PreferencesRepository,
     private val postMapper: PostMapper2,
     private val subredditMapper: SubredditMapper2,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
@@ -58,6 +59,10 @@ class SubredditViewModel @Inject constructor(
 
     private val _subreddit: MutableStateFlow<String> = MutableStateFlow("")
     val subreddit: StateFlow<String> = _subreddit
+
+    val postLayout: Flow<PostLayout> = subreddit.flatMapLatest {
+        preferencesRepository.getPostLayout(it)
+    }
 
     private val _about: MutableStateFlow<Resource<SubredditEntity>> =
         MutableStateFlow(Resource.Loading())
@@ -175,6 +180,10 @@ class SubredditViewModel @Inject constructor(
 
     fun setSorting(sorting: Sorting) {
         _sorting.updateValue(sorting)
+    }
+
+    fun setPostLayout(layout: PostLayout) {
+        viewModelScope.launch { preferencesRepository.setPostLayout(subreddit.value, layout) }
     }
 
     fun toggleDescriptionCollapsed() {

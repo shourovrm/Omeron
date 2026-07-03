@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.R
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.databinding.FragmentSearchBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
@@ -36,6 +37,10 @@ class SearchFragment : BaseFragment() {
     override val viewModel: SearchViewModel by hiltNavGraphViewModels(R.id.search)
 
     private val args: SearchFragmentArgs by navArgs()
+
+    // ponytail: search's post/subreddit/user tabs share this one appbar, so the toggle just
+    // flips the global default here; SearchPostFragment applies it to its own adapter.
+    private var currentPostLayout: PostLayout = PostLayout.CARD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +92,19 @@ class SearchFragment : BaseFragment() {
                     binding.appBar.sortIcon.setSorting(it)
                 }
             }
+
+            launch {
+                viewModel.postLayout.collect { layout ->
+                    currentPostLayout = layout
+                    binding.appBar.layoutToggleCard.setIcon(
+                        if (layout == PostLayout.GALLERY) {
+                            R.drawable.ic_layout_gallery
+                        } else {
+                            R.drawable.ic_layout_card
+                        }
+                    )
+                }
+            }
         }
     }
 
@@ -136,12 +154,14 @@ class SearchFragment : BaseFragment() {
                 addTarget(label)
                 addTarget(sortCard)
                 addTarget(sortIcon)
+                addTarget(layoutToggleCard)
                 addTarget(cancelCard)
                 setSearchActionListener {
                     handleSearchAction(it)
                 }
             }
             sortCard.setOnClickListener { showSortDialog() }
+            layoutToggleCard.setOnClickListener { toggleLayout() }
             backCard.setOnClickListener { onBackPressed() }
             cancelCard.setOnClickListener { showSearchInput(false) }
         }
@@ -159,6 +179,7 @@ class SearchFragment : BaseFragment() {
                     label.isVisible = !show
                     sortCard.isVisible = !show
                     sortIcon.isVisible = !show
+                    layoutToggleCard.isVisible = !show
                     cancelCard.isVisible = show
                 }
             }
@@ -179,6 +200,11 @@ class SearchFragment : BaseFragment() {
             viewModel.sorting.value,
             SortFragment.SortType.SEARCH
         )
+    }
+
+    private fun toggleLayout() {
+        val next = if (currentPostLayout == PostLayout.CARD) PostLayout.GALLERY else PostLayout.CARD
+        viewModel.setPostLayout(next)
     }
 
     override fun onDestroyView() {

@@ -12,6 +12,7 @@ import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.databinding.IncludePostFlairsBinding
 import com.omeron.databinding.IncludePostInfoBinding
 import com.omeron.databinding.IncludePostMetricsBinding
+import com.omeron.databinding.ItemPostGalleryBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
 import com.omeron.databinding.ItemPostTextBinding
@@ -293,6 +294,42 @@ abstract class PostViewHolder(
             ) {
                 error(R.drawable.preview_link_fallback)
                 fallback(R.drawable.preview_link_fallback)
+            }
+        }
+    }
+
+    // ponytail: gallery mode collapses every post type into one compact tile, so this holder
+    // does NOT extend PostViewHolder - it skips the metrics/flairs/awards rows entirely rather
+    // than inflating and hiding them. Tap always opens the post (no separate media-click), which
+    // keeps this to one Listener call instead of a per-type dispatch like ImagePostViewHolder.
+    class GalleryPostViewHolder(
+        private val binding: ItemPostGalleryBinding,
+        listener: PostListAdapter.Listener
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            itemView.setOnClickListener {
+                listener.onClick(bindingAdapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                listener.onClick(bindingAdapterPosition, true)
+                true
+            }
+        }
+
+        fun bind(postEntity: PostEntity, contentPreferences: ContentPreferences) {
+            binding.textGalleryTitle.apply {
+                text = postEntity.title
+                setTextColor(ContextCompat.getColor(context, postEntity.textColor))
+            }
+            binding.textGalleryScore.text = postEntity.score
+
+            binding.imageGalleryPreview.load(
+                postEntity.preview,
+                !postEntity.shouldShowPreview(contentPreferences)
+            ) {
+                error(R.drawable.preview_image_fallback)
+                fallback(R.drawable.preview_image_fallback)
             }
         }
     }

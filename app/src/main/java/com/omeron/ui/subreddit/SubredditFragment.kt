@@ -18,10 +18,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
 import com.omeron.data.model.Resource
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.SubredditEntity
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.databinding.FragmentSubredditBinding
 import com.omeron.databinding.LayoutSubredditAboutBinding
@@ -159,6 +161,10 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             }
 
             launch {
+                viewModel.postLayout.collect { applyPostLayout(it) }
+            }
+
+            launch {
                 viewModel.postDataFlow.collectLatest {
                     postListAdapter.submitData(it)
                 }
@@ -256,11 +262,43 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
     private fun initAppBar() {
         with(bindingContent) {
             sortCard.setOnClickListener { showSortDialog() }
+            layoutToggleCard.setOnClickListener { toggleLayout() }
             backCard.setOnClickListener { onBackPressed() }
             moreCard.setOnClickListener { showMenu() }
             subredditName.setOnClickListener { scrollToTop() }
             subredditImage.setOnClickListener { scrollToTop() }
         }
+    }
+
+    private fun toggleLayout() {
+        val next = if (postListAdapter.postLayout == PostLayout.CARD) {
+            PostLayout.GALLERY
+        } else {
+            PostLayout.CARD
+        }
+        viewModel.setPostLayout(next)
+    }
+
+    private fun applyPostLayout(layout: PostLayout) {
+        postListAdapter.postLayout = layout
+        bindingContent.listPost.layoutManager = when (layout) {
+            PostLayout.GALLERY -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            PostLayout.CARD -> LinearLayoutManager(requireContext())
+        }
+        bindingContent.layoutToggleCard.setIcon(
+            if (layout == PostLayout.GALLERY) {
+                R.drawable.ic_layout_gallery
+            } else {
+                R.drawable.ic_layout_card
+            }
+        )
+        bindingContent.layoutToggleCard.contentDescription = getString(
+            if (layout == PostLayout.GALLERY) {
+                R.string.layout_toggle_card
+            } else {
+                R.string.layout_toggle_gallery
+            }
+        )
     }
 
     private fun initResultListener() {

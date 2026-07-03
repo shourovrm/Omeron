@@ -61,12 +61,25 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
+    <com.omeron.ui.common.widget.CardButton
+        android:id="@+id/layout_toggle_card"
+        android:layout_width="@dimen/app_bar_button_size"
+        android:layout_height="@dimen/app_bar_button_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sort_card"
+        android:contentDescription="@string/layout_toggle"
+        app:icon="@drawable/ic_layout_card"
+        style="@style/CardButtonStyle"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <com.omeron.ui.common.widget.SortIconView
         android:id="@+id/sort_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sort_card"
+        app:layout_constraintEnd_toStartOf="@id/layout_toggle_card"
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingHorizontal="@dimen/app_bar_margin"
         app:sortType="search"

@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import com.omeron.data.local.RedditDatabase
 import com.omeron.data.model.db.Redirect
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.model.preferences.DataPreferences
 import com.omeron.data.model.preferences.MediaPreferences
 import com.omeron.data.model.preferences.PolicyDisclaimerPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.ProfilePreferences
 import com.omeron.data.model.preferences.UiPreferences
 import com.omeron.util.extension.getValue
@@ -134,6 +136,33 @@ class PreferencesRepository @Inject constructor(
             DataPreferences.PreferencesKeys.PRIVACY_ENHANCER,
             defaultValue
         )
+    }
+
+    // ponytail: one key per subreddit instead of a JSON map - simplest thing that works for a
+    // handful of overrides per user.
+    private fun subredditPostLayoutKey(subreddit: String) =
+        intPreferencesKey("post_layout_" + subreddit.trim().lowercase())
+
+    fun getPostLayout(subreddit: String? = null): Flow<PostLayout> {
+        val name = subreddit?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }
+        return preferencesDatastore.data.catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            val globalValue = preferences[DataPreferences.PreferencesKeys.POST_LAYOUT]
+            val overrideValue = name?.let { preferences[subredditPostLayoutKey(it)] }
+            PostLayout.resolve(overrideValue, globalValue)
+        }
+    }
+
+    suspend fun setPostLayout(subreddit: String? = null, layout: PostLayout) {
+        val name = subreddit?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }
+        val key = name?.let { subredditPostLayoutKey(it) }
+            ?: DataPreferences.PreferencesKeys.POST_LAYOUT
+        preferencesDatastore.setValue(key, layout.value)
     }
 
     fun getAllRedirects(): Flow<List<Redirect>> {

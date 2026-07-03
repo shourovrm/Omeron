@@ -13,6 +13,7 @@ data class DataPreferences(
         val REDDIT_SOURCE = intPreferencesKey("reddit_source")
         val REDDIT_SOURCE_INSTANCE = stringPreferencesKey("reddit_source_instance")
         val PRIVACY_ENHANCER = booleanPreferencesKey("privacy_enhancer")
+        val POST_LAYOUT = intPreferencesKey("post_layout")
     }
 
     enum class RedditSource(val value: Int) {
@@ -21,5 +22,18 @@ data class DataPreferences(
         companion object {
             fun fromValue(value: Int): RedditSource = values().find { it.value == value } ?: REDDIT
         }
+    }
+}
+
+enum class PostLayout(val value: Int) {
+    CARD(0), GALLERY(1);
+
+    companion object {
+        fun fromValue(value: Int): PostLayout = values().find { it.value == value } ?: CARD
+
+        // ponytail: per-subreddit override wins over the global default; both fall back to CARD.
+        // Kept as a pure function so it's unit-testable without a DataStore.
+        fun resolve(subredditOverride: Int?, globalValue: Int?): PostLayout =
+            fromValue(subredditOverride ?: globalValue ?: CARD.value)
     }
 }

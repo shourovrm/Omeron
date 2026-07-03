@@ -17,9 +17,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
 import com.omeron.UiViewModel
 import com.omeron.data.model.db.Profile
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.databinding.FragmentPostBinding
 import com.omeron.ui.base.BaseFragment
@@ -172,6 +174,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             }
 
             launch {
+                viewModel.postLayout.collect { applyPostLayout(it) }
+            }
+
+            launch {
                 viewModel.currentProfile.collect {
                     binding.appBar.profileImage.setText(it.name)
                 }
@@ -272,10 +278,42 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
     private fun initAppBar() {
         binding.appBar.run {
             sortCard.setOnClickListener { showSortDialog() }
+            layoutToggleCard.setOnClickListener { toggleLayout() }
             profileImage.setOnClickListener { openProfileDrawer() }
             title.setOnClickListener { scrollToTop() }
         }
         binding.appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener)
+    }
+
+    private fun toggleLayout() {
+        val next = if (postListAdapter.postLayout == PostLayout.CARD) {
+            PostLayout.GALLERY
+        } else {
+            PostLayout.CARD
+        }
+        viewModel.setPostLayout(next)
+    }
+
+    private fun applyPostLayout(layout: PostLayout) {
+        postListAdapter.postLayout = layout
+        binding.listPost.layoutManager = when (layout) {
+            PostLayout.GALLERY -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            PostLayout.CARD -> LinearLayoutManager(requireContext())
+        }
+        binding.appBar.layoutToggleCard.setIcon(
+            if (layout == PostLayout.GALLERY) {
+                R.drawable.ic_layout_gallery
+            } else {
+                R.drawable.ic_layout_card
+            }
+        )
+        binding.appBar.layoutToggleCard.contentDescription = getString(
+            if (layout == PostLayout.GALLERY) {
+                R.string.layout_toggle_card
+            } else {
+                R.string.layout_toggle_gallery
+            }
+        )
     }
 
     private fun initResultListener() {

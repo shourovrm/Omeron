@@ -17,6 +17,7 @@ import com.omeron.R
 import com.omeron.data.model.Resource
 import com.omeron.data.model.User
 import com.omeron.data.model.db.PostEntity
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.databinding.FragmentUserBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
@@ -44,6 +45,10 @@ class UserFragment : BaseFragment() {
     override val viewModel: UserViewModel by hiltNavGraphViewModels(R.id.user)
 
     private val args: UserFragmentArgs by navArgs()
+
+    // ponytail: the submitted/comments tabs share this appbar; the toggle only affects the
+    // submitted-posts tab, UserPostFragment applies it to its own adapter.
+    private var currentPostLayout: PostLayout = PostLayout.CARD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +88,19 @@ class UserFragment : BaseFragment() {
             launch {
                 viewModel.sorting.collect {
                     binding.sortIcon.setSorting(it)
+                }
+            }
+
+            launch {
+                viewModel.postLayout.collect { layout ->
+                    currentPostLayout = layout
+                    binding.layoutToggleCard.setIcon(
+                        if (layout == PostLayout.GALLERY) {
+                            R.drawable.ic_layout_gallery
+                        } else {
+                            R.drawable.ic_layout_card
+                        }
+                    )
                 }
             }
 
@@ -141,8 +159,14 @@ class UserFragment : BaseFragment() {
     private fun initAppBar() {
         with(binding) {
             sortCard.setOnClickListener { showSortDialog() }
+            layoutToggleCard.setOnClickListener { toggleLayout() }
             backCard.setOnClickListener { onBackPressed() }
         }
+    }
+
+    private fun toggleLayout() {
+        val next = if (currentPostLayout == PostLayout.CARD) PostLayout.GALLERY else PostLayout.CARD
+        viewModel.setPostLayout(next)
     }
 
     private fun initResultListener() {

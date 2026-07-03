@@ -3,8 +3,11 @@ package com.omeron.ui.user
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
 import com.omeron.data.model.db.PostEntity
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.ui.common.fragment.PagingListFragment
 import com.omeron.ui.postlist.PostListAdapter
@@ -40,6 +43,17 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
             launch {
                 viewModel.lastRefreshPost.collect {
                     setRefreshTime(it)
+                }
+            }
+
+            launch {
+                viewModel.postLayout.collect { layout ->
+                    adapter.postLayout = layout
+                    binding.listContent.layoutManager = when (layout) {
+                        PostLayout.GALLERY ->
+                            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                        PostLayout.CARD -> LinearLayoutManager(requireContext())
+                    }
                 }
             }
         }

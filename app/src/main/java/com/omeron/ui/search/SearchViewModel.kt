@@ -16,6 +16,7 @@ import com.omeron.data.model.User
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.SubredditEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.remote.api.reddit.model.AboutChild
 import com.omeron.data.remote.api.reddit.model.AboutUserChild
 import com.omeron.data.repository.PostListRepository
@@ -39,12 +40,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: PostListRepository,
-    preferencesRepository: PreferencesRepository,
+    private val preferencesRepository: PreferencesRepository,
     private val postMapper: PostMapper2,
     private val subredditMapper: SubredditMapper2,
     private val userMapper: UserMapper2,
@@ -53,6 +55,9 @@ class SearchViewModel @Inject constructor(
 
     val contentPreferences: Flow<ContentPreferences> =
         preferencesRepository.getContentPreferences()
+
+    // Search results aren't scoped to one subreddit, so this is always the global default.
+    val postLayout: Flow<PostLayout> = preferencesRepository.getPostLayout()
 
     private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
     val sorting: StateFlow<Sorting> = _sorting
@@ -154,6 +159,10 @@ class SearchViewModel @Inject constructor(
 
     fun setSorting(sorting: Sorting) {
         _sorting.updateValue(sorting)
+    }
+
+    fun setPostLayout(layout: PostLayout) {
+        viewModelScope.launch { preferencesRepository.setPostLayout(layout = layout) }
     }
 
     fun setQuery(query: String) {

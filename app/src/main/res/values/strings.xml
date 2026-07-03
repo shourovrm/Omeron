@@ -64,6 +64,10 @@
 
     <string name="fragment_preferences_label">Preferences</string>
 
+    <string name="layout_toggle">Toggle layout</string>
+    <string name="layout_toggle_card">Switch to card layout</string>
+    <string name="layout_toggle_gallery">Switch to gallery layout</string>
+
     <string name="tab_search_post">Posts</string>
     <string name="tab_search_subreddit">Subreddits</string>
     <string name="tab_search_user">Users</string>
