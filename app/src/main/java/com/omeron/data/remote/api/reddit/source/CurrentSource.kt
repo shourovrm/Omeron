@@ -89,8 +89,7 @@ class CurrentSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        // TODO: Replace by source when an endpoint is available for Teddit
-        return redditSource.searchPost(query, sort, timeSorting, after)
+        return source.searchPost(query, sort, timeSorting, after)
     }
 
     override suspend fun searchUser(
@@ -99,8 +98,7 @@ class CurrentSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        // TODO: Replace by source when an endpoint is available for Teddit
-        return redditSource.searchUser(query, sort, timeSorting, after)
+        return source.searchUser(query, sort, timeSorting, after)
     }
 
     override suspend fun searchSubreddit(

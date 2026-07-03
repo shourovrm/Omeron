@@ -14,6 +14,7 @@ import com.omeron.data.remote.api.reddit.scraper.PostScraper
 import com.omeron.data.remote.api.reddit.scraper.SubredditScraper
 import com.omeron.data.remote.api.reddit.scraper.SubredditSearchScraper
 import com.omeron.data.remote.api.reddit.scraper.UserScaper
+import com.omeron.data.remote.api.reddit.scraper.UserSearchScraper
 import com.omeron.di.DispatchersModule.IoDispatcher
 import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import com.omeron.di.NetworkModule.RedditScrap
@@ -110,8 +111,8 @@ class RedditScrapingSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        // TODO
-        return Listing("t3", ListingData(null, null, emptyList(), null, null))
+        val response = redditApi.searchPost(query, sort, timeSorting, after)
+        return PostScraper(ioDispatcher).scrap(response.string())
     }
 
     override suspend fun searchUser(
@@ -120,8 +121,8 @@ class RedditScrapingSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        // TODO
-        return Listing("t2", ListingData(null, null, emptyList(), null, null))
+        val response = redditApi.searchUser(query, sort, timeSorting, after)
+        return UserSearchScraper(ioDispatcher).scrap(response.string())
     }
 
     override suspend fun searchSubreddit(
