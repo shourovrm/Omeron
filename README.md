@@ -49,3 +49,7 @@ Gradle falls back to an unsigned build.
 Omeron is licensed under the **GNU General Public License v3.0** — see [LICENSE](LICENSE).
 It inherits this license from the original Stealth app by **Cosmos**. Fork developed by
 **Riad Mashrub Shourov**.
+
+---
+
+_Developed with the help of Claude._
