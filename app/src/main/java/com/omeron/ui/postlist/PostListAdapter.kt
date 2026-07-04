@@ -10,6 +10,7 @@ import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
+import com.omeron.databinding.ItemPostCompactBinding
 import com.omeron.databinding.ItemPostGalleryBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
@@ -142,6 +143,11 @@ class PostListAdapter(
                 ItemPostGalleryBinding.inflate(inflater, parent, false),
                 listener
             )
+            // Compact row (any post type, when postLayout == COMPACT)
+            COMPACT_VIEW_TYPE -> PostViewHolder.CompactPostViewHolder(
+                ItemPostCompactBinding.inflate(inflater, parent, false),
+                listener
+            )
             // Text post
             PostType.TEXT.value -> PostViewHolder.TextPostViewHolder(
                 ItemPostTextBinding.inflate(inflater, parent, false),
@@ -169,6 +175,7 @@ class PostListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         if (postLayout == PostLayout.GALLERY) return GALLERY_VIEW_TYPE
+        if (postLayout == PostLayout.COMPACT) return COMPACT_VIEW_TYPE
         return getItem(position)?.type?.value ?: -1
     }
 
@@ -178,6 +185,11 @@ class PostListAdapter(
         when (getItemViewType(position)) {
             // Gallery tile
             GALLERY_VIEW_TYPE -> (holder as PostViewHolder.GalleryPostViewHolder).bind(
+                item,
+                contentPreferences
+            )
+            // Compact row
+            COMPACT_VIEW_TYPE -> (holder as PostViewHolder.CompactPostViewHolder).bind(
                 item,
                 contentPreferences
             )
@@ -227,6 +239,7 @@ class PostListAdapter(
         // Distinct from every PostType.value (0..3) so gallery mode can unify all post types
         // into a single compact view type.
         const val GALLERY_VIEW_TYPE = 100
+        const val COMPACT_VIEW_TYPE = 101
 
         private val POST_COMPARATOR = object : DiffUtil.ItemCallback<PostEntity>() {
             override fun areItemsTheSame(oldItem: PostEntity, newItem: PostEntity): Boolean {

@@ -26,7 +26,10 @@ data class DataPreferences(
 }
 
 enum class PostLayout(val value: Int) {
-    CARD(0), GALLERY(1);
+    CARD(0), GALLERY(1), COMPACT(2);
+
+    // Toggle cycles CARD -> GALLERY -> COMPACT -> CARD.
+    fun next(): PostLayout = values()[(ordinal + 1) % values().size]
 
     companion object {
         fun fromValue(value: Int): PostLayout = values().find { it.value == value } ?: CARD

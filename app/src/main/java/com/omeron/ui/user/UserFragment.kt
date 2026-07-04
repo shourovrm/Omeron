@@ -28,6 +28,7 @@ import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearSortingListener
+import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.scrollToTop
@@ -97,13 +98,7 @@ class UserFragment : BaseFragment() {
             launch {
                 viewModel.postLayout.collect { layout ->
                     currentPostLayout = layout
-                    binding.layoutToggleCard.setIcon(
-                        if (layout == PostLayout.GALLERY) {
-                            R.drawable.ic_layout_gallery
-                        } else {
-                            R.drawable.ic_layout_card
-                        }
-                    )
+                    binding.layoutToggleCard.setIcon(layout.iconRes())
                 }
             }
 
@@ -193,8 +188,7 @@ class UserFragment : BaseFragment() {
     }
 
     private fun toggleLayout() {
-        val next = if (currentPostLayout == PostLayout.CARD) PostLayout.GALLERY else PostLayout.CARD
-        viewModel.setPostLayout(next)
+        viewModel.setPostLayout(currentPostLayout.next())
     }
 
     private fun initResultListener() {

@@ -1,34 +1,51 @@
-<img src="stealth.png">
+# Omeron
 
-# Omeron for Reddit
+Omeron is a fork of [**Stealth**](https://gitlab.com/cosmosapps/stealth) (a.k.a. unReddit),
+the account-free, privacy-oriented Reddit client, with a set of extra features added on top.
 
-Omeron is an account-free, privacy-oriented, and feature-rich Reddit client. Forked from [Stealth](https://gitlab.com/cosmosapps/stealth).
+It needs **no Reddit account and no official Reddit API**. All content is fetched by
+**web scraping `old.reddit.com`**, so there are no API keys, logins, or rate-limit tokens
+to configure.
 
-It provides features from Reddit, without the need for an account. In fact, the app doesn't even let you log in with a Reddit account.
+## Added over Stealth
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/com.cosmos.unreddit/)
+- **Compact, Card & Gallery** post layouts (toggle in the app bar)
+- **Search** and **Popular** in the bottom navigation
+- Profile pages with **Posts** and **Comments** tabs
+- **Web-scraping post search** (no Reddit API)
+- **Handle Link** — open/share any Reddit link straight into Omeron
+- **Per-subreddit hide** on the home feed
+- **Local multireddits** — group subreddits *and* users, with hide toggle and a dedicated feed page
+- **Follow users** locally
+- Home **Multis** tab with per-multireddit sub-tabs
+- Reddit **video playback fix** (signed DASH/HLS manifests)
 
-Join Stealth on Matrix: [#stealth-app:matrix.org](https://matrix.to/#/#stealth-app:matrix.org)
+Plus everything inherited from Stealth: browsing, comments, sort, history, saved posts,
+multiple profiles, NSFW toggle, awards, light/dark theme.
 
-## Features
+## Download
 
-- Browse Reddit (view posts, comments, subreddits, and users)
-- Search posts, subreddits and users
-- Subscribe to subreddits
-- Sort
-- History
-- Save posts and comments
-- Create different profiles (per-profile subscriptions, history and saved items)
-- Show/hide NSFW content
-- Image flairs
-- Awards
-- Save photos and videos
-- Light/Dark theme
+Grab the latest APK from the **[Releases page](https://github.com/shourovrm/Omeron/releases)**.
+
+- The release APK is built for **arm64-v8a (ARMv8) devices only**.
+- It is a self-signed release build — install directly, no bundle or extra setup needed:
+  ```
+  adb install omeron-<version>-arm64-release.apk
+  ```
+
+## Build
+
+Requires **JDK 17** (Gradle 7.5.1 does not run on newer JDKs) and the Android SDK.
+
+```
+JAVA_HOME=/path/to/jdk-17 ./gradlew assembleRelease
+```
+
+Release signing reads `keystore.properties` + a keystore (both git-ignored). Without them,
+Gradle falls back to an unsigned build.
 
 ## License
 
-Copyright 2021 CosmosDev
-
-Licensed under the GPLv3: http://www.gnu.org/licenses/gpl-3.0.html
+Omeron is licensed under the **GNU General Public License v3.0** — see [LICENSE](LICENSE).
+It inherits this license from the original Stealth app by **Cosmos**. Fork developed by
+**Riad Mashrub Shourov**.

@@ -19,6 +19,7 @@ import com.omeron.ui.sort.SortFragment
 import com.omeron.util.SearchUtil
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.getRecyclerView
+import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setSortingListener
@@ -98,13 +99,7 @@ class SearchFragment : BaseFragment() {
             launch {
                 viewModel.postLayout.collect { layout ->
                     currentPostLayout = layout
-                    binding.appBar.layoutToggleCard.setIcon(
-                        if (layout == PostLayout.GALLERY) {
-                            R.drawable.ic_layout_gallery
-                        } else {
-                            R.drawable.ic_layout_card
-                        }
-                    )
+                    binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
                 }
             }
         }
@@ -204,8 +199,7 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun toggleLayout() {
-        val next = if (currentPostLayout == PostLayout.CARD) PostLayout.GALLERY else PostLayout.CARD
-        viewModel.setPostLayout(next)
+        viewModel.setPostLayout(currentPostLayout.next())
     }
 
     override fun onDestroyView() {

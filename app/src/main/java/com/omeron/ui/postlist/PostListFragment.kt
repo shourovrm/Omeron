@@ -32,6 +32,8 @@ import com.omeron.ui.loadstate.NetworkLoadStateAdapter
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.applyMarginWindowInsets
+import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.layoutManager
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearNavigationListener
@@ -400,34 +402,14 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
     }
 
     private fun toggleLayout() {
-        val next = if (postListAdapter.postLayout == PostLayout.CARD) {
-            PostLayout.GALLERY
-        } else {
-            PostLayout.CARD
-        }
-        viewModel.setPostLayout(next)
+        viewModel.setPostLayout(postListAdapter.postLayout.next())
     }
 
     private fun applyPostLayout(layout: PostLayout) {
         postListAdapter.postLayout = layout
-        binding.listPost.layoutManager = when (layout) {
-            PostLayout.GALLERY -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            PostLayout.CARD -> LinearLayoutManager(requireContext())
-        }
-        binding.appBar.layoutToggleCard.setIcon(
-            if (layout == PostLayout.GALLERY) {
-                R.drawable.ic_layout_gallery
-            } else {
-                R.drawable.ic_layout_card
-            }
-        )
-        binding.appBar.layoutToggleCard.contentDescription = getString(
-            if (layout == PostLayout.GALLERY) {
-                R.string.layout_toggle_card
-            } else {
-                R.string.layout_toggle_gallery
-            }
-        )
+        binding.listPost.layoutManager = layout.layoutManager(requireContext())
+        binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
+        binding.appBar.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)
     }
 
     private fun initResultListener() {

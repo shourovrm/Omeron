@@ -83,17 +83,16 @@ class PostListViewModel
         _selectedMulti,
         visibleSubscriptionsNames.distinctUntilChanged()
     ) { mode, multi, subs ->
-        if (mode == FeedMode.MULTI && multi != null) {
-            val subList = multi.members
-                .filter { MultiredditMemberType.fromValue(it.type) == MultiredditMemberType.SUBREDDIT }
-                .map { it.targetName }
-            val userList = multi.members
-                .filter { MultiredditMemberType.fromValue(it.type) == MultiredditMemberType.USER }
-                .map { it.targetName }
+        if (mode == FeedMode.MULTI) {
+            // No multi selected (no multireddits yet) -> empty feed, NOT a popular fallback.
+            val subList = multi?.members
+                ?.filter { MultiredditMemberType.fromValue(it.type) == MultiredditMemberType.SUBREDDIT }
+                ?.map { it.targetName }.orEmpty()
+            val userList = multi?.members
+                ?.filter { MultiredditMemberType.fromValue(it.type) == MultiredditMemberType.USER }
+                ?.map { it.targetName }.orEmpty()
             FeedSource.Multi(subList, userList)
         } else {
-            // MULTI with no multi selected (e.g. no multireddits yet) degrades to the
-            // Home/Popular resolver harmlessly; the fragment hides the list in that case.
             FeedSource.Subs(resolveSubreddit(mode, subs).shuffled())
         }
     }.flowOn(defaultDispatcher)

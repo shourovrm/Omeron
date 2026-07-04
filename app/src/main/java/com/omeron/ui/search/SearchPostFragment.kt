@@ -12,6 +12,7 @@ import com.omeron.data.repository.PostListRepository
 import com.omeron.ui.common.fragment.PagingListFragment
 import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.util.extension.launchRepeat
+import com.omeron.util.extension.layoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -49,11 +50,7 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
             launch {
                 viewModel.postLayout.collect { layout ->
                     adapter.postLayout = layout
-                    binding.listContent.layoutManager = when (layout) {
-                        PostLayout.GALLERY ->
-                            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                        PostLayout.CARD -> LinearLayoutManager(requireContext())
-                    }
+                    binding.listContent.layoutManager = layout.layoutManager(requireContext())
                 }
             }
         }

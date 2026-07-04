@@ -312,6 +312,12 @@ class AboutFragment : BaseFragment() {
         private val CONTRIBUTORS: List<CreditItem.Contributor> by lazy {
             listOf(
                 CreditItem.Contributor(
+                    "Riad Mashrub Shourov",
+                    "@shourovrm",
+                    R.string.contributor_shourov_description,
+                    "https://github.com/shourovrm"
+                ),
+                CreditItem.Contributor(
                     "uDEV2019",
                     "@uDEV2019",
                     R.string.contributor_uDEV2019_description,

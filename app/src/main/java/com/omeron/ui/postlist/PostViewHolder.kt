@@ -13,6 +13,7 @@ import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.databinding.IncludePostFlairsBinding
 import com.omeron.databinding.IncludePostInfoBinding
 import com.omeron.databinding.IncludePostMetricsBinding
+import com.omeron.databinding.ItemPostCompactBinding
 import com.omeron.databinding.ItemPostGalleryBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
@@ -337,6 +338,61 @@ abstract class PostViewHolder(
             // buttonTypeIndicator - video and gallery/album are mutually exclusive on a post, so
             // one icon slot covers both instead of two overlapping ImageViews.
             binding.buttonGalleryTypeIndicator.apply {
+                when {
+                    postEntity.type == PostType.VIDEO -> {
+                        visibility = View.VISIBLE
+                        setIcon(R.drawable.ic_play)
+                    }
+
+                    postEntity.mediaType == MediaType.REDDIT_GALLERY ||
+                        postEntity.mediaType == MediaType.IMGUR_ALBUM ||
+                        postEntity.mediaType == MediaType.IMGUR_GALLERY -> {
+                        visibility = View.VISIBLE
+                        setIcon(R.drawable.ic_gallery)
+                    }
+
+                    else -> visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    // ponytail: same shape as GalleryPostViewHolder (no metrics/flairs/awards rows), just a
+    // horizontal row instead of a tile - title + subreddit/score on the left, small thumbnail
+    // on the right. Tap opens the post; one Listener call, no per-type media dispatch.
+    class CompactPostViewHolder(
+        private val binding: ItemPostCompactBinding,
+        listener: PostListAdapter.Listener
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            itemView.setOnClickListener {
+                listener.onClick(bindingAdapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                listener.onClick(bindingAdapterPosition, true)
+                true
+            }
+        }
+
+        fun bind(postEntity: PostEntity, contentPreferences: ContentPreferences) {
+            binding.textCompactTitle.apply {
+                text = postEntity.title
+                setTextColor(ContextCompat.getColor(context, postEntity.textColor))
+            }
+            binding.textCompactInfo.text = itemView.context.getString(
+                R.string.compact_post_info, postEntity.subreddit, postEntity.score
+            )
+
+            binding.imageCompactPreview.load(
+                postEntity.preview,
+                !postEntity.shouldShowPreview(contentPreferences)
+            ) {
+                error(R.drawable.preview_image_fallback)
+                fallback(R.drawable.preview_image_fallback)
+            }
+
+            binding.buttonCompactTypeIndicator.apply {
                 when {
                     postEntity.type == PostType.VIDEO -> {
                         visibility = View.VISIBLE

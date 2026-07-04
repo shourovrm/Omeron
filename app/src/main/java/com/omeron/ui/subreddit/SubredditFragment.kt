@@ -41,6 +41,8 @@ import com.omeron.ui.sort.SortFragment
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.addLoadStateListener
 import com.omeron.util.extension.applyWindowInsets
+import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.layoutManager
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.clearWindowInsetsListener
@@ -274,34 +276,14 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
     }
 
     private fun toggleLayout() {
-        val next = if (postListAdapter.postLayout == PostLayout.CARD) {
-            PostLayout.GALLERY
-        } else {
-            PostLayout.CARD
-        }
-        viewModel.setPostLayout(next)
+        viewModel.setPostLayout(postListAdapter.postLayout.next())
     }
 
     private fun applyPostLayout(layout: PostLayout) {
         postListAdapter.postLayout = layout
-        bindingContent.listPost.layoutManager = when (layout) {
-            PostLayout.GALLERY -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            PostLayout.CARD -> LinearLayoutManager(requireContext())
-        }
-        bindingContent.layoutToggleCard.setIcon(
-            if (layout == PostLayout.GALLERY) {
-                R.drawable.ic_layout_gallery
-            } else {
-                R.drawable.ic_layout_card
-            }
-        )
-        bindingContent.layoutToggleCard.contentDescription = getString(
-            if (layout == PostLayout.GALLERY) {
-                R.string.layout_toggle_card
-            } else {
-                R.string.layout_toggle_gallery
-            }
-        )
+        bindingContent.listPost.layoutManager = layout.layoutManager(requireContext())
+        bindingContent.layoutToggleCard.setIcon(layout.iconRes())
+        bindingContent.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)
     }
 
     private fun initResultListener() {
