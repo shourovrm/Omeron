@@ -52,6 +52,7 @@ class MultiredditsFragment : BaseFragment() {
         multiredditsAdapter = MultiredditsAdapter(
             onClick = { openFeed(it) },
             onLongClick = { showEditDialog(it) },
+            onEdit = { showEditDialog(it) },
             onToggleHidden = { viewModel.toggleMultiredditHidden(it.multireddit) },
             onDelete = { confirmDelete(it) }
         )

@@ -15,6 +15,8 @@ import com.omeron.databinding.ItemSubscriptionBinding
 class SubscriptionsAdapter(
     private val listener: (String) -> Unit,
     private val onToggleHidden: (Subscription) -> Unit,
+    private val onAddToMultireddit: (Subscription) -> Unit,
+    private val onUnsubscribe: (Subscription) -> Unit,
     private val onLongClick: (Subscription) -> Unit
 ) : ListAdapter<Subscription, SubscriptionsAdapter.SubscriptionViewHolder>(
     SUBSCRIPTION_COMPARATOR
@@ -49,6 +51,8 @@ class SubscriptionsAdapter(
                 if (subscription.hidden) R.drawable.ic_visibility_off else R.drawable.ic_visibility
             )
             binding.buttonHide.setOnClickListener { onToggleHidden(subscription) }
+            binding.buttonAddMultireddit.setOnClickListener { onAddToMultireddit(subscription) }
+            binding.buttonUnsubscribe.setOnClickListener { onUnsubscribe(subscription) }
 
             itemView.setOnClickListener {
                 listener(subscription.name)

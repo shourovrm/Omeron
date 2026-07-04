@@ -38,7 +38,7 @@
                 app:layout_constraintLeft_toRightOf="@id/subscription_image"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/button_hide"
+                app:layout_constraintEnd_toStartOf="@id/button_add_multireddit"
                 android:layout_marginStart="@dimen/subscriptions_margin_horizontal"
                 android:textAppearance="@style/TextAppearanceSubscription"
                 android:text="@{subscription.name}"
@@ -48,7 +48,7 @@
                 android:id="@+id/subscription_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/subscription_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@null"
                 android:textAppearance="@style/TextAppearanceSubscriptionTime"
@@ -56,15 +56,40 @@
                 tools:text="5h ago"/>
 
             <ImageButton
+                android:id="@+id/button_add_multireddit"
+                android:layout_width="@dimen/app_bar_button_size"
+                android:layout_height="@dimen/app_bar_button_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/button_hide"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/icon_tint"
+                android:contentDescription="@string/add_to_multireddit"
+                app:srcCompat="@drawable/ic_edit"/>
+
+            <ImageButton
                 android:id="@+id/button_hide"
                 android:layout_width="@dimen/app_bar_button_size"
                 android:layout_height="@dimen/app_bar_button_size"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/button_unsubscribe"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="@color/icon_tint"
                 android:contentDescription="@string/toggle_visibility"
                 app:srcCompat="@drawable/ic_visibility"/>
+
+            <ImageButton
+                android:id="@+id/button_unsubscribe"
+                android:layout_width="@dimen/app_bar_button_size"
+                android:layout_height="@dimen/app_bar_button_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/icon_tint"
+                android:contentDescription="@string/subreddit_button_unsubscribe"
+                app:srcCompat="@drawable/ic_delete"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

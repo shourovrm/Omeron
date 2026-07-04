@@ -12,6 +12,7 @@ import com.omeron.databinding.ItemMultiredditBinding
 class MultiredditsAdapter(
     private val onClick: (MultiredditWithMembers) -> Unit,
     private val onLongClick: (MultiredditWithMembers) -> Unit,
+    private val onEdit: (MultiredditWithMembers) -> Unit,
     private val onToggleHidden: (MultiredditWithMembers) -> Unit,
     private val onDelete: (MultiredditWithMembers) -> Unit
 ) : ListAdapter<MultiredditWithMembers, MultiredditsAdapter.MultiredditViewHolder>(MULTIREDDIT_COMPARATOR) {
@@ -41,6 +42,7 @@ class MultiredditsAdapter(
                 if (item.multireddit.hidden) R.drawable.ic_visibility_off else R.drawable.ic_visibility
             )
             binding.buttonHide.setOnClickListener { onToggleHidden(item) }
+            binding.buttonEdit.setOnClickListener { onEdit(item) }
             binding.buttonDelete.setOnClickListener { onDelete(item) }
 
             itemView.setOnClickListener { onClick(item) }

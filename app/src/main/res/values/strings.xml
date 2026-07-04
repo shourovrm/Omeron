@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Omeron</string>
-    <string name="app_version_name" translatable="false">Blackbird</string>
     <string name="app_description">Omeron is a fork of Stealth — the account-free, privacy-oriented Reddit client — with extra features, licensed under the GNU GPLv3.\n\nOriginal app by Cosmos (cosmosapps). Fork developed by Riad Mashrub Shourov.</string>
     <string name="handle_link_label">Open in Omeron</string>
 
@@ -67,6 +66,8 @@
     <string name="empty_data_multireddits">You have no multireddits yet.\nTap the + button to create one.</string>
 
     <string name="toggle_visibility">Toggle visibility on Home feed</string>
+    <string name="edit">Edit</string>
+    <string name="dialog_unsubscribe_message">Unsubscribe from r/%1$s?</string>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
 
@@ -269,7 +270,6 @@
     <string name="contributor_uDEV2019_description">German translation</string>
     <string name="contributor_anothersapiens_description">Spanish translation</string>
     <string name="contributor_mwiggins_description">Developer</string>
-    <string name="contributor_shourov_description">Omeron fork developer</string>
 
     <string name="notification_download_title">Download Manager</string>
     <string name="notification_download_content_pending">Download in progress</string>

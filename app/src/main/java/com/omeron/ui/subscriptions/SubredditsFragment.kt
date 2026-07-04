@@ -52,6 +52,8 @@ class SubredditsFragment : BaseFragment() {
         subscriptionsAdapter = SubscriptionsAdapter(
             listener = { openSubreddit(it) },
             onToggleHidden = { viewModel.toggleSubscriptionHidden(it) },
+            onAddToMultireddit = { showMultiredditPicker(it) },
+            onUnsubscribe = { confirmUnsubscribe(it) },
             onLongClick = { showSubscriptionContextMenu(it) }
         )
         followedUsersAdapter = FollowedUsersAdapter(
@@ -105,21 +107,34 @@ class SubredditsFragment : BaseFragment() {
             .setTitle(subscription.name)
             .setItems(actions) { _, which ->
                 when (which) {
-                    0 -> MultiredditPickerDialog.show(
-                        context = requireContext(),
-                        scope = viewLifecycleOwner.lifecycleScope,
-                        layoutInflater = layoutInflater,
-                        target = subscription.name,
-                        type = MultiredditMemberType.SUBREDDIT,
-                        getMultireddits = { viewModel.getMultiredditsSnapshot() },
-                        addMember = { multiId -> viewModel.addTargetToMultireddit(multiId, subscription.name) },
-                        removeMember = { multiId -> viewModel.removeTargetFromMultireddit(multiId, subscription.name) },
-                        createMultireddit = { name -> viewModel.createMultiredditWithTarget(name, subscription.name) }
-                    )
+                    0 -> showMultiredditPicker(subscription)
                     1 -> viewModel.toggleSubscriptionHidden(subscription)
-                    2 -> viewModel.unsubscribe(subscription.name)
+                    2 -> confirmUnsubscribe(subscription)
                 }
             }
+            .show()
+    }
+
+    private fun showMultiredditPicker(subscription: Subscription) {
+        MultiredditPickerDialog.show(
+            context = requireContext(),
+            scope = viewLifecycleOwner.lifecycleScope,
+            layoutInflater = layoutInflater,
+            target = subscription.name,
+            type = MultiredditMemberType.SUBREDDIT,
+            getMultireddits = { viewModel.getMultiredditsSnapshot() },
+            addMember = { multiId -> viewModel.addTargetToMultireddit(multiId, subscription.name) },
+            removeMember = { multiId -> viewModel.removeTargetFromMultireddit(multiId, subscription.name) },
+            createMultireddit = { name -> viewModel.createMultiredditWithTarget(name, subscription.name) }
+        )
+    }
+
+    private fun confirmUnsubscribe(subscription: Subscription) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(subscription.name)
+            .setMessage(getString(R.string.dialog_unsubscribe_message, subscription.name))
+            .setPositiveButton(R.string.dialog_yes) { _, _ -> viewModel.unsubscribe(subscription.name) }
+            .setNegativeButton(R.string.dialog_no) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 

@@ -47,11 +47,23 @@
                 android:layout_height="@dimen/app_bar_button_size"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/button_delete"
+                app:layout_constraintEnd_toStartOf="@id/button_edit"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="@color/icon_tint"
                 android:contentDescription="@string/toggle_visibility"
                 app:srcCompat="@drawable/ic_visibility"/>
+
+            <ImageButton
+                android:id="@+id/button_edit"
+                android:layout_width="@dimen/app_bar_button_size"
+                android:layout_height="@dimen/app_bar_button_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/button_delete"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/icon_tint"
+                android:contentDescription="@string/edit"
+                app:srcCompat="@drawable/ic_edit"/>
 
             <ImageButton
                 android:id="@+id/button_delete"
