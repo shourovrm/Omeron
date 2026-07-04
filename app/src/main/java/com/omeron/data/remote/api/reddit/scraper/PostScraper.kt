@@ -117,24 +117,44 @@ class PostScraper(
         val isRedditGallery = attr(Selector.Attr.IS_GALLERY).toBoolean()
 
         val thumbnailClass = selectFirst("a.thumbnail")
-        // is_video
-        val isVideo = thumbnailClass?.selectFirst("div.duration-overlay")?.let { true } ?: false
+        // is_video: the thumbnail's duration-overlay is only reliably present on listing pages,
+        // not the single-post page, so also treat a v.redd.it domain as video - otherwise a
+        // reddit-hosted video opened via permalink (e.g. from search) is never detected and its
+        // DASH/HLS url is never read.
+        val isVideo = thumbnailClass?.selectFirst("div.duration-overlay") != null ||
+            domain.contains("v.redd.it")
         val thumbnail = thumbnailClass
             ?.selectFirst(Scraper.Selector.Tag.IMG)
             ?.attr(Scraper.Selector.Attr.SRC)
             ?.toValidLink()
 
-        val expando = selectFirst("div.expando")
+        // Listing pages ship the post's media as a `data-cachedhtml` string on the expando; the
+        // single-post page (what getPost fetches) renders that same markup INLINE in the expando,
+        // with no cachedhtml attr. Parse cachedhtml when present, else read the live expando -
+        // both carry the same gallery tiles / video data-urls, so galleries and videos parse in
+        // either context (previously post-page opens got no media -> blank gallery / black video).
+        val expandoElement = selectFirst("div.expando")
+        val expando = expandoElement
             ?.attr(Selector.Attr.CACHED_HTML)
-            ?.run { Jsoup.parse(this) }
+            ?.takeIf { it.isNotBlank() }
+            ?.let { Jsoup.parse(it) }
+            ?: expandoElement
 
         val media = when {
             isVideo -> {
                 // Real signed DASH/HLS url is in the expando's cachedhtml. The old
                 // hardcoded "$url/DASH_720.mp4" guess is unsigned -> Reddit CDN 403s it.
+                // The SIGNED DASH/HLS manifest url is required (unsigned "$url/DASH_720.mp4" 403s).
+                // Listing pages carry it inside the expando's cachedhtml; the single-post page puts
+                // it on a live <div id="video-*" data-mpd-url=... data-hls-url=...> that sits OUTSIDE
+                // the (uninitialized) expando - so search the whole post element too. Prefer DASH
+                // (.mpd): that's the form the app's working subreddit videos use, and ExoPlayer's
+                // HLS path doesn't survive R8 in the release build. HLS only as a last resort.
                 val videoUrl = expando?.selectFirst("[data-mpd-url]")?.attr("data-mpd-url")?.ifBlank { null }
+                    ?: selectFirst("[data-mpd-url]")?.attr("data-mpd-url")?.ifBlank { null }
                     ?: expando?.selectFirst("[data-hls-url]")?.attr("data-hls-url")?.ifBlank { null }
-                    ?: "$url/DASH_720.mp4" // ponytail: legacy fallback if signed url absent
+                    ?: selectFirst("[data-hls-url]")?.attr("data-hls-url")?.ifBlank { null }
+                    ?: "$url/DASHPlaylist.mpd"
                 Media(
                     null,
                     null,
@@ -206,7 +226,7 @@ class PostScraper(
         return PostChild(postData)
     }
 
-    private fun Document.toMedia(): Media? {
+    private fun Element.toMedia(): Media? {
         val source = selectFirst("source") ?: return null
 
         return when (source.attr("type")) {
@@ -230,7 +250,7 @@ class PostScraper(
         }
     }
 
-    private fun Document.toGalleryData(): GalleryData {
+    private fun Element.toGalleryData(): GalleryData {
         val items = select("div.gallery-tile")
             .map {
                 val id = it.attr(Selector.Attr.MEDIA_ID)
@@ -240,7 +260,7 @@ class PostScraper(
         return GalleryData(items)
     }
 
-    private fun Document.toMediaMetadata(): MediaMetadata? {
+    private fun Element.toMediaMetadata(): MediaMetadata? {
         val items = select("div.gallery-preview")
             .map {
                 val id = it.attr(Scraper.Selector.Attr.ID).substringAfterLast("-")

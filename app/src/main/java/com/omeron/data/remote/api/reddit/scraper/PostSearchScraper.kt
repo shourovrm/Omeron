@@ -45,7 +45,16 @@ class PostSearchScraper(
         val titleHref = titleLink?.attr(Scraper.Selector.Attr.HREF).orEmpty()
 
         val thumbnailAnchor = selectFirst("a.thumbnail")
-        val permalink = thumbnailAnchor?.attr(Scraper.Selector.Attr.HREF)?.takeIf { it.isNotBlank() }
+
+        // Permalink must be the reddit comments PATH (/r/sub/comments/id/...), like a normal
+        // post's data-permalink - getPost feeds it in as a URL @Path. old.reddit's search
+        // "comments" link carries exactly that. The thumbnail/title hrefs point at the external
+        // CONTENT (e.g. i.redd.it) for link/image/video posts, so using them made the post detail
+        // re-fetch the wrong URL -> a media-less post (image shown as link, video black).
+        val commentsHref = selectFirst("a.search-comments")
+            ?.attr(Scraper.Selector.Attr.HREF)
+            ?.takeIf { it.isNotBlank() }
+        val permalink = commentsHref?.let { it.toHttpUrlOrNull()?.encodedPath ?: it }
             ?: titleHref.toHttpUrlOrNull()?.encodedPath
             ?: titleHref
 

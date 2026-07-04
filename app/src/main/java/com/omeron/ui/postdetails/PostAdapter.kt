@@ -47,9 +47,15 @@ class PostAdapter(
     override fun getItemCount(): Int = 1
 
     fun setPost(post: PostEntity, fromCache: Boolean) {
+        // A null payload = full re-bind (re-runs the media `when(post.type)` block in bind());
+        // a non-null payload = light update() only. When the authoritative post arrives with
+        // different media than what's shown - e.g. a search result opens as a media-less stub
+        // (type LINK) and the re-fetched real post is IMAGE/VIDEO - we must full re-bind or the
+        // header stays frozen on the stub's rendering. Same-media updates stay cheap (no flicker).
+        val mediaChanged = this.post?.type != post.type || this.post?.preview != post.preview
         var payload: Any? = null
 
-        if (fromCache || this.post == null) {
+        if (fromCache || this.post == null || mediaChanged) {
             preview = post.preview
         } else {
             payload = post
