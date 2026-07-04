@@ -113,26 +113,10 @@ class MultiredditEditViewModel @Inject constructor(
         return repository.searchSubreddit(query, Sorting(Sort.RELEVANCE))
     }
 
-    fun rename(id: Long, name: String) {
-        viewModelScope.launch { repository.renameMultireddit(id, name) }
-    }
-
-    // Create mode: the row doesn't exist until Save, so create it then flush the buffered members.
-    // ponytail: currentProfile is a WhileSubscribed SharedFlow with no other subscriber in create
-    // mode (existing() short-circuits to flowOf(null) when _id is null), so .latest's replay cache
-    // is never warmed - was silently no-op-ing here. first() subscribes and awaits the value instead.
-    fun createAndSave(name: String) {
-        viewModelScope.launch {
-            val profile = currentProfile.first()
-            val id = repository.createMultireddit(name, profile.id)
-            _pendingSubreddits.value.forEach {
-                repository.addMember(id, it, MultiredditMemberType.SUBREDDIT)
-            }
-            _pendingUsers.value.forEach {
-                repository.addMember(id, it, MultiredditMemberType.USER)
-            }
-        }
-    }
+    // Buffered create-mode members, read by the dialog on Save so the persist can run in the
+    // activity-scoped SubscriptionsViewModel (this dialog VM is cancelled on dismiss).
+    fun pendingMembers(): Pair<List<String>, List<String>> =
+        _pendingSubreddits.value to _pendingUsers.value
 
     fun delete(id: Long) {
         viewModelScope.launch { repository.deleteMultireddit(id) }

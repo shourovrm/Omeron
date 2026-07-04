@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
@@ -37,6 +38,10 @@ import kotlinx.coroutines.launch
 class MultiredditEditDialogFragment : DialogFragment() {
 
     private val viewModel: MultiredditEditViewModel by viewModels()
+
+    // Activity-scoped: its coroutine scope survives this dialog's dismiss, so create/rename writes
+    // actually complete (the dialog's own viewModelScope is cancelled the moment we dismiss()).
+    private val subscriptionsViewModel: SubscriptionsViewModel by activityViewModels()
 
     private var _binding: DialogMultiredditEditBinding? = null
     private val binding get() = _binding!!
@@ -152,9 +157,10 @@ class MultiredditEditDialogFragment : DialogFragment() {
                 binding.inputName.error = getString(R.string.profile_blank_error)
                 return
             }
-            viewModel.createAndSave(name)
+            val (subreddits, users) = viewModel.pendingMembers()
+            subscriptionsViewModel.createMultireddit(name, subreddits, users)
         } else if (name.isNotBlank()) {
-            viewModel.rename(id, name)
+            subscriptionsViewModel.renameMultireddit(id, name)
         }
         dismiss()
     }

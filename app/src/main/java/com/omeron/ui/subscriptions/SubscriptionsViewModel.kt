@@ -92,6 +92,24 @@ class SubscriptionsViewModel @Inject constructor(
         }
     }
 
+    // Create/rename must run here (activity-scoped) not in the edit dialog's own ViewModel:
+    // the dialog dismisses immediately after Save, cancelling its viewModelScope before the
+    // async DB writes finish. This scope outlives the dialog, and currentProfile is already
+    // warm because the subscriptions screen collects it.
+    fun createMultireddit(name: String, subreddits: List<String>, users: List<String>) {
+        viewModelScope.launch {
+            currentProfile.latest?.let { profile ->
+                val multiId = repository.createMultireddit(name, profile.id)
+                subreddits.forEach { repository.addMember(multiId, it, MultiredditMemberType.SUBREDDIT) }
+                users.forEach { repository.addMember(multiId, it, MultiredditMemberType.USER) }
+            }
+        }
+    }
+
+    fun renameMultireddit(id: Long, name: String) {
+        viewModelScope.launch { repository.renameMultireddit(id, name) }
+    }
+
     fun toggleUserHidden(user: FollowedUser) {
         viewModelScope.launch {
             currentProfile.latest?.let {
