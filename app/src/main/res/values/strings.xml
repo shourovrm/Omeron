@@ -6,6 +6,7 @@
     <string name="gitlab_link" translatable="false">https://gitlab.com/cosmosapps/stealth</string>
     <string name="matrix_link" translatable="false">https://matrix.to/#/#stealth-app:matrix.org</string>
     <string name="email" translatable="false">cosmos.dev@protonmail.com</string>
+    <string name="github_link" translatable="false">https://github.com/shourovrm/Omeron</string>
 
     <string name="ok">OK</string>
 
