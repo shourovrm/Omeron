@@ -50,9 +50,10 @@ class PostListRepository @Inject constructor(
         emit(source.getPost(permalink, sort = sorting.generalSorting))
     }
 
-    fun getMoreChildren(children: String, linkId: String): Flow<MoreChildren> = flow {
-        emit(source.getMoreChildren(children, linkId))
-    }
+    fun getMoreChildren(children: String, linkId: String, depth: Int = 0): Flow<MoreChildren> =
+        flow {
+            emit(source.getMoreChildren(children, linkId, depth))
+        }
 
     //region Subreddit
 

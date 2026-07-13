@@ -37,7 +37,8 @@ sealed interface BaseRedditSource {
 
     suspend fun getMoreChildren(
         children: String,
-        linkId: String
+        linkId: String,
+        depth: Int = 0
     ): MoreChildren
 
     //region User

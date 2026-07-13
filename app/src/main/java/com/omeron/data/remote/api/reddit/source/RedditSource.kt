@@ -68,11 +68,14 @@ class RedditSource @Inject constructor(
             listListingJsonAdapter.fromJson(response.source()) ?: throw IOException()
         }
 
-    override suspend fun getMoreChildren(children: String, linkId: String): MoreChildren =
-        withContext(ioDispatcher) {
-            val response = redditApi.getMoreChildren(children, linkId)
-            moreChildrenAdapter.fromJson(response.source()) ?: throw IOException()
-        }
+    override suspend fun getMoreChildren(
+        children: String,
+        linkId: String,
+        depth: Int
+    ): MoreChildren = withContext(ioDispatcher) {
+        val response = redditApi.getMoreChildren(children, linkId)
+        moreChildrenAdapter.fromJson(response.source()) ?: throw IOException()
+    }
 
     override suspend fun getUserInfo(user: String): Child = withContext(ioDispatcher) {
         val response = redditApi.getUserInfo(user)

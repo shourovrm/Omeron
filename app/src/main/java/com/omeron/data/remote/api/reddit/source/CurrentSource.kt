@@ -56,9 +56,17 @@ class CurrentSource @Inject constructor(
         return source.getPost(permalink, limit, sort)
     }
 
-    override suspend fun getMoreChildren(children: String, linkId: String): MoreChildren {
-        // TODO: Replace by source when an endpoint is available for Teddit
-        return redditSource.getMoreChildren(children, linkId)
+    override suspend fun getMoreChildren(
+        children: String,
+        linkId: String,
+        depth: Int
+    ): MoreChildren {
+        // Teddit has no morechildren endpoint, and reddit intermittently 403s the
+        // official .json api - scraping mode parses old.reddit's widget response instead.
+        return when (source) {
+            redditScrapingSource -> redditScrapingSource.getMoreChildren(children, linkId, depth)
+            else -> redditSource.getMoreChildren(children, linkId, depth)
+        }
     }
 
     override suspend fun getUserInfo(user: String): Child {

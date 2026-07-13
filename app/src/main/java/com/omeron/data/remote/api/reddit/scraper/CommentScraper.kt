@@ -9,14 +9,46 @@ import com.omeron.data.remote.api.reddit.model.MoreChild
 import com.omeron.data.remote.api.reddit.model.MoreData
 import com.omeron.data.remote.scraper.Scraper
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.parser.Parser
 
 class CommentScraper(
-    ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher
 ) : RedditScraper<Listing>(ioDispatcher) {
 
     private var linkId: String = ""
+
+    /**
+     * Parses /api/morechildren "things": each [contents] entry is one comment's
+     * entity-escaped old-reddit HTML fragment, flat (parents before children), with its
+     * absolute depth precomputed in [depths] and its parent fullname in [parents].
+     */
+    suspend fun scrapMoreComments(
+        contents: List<String>,
+        depths: List<Int>,
+        parents: List<String>,
+        linkId: String
+    ): List<Child> = withContext(ioDispatcher) {
+        this@CommentScraper.linkId = linkId
+
+        contents.mapIndexedNotNull { index, content ->
+            val html = Parser.unescapeEntities(content, false)
+            val thing = Jsoup.parse(html)
+                .selectFirst("div.${Selector.Class.THING}")
+                ?: return@mapIndexedNotNull null
+
+            when {
+                thing.hasClass(Selector.Class.MORE_CHILDREN) ->
+                    thing.toMore(depths[index], parents[index])
+                !thing.hasClass(Selector.Class.MORE_RECURSION) ->
+                    thing.toComment(depths[index])
+                else -> null
+            }
+        }
+    }
 
     override suspend fun scrapDocument(document: Document): Listing {
         val post = document.selectFirst(Selector.POST)

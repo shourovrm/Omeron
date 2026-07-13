@@ -39,7 +39,11 @@ class TedditSource @Inject constructor(private val tedditApi: TedditApi) : BaseR
         return tedditApi.getPost(permalink, limit, sort)
     }
 
-    override suspend fun getMoreChildren(children: String, linkId: String): MoreChildren {
+    override suspend fun getMoreChildren(
+        children: String,
+        linkId: String,
+        depth: Int
+    ): MoreChildren {
         throw UnsupportedOperationException("No API endpoint")
     }
 

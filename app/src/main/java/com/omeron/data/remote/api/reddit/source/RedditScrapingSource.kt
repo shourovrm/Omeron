@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -115,9 +116,45 @@ class RedditScrapingSource @Inject constructor(
         )
     }
 
-    override suspend fun getMoreChildren(children: String, linkId: String): MoreChildren {
-        // TODO
-        return MoreChildren(JsonMore(Data(emptyList())))
+    /**
+     * old.reddit's /api/morechildren (no .json suffix - reddit 403s that variant) returns a
+     * JSON envelope whose "things" each carry the comment as an escaped HTML fragment.
+     * Parse the fragments with [CommentScraper]; depths are rebuilt from the parent chain,
+     * rooted at [depth] (the depth of the tapped "More" stub).
+     */
+    override suspend fun getMoreChildren(
+        children: String,
+        linkId: String,
+        depth: Int
+    ): MoreChildren {
+        val response = redditApi.getMoreChildren(children, linkId)
+        val things = JSONObject(response.string())
+            .getJSONObject("json")
+            .getJSONObject("data")
+            .getJSONArray("things")
+
+        val ids = mutableListOf<String>()
+        val parents = mutableListOf<String>()
+        val contents = mutableListOf<String>()
+        for (i in 0 until things.length()) {
+            val data = things.getJSONObject(i).getJSONObject("data")
+            ids.add(data.optString("id"))
+            parents.add(data.optString("parent"))
+            contents.add(data.optString("content"))
+        }
+
+        // Things come parents-first, so a child's parent depth is always already known.
+        val depthById = mutableMapOf<String, Int>()
+        val depths = ids.mapIndexed { index, id ->
+            val d = depthById[parents[index]]?.plus(1) ?: depth
+            depthById[id] = d
+            d
+        }
+
+        val comments = CommentScraper(ioDispatcher)
+            .scrapMoreComments(contents, depths, parents, linkId)
+
+        return MoreChildren(JsonMore(Data(comments)))
     }
 
     override suspend fun getUserInfo(user: String): Child {

@@ -164,7 +164,7 @@ class CommentAdapter(
             }
         }
 
-        repository.getMoreChildren(children, post.id)
+        repository.getMoreChildren(children, post.id, comment.depth)
             .map {
                 commentMapper.dataToEntities(it.json.data.things, null)
             }
