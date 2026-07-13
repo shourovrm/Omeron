@@ -106,6 +106,20 @@ fun Fragment.clearNavigationListener() {
     clearFragmentResultListener(PostDetailsFragment.REQUEST_KEY_NAVIGATION)
 }
 
+// Deep links only declare "*.reddit.com" hosts (subdomain required) and "/user/" paths;
+// rewrite apex "reddit.com" and "/u/" links before matching or they route nowhere.
+fun Uri.normalizeRedditLink(): Uri {
+    var uri = this
+    if (uri.host.equals("reddit.com", ignoreCase = true)) {
+        uri = uri.buildUpon().authority("www.reddit.com").build()
+    }
+    val path = uri.path
+    if (path != null && path.startsWith("/u/")) {
+        uri = uri.buildUpon().path("/user/${path.removePrefix("/u/")}").build()
+    }
+    return uri
+}
+
 fun Fragment.openExternalLink(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 

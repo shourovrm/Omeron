@@ -20,6 +20,7 @@ import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.util.LinkHandler
 import com.omeron.util.extension.applyWindowInsets
+import com.omeron.util.extension.normalizeRedditLink
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -142,7 +143,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
 
     open fun openRedditLink(link: String) {
         try {
-            navigate(Uri.parse(link))
+            navigate(Uri.parse(link).normalizeRedditLink())
         } catch (e: IllegalArgumentException) {
             linkHandler.openBrowser(link)
         }

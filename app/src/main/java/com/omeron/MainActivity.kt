@@ -29,6 +29,7 @@ import com.omeron.util.extension.clearWindowInsetsListener
 import com.omeron.util.extension.currentNavigationFragment
 import com.omeron.util.extension.isPast
 import com.omeron.util.extension.launchRepeat
+import com.omeron.util.extension.normalizeRedditLink
 import com.omeron.util.extension.unredditApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
@@ -121,19 +122,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         } ?: return
 
         try {
-            navController.navigate(normalizeShortUserUri(uri))
+            navController.navigate(uri.normalizeRedditLink())
         } catch (e: IllegalArgumentException) {
             // Not a URL our deep links cover (e.g. wiki/live/chat pages) -> just open to home.
-        }
-    }
-
-    // "/u/name" isn't declared as a deep link (only "/user/name" is) -> rewrite before matching.
-    private fun normalizeShortUserUri(uri: Uri): Uri {
-        val path = uri.path ?: return uri
-        return if (path.startsWith("/u/")) {
-            uri.buildUpon().path("/user/${path.removePrefix("/u/")}").build()
-        } else {
-            uri
         }
     }
 
