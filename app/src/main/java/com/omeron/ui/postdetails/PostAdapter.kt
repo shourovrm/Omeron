@@ -52,7 +52,11 @@ class PostAdapter(
         // different media than what's shown - e.g. a search result opens as a media-less stub
         // (type LINK) and the re-fetched real post is IMAGE/VIDEO - we must full re-bind or the
         // header stays frozen on the stub's rendering. Same-media updates stay cheap (no flicker).
-        val mediaChanged = this.post?.type != post.type || this.post?.preview != post.preview
+        // mediaUrl too: a search stub and its re-fetched post share type/preview, but only
+        // the re-fetch carries the playable (signed) url - the click listener must rebind.
+        val mediaChanged = this.post?.type != post.type ||
+                this.post?.preview != post.preview ||
+                this.post?.mediaUrl != post.mediaUrl
         var payload: Any? = null
 
         if (fromCache || this.post == null || mediaChanged) {
