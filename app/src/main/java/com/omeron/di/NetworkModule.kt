@@ -24,6 +24,7 @@ import com.omeron.data.remote.api.reddit.model.PostChild
 import com.omeron.data.remote.api.redgifs.RedgifsApi
 import com.omeron.data.remote.api.streamable.StreamableApi
 import com.omeron.data.repository.PreferencesRepository
+import com.omeron.util.LinkUtil
 import com.omeron.util.LinkValidator
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
@@ -122,7 +123,17 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRedditOkHttpClient(): OkHttpClient {
+        // Bare OkHttp UA on www.reddit.com gets intermittently 429/403'd (visible as
+        // "error loading more comments"); send a browser UA + keep reddit's cookies.
         return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                chain.proceed(
+                    chain.request().newBuilder()
+                        .header("User-Agent", LinkUtil.USER_AGENT)
+                        .build()
+                )
+            }
+            .cookieJar(RedditCookieJar())
             .addInterceptor(RawJsonInterceptor())
             .addInterceptor(JsonInterceptor())
             .connectTimeout(TIMEOUT.first, TIMEOUT.second)
