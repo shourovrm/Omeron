@@ -3,6 +3,7 @@ package com.omeron.data.remote.api.reddit.source
 import com.omeron.data.model.Sort
 import com.omeron.data.model.TimeSorting
 import com.omeron.data.remote.api.reddit.RedditApi
+import com.omeron.data.remote.api.reddit.model.AboutUserChild
 import com.omeron.data.remote.api.reddit.model.Child
 import com.omeron.data.remote.api.reddit.model.Data
 import com.omeron.data.remote.api.reddit.model.JsonMore
@@ -154,16 +155,22 @@ class RedditScrapingSource @Inject constructor(
         return PostSearchScraper(ioDispatcher).scrap(response.string())
     }
 
-    // ponytail: old.reddit's /search?type=user renders no user rows at all (confirmed
-    // against a live sample - only an empty "people" facet), so it can't be scraped without
-    // the API. Stub satisfies BaseRedditSource; unreachable from UI (Users tab removed).
+    // old.reddit's /search?type=user renders no user rows at all (confirmed against a live
+    // sample - only an empty "people" facet). Best scraping can do is an exact-username
+    // lookup against the profile page, so a query matching a real account returns one row.
     override suspend fun searchUser(
         query: String,
         sort: Sort?,
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        return Listing("t2", ListingData(null, null, emptyList(), null, null))
+        val children = runCatching { getUserInfo(query.trim().removePrefix("u/")) }
+            .getOrNull()
+            ?.takeIf { (it as? AboutUserChild)?.data?.name?.isNotBlank() == true }
+            ?.let { listOf(it) }
+            ?: emptyList()
+
+        return Listing("t2", ListingData(null, null, children, null, null))
     }
 
     override suspend fun searchSubreddit(

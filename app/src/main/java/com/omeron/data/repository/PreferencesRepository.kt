@@ -103,7 +103,11 @@ class PreferencesRepository @Inject constructor(
         )
     }
 
-    fun getRedditSource(defaultValue: Int = DataPreferences.RedditSource.REDDIT.value): Flow<Int> {
+    // Scraping default: reddit 403s the unauthenticated www.reddit.com .json listings,
+    // so a fresh install on the REDDIT source shows nothing but errors.
+    fun getRedditSource(
+        defaultValue: Int = DataPreferences.RedditSource.REDDIT_SCRAP.value
+    ): Flow<Int> {
         return preferencesDatastore.getValue(
             DataPreferences.PreferencesKeys.REDDIT_SOURCE,
             defaultValue

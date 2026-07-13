@@ -98,9 +98,13 @@ class CurrentSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        // old.reddit search renders no user rows (unscrapeable), so always use the public
-        // www.reddit.com .json endpoint regardless of the selected source. No auth involved.
-        return redditSource.searchUser(query, sort, timeSorting, after)
+        // old.reddit search renders no user rows, and reddit often 403s the public .json
+        // search. Try the .json endpoint first (fuzzy results when it works), else fall
+        // back to the scraping source's exact-username profile lookup. No auth either way.
+        return runCatching { redditSource.searchUser(query, sort, timeSorting, after) }
+            .getOrNull()
+            ?.takeIf { it.data.children.isNotEmpty() }
+            ?: redditScrapingSource.searchUser(query, sort, timeSorting, after)
     }
 
     override suspend fun searchSubreddit(
