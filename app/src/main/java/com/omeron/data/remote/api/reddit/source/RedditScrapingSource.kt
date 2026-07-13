@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -128,10 +129,12 @@ class RedditScrapingSource @Inject constructor(
         depth: Int
     ): MoreChildren {
         val response = redditApi.getMoreChildren(children, linkId)
+        // Empty children (a stale/empty stub) yields {"json": {"errors": []}} - no data key.
         val things = JSONObject(response.string())
             .getJSONObject("json")
-            .getJSONObject("data")
-            .getJSONArray("things")
+            .optJSONObject("data")
+            ?.optJSONArray("things")
+            ?: JSONArray()
 
         val ids = mutableListOf<String>()
         val parents = mutableListOf<String>()

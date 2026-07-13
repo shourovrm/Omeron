@@ -151,7 +151,10 @@ class CommentScraper(
         val moreComments = selectFirst("span.morecomments")
             ?.selectFirst(Scraper.Selector.Tag.A)
             ?.attr("onclick")
-            ?.run { MORE_REGEX.find(this)?.groups?.get(1)?.value }
+            ?.run {
+                MORE_REGEX.find(this)?.groups?.get(1)?.value
+                    ?: MORE_REGEX_LEGACY.find(this)?.groups?.get(1)?.value
+            }
             ?.run { split(',') }
             ?: emptyList()
 
@@ -172,6 +175,10 @@ class CommentScraper(
     companion object {
         private const val KIND = "t1"
 
-        private val MORE_REGEX = Regex("'\\w+:(.*?)'")
+        // onclick="return morechildren(this, 't3_xxx', 'confidence', 'id1,id2', 'False')"
+        // -> capture the 4th arg (comma-joined child ids). Old markup used 'sort:ids'.
+        private val MORE_REGEX =
+            Regex("morechildren\\(this,\\s*'[^']*',\\s*'[^']*',\\s*'([^']+)'")
+        private val MORE_REGEX_LEGACY = Regex("'\\w+:(.*?)'")
     }
 }
