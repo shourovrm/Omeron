@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,13 +16,16 @@ import com.omeron.data.model.preferences.PostLayout
 import com.omeron.databinding.FragmentSearchBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
+import com.omeron.UiViewModel
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.SearchUtil
+import com.omeron.util.extension.clearNavigationListener
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.scrollToTop
+import com.omeron.util.extension.setNavigationListener
 import com.omeron.util.extension.setSortingListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -36,6 +40,8 @@ class SearchFragment : BaseFragment() {
     private val binding get() = _binding!!
 
     override val viewModel: SearchViewModel by hiltNavGraphViewModels(R.id.search)
+
+    private val uiViewModel: UiViewModel by activityViewModels()
 
     private val args: SearchFragmentArgs by navArgs()
 
@@ -165,6 +171,10 @@ class SearchFragment : BaseFragment() {
 
     private fun initResultListener() {
         setSortingListener { sorting -> sorting?.let { viewModel.setSorting(it) } }
+
+        setNavigationListener { showNavigation ->
+            uiViewModel.setNavigationVisibility(showNavigation)
+        }
     }
 
     private fun showSearchInput(show: Boolean) {
@@ -205,6 +215,7 @@ class SearchFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         clearSortingListener()
+        clearNavigationListener()
         _binding = null
     }
 
