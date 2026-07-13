@@ -1,5 +1,6 @@
 package com.omeron.util
 
+import android.text.Html
 import android.view.Gravity
 import androidx.core.text.HtmlCompat
 import com.omeron.data.model.Block.TableBlock
@@ -19,6 +20,13 @@ class HtmlParser(private val defaultDispatcher: CoroutineDispatcher) {
     private val PLACEHOLDER_REGEX = Regex("<(table|code)_placeholder/>")
 
     private val tagHandler = RedditTagHandler()
+
+    // Without an ImageGetter every <img> (comment gifs/emotes) renders as the framework's
+    // broken-image box. Hand back a UrlDrawable; RedditTextView Coil-loads it at display time.
+    private val imageGetter = Html.ImageGetter { source ->
+        val url = if (source.startsWith("//")) "https:$source" else source
+        UrlDrawable(url)
+    }
 
     suspend fun separateHtmlBlocks(html: String?): RedditText = withContext(defaultDispatcher) {
             val redditText = RedditText()
@@ -123,7 +131,7 @@ class HtmlParser(private val defaultDispatcher: CoroutineDispatcher) {
         return HtmlCompat.fromHtml(
             overriddenHtml,
             HtmlCompat.FROM_HTML_MODE_LEGACY,
-            null,
+            imageGetter,
             tagHandler
         ).removeSuffix("\n\n")
     }
