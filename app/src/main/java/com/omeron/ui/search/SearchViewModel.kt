@@ -7,15 +7,18 @@ import androidx.paging.filter
 import androidx.paging.map
 import com.omeron.data.local.mapper.PostMapper2
 import com.omeron.data.local.mapper.SubredditMapper2
+import com.omeron.data.local.mapper.UserMapper2
 import com.omeron.data.model.Data
 import com.omeron.data.model.Sort
 import com.omeron.data.model.Sorting
 import com.omeron.data.model.TimeSorting
+import com.omeron.data.model.User
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.SubredditEntity
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.remote.api.reddit.model.AboutChild
+import com.omeron.data.remote.api.reddit.model.AboutUserChild
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule
@@ -46,6 +49,7 @@ class SearchViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val postMapper: PostMapper2,
     private val subredditMapper: SubredditMapper2,
+    private val userMapper: UserMapper2,
     @DispatchersModule.DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : BaseViewModel(preferencesRepository, repository) {
 
@@ -69,8 +73,13 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow(System.currentTimeMillis())
     val lastRefreshSubreddit: StateFlow<Long> = _lastRefreshSubreddit.asStateFlow()
 
+    private val _lastRefreshUser: MutableStateFlow<Long> =
+        MutableStateFlow(System.currentTimeMillis())
+    val lastRefreshUser: StateFlow<Long> = _lastRefreshUser.asStateFlow()
+
     val postDataFlow: Flow<PagingData<PostEntity>>
     val subredditDataFlow: Flow<PagingData<SubredditEntity>>
+    val userDataFlow: Flow<PagingData<User>>
 
     private val searchData: StateFlow<Data.Fetch> = combine(
         query,
@@ -105,6 +114,11 @@ class SearchViewModel @Inject constructor(
             .flatMapLatest { data -> getSubreddits(data.first, data.second) }
             .onEach { _lastRefreshSubreddit.value = System.currentTimeMillis() }
             .cachedIn(viewModelScope)
+
+        userDataFlow = data
+            .flatMapLatest { data -> getUsers(data.first, data.second) }
+            .onEach { _lastRefreshUser.value = System.currentTimeMillis() }
+            .cachedIn(viewModelScope)
     }
 
     private fun getPosts(
@@ -125,6 +139,19 @@ class SearchViewModel @Inject constructor(
             .map { pagingData ->
                 pagingData
                     .map { subredditMapper.dataToEntity((it as AboutChild).data) }
+                    .filter { user.contentPreferences.showNsfw || !it.over18 }
+            }
+            .flowOn(defaultDispatcher)
+    }
+
+    private fun getUsers(
+        data: Data.Fetch,
+        user: Data.User
+    ): Flow<PagingData<User>> {
+        return repository.searchUser(data.query, data.sorting)
+            .map { pagingData ->
+                pagingData
+                    .map { userMapper.dataToEntity((it as AboutUserChild).data) }
                     .filter { user.contentPreferences.showNsfw || !it.over18 }
             }
             .flowOn(defaultDispatcher)

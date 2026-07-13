@@ -98,7 +98,9 @@ class CurrentSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        return source.searchUser(query, sort, timeSorting, after)
+        // old.reddit search renders no user rows (unscrapeable), so always use the public
+        // www.reddit.com .json endpoint regardless of the selected source. No auth involved.
+        return redditSource.searchUser(query, sort, timeSorting, after)
     }
 
     override suspend fun searchSubreddit(
