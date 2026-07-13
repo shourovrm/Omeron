@@ -12,9 +12,10 @@ class UserScaper(
 ) : RedditScraper<Child>(ioDispatcher) {
 
     override suspend fun scrapDocument(document: Document): Child {
+        // ownText: the h1 nests a "[A]"/"[M]" distinction span that must not join the name.
         val name = document.selectFirst("div.titlebox")
             ?.selectFirst(Scraper.Selector.Tag.H1)
-            ?.text()
+            ?.ownText()
             .orEmpty()
 
         val postKarma = document.selectFirst("span.karma")
