@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -14,6 +15,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -25,6 +27,7 @@ import com.omeron.databinding.ActivityMainBinding
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
 import com.omeron.util.HideBottomViewBehavior
+import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.clearWindowInsetsListener
 import com.omeron.util.extension.currentNavigationFragment
 import com.omeron.util.extension.isPast
@@ -32,6 +35,7 @@ import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.normalizeRedditLink
 import com.omeron.util.extension.unredditApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
@@ -40,6 +44,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
@@ -54,6 +59,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private var policyDisclaimerSnackbar: Snackbar? = null
 
+    @Inject
+    lateinit var updateChecker: UpdateChecker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(unredditApplication.appTheme)
         super.onCreate(savedInstanceState)
@@ -67,6 +75,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
         if (savedInstanceState == null) {
             handleIncomingIntent(intent)
+            checkForUpdate()
         }
 
         launchRepeat(Lifecycle.State.STARTED) {
@@ -103,6 +112,38 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         super.onNewIntent(intent)
         setIntent(intent)
         handleIncomingIntent(intent)
+    }
+
+    private fun checkForUpdate() {
+        lifecycleScope.launch {
+            val update = updateChecker.check() ?: return@launch
+
+            MaterialAlertDialogBuilder(this@MainActivity)
+                .setTitle(getString(R.string.update_available, update.version))
+                .setMessage(update.changelog.ifBlank { getString(R.string.update_message) })
+                .setPositiveButton(R.string.update_now) { _, _ -> downloadAndInstall(update) }
+                .setNegativeButton(R.string.update_later, null)
+                .show()
+        }
+    }
+
+    private fun downloadAndInstall(update: UpdateChecker.Update) {
+        lifecycleScope.launch {
+            val progressDialog = MaterialAlertDialogBuilder(this@MainActivity)
+                .setMessage(R.string.update_downloading)
+                .setCancelable(false)
+                .show()
+
+            val file = updateChecker.download(update)
+            progressDialog.dismiss()
+
+            if (file != null) {
+                updateChecker.install(file)
+            } else {
+                Toast.makeText(this@MainActivity, R.string.update_failed, Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
     }
 
     /**

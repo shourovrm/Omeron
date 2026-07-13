@@ -330,4 +330,11 @@
 
     <string name="snackbar_policy_disclaimer_message">%1$s might stop working soon</string>
     <string name="snackbar_policy_disclaimer_action">Learn More</string>
+
+    <string name="update_available">Update %1$s available</string>
+    <string name="update_message">A new version of Omeron is available.</string>
+    <string name="update_now">Update</string>
+    <string name="update_later">Later</string>
+    <string name="update_downloading">Downloading update…</string>
+    <string name="update_failed">Update download failed</string>
 </resources>
