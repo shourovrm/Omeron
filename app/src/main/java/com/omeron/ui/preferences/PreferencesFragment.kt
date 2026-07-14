@@ -1,20 +1,27 @@
 package com.omeron.ui.preferences
 
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.annotation.StringRes
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.omeron.BuildConfig
 import com.omeron.R
 import com.omeron.data.model.preferences.ContentPreferences.PreferencesKeys
 import com.omeron.data.model.preferences.DataPreferences
@@ -25,6 +32,7 @@ import com.omeron.data.model.preferences.UiPreferences
 import com.omeron.databinding.LayoutPreferenceListBinding
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.redditsource.RedditSourceDialogFragment
+import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.getNavOptions
 import com.omeron.util.extension.latest
@@ -35,9 +43,13 @@ import com.omeron.util.extension.unredditApplication
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PreferencesFragment : PreferenceFragmentCompat() {
+
+    @Inject
+    lateinit var updateChecker: UpdateChecker
 
     private var _binding: LayoutPreferenceListBinding? = null
     private val binding get() = _binding!!
@@ -53,6 +65,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     private var sourcePreference: Preference? = null
     private var privacyEnhancerPreference: Preference? = null
     private var aboutPreference: Preference? = null
+    private var checkForUpdatesPreference: Preference? = null
     private var policyDisclaimerPreference: Preference? = null
 
     private val navOptions: NavOptions by lazy { getNavOptions() }
@@ -169,6 +182,14 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         aboutPreference = findPreference<Preference>("about")?.apply {
             setOnPreferenceClickListener {
                 openAbout()
+                true
+            }
+        }
+
+        checkForUpdatesPreference = findPreference<Preference>("check_for_updates")?.apply {
+            summary = getString(R.string.preference_check_for_updates_summary, BuildConfig.VERSION_NAME)
+            setOnPreferenceClickListener {
+                checkForUpdates()
                 true
             }
         }
@@ -376,6 +397,44 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         findNavController().navigate(PreferencesFragmentDirections.openAbout(), navOptions)
     }
 
+    private fun checkForUpdates() {
+        checkForUpdatesPreference?.isEnabled = false
+        lifecycleScope.launch {
+            try {
+                val update = updateChecker.checkOrThrow()
+                if (update != null) {
+                    showUpdateDialog(update)
+                } else {
+                    Toast.makeText(requireContext(), R.string.update_up_to_date, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), R.string.update_check_failed, Toast.LENGTH_SHORT)
+                    .show()
+            } finally {
+                checkForUpdatesPreference?.isEnabled = true
+            }
+        }
+    }
+
+    private fun showUpdateDialog(update: UpdateChecker.Update) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.update_available, update.version))
+            .setMessage(update.changelog.ifBlank { getString(R.string.update_message) })
+            .setPositiveButton(R.string.update_now) { _, _ -> openReleasesPage() }
+            .setNegativeButton(R.string.update_later, null)
+            .show()
+    }
+
+    private fun openReleasesPage() {
+        val uri = Uri.parse(RELEASES_PAGE_URL)
+        try {
+            CustomTabsIntent.Builder().build().launchUrl(requireContext(), uri)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        }
+    }
+
     private fun showPolicyDisclaimer() {
         PolicyDisclaimerDialogFragment.show(parentFragmentManager)
     }
@@ -400,5 +459,6 @@ class PreferencesFragment : PreferenceFragmentCompat() {
 
     companion object {
         const val TAG = "PreferencesFragment"
+        private const val RELEASES_PAGE_URL = "https://github.com/shourovrm/Omeron/releases/latest"
     }
 }

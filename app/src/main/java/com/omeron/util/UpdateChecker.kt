@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,23 +24,28 @@ class UpdateChecker @Inject constructor(
 
     data class Update(val version: String, val changelog: String)
 
-    suspend fun check(): Update? = withContext(ioDispatcher) {
-        runCatching {
-            val request = Request.Builder()
-                .url(RELEASES_URL)
-                .header("Accept", "application/vnd.github+json")
-                .build()
+    /** Swallows network/parse failures (returns null) - used for the silent launch-time check. */
+    suspend fun check(): Update? = runCatching { checkOrThrow() }.getOrNull()
 
-            okHttpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@use null
+    /** Same as [check] but throws on failure instead of swallowing it, so callers that need to
+     * tell "up to date" (null) apart from "check failed" (exception) can do so. */
+    suspend fun checkOrThrow(): Update? = withContext(ioDispatcher) {
+        val request = Request.Builder()
+            .url(RELEASES_URL)
+            .header("Accept", "application/vnd.github+json")
+            .build()
 
-                val json = JSONObject(response.body?.string() ?: return@use null)
-                val version = json.getString("tag_name").removePrefix("v")
-                if (!isNewer(version, BuildConfig.VERSION_NAME)) return@use null
-
-                Update(version, json.optString("body"))
+        okHttpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw IOException("Update check failed: ${response.code}")
             }
-        }.getOrNull()
+
+            val json = JSONObject(response.body?.string().orEmpty())
+            val version = json.getString("tag_name").removePrefix("v")
+            if (!isNewer(version, BuildConfig.VERSION_NAME)) return@use null
+
+            Update(version, json.optString("body"))
+        }
     }
 
     private fun isNewer(remote: String, local: String): Boolean {

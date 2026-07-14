@@ -70,6 +70,11 @@
             app:persistent="false"/>
 
         <Preference
+            app:key="check_for_updates"
+            app:title="@string/preference_check_for_updates"
+            app:persistent="false"/>
+
+        <Preference
             app:key="policy_disclaimer"
             app:title="@string/preference_policy_disclaimer"
             app:persistent="false"/>

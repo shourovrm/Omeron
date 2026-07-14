@@ -343,4 +343,8 @@
     <string name="update_message">A new version of Omeron is available.</string>
     <string name="update_now">Update</string>
     <string name="update_later">Later</string>
+    <string name="preference_check_for_updates">Check for updates</string>
+    <string name="preference_check_for_updates_summary">Current version: %1$s</string>
+    <string name="update_up_to_date">You\'re up to date</string>
+    <string name="update_check_failed">Couldn\'t check for updates</string>
 </resources>
