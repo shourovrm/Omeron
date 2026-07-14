@@ -289,8 +289,23 @@ class PostListRepository @Inject constructor(
         return redditDatabase.historyDao().getHistoryIdsFromProfile(profileId)
     }
 
-    suspend fun insertPostInHistory(postId: String, profileId: Int) {
-        redditDatabase.historyDao().upsert(History(postId, System.currentTimeMillis(), profileId))
+    fun getHistory(profileId: Int): Flow<List<History>> {
+        return redditDatabase.historyDao().getHistoryFromProfile(profileId)
+    }
+
+    suspend fun insertPostInHistory(post: PostEntity, profileId: Int) {
+        val snapshot = History.fromPostEntity(post, System.currentTimeMillis()).copy(
+            profileId = profileId
+        )
+        redditDatabase.historyDao().upsert(snapshot)
+    }
+
+    suspend fun deletePostFromHistory(postId: String, profileId: Int) {
+        redditDatabase.historyDao().deleteFromIdAndProfile(postId, profileId)
+    }
+
+    suspend fun clearHistory(profileId: Int) {
+        redditDatabase.historyDao().deleteFromProfile(profileId)
     }
 
     //endregion

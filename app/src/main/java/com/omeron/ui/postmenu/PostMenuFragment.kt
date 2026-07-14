@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.omeron.NavigationGraphDirections
 import com.omeron.data.model.db.PostEntity
@@ -71,6 +72,12 @@ class PostMenuFragment : BottomSheetDialogFragment() {
                 val url = "https://www.reddit.com${post.permalink}"
                 doAndDismiss { shareExternalLink(url, post.title) }
             }
+
+            buttonRemoveHistory.setOnClickListener {
+                doAndDismiss {
+                    setFragmentResult(REQUEST_KEY_REMOVE_HISTORY, bundleOf(BUNDLE_KEY_POST to post))
+                }
+            }
         }
     }
 
@@ -80,13 +87,15 @@ class PostMenuFragment : BottomSheetDialogFragment() {
     }
 
     enum class MenuType {
-        GENERAL, SUBREDDIT, USER
+        GENERAL, SUBREDDIT, USER, HISTORY
     }
 
     companion object {
         private const val TAG = "PostMenuFragment"
 
-        private const val BUNDLE_KEY_POST = "BUNDLE_KEY_POST"
+        const val REQUEST_KEY_REMOVE_HISTORY = "REQUEST_KEY_REMOVE_HISTORY"
+
+        const val BUNDLE_KEY_POST = "BUNDLE_KEY_POST"
         private const val BUNDLE_KEY_TYPE = "BUNDLE_KEY_TYPE"
 
         fun show(

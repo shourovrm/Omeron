@@ -30,11 +30,13 @@ import coil.size.Scale
 import com.omeron.R
 import com.omeron.data.model.Comment
 import com.omeron.data.model.Sorting
+import com.omeron.data.model.db.PostEntity
 import com.omeron.databinding.IncludeLoadingStateBinding
 import com.omeron.databinding.ItemListContentBinding
 import com.omeron.ui.commentmenu.CommentMenuFragment
 import com.omeron.ui.common.widget.PullToRefreshLayout
 import com.omeron.ui.postdetails.PostDetailsFragment
+import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.sort.SortFragment
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
@@ -93,6 +95,20 @@ fun Fragment.setCommentListener(result: (Comment.CommentEntity?) -> Unit) {
 
 fun Fragment.clearCommentListener() {
     childFragmentManager.clearFragmentResultListener(CommentMenuFragment.REQUEST_KEY_COMMENT)
+}
+
+fun Fragment.setHistoryRemoveListener(result: (PostEntity?) -> Unit) {
+    childFragmentManager.setFragmentResultListener(
+        PostMenuFragment.REQUEST_KEY_REMOVE_HISTORY,
+        viewLifecycleOwner
+    ) { _, bundle ->
+        val post = bundle.parcelable<PostEntity>(PostMenuFragment.BUNDLE_KEY_POST)
+        result(post)
+    }
+}
+
+fun Fragment.clearHistoryRemoveListener() {
+    childFragmentManager.clearFragmentResultListener(PostMenuFragment.REQUEST_KEY_REMOVE_HISTORY)
 }
 
 fun Fragment.setNavigationListener(result: (Boolean) -> Unit) {

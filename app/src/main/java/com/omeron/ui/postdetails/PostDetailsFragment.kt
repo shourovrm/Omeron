@@ -247,7 +247,7 @@ class PostDetailsFragment : BaseFragment(),
         binding.appBar.label.text = post.title
         postAdapter.setPost(post, fromCache)
         commentAdapter.postEntity = post
-        viewModel.insertPostInHistory(post.id)
+        viewModel.insertPostInHistory(post)
     }
 
     private fun handleArguments() {

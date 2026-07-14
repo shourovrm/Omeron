@@ -53,6 +53,20 @@
             app:icon="@drawable/ic_users"
             style="@style/CardButtonStyle"/>
 
+        <com.omeron.ui.common.widget.CardButton
+            android:id="@+id/clear_history_card"
+            android:layout_width="@dimen/app_bar_button_size"
+            android:layout_height="@dimen/app_bar_button_size"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/users_card"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:layout_marginEnd="@dimen/app_bar_margin"
+            app:icon="@drawable/ic_delete"
+            android:contentDescription="@string/dialog_clear_history_title"
+            style="@style/CardButtonStyle"
+            tools:visibility="visible"/>
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_app_bar"
             android:layout_width="wrap_content"

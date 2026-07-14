@@ -35,7 +35,7 @@ import com.omeron.data.model.db.Subscription
         Multireddit::class,
         MultiredditMember::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -243,6 +243,53 @@ abstract class RedditDatabase : RoomDatabase() {
                     """.trimIndent())
                 database.execSQL(
                     "CREATE INDEX IF NOT EXISTS `index_multireddit_member_multireddit_id` ON `multireddit_member` (`multireddit_id`)"
+                )
+            }
+        }
+
+        // History used to store post ids only, so the History tab couldn't render post cards.
+        // Old rows have none of the snapshot columns and no sensible default to backfill them
+        // with (title/subreddit/etc. are NOT NULL), so they're dropped rather than rendered
+        // degraded - visits are re-recorded with a full snapshot the next time a post is opened.
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DROP TABLE history")
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `history` (
+                        `post_id` TEXT NOT NULL,
+                        `subreddit` TEXT NOT NULL,
+                        `title` TEXT NOT NULL,
+                        `ratio` INTEGER NOT NULL,
+                        `total_awards` INTEGER NOT NULL,
+                        `oc` INTEGER NOT NULL,
+                        `score` TEXT NOT NULL,
+                        `type` INTEGER NOT NULL,
+                        `domain` TEXT NOT NULL,
+                        `self` INTEGER NOT NULL,
+                        `self_text_html` TEXT,
+                        `suggested_sorting` TEXT NOT NULL,
+                        `nsfw` INTEGER NOT NULL,
+                        `preview` TEXT,
+                        `spoiler` INTEGER NOT NULL,
+                        `archived` INTEGER NOT NULL,
+                        `locked` INTEGER NOT NULL,
+                        `poster_type` INTEGER NOT NULL,
+                        `author` TEXT NOT NULL,
+                        `comments_number` TEXT NOT NULL,
+                        `permalink` TEXT NOT NULL,
+                        `stickied` INTEGER NOT NULL,
+                        `url` TEXT NOT NULL,
+                        `created` INTEGER NOT NULL,
+                        `media_type` TEXT NOT NULL,
+                        `media_url` TEXT NOT NULL,
+                        `time` INTEGER NOT NULL,
+                        `profile_id` INTEGER NOT NULL,
+                    PRIMARY KEY(`post_id`, `profile_id`),
+                    FOREIGN KEY(`profile_id`) REFERENCES `profile`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent())
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_history_profile_id` ON `history` (`profile_id`)"
                 )
             }
         }

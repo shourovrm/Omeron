@@ -11,7 +11,10 @@ abstract class HistoryDao : BaseDao<History> {
     @Query("DELETE FROM history WHERE profile_id = :profileId")
     abstract suspend fun deleteFromProfile(profileId: Int)
 
-    @Query("SELECT * FROM history WHERE profile_id = :profileId")
+    @Query("DELETE FROM history WHERE post_id = :postId AND profile_id = :profileId")
+    abstract suspend fun deleteFromIdAndProfile(postId: String, profileId: Int)
+
+    @Query("SELECT * FROM history WHERE profile_id = :profileId ORDER BY time DESC")
     abstract fun getHistoryFromProfile(profileId: Int): Flow<List<History>>
 
     @Query("SELECT post_id FROM history WHERE profile_id = :profileId")

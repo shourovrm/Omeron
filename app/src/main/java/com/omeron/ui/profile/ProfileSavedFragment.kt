@@ -14,9 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import com.omeron.R
 import com.omeron.data.model.Comment
 import com.omeron.data.model.SavedItem
+import com.omeron.data.model.db.PostEntity
 import com.omeron.ui.commentmenu.CommentMenuFragment
 import com.omeron.ui.common.fragment.ListFragment
 import com.omeron.ui.postdetails.PostDetailsFragment
+import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.user.UserCommentsAdapter
 import com.omeron.util.extension.currentNavigationFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -109,4 +111,13 @@ class ProfileSavedPostsFragment : ProfileSavedFragment() {
 @AndroidEntryPoint
 class ProfileSavedCommentsFragment : ProfileSavedFragment() {
     override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedComments
+}
+
+@AndroidEntryPoint
+class ProfileHistoryFragment : ProfileSavedFragment() {
+    override val savedFlow: Flow<List<SavedItem>> get() = viewModel.historyPosts
+
+    override fun onLongClick(post: PostEntity) {
+        PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.HISTORY)
+    }
 }

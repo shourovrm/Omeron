@@ -140,6 +140,7 @@
     <string name="menu_share_link">Share Link</string>
     <string name="menu_copy_link">Copy Link</string>
     <string name="menu_share_post">Share Post</string>
+    <string name="menu_remove_history">Remove from History</string>
 
     <string name="post_load_discussion">View Entire Discussion</string>
     <string name="post_crosspost">Crosspost</string>
@@ -240,6 +241,10 @@
     <string name="tab_profile_saved">Saved</string>
     <string name="tab_profile_posts">Posts</string>
     <string name="tab_profile_comments">Comments</string>
+    <string name="tab_profile_history">History</string>
+
+    <string name="dialog_clear_history_title">Clear History</string>
+    <string name="dialog_clear_history_message">Clear all browsing history for this profile? This can\'t be undone.</string>
 
     <string name="dialog_create_profile_title">Create Profile</string>
     <string name="dialog_create_profile_button">Create</string>

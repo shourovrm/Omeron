@@ -3,6 +3,7 @@ package com.omeron.data.local.mapper
 import com.omeron.data.model.Block
 import com.omeron.data.model.Comment.CommentEntity
 import com.omeron.data.model.SavedItem
+import com.omeron.data.model.db.History
 import com.omeron.data.model.db.PostEntity
 import com.omeron.di.DispatchersModule
 import com.omeron.util.HtmlParser
@@ -54,5 +55,10 @@ class SavedMapper2 @Inject constructor(
     suspend fun commentsToEntities(data: List<CommentEntity>): List<SavedItem> =
         withContext(defaultDispatcher) {
             data.map { dataToEntity(it) }
+        }
+
+    suspend fun historyToEntities(data: List<History>, savedIds: List<String>): List<SavedItem> =
+        withContext(defaultDispatcher) {
+            data.map { dataToEntity(it.toPostEntity(saved = savedIds.contains(it.postId))) }
         }
 }

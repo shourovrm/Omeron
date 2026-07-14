@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,13 +19,16 @@ import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
 import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
 import com.omeron.util.extension.clearCommentListener
+import com.omeron.util.extension.clearHistoryRemoveListener
 import com.omeron.util.extension.clearNavigationListener
 import com.omeron.util.extension.getListContent
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.latest
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
+import com.omeron.util.extension.setHistoryRemoveListener
 import com.omeron.util.extension.setNavigationListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -77,6 +81,8 @@ class ProfileFragment : BaseFragment() {
     private fun initResultListener() {
         setCommentListener { comment -> comment?.let { viewModel.toggleSaveComment(it) } }
 
+        setHistoryRemoveListener { post -> post?.let { viewModel.removeFromHistory(it.id) } }
+
         setNavigationListener { showNavigation ->
             uiViewModel.setNavigationVisibility(showNavigation)
         }
@@ -90,12 +96,24 @@ class ProfileFragment : BaseFragment() {
                 }
             }
         }
+
+        binding.clearHistoryCard.setOnClickListener { confirmClearHistory() }
+    }
+
+    private fun confirmClearHistory() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_clear_history_title)
+            .setMessage(R.string.dialog_clear_history_message)
+            .setPositiveButton(R.string.dialog_yes) { _, _ -> viewModel.clearHistory() }
+            .setNegativeButton(R.string.dialog_no) { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     private fun initViewPager() {
         val fragments = listOf(
             FragmentAdapter.Page(R.string.tab_profile_posts, ProfileSavedPostsFragment::class.java),
-            FragmentAdapter.Page(R.string.tab_profile_comments, ProfileSavedCommentsFragment::class.java)
+            FragmentAdapter.Page(R.string.tab_profile_comments, ProfileSavedCommentsFragment::class.java),
+            FragmentAdapter.Page(R.string.tab_profile_history, ProfileHistoryFragment::class.java)
         )
 
         val fragmentAdapter = FragmentAdapter(this, fragments)
@@ -144,6 +162,7 @@ class ProfileFragment : BaseFragment() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect { page ->
                     registerScrollListener(page)
+                    binding.clearHistoryCard.isVisible = page == HISTORY_TAB_INDEX
                 }
         }
     }
@@ -169,6 +188,7 @@ class ProfileFragment : BaseFragment() {
     override fun onStop() {
         super.onStop()
         clearCommentListener()
+        clearHistoryRemoveListener()
         clearNavigationListener()
     }
 
@@ -179,5 +199,9 @@ class ProfileFragment : BaseFragment() {
         viewModel.layoutState = binding.layoutRoot.currentState
 
         _binding = null
+    }
+
+    companion object {
+        private const val HISTORY_TAB_INDEX = 2
     }
 }

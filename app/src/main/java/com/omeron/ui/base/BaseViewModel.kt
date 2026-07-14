@@ -42,10 +42,10 @@ open class BaseViewModel(
         postListRepository.getSavedPostIds(it.id)
     }
 
-    fun insertPostInHistory(postId: String) {
+    fun insertPostInHistory(post: PostEntity) {
         viewModelScope.launch {
             currentProfile.latest?.let {
-                postListRepository.insertPostInHistory(postId, it.id)
+                postListRepository.insertPostInHistory(post, it.id)
             }
         }
     }

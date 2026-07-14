@@ -1,8 +1,10 @@
 package com.omeron.ui.profile
 
+import androidx.lifecycle.viewModelScope
 import com.omeron.data.local.mapper.SavedMapper2
 import com.omeron.data.model.Comment
 import com.omeron.data.model.SavedItem
+import com.omeron.data.model.db.History
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.preferences.ContentPreferences
@@ -10,6 +12,7 @@ import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
 import com.omeron.ui.base.BaseViewModel
+import com.omeron.util.extension.latest
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,12 +23,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     preferencesRepository: PreferencesRepository,
-    repository: PostListRepository,
+    private val repository: PostListRepository,
     private val savedMapper: SavedMapper2,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : BaseViewModel(preferencesRepository, repository) {
@@ -43,6 +47,10 @@ class ProfileViewModel @Inject constructor(
 
     private val _savedComments: Flow<List<Comment.CommentEntity>> = currentProfile.flatMapLatest {
         repository.getSavedComments(it.id)
+    }
+
+    private val _history: Flow<List<History>> = currentProfile.flatMapLatest {
+        repository.getHistory(it.id)
     }
 
     val selectedProfile: Flow<Profile> = combine(
@@ -68,7 +76,33 @@ class ProfileViewModel @Inject constructor(
         savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }
     }.flowOn(defaultDispatcher)
 
+    val historyPosts: Flow<List<SavedItem>> = combine(
+        _history,
+        savedPostIds,
+        contentPreferences
+    ) { history, saved, preferences ->
+        savedMapper.historyToEntities(history, saved).filter {
+            preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
+        }
+    }.flowOn(defaultDispatcher)
+
     fun setPage(position: Int) {
         _page.updateValue(position)
+    }
+
+    fun removeFromHistory(postId: String) {
+        viewModelScope.launch {
+            currentProfile.latest?.let {
+                repository.deletePostFromHistory(postId, it.id)
+            }
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            currentProfile.latest?.let {
+                repository.clearHistory(it.id)
+            }
+        }
     }
 }

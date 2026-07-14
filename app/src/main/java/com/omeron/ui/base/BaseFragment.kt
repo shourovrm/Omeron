@@ -103,7 +103,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     }
 
     override fun onImageClick(post: PostEntity) {
-        viewModel?.insertPostInHistory(post.id)
+        viewModel?.insertPostInHistory(post)
         if (post.gallery.isNotEmpty()) {
             linkHandler.openGallery(post.gallery)
         } else {
@@ -112,12 +112,12 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     }
 
     override fun onVideoClick(post: PostEntity) {
-        viewModel?.insertPostInHistory(post.id)
+        viewModel?.insertPostInHistory(post)
         linkHandler.openMedia(post.mediaUrl, post.mediaType)
     }
 
     override fun onLinkClick(post: PostEntity) {
-        viewModel?.insertPostInHistory(post.id)
+        viewModel?.insertPostInHistory(post)
         onLinkClick(post.url)
     }
 
