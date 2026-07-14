@@ -1,13 +1,14 @@
 package com.omeron
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -121,28 +122,18 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             MaterialAlertDialogBuilder(this@MainActivity)
                 .setTitle(getString(R.string.update_available, update.version))
                 .setMessage(update.changelog.ifBlank { getString(R.string.update_message) })
-                .setPositiveButton(R.string.update_now) { _, _ -> downloadAndInstall(update) }
+                .setPositiveButton(R.string.update_now) { _, _ -> openReleasesPage() }
                 .setNegativeButton(R.string.update_later, null)
                 .show()
         }
     }
 
-    private fun downloadAndInstall(update: UpdateChecker.Update) {
-        lifecycleScope.launch {
-            val progressDialog = MaterialAlertDialogBuilder(this@MainActivity)
-                .setMessage(R.string.update_downloading)
-                .setCancelable(false)
-                .show()
-
-            val file = updateChecker.download(update)
-            progressDialog.dismiss()
-
-            if (file != null) {
-                updateChecker.install(file)
-            } else {
-                Toast.makeText(this@MainActivity, R.string.update_failed, Toast.LENGTH_LONG)
-                    .show()
-            }
+    private fun openReleasesPage() {
+        val uri = Uri.parse(RELEASES_PAGE_URL)
+        try {
+            CustomTabsIntent.Builder().build().launchUrl(this, uri)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
     }
 
@@ -320,6 +311,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             .timeInMillis
 
         private const val POLICY_DISCLAIMER_DELAY: Long = 5000
+
+        private const val RELEASES_PAGE_URL = "https://github.com/shourovrm/Omeron/releases/latest"
 
         private val REDDIT_URL_REGEX = Regex("""https?://\S+""")
     }
