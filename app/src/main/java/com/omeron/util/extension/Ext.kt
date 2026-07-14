@@ -111,6 +111,20 @@ fun Fragment.clearHistoryRemoveListener() {
     childFragmentManager.clearFragmentResultListener(PostMenuFragment.REQUEST_KEY_REMOVE_HISTORY)
 }
 
+fun Fragment.setSavedRemoveListener(result: (PostEntity?) -> Unit) {
+    childFragmentManager.setFragmentResultListener(
+        PostMenuFragment.REQUEST_KEY_REMOVE_SAVED,
+        viewLifecycleOwner
+    ) { _, bundle ->
+        val post = bundle.parcelable<PostEntity>(PostMenuFragment.BUNDLE_KEY_POST)
+        result(post)
+    }
+}
+
+fun Fragment.clearSavedRemoveListener() {
+    childFragmentManager.clearFragmentResultListener(PostMenuFragment.REQUEST_KEY_REMOVE_SAVED)
+}
+
 fun Fragment.setNavigationListener(result: (Boolean) -> Unit) {
     setFragmentResultListener(PostDetailsFragment.REQUEST_KEY_NAVIGATION) { _, bundle ->
         val showNavigation = bundle.getBoolean(PostDetailsFragment.BUNDLE_KEY_NAVIGATION)

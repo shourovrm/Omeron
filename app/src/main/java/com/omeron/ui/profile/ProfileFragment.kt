@@ -22,6 +22,7 @@ import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearHistoryRemoveListener
 import com.omeron.util.extension.clearNavigationListener
+import com.omeron.util.extension.clearSavedRemoveListener
 import com.omeron.util.extension.getListContent
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.hideSoftKeyboard
@@ -30,6 +31,7 @@ import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
 import com.omeron.util.extension.setHistoryRemoveListener
 import com.omeron.util.extension.setNavigationListener
+import com.omeron.util.extension.setSavedRemoveListener
 import com.omeron.util.extension.showSoftKeyboard
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -92,6 +94,8 @@ class ProfileFragment : BaseFragment() {
         setCommentListener { comment -> comment?.let { viewModel.toggleSaveComment(it) } }
 
         setHistoryRemoveListener { post -> post?.let { viewModel.removeFromHistory(it.id) } }
+
+        setSavedRemoveListener { post -> post?.let { viewModel.toggleSavePost(it) } }
 
         setNavigationListener { showNavigation ->
             uiViewModel.setNavigationVisibility(showNavigation)
@@ -258,6 +262,7 @@ class ProfileFragment : BaseFragment() {
         super.onStop()
         clearCommentListener()
         clearHistoryRemoveListener()
+        clearSavedRemoveListener()
         clearNavigationListener()
     }
 

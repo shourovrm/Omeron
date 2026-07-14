@@ -141,6 +141,7 @@
     <string name="menu_copy_link">Copy Link</string>
     <string name="menu_share_post">Share Post</string>
     <string name="menu_remove_history">Remove from History</string>
+    <string name="menu_remove_saved">Remove from Saved</string>
 
     <string name="post_load_discussion">View Entire Discussion</string>
     <string name="post_crosspost">Crosspost</string>

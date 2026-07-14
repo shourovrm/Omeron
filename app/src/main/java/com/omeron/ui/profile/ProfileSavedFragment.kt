@@ -106,6 +106,10 @@ abstract class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
 @AndroidEntryPoint
 class ProfileSavedPostsFragment : ProfileSavedFragment() {
     override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedPosts
+
+    override fun onLongClick(post: PostEntity) {
+        PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.SAVED)
+    }
 }
 
 @AndroidEntryPoint

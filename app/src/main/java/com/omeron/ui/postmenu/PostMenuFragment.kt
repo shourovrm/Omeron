@@ -78,6 +78,12 @@ class PostMenuFragment : BottomSheetDialogFragment() {
                     setFragmentResult(REQUEST_KEY_REMOVE_HISTORY, bundleOf(BUNDLE_KEY_POST to post))
                 }
             }
+
+            buttonRemoveSaved.setOnClickListener {
+                doAndDismiss {
+                    setFragmentResult(REQUEST_KEY_REMOVE_SAVED, bundleOf(BUNDLE_KEY_POST to post))
+                }
+            }
         }
     }
 
@@ -87,13 +93,14 @@ class PostMenuFragment : BottomSheetDialogFragment() {
     }
 
     enum class MenuType {
-        GENERAL, SUBREDDIT, USER, HISTORY
+        GENERAL, SUBREDDIT, USER, HISTORY, SAVED
     }
 
     companion object {
         private const val TAG = "PostMenuFragment"
 
         const val REQUEST_KEY_REMOVE_HISTORY = "REQUEST_KEY_REMOVE_HISTORY"
+        const val REQUEST_KEY_REMOVE_SAVED = "REQUEST_KEY_REMOVE_SAVED"
 
         const val BUNDLE_KEY_POST = "BUNDLE_KEY_POST"
         private const val BUNDLE_KEY_TYPE = "BUNDLE_KEY_TYPE"
