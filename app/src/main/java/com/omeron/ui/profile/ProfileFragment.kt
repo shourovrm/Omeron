@@ -30,6 +30,7 @@ import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
 import com.omeron.util.extension.setHistoryRemoveListener
 import com.omeron.util.extension.setNavigationListener
+import com.omeron.util.extension.showSoftKeyboard
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -129,14 +130,32 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun showSearchInput(show: Boolean) {
-        binding.searchInput.show(binding.layoutRoot, show) {
-            binding.profileImage.isVisible = !show
-            binding.profileName.isVisible = !show
-            binding.usersCard.isVisible = !show
-            binding.searchCard.isVisible = !show
-            binding.cancelCard.isVisible = show
-            binding.clearHistoryCard.isVisible = !show && viewModel.page.value == HISTORY_TAB_INDEX
+        setAppBarItemVisible(binding.profileImage, !show)
+        setAppBarItemVisible(binding.profileName, !show)
+        setAppBarItemVisible(binding.usersCard, !show)
+        setAppBarItemVisible(binding.searchCard, !show)
+        setAppBarItemVisible(binding.cancelCard, show)
+        setAppBarItemVisible(
+            binding.clearHistoryCard,
+            !show && viewModel.page.value == HISTORY_TAB_INDEX
+        )
+        setAppBarItemVisible(binding.searchInput, show)
+        if (show) {
+            binding.searchInput.isFocusableInTouchMode = true
+            binding.searchInput.requestFocus()
+            binding.searchInput.showSoftKeyboard()
+        } else {
+            binding.searchInput.hideSoftKeyboard()
         }
+    }
+
+    // MotionLayout reapplies each ConstraintSet's visibility, so plain
+    // setVisibility on children gets overridden; update the scene states too.
+    private fun setAppBarItemVisible(view: View, visible: Boolean) {
+        val visibility = if (visible) View.VISIBLE else View.GONE
+        view.visibility = visibility
+        binding.layoutRoot.getConstraintSet(R.id.expanded)?.setVisibility(view.id, visibility)
+        binding.layoutRoot.getConstraintSet(R.id.collapsed)?.setVisibility(view.id, visibility)
     }
 
     private fun confirmClearHistory() {
@@ -202,7 +221,7 @@ class ProfileFragment : BaseFragment() {
                 .collect { page ->
                     registerScrollListener(page)
                     if (!binding.searchInput.isVisible) {
-                        binding.clearHistoryCard.isVisible = page == HISTORY_TAB_INDEX
+                        setAppBarItemVisible(binding.clearHistoryCard, page == HISTORY_TAB_INDEX)
                     }
                 }
         }
