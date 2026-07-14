@@ -263,12 +263,13 @@
   },
   {
     "service": "twitter",
-    "name": "Twitter",
-    "pattern": "(www\\.|mobile\\.|)twitter\\.com",
+    "name": "Twitter/X",
+    "pattern": "(www\\.|mobile\\.|)(twitter|x)\\.com",
     "redirect": [
       {
         "name": "nitter",
         "instances": [
+          "xcancel.com",
           "nitter.net",
           "nitter.lacontrevoie.fr",
           "nitter.pussthecat.org",
