@@ -59,13 +59,51 @@
             android:layout_height="@dimen/app_bar_button_size"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/users_card"
+            app:layout_constraintEnd_toStartOf="@id/search_card"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginEnd="@dimen/app_bar_margin"
             app:icon="@drawable/ic_delete"
             android:contentDescription="@string/dialog_clear_history_title"
             style="@style/CardButtonStyle"
             tools:visibility="visible"/>
+
+        <com.omeron.ui.common.widget.CardButton
+            android:id="@+id/search_card"
+            android:layout_width="@dimen/app_bar_button_size"
+            android:layout_height="@dimen/app_bar_button_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/users_card"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:layout_marginEnd="@dimen/app_bar_margin"
+            app:icon="@drawable/ic_search"
+            style="@style/CardButtonStyle"/>
+
+        <com.omeron.ui.common.widget.CardButton
+            android:id="@+id/cancel_card"
+            android:layout_width="@dimen/app_bar_button_size"
+            android:layout_height="@dimen/app_bar_button_size"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/users_card"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:layout_marginEnd="@dimen/app_bar_margin"
+            app:icon="@drawable/ic_close"
+            style="@style/CardButtonStyle"/>
+
+        <com.omeron.ui.common.widget.SearchInputEditText
+            android:id="@+id/search_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:layout_marginHorizontal="@dimen/app_bar_margin"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/profile_search_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch|flagNoPersonalizedLearning"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_app_bar"

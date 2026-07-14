@@ -243,6 +243,8 @@
     <string name="tab_profile_comments">Comments</string>
     <string name="tab_profile_history">History</string>
 
+    <string name="profile_search_hint">Search</string>
+
     <string name="dialog_clear_history_title">Clear History</string>
     <string name="dialog_clear_history_message">Clear all browsing history for this profile? This can\'t be undone.</string>
 

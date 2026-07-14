@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +24,7 @@ import com.omeron.util.extension.clearHistoryRemoveListener
 import com.omeron.util.extension.clearNavigationListener
 import com.omeron.util.extension.getListContent
 import com.omeron.util.extension.getRecyclerView
+import com.omeron.util.extension.hideSoftKeyboard
 import com.omeron.util.extension.latest
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
@@ -78,6 +80,13 @@ class ProfileFragment : BaseFragment() {
         initResultListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.searchInput.text?.firstOrNull()?.let {
+            showSearchInput(true)
+        }
+    }
+
     private fun initResultListener() {
         setCommentListener { comment -> comment?.let { viewModel.toggleSaveComment(it) } }
 
@@ -98,6 +107,36 @@ class ProfileFragment : BaseFragment() {
         }
 
         binding.clearHistoryCard.setOnClickListener { confirmClearHistory() }
+
+        binding.searchCard.setOnClickListener { showSearchInput(true) }
+        binding.cancelCard.setOnClickListener {
+            showSearchInput(false)
+            binding.searchInput.clear()
+        }
+        binding.searchInput.apply {
+            addTarget(binding.profileImage)
+            addTarget(binding.profileName)
+            addTarget(binding.usersCard)
+            addTarget(binding.searchCard)
+            addTarget(binding.cancelCard)
+            doOnTextChanged { text, _, _, _ ->
+                viewModel.setSearchQuery(text.toString())
+            }
+            setSearchActionListener {
+                binding.searchInput.hideSoftKeyboard()
+            }
+        }
+    }
+
+    private fun showSearchInput(show: Boolean) {
+        binding.searchInput.show(binding.layoutRoot, show) {
+            binding.profileImage.isVisible = !show
+            binding.profileName.isVisible = !show
+            binding.usersCard.isVisible = !show
+            binding.searchCard.isVisible = !show
+            binding.cancelCard.isVisible = show
+            binding.clearHistoryCard.isVisible = !show && viewModel.page.value == HISTORY_TAB_INDEX
+        }
     }
 
     private fun confirmClearHistory() {
@@ -162,8 +201,19 @@ class ProfileFragment : BaseFragment() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect { page ->
                     registerScrollListener(page)
-                    binding.clearHistoryCard.isVisible = page == HISTORY_TAB_INDEX
+                    if (!binding.searchInput.isVisible) {
+                        binding.clearHistoryCard.isVisible = page == HISTORY_TAB_INDEX
+                    }
                 }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (binding.searchInput.isVisible) {
+            showSearchInput(false)
+            binding.searchInput.clear()
+        } else {
+            super.onBackPressed()
         }
     }
 

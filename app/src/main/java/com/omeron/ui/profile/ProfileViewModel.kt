@@ -39,6 +39,9 @@ class ProfileViewModel @Inject constructor(
     private val _page: MutableStateFlow<Int> = MutableStateFlow(0)
     val page: StateFlow<Int> get() = _page
 
+    private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    val searchQuery: StateFlow<String> get() = _searchQuery
+
     var layoutState: Int? = null
 
     private val _savedPosts: Flow<List<PostEntity>> = currentProfile.flatMapLatest {
@@ -63,31 +66,63 @@ class ProfileViewModel @Inject constructor(
 
     val savedPosts: Flow<List<SavedItem>> = combine(
         _savedPosts,
-        contentPreferences
-    ) { posts, preferences ->
+        contentPreferences,
+        searchQuery
+    ) { posts, preferences, query ->
         savedMapper.postsToEntities(posts).filter {
             preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
-        }
+        }.filterPosts(query)
     }.map { items ->
         items.sortedByDescending { it.timestamp }
     }.flowOn(defaultDispatcher)
 
-    val savedComments: Flow<List<SavedItem>> = _savedComments.map { comments ->
-        savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }
+    val savedComments: Flow<List<SavedItem>> = combine(
+        _savedComments,
+        searchQuery
+    ) { comments, query ->
+        savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }.filterComments(query)
     }.flowOn(defaultDispatcher)
 
     val historyPosts: Flow<List<SavedItem>> = combine(
         _history,
         savedPostIds,
-        contentPreferences
-    ) { history, saved, preferences ->
+        contentPreferences,
+        searchQuery
+    ) { history, saved, preferences, query ->
         savedMapper.historyToEntities(history, saved).filter {
             preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
-        }
+        }.filterPosts(query)
     }.flowOn(defaultDispatcher)
 
     fun setPage(position: Int) {
         _page.updateValue(position)
+    }
+
+    fun setSearchQuery(query: String) {
+        _searchQuery.updateValue(query)
+    }
+
+    // ponytail: saved/history lists are already fully loaded in memory (Room Flow<List<..>>,
+    // not paged), so a plain in-memory filter combined into the existing flows is the smallest
+    // diff - matches SubscriptionsViewModel.filteredSubscriptions instead of new DAO LIKE queries.
+    private fun List<SavedItem>.filterPosts(query: String): List<SavedItem> {
+        if (query.isBlank()) return this
+        return filter {
+            val post = (it as SavedItem.Post).post
+            post.title.contains(query, ignoreCase = true) ||
+                post.subreddit.contains(query, ignoreCase = true) ||
+                post.author.contains(query, ignoreCase = true)
+        }
+    }
+
+    private fun List<SavedItem>.filterComments(query: String): List<SavedItem> {
+        if (query.isBlank()) return this
+        return filter {
+            val comment = (it as SavedItem.Comment).comment
+            comment.bodyHtml.contains(query, ignoreCase = true) ||
+                comment.subreddit.contains(query, ignoreCase = true) ||
+                comment.author.contains(query, ignoreCase = true)
+        }
     }
 
     fun removeFromHistory(postId: String) {
