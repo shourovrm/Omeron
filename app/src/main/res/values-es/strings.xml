@@ -111,6 +111,6 @@
      <string name="about_section_credits">Créditos</string>
      <string name="about_section_libraries">Librerías</string>
      <string name="navigation_label_home">Inicio</string>
-     <string name="navigation_label_subscriptions">Suscripciones</string>
-     <string name="navigation_label_settings">Preferencias</string>
+     <string name="navigation_label_subscriptions">Subs</string>
+     <string name="navigation_label_settings">Ajustes</string>
 </resources>

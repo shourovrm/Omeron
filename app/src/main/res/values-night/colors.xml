@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#9A67EA</color>
+    <color name="colorPrimary">#C4636B</color>
 
-    <color name="text_color">#FFFFFF</color>
+    <color name="text_color">#E6E4E0</color>
 
-    <color name="background">#121212</color>
+    <color name="background">#17171A</color>
 
-    <color name="icon_tint">#FFFFFF</color>
+    <color name="icon_tint">#E6E4E0</color>
 
-    <color name="chip_background_color">#4B3C5A</color>
+    <color name="chip_background_color">#232326</color>
 
-    <color name="card_background_color">#3C3250</color>
+    <color name="card_background_color">#202024</color>
 
     <color name="admin_color">#EF5350</color>
     <color name="moderator_color">#66BB6A</color>
 
     <color name="profile_background_1">#E57373</color>
     <color name="profile_background_2">#F06292</color>
-    <color name="profile_background_3">#BA68C8</color>
+    <color name="profile_background_3">#BD6A73</color>
     <color name="profile_background_4">#7986CB</color>
     <color name="profile_background_5">#64B5F6</color>
     <color name="profile_background_6">#81C784</color>

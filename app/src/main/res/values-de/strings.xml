@@ -143,6 +143,6 @@
     <string name="about_section_libraries">Bibliotheken</string>
 
     <string name="navigation_label_home">Startseite</string>
-    <string name="navigation_label_subscriptions">Abonnements</string>
-    <string name="navigation_label_settings">Einstellungen</string>
+    <string name="navigation_label_subscriptions">Abos</string>
+    <string name="navigation_label_settings">Optionen</string>
 </resources>

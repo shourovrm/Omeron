@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             app:elevation="@dimen/bottom_navigation_elevation"
             app:itemIconTint="@drawable/navigation_color_selector"
-            app:labelVisibilityMode="unlabeled"
+            app:labelVisibilityMode="labeled"
             app:menu="@menu/navigation_menu"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
