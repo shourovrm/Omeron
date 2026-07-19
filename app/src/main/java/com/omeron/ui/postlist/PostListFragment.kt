@@ -15,9 +15,11 @@ import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.omeron.MainActivity
 import com.omeron.R
 import com.omeron.UiViewModel
 import com.omeron.data.model.db.MultiredditWithMembers
@@ -201,7 +203,15 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
                 }
             }
 
-            launch { 
+            launch {
+                uiViewModel.homeTab.collect { tab ->
+                    if (binding.tabs.selectedTabPosition != tab) {
+                        binding.tabs.getTabAt(tab)?.select()
+                    }
+                }
+            }
+
+            launch {
                 viewModel.lastRefresh.collect {
                     val time = getString(R.string.last_refresh, DateUtil.getLocalizedTime(it))
                     (binding.pullRefresh.refreshView as? PullToRefreshView)?.setLastRefresh(time)
@@ -297,8 +307,14 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         binding.appBar.run {
             sortCard.setOnClickListener { showSortDialog() }
             layoutToggleCard.setOnClickListener { toggleLayout() }
-            profileImage.setOnClickListener { openProfileDrawer() }
+            profileImage.isVisible = false
             title.setOnClickListener { scrollToTop() }
+
+            menuCard.isVisible = true
+            menuCard.setOnClickListener { (activity as? MainActivity)?.openNavigationDrawer() }
+
+            searchCard.isVisible = true
+            searchCard.setOnClickListener { findNavController().navigate(R.id.search) }
         }
         binding.appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener)
         initTabs()
@@ -463,10 +479,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
     }
 
     override fun onBackPressed() {
-        if (isDrawerOpen) {
-            closeProfileDrawer()
-        } else {
-            activity?.finish()
+        when {
+            (activity as? MainActivity)?.closeNavigationDrawer() == true -> Unit
+            isDrawerOpen -> closeProfileDrawer()
+            else -> activity?.finish()
         }
     }
 

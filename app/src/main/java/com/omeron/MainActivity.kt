@@ -5,28 +5,34 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.omeron.MainActivity.BottomNavigationState.LEFT_HANDED
 import com.omeron.MainActivity.BottomNavigationState.NOT_INITIALIZED
 import com.omeron.MainActivity.BottomNavigationState.RIGHT_HANDED
+import com.omeron.data.model.db.Profile
 import com.omeron.databinding.ActivityMainBinding
+import com.omeron.databinding.LayoutDrawerHeaderBinding
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
+import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
 import com.omeron.util.HideBottomViewBehavior
 import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.clearWindowInsetsListener
@@ -37,8 +43,6 @@ import com.omeron.util.extension.normalizeRedditLink
 import com.omeron.util.extension.unredditApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -59,6 +63,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private var bottomNavigationState: BottomNavigationState = NOT_INITIALIZED
 
     private var policyDisclaimerSnackbar: Snackbar? = null
+
+    private var currentProfile: Profile? = null
 
     @Inject
     lateinit var updateChecker: UpdateChecker
@@ -168,15 +174,66 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
 
         binding.bottomNavigation.run {
-            setupWithNavController(navController)
+            setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.home, R.id.popular, R.id.multis -> {
+                        viewModel.setHomeTab(HOME_TAB_ITEMS.indexOf(item.itemId))
+                        if (navController.currentDestination?.id != R.id.postListFragment) {
+                            NavigationUI.onNavDestinationSelected(
+                                menu.findItem(R.id.home),
+                                navController
+                            )
+                        }
+                        true
+                    }
+
+                    else -> NavigationUI.onNavDestinationSelected(item, navController)
+                }
+            }
             setOnItemReselectedListener {
                 when (it.itemId) {
-                    R.id.home -> (currentNavigationFragment as? PostListFragment)?.scrollToTop()
+                    R.id.home, R.id.popular, R.id.multis ->
+                        (currentNavigationFragment as? PostListFragment)?.scrollToTop()
                     else -> {
                         // Ignore
                     }
                 }
             }
+        }
+
+        initDrawer()
+    }
+
+    private fun initDrawer() {
+        binding.navigationView.setupWithNavController(navController)
+
+        val header = LayoutDrawerHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+        header.root.setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            currentProfile?.let { profile ->
+                ProfileManagerDialogFragment.show(supportFragmentManager, profile)
+            }
+        }
+
+        launchRepeat(Lifecycle.State.STARTED) {
+            viewModel.currentProfile.collect { profile ->
+                currentProfile = profile
+                header.profileName.text = profile.name
+                header.profileAvatar.setText(profile.name)
+            }
+        }
+    }
+
+    fun openNavigationDrawer() {
+        binding.drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    fun closeNavigationDrawer(): Boolean {
+        return if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        } else {
+            false
         }
     }
 
@@ -185,11 +242,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             view.run {
-                updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    bottomMargin = insets.bottom +
-                            resources.getDimension(R.dimen.bottom_navigation_margin).toInt()
-                }
-
+                updatePadding(bottom = insets.bottom)
                 clearWindowInsetsListener()
             }
 
@@ -197,40 +250,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
 
         binding.bottomNavigation.updateLayoutParams<CoordinatorLayout.LayoutParams> {
-            gravity = if (leftHandedMode) {
-                Gravity.BOTTOM or Gravity.START
-            } else {
-                Gravity.BOTTOM or Gravity.END
-            }
+            gravity = Gravity.BOTTOM
+            // leftHandedMode only picks the slide-out direction of the full-width bar
             behavior = HideBottomViewBehavior<BottomNavigationView>(leftHandedMode)
-        }
-
-        val radius = resources.getDimension(R.dimen.bottom_navigation_radius)
-        val bottomNavigationBackground = binding.bottomNavigation.background
-                as? MaterialShapeDrawable
-
-        bottomNavigationBackground?.run {
-            val builder = shapeAppearanceModel.toBuilder()
-
-            if (leftHandedMode) {
-                builder.apply {
-                    setTopRightCorner(CornerFamily.ROUNDED, radius)
-                    setBottomRightCorner(CornerFamily.ROUNDED, radius)
-
-                    setTopLeftCorner(CornerFamily.CUT, 0F)
-                    setBottomLeftCorner(CornerFamily.CUT, 0F)
-                }
-            } else {
-                builder.apply {
-                    setTopRightCorner(CornerFamily.CUT, 0F)
-                    setBottomRightCorner(CornerFamily.CUT, 0F)
-
-                    setTopLeftCorner(CornerFamily.ROUNDED, radius)
-                    setBottomLeftCorner(CornerFamily.ROUNDED, radius)
-                }
-            }
-
-            shapeAppearanceModel = builder.build()
         }
 
         // Wait for the view to be ready to show/hide it (otherwise width could be 0)
@@ -283,15 +305,28 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         when (destination.id) {
             R.id.postListFragment,
-            R.id.searchFragment,
-            R.id.subscriptionsFragment,
-            R.id.profileFragment,
-            R.id.preferencesFragment -> {
+            R.id.subscriptionsFragment -> {
                 viewModel.setNavigationVisibility(true)
             }
 
             else -> viewModel.setNavigationVisibility(false)
         }
+
+        // The navigation drawer is only reachable from the home screen
+        binding.drawerLayout.setDrawerLockMode(
+            if (destination.id == R.id.postListFragment) {
+                DrawerLayout.LOCK_MODE_UNLOCKED
+            } else {
+                DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+            }
+        )
+
+        // Keep the checked bottom bar item in sync on back navigation
+        when (destination.id) {
+            R.id.postListFragment -> HOME_TAB_ITEMS[viewModel.homeTab.value]
+            R.id.subscriptionsFragment -> R.id.subscriptions
+            else -> null
+        }?.let { binding.bottomNavigation.menu.findItem(it)?.isChecked = true }
     }
 
     override fun onDestroy() {
@@ -315,5 +350,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         private const val RELEASES_PAGE_URL = "https://github.com/shourovrm/Omeron/releases/latest"
 
         private val REDDIT_URL_REGEX = Regex("""https?://\S+""")
+
+        // Index = home tab position (Feed/Popular/Multis)
+        private val HOME_TAB_ITEMS = listOf(R.id.home, R.id.popular, R.id.multis)
     }
 }

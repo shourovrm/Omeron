@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#C4636B</color>
+    <color name="colorPrimary">#8CA0F2</color>
 
     <color name="text_color">#E6E4E0</color>
 
@@ -17,7 +17,7 @@
 
     <color name="profile_background_1">#E57373</color>
     <color name="profile_background_2">#F06292</color>
-    <color name="profile_background_3">#BD6A73</color>
+    <color name="profile_background_3">#7A8CD9</color>
     <color name="profile_background_4">#7986CB</color>
     <color name="profile_background_5">#64B5F6</color>
     <color name="profile_background_6">#81C784</color>

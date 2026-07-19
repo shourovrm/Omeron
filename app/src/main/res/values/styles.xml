@@ -51,7 +51,7 @@
     </style>
 
     <style name="TextAppearanceAppName" parent="TextAppearanceAppBarLabel">
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
     </style>
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
@@ -174,7 +174,7 @@
 
     <style name="TextAppearancePostTitle" parent="">
         <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 
     <style name="TextAppearancePostAuthor" parent="">

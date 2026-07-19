@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_outline_profile"
+        android:title="@string/navigation_label_profile" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_outline_settings"
+        android:title="@string/navigation_label_settings" />
+
+    <item
+        android:id="@+id/aboutFragment"
+        android:icon="@drawable/ic_omeron"
+        android:title="@string/preference_about" />
+</menu>
