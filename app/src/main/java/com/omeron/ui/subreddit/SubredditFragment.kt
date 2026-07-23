@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
 import com.omeron.data.model.Resource
@@ -75,6 +76,10 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
     private val args: SubredditFragmentArgs by navArgs()
 
     private lateinit var postListAdapter: PostListAdapter
+
+    // Guards against layoutManager reassignment on same-value emissions, which resets scroll
+    // position (see appliedPostLayout usage in applyPostLayout).
+    private var appliedPostLayout: PostLayout? = null
 
     private var isSubscribeEnabled: Boolean
         get() = bindingAbout.subredditSubscribeButton.isEnabled
@@ -228,6 +233,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
     private fun initRecyclerView() {
         postListAdapter = PostListAdapter(repository, this, this).apply {
+            stateRestorationPolicy = PREVENT_WHEN_EMPTY
             addLoadStateListener(
                 bindingContent.listPost,
                 bindingContent.loadingState,
@@ -281,6 +287,8 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
     private fun applyPostLayout(layout: PostLayout) {
         postListAdapter.postLayout = layout
+        if (appliedPostLayout == layout) return
+        appliedPostLayout = layout
         bindingContent.listPost.layoutManager = layout.layoutManager(requireContext())
         bindingContent.layoutToggleCard.setIcon(layout.iconRes())
         bindingContent.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)

@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.MainActivity
 import com.omeron.R
@@ -89,6 +90,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         get() = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
 
     private lateinit var postListAdapter: PostListAdapter
+
+    // Guards against layoutManager reassignment on same-value emissions, which resets scroll
+    // position (see appliedPostLayout usage in applyPostLayout).
+    private var appliedPostLayout: PostLayout? = null
 
     private lateinit var profileAdapter: ProfileAdapter
 
@@ -265,6 +270,7 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
     private fun initRecyclerView() {
         postListAdapter = PostListAdapter(repository, this, this).apply {
+            stateRestorationPolicy = PREVENT_WHEN_EMPTY
             addLoadStateListener { loadState ->
                 val isLoading = loadState.source.refresh is LoadState.Loading
 
@@ -423,6 +429,8 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
     private fun applyPostLayout(layout: PostLayout) {
         postListAdapter.postLayout = layout
+        if (appliedPostLayout == layout) return
+        appliedPostLayout = layout
         binding.listPost.layoutManager = layout.layoutManager(requireContext())
         binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
         binding.appBar.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)

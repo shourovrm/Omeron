@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.paging.PagingData
 import com.omeron.R
 import com.omeron.data.model.db.PostEntity
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.ui.common.fragment.PagingListFragment
 import com.omeron.ui.postlist.PostListAdapter
@@ -30,6 +31,10 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
     @Inject
     lateinit var repository: PostListRepository
 
+    // Guards against layoutManager reassignment on same-value emissions, which resets scroll
+    // position.
+    private var appliedPostLayout: PostLayout? = null
+
     override fun bindViewModel() {
         super.bindViewModel()
         launchRepeat(Lifecycle.State.STARTED) {
@@ -48,6 +53,8 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
             launch {
                 viewModel.postLayout.collect { layout ->
                     adapter.postLayout = layout
+                    if (appliedPostLayout == layout) return@collect
+                    appliedPostLayout = layout
                     binding.listContent.layoutManager = layout.layoutManager(requireContext())
                 }
             }

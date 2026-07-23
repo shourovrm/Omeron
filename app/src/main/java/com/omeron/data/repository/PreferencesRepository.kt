@@ -18,6 +18,7 @@ import com.omeron.util.extension.getValue
 import com.omeron.util.extension.setValue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
@@ -159,7 +160,7 @@ class PreferencesRepository @Inject constructor(
             val globalValue = preferences[DataPreferences.PreferencesKeys.POST_LAYOUT]
             val overrideValue = name?.let { preferences[subredditPostLayoutKey(it)] }
             PostLayout.resolve(overrideValue, globalValue)
-        }
+        }.distinctUntilChanged()
     }
 
     suspend fun setPostLayout(subreddit: String? = null, layout: PostLayout) {
@@ -191,7 +192,7 @@ class PreferencesRepository @Inject constructor(
             val showSpoilerPreview =
                 preferences[ContentPreferences.PreferencesKeys.SHOW_SPOILER_PREVIEW] ?: false
             ContentPreferences(showNsfw, showNsfwPreview, showSpoilerPreview)
-        }
+        }.distinctUntilChanged()
     }
 
     //endregion

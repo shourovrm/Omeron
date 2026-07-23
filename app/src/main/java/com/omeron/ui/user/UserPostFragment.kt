@@ -32,6 +32,10 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
     @Inject
     lateinit var repository: PostListRepository
 
+    // Guards against layoutManager reassignment on same-value emissions, which resets scroll
+    // position.
+    private var appliedPostLayout: PostLayout? = null
+
     override fun bindViewModel() {
         super.bindViewModel()
         launchRepeat(Lifecycle.State.STARTED) {
@@ -50,6 +54,8 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
             launch {
                 viewModel.postLayout.collect { layout ->
                     adapter.postLayout = layout
+                    if (appliedPostLayout == layout) return@collect
+                    appliedPostLayout = layout
                     binding.listContent.layoutManager = layout.layoutManager(requireContext())
                 }
             }
