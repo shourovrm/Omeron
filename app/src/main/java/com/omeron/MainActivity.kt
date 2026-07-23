@@ -34,6 +34,7 @@ import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
 import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
 import com.omeron.util.HideBottomViewBehavior
+import com.omeron.util.ShareLinkResolver
 import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.clearWindowInsetsListener
 import com.omeron.util.extension.currentNavigationFragment
@@ -159,6 +160,16 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             else -> null
         } ?: return
 
+        if (ShareLinkResolver.isShareLink(uri)) {
+            // /r/{sub}/s/{id} share links are a server-side redirect to the real permalink;
+            // resolve it off the main thread, then feed it through the same nav-deepLink path.
+            lifecycleScope.launch { navigateToRedditUri(ShareLinkResolver.resolve(uri) ?: uri) }
+        } else {
+            navigateToRedditUri(uri)
+        }
+    }
+
+    private fun navigateToRedditUri(uri: Uri) {
         try {
             navController.navigate(uri.normalizeRedditLink())
         } catch (e: IllegalArgumentException) {
