@@ -1,3 +1,18 @@
+# 0.3.0 - 2026/07/23
+
+### Added
+- Complete visual redesign: cobalt theme, Inter typography, flat UI
+- Navigation drawer (Profile, Settings, About, profile switcher)
+- Bottom bar now switches feeds directly: Feed, Popular, Multis, Subs
+- Search, layout and sort actions in the top app bar
+- Reddit share links (`reddit.com/r/*/s/*`) now open the linked post
+
+### Fixed
+- Lists no longer lose scroll position after opening a post
+
+---
+*Older entries below are from upstream Stealth.*
+
 # 2.3.1 - 2025/06/01
 
 ### Fixed
