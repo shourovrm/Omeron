@@ -47,6 +47,10 @@ class PostMenuFragment : BottomSheetDialogFragment() {
 
     private fun initActions(post: PostEntity) {
         with(binding) {
+            buttonRefresh.setOnClickListener {
+                doAndDismiss { setFragmentResult(REQUEST_KEY_REFRESH, bundleOf()) }
+            }
+
             buttonUser.setOnClickListener {
                 doAndDismiss {
                     findNavController().navigate(NavigationGraphDirections.openUser(post.author))
@@ -93,7 +97,7 @@ class PostMenuFragment : BottomSheetDialogFragment() {
     }
 
     enum class MenuType {
-        GENERAL, SUBREDDIT, USER, HISTORY, SAVED
+        GENERAL, SUBREDDIT, USER, HISTORY, SAVED, DETAILS
     }
 
     companion object {
@@ -101,6 +105,7 @@ class PostMenuFragment : BottomSheetDialogFragment() {
 
         const val REQUEST_KEY_REMOVE_HISTORY = "REQUEST_KEY_REMOVE_HISTORY"
         const val REQUEST_KEY_REMOVE_SAVED = "REQUEST_KEY_REMOVE_SAVED"
+        const val REQUEST_KEY_REFRESH = "REQUEST_KEY_REFRESH"
 
         const val BUNDLE_KEY_POST = "BUNDLE_KEY_POST"
         private const val BUNDLE_KEY_TYPE = "BUNDLE_KEY_TYPE"

@@ -3,10 +3,8 @@ package com.omeron.ui.postdetails
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
@@ -30,6 +28,7 @@ import com.omeron.di.DispatchersModule.DefaultDispatcher
 import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.commentmenu.CommentMenuFragment
+import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.common.ElasticDragDismissFrameLayout
 import com.omeron.ui.loadstate.ResourceStateAdapter
 import com.omeron.ui.sort.SortFragment
@@ -52,9 +51,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class PostDetailsFragment : BaseFragment(),
-    ElasticDragDismissFrameLayout.ElasticDragDismissCallback, PopupMenu.OnMenuItemClickListener {
+    ElasticDragDismissFrameLayout.ElasticDragDismissCallback {
 
     private var _binding: FragmentPostDetailsBinding? = null
+    private var currentPost: PostEntity? = null
     private val binding get() = _binding!!
 
     override val viewModel: PostDetailsViewModel by viewModels()
@@ -119,6 +119,11 @@ class PostDetailsFragment : BaseFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         binding.layoutRoot.applyWindowInsets(bottom = false)
+
+        parentFragmentManager.setFragmentResultListener(
+            PostMenuFragment.REQUEST_KEY_REFRESH,
+            viewLifecycleOwner
+        ) { _, _ -> viewModel.loadPost(true) }
 
         showNavigation(false)
 
@@ -244,6 +249,7 @@ class PostDetailsFragment : BaseFragment(),
     }
 
     private fun bindPost(post: PostEntity, fromCache: Boolean) {
+        currentPost = post
         binding.appBar.label.text = post.title
         postAdapter.setPost(post, fromCache)
         commentAdapter.postEntity = post
@@ -315,22 +321,9 @@ class PostDetailsFragment : BaseFragment(),
     }
 
     private fun showMenu() {
-        PopupMenu(requireContext(), binding.appBar.moreCard)
-            .apply {
-                menuInflater.inflate(R.menu.post_menu, this.menu)
-                setOnMenuItemClickListener(this@PostDetailsFragment)
-            }
-            .show()
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.refresh -> viewModel.loadPost(true)
-            else -> {
-                return false
-            }
-        }
-        return true
+        // Same bottom sheet as the list long-press / metrics-row menu, plus Refresh.
+        val post = currentPost ?: return
+        PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.DETAILS)
     }
 
     override fun onBackPressed() {
