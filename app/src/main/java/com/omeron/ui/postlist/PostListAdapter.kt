@@ -38,6 +38,10 @@ class PostListAdapter(
         fun onLinkClick(post: PostEntity)
 
         fun onSaveClick(post: PostEntity)
+
+        fun onUserClick(user: String)
+
+        fun onSubredditClick(subreddit: String)
     }
 
     interface Listener {

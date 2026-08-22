@@ -102,6 +102,14 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         PostMenuFragment.show(parentFragmentManager, post)
     }
 
+    override fun onUserClick(user: String) {
+        openUser(user)
+    }
+
+    override fun onSubredditClick(subreddit: String) {
+        openSubreddit(subreddit.removePrefix("r/"))
+    }
+
     override fun onImageClick(post: PostEntity) {
         viewModel?.insertPostInHistory(post)
         if (post.gallery.isNotEmpty()) {

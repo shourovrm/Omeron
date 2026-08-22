@@ -82,6 +82,8 @@ class PostAdapter(
                 this.post = post
                 textPostAuthor.text = post.author
                 textSubreddit.text = post.subreddit
+                textPostAuthor.setOnClickListener { postClickListener.onUserClick(post.author) }
+                textSubreddit.setOnClickListener { postClickListener.onSubredditClick(post.subreddit) }
             }
 
             binding.textPostTitle.text = post.title
@@ -165,6 +167,12 @@ class PostAdapter(
                         includePostInfo.post = post.crosspost
                         includePostInfo.textPostAuthor.text = post.crosspost.author
                         includePostInfo.textSubreddit.text = post.crosspost.subreddit
+                        includePostInfo.textPostAuthor.setOnClickListener {
+                            postClickListener.onUserClick(post.crosspost.author)
+                        }
+                        includePostInfo.textSubreddit.setOnClickListener {
+                            postClickListener.onSubredditClick(post.crosspost.subreddit)
+                        }
                         includePostInfo.groupCrosspost.isVisible = false
                     }
                 }
@@ -175,6 +183,12 @@ class PostAdapter(
                         title.text = post.crosspostScrap?.title
                         includePostInfo.textPostAuthor.text = post.crosspostScrap?.author
                         includePostInfo.textSubreddit.text = post.crosspostScrap?.subreddit
+                        includePostInfo.textPostAuthor.setOnClickListener {
+                            post.crosspostScrap?.author?.let(postClickListener::onUserClick)
+                        }
+                        includePostInfo.textSubreddit.setOnClickListener {
+                            post.crosspostScrap?.subreddit?.let(postClickListener::onSubredditClick)
+                        }
                         includePostInfo.textPostDate.isVisible = false
                         includePostInfo.groupCrosspost.isVisible = false
                     }
