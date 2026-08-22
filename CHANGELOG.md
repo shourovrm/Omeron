@@ -1,4 +1,4 @@
-# Unreleased
+# 0.4.0 - 2026/08/22
 
 ### Added
 - Reddit account login (Settings → Reddit account): WebView login, only the
