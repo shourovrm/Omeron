@@ -14,6 +14,7 @@ data class DataPreferences(
         val REDDIT_SOURCE_INSTANCE = stringPreferencesKey("reddit_source_instance")
         val PRIVACY_ENHANCER = booleanPreferencesKey("privacy_enhancer")
         val POST_LAYOUT = intPreferencesKey("post_layout")
+        val REDDIT_COOKIES = stringPreferencesKey("reddit_cookies")
     }
 
     enum class RedditSource(val value: Int) {

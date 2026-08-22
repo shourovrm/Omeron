@@ -1,3 +1,13 @@
+# Unreleased
+
+### Added
+- Reddit account login (Settings → Reddit account): WebView login, only the
+  `reddit_session` cookie is stored and sent with scraping requests. Needed since
+  Reddit put old.reddit behind a login wall.
+
+### Fixed
+- Feeds fail fast with a clear error when Reddit redirects to its login wall
+
 # 0.3.0 - 2026/07/23
 
 ### Added

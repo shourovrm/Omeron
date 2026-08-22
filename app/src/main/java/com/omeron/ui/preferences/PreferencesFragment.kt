@@ -30,6 +30,7 @@ import com.omeron.data.model.preferences.DataPreferences.RedditSource.REDDIT_SCR
 import com.omeron.data.model.preferences.DataPreferences.RedditSource.TEDDIT
 import com.omeron.data.model.preferences.UiPreferences
 import com.omeron.databinding.LayoutPreferenceListBinding
+import com.omeron.ui.login.RedditLoginActivity
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.redditsource.RedditSourceDialogFragment
 import com.omeron.util.UpdateChecker
@@ -62,6 +63,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     private var showNsfwPreviewPreference: SwitchPreferenceCompat? = null
     private var showSpoilerPreviewPreference: SwitchPreferenceCompat? = null
     private var backupPreference: Preference? = null
+    private var redditAccountPreference: Preference? = null
     private var sourcePreference: Preference? = null
     private var privacyEnhancerPreference: Preference? = null
     private var aboutPreference: Preference? = null
@@ -155,6 +157,17 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         backupPreference = findPreference<Preference>("backup")?.apply {
             setOnPreferenceClickListener {
                 openBackup()
+                true
+            }
+        }
+
+        redditAccountPreference = findPreference<Preference>("reddit_account")?.apply {
+            setOnPreferenceClickListener {
+                if (viewModel.redditLoggedIn.latest == true) {
+                    showLogoutDialog()
+                } else {
+                    startActivity(Intent(requireContext(), RedditLoginActivity::class.java))
+                }
                 true
             }
         }
@@ -276,6 +289,15 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             }
 
             launch {
+                viewModel.redditLoggedIn.collect { loggedIn ->
+                    redditAccountPreference?.summary = getString(
+                        if (loggedIn) R.string.preference_reddit_account_logged_in
+                        else R.string.preference_reddit_account_logged_out
+                    )
+                }
+            }
+
+            launch {
                 viewModel.redditSource.collect { value ->
                     DataPreferences.RedditSource.fromValue(value.first).let {
                         val summary = when (it) {
@@ -326,6 +348,15 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         unredditApplication?.appTheme = mode
         activity?.recreate() // Recreate activity to force the change between dark and amoled
         viewModel.setNightMode(mode)
+    }
+
+    private fun showLogoutDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_logout_title)
+            .setMessage(R.string.dialog_logout_message)
+            .setPositiveButton(R.string.dialog_logout) { _, _ -> viewModel.logoutReddit() }
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show()
     }
 
     private fun showRedditSourceDialog(source: Int, instance: String) {

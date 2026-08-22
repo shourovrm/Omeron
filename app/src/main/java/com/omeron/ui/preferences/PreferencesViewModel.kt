@@ -8,7 +8,9 @@ import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import com.omeron.ui.login.RedditLoginActivity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -42,6 +44,15 @@ class PreferencesViewModel @Inject constructor(
     ) { source, instance ->
         Pair(source, instance)
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
+
+    val redditLoggedIn: SharedFlow<Boolean> = preferencesRepository
+        .getRedditCookies()
+        .map { it.isNotBlank() }
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
+
+    fun logoutReddit() {
+        RedditLoginActivity.logout(preferencesRepository, viewModelScope)
+    }
 
     val privacyEnhancerEnabled: SharedFlow<Boolean> = preferencesRepository
         .getPrivacyEnhancerEnabled()

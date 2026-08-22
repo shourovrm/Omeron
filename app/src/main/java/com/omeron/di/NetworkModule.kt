@@ -7,7 +7,7 @@ import com.omeron.data.remote.api.imgur.ImgurApi
 import com.omeron.data.remote.api.imgur.adapter.AlbumDataAdapter
 import com.omeron.data.remote.api.reddit.JsonInterceptor
 import com.omeron.data.remote.api.reddit.RedditApi
-import com.omeron.data.remote.api.reddit.RedditCookieJar
+import com.omeron.data.remote.api.reddit.RedditCookieInterceptor
 import com.omeron.data.remote.api.reddit.SortingConverterFactory
 import com.omeron.data.remote.api.reddit.TedditApi
 import com.omeron.data.remote.api.reddit.adapter.EditedAdapter
@@ -122,7 +122,9 @@ object NetworkModule {
     @RedditOkHttp
     @Provides
     @Singleton
-    fun provideRedditOkHttpClient(): OkHttpClient {
+    fun provideRedditOkHttpClient(
+        preferencesRepository: PreferencesRepository
+    ): OkHttpClient {
         // Bare OkHttp UA on www.reddit.com gets intermittently 429/403'd (visible as
         // "error loading more comments"); send a browser UA + keep reddit's cookies.
         return OkHttpClient.Builder()
@@ -133,7 +135,7 @@ object NetworkModule {
                         .build()
                 )
             }
-            .cookieJar(RedditCookieJar())
+            .addInterceptor(RedditCookieInterceptor(preferencesRepository))
             .addInterceptor(RawJsonInterceptor())
             .addInterceptor(JsonInterceptor())
             .connectTimeout(TIMEOUT.first, TIMEOUT.second)
@@ -169,12 +171,25 @@ object NetworkModule {
     @RedditScrapOkHttp
     @Provides
     @Singleton
-    fun provideRedditScrapOkHttpClient(): OkHttpClient {
+    fun provideRedditScrapOkHttpClient(
+        preferencesRepository: PreferencesRepository
+    ): OkHttpClient {
+        // Same UA as RedditLoginActivity's WebView so the captured session isn't UA-mismatched,
+        // plus the browser headers reddit expects alongside a session cookie.
         return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                chain.proceed(
+                    chain.request().newBuilder()
+                        .header("User-Agent", LinkUtil.USER_AGENT)
+                        .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                        .header("Accept-Language", "en-US,en;q=0.9")
+                        .build()
+                )
+            }
+            .addInterceptor(RedditCookieInterceptor(preferencesRepository))
             .connectTimeout(TIMEOUT.first, TIMEOUT.second)
             .readTimeout(TIMEOUT.first, TIMEOUT.second)
             .writeTimeout(TIMEOUT.first, TIMEOUT.second)
-            .cookieJar(RedditCookieJar())
             .build()
     }
 

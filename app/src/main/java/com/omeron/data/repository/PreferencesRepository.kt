@@ -129,6 +129,18 @@ class PreferencesRepository @Inject constructor(
         )
     }
 
+    suspend fun setRedditCookies(cookies: String) {
+        preferencesDatastore.setValue(DataPreferences.PreferencesKeys.REDDIT_COOKIES, cookies)
+    }
+
+    /** `reddit_session=...` cookie captured from the login WebView; empty when logged out. */
+    fun getRedditCookies(defaultValue: String = ""): Flow<String> {
+        return preferencesDatastore.getValue(
+            DataPreferences.PreferencesKeys.REDDIT_COOKIES,
+            defaultValue
+        )
+    }
+
     suspend fun setPrivacyEnhancerEnabled(enablePrivacyEnhancer: Boolean) {
         preferencesDatastore.setValue(
             DataPreferences.PreferencesKeys.PRIVACY_ENHANCER,

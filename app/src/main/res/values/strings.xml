@@ -194,6 +194,12 @@
     <string name="preference_show_nsfw_preview">Show NSFW preview</string>
     <string name="preference_show_spoiler_preview">Show Spoiler preview</string>
 
+    <string name="preference_reddit_account">Reddit account</string>
+    <string name="preference_reddit_account_logged_out">Not logged in. Reddit now requires an account for old.reddit; tap to log in</string>
+    <string name="preference_reddit_account_logged_in">Logged in. Tap to log out</string>
+    <string name="dialog_logout_title">Log out?</string>
+    <string name="dialog_logout_message">The session cookies stored on this device will be deleted.</string>
+    <string name="dialog_logout">Log out</string>
     <string name="preference_reddit_source">Reddit Source</string>
     <string name="preference_reddit_source_reddit">Reddit</string>
     <string name="preference_reddit_source_reddit_scrap">Reddit (Web Scraping)</string>

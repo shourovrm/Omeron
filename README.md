@@ -3,9 +3,13 @@
 Omeron is a fork of [**Stealth**](https://gitlab.com/cosmosapps/stealth) (a.k.a. unReddit),
 the account-free, privacy-oriented Reddit client, with a set of extra features added on top.
 
-It needs **no Reddit account and no official Reddit API**. All content is fetched by
-**web scraping `old.reddit.com`**, so there are no API keys, logins, or rate-limit tokens
-to configure.
+It uses **no official Reddit API**. All content is fetched by **web scraping
+`old.reddit.com`**, so there are no API keys or rate-limit tokens to configure.
+
+Since August 2026 Reddit only serves `old.reddit.com` to logged-in accounts, so Omeron
+now has a **Settings → Reddit account** entry: you log in once in an in-app WebView and
+only the resulting `reddit_session` cookie is kept on the device and sent with the
+scraping requests. Nothing else about the account is touched (no API, no OAuth).
 
 ## Added over Stealth
 
@@ -13,6 +17,7 @@ to configure.
 - **Search** and **Popular** in the bottom navigation
 - Profile pages with **Posts** and **Comments** tabs
 - **Web-scraping post search** (no Reddit API)
+- **Reddit account login** via WebView cookie capture (required by Reddit for old.reddit since Aug 2026)
 - **Handle Link** — open/share any Reddit link straight into Omeron
 - **Per-subreddit hide** on the home feed
 - **Local multireddits** — group subreddits *and* users, with hide toggle and a dedicated feed page

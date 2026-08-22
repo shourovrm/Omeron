@@ -52,6 +52,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.login.RedditLoginActivity"
+            android:exported="false" />
+
         <receiver android:name=".data.receiver.DownloadManagerReceiver"  android:exported="false">
             <intent-filter>
                 <action android:name="${applicationId}.ACTION_DOWNLOAD_RETRY"/>
