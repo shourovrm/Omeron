@@ -6,10 +6,8 @@ the account-free, privacy-oriented Reddit client, with a set of extra features a
 It uses **no official Reddit API**. All content is fetched by **web scraping
 `old.reddit.com`**, so there are no API keys or rate-limit tokens to configure.
 
-Since August 2026 Reddit only serves `old.reddit.com` to logged-in accounts, so Omeron
-now has a **Settings → Reddit account** entry: you log in once in an in-app WebView and
-only the resulting `reddit_session` cookie is kept on the device and sent with the
-scraping requests. Nothing else about the account is touched (no API, no OAuth).
+Since August 2026 Reddit only serves `old.reddit.com` to logged-in accounts, so a one-time
+login is required — see [Setup](#setup) below.
 
 ## Added over Stealth
 
@@ -37,6 +35,31 @@ Grab the latest APK from the **[Releases page](https://github.com/shourovrm/Omer
   ```
   adb install omeron-<version>-arm64-release.apk
   ```
+
+## Setup
+
+Reddit now puts `old.reddit.com` behind a login wall, so Omeron shows nothing until you
+log in once. Only the resulting `reddit_session` cookie is kept on the device and sent with
+the scraping requests — no API, no OAuth, nothing else about the account is touched.
+
+1. **Create a throwaway account.** Nothing in Omeron needs your identity, so sign up at
+   [reddit.com/register](https://www.reddit.com/register/) with a privacy-friendly mailbox
+   such as [Proton Mail](https://proton.me/mail) (Tuta, addy.io aliases, etc. work too).
+2. **Log in inside Omeron**: Settings → Data → **Reddit account**, then use the
+   email/username + password form (or *Email me a one-time link*). *Continue with Google*
+   does not work inside a WebView. **Log out** in the same place deletes the cookie.
+3. **Tune the account at [old.reddit.com/prefs/](https://old.reddit.com/prefs/)** (open it
+   in a browser logged in with the same account). Once logged in, Reddit ignores the app's
+   NSFW toggle and uses these account preferences instead:
+   - **NSFW content** — tick *show mature (18+) content* and *include mature content in
+     search results*; untick *Hide images for NSFW/18+ content*. Without the search one,
+     NSFW subreddits and posts never show up in search.
+   - **Less email & tracking** — tick *unsubscribe from all emails*; untick *send email
+     digests*, *receive welcome messages from moderators*, *notify me when people say my
+     username*, *show me links I've recently viewed*, *let others see my online status*,
+     *make my votes public* and *Use new Reddit as my default experience*. Hit
+     **save options**, then on [prefs/privacy](https://old.reddit.com/prefs/privacy/)
+     untick the personalization and ad options.
 
 ## Build
 
