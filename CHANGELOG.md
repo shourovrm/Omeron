@@ -1,3 +1,11 @@
+# 0.4.1 - 2026/08/22
+
+### Added
+- Post screen: the app-bar menu now opens the full post sheet (Refresh, go to
+  user, go to subreddit, open externally, share) instead of only Refresh
+- README setup guide: throwaway account, in-app login, account preferences for
+  NSFW visibility/search and for less email & tracking
+
 # 0.4.0 - 2026/08/22
 
 ### Added
