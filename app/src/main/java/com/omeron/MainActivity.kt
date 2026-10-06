@@ -16,6 +16,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.core.widget.doAfterTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +32,7 @@ import com.omeron.MainActivity.BottomNavigationState.RIGHT_HANDED
 import com.omeron.data.model.db.Profile
 import com.omeron.databinding.ActivityMainBinding
 import com.omeron.databinding.LayoutDrawerHeaderBinding
+import com.omeron.ui.drawer.DrawerAdapter
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
 import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
@@ -216,9 +219,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     private fun initDrawer() {
-        binding.navigationView.setupWithNavController(navController)
+        binding.drawerPinnedMenu.setupWithNavController(navController)
 
-        val header = LayoutDrawerHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+        val header = LayoutDrawerHeaderBinding.bind(binding.drawerHeader.root)
         header.root.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             currentProfile?.let { profile ->
@@ -226,12 +229,36 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             }
         }
 
+        initCommunityList()
+
         launchRepeat(Lifecycle.State.STARTED) {
             viewModel.currentProfile.collect { profile ->
                 currentProfile = profile
                 header.profileName.text = profile.name
                 header.profileAvatar.setText(profile.name)
             }
+        }
+    }
+
+    private fun initCommunityList() {
+        val drawerAdapter = DrawerAdapter(
+            onMultiredditClick = { multiredditId ->
+                navController.navigate(NavigationGraphDirections.openMultireddit(multiredditId))
+            },
+            onCommunityClick = { subredditName ->
+                navController.navigate(NavigationGraphDirections.openSubreddit(subredditName))
+            }
+        )
+
+        binding.drawerList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = drawerAdapter
+        }
+
+        binding.drawerFilter.doAfterTextChanged { viewModel.setDrawerFilterQuery(it.toString()) }
+
+        launchRepeat(Lifecycle.State.STARTED) {
+            viewModel.drawerItems.collect(drawerAdapter::submitList)
         }
     }
 
@@ -322,6 +349,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
             else -> viewModel.setNavigationVisibility(false)
         }
+
+        // Every drawer row and pinned entry navigates, so the drawer is done once we arrive
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
 
         // The navigation drawer is only reachable from the home screen
         binding.drawerLayout.setDrawerLockMode(

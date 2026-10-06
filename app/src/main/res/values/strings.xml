@@ -243,6 +243,12 @@
     <string name="navigation_label_profile">Profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="drawer_switch_profile">Switch profile</string>
+    <string name="drawer_filter_hint">Find a community</string>
+    <string name="drawer_section_multireddits">Multireddits</string>
+    <string name="drawer_section_communities">Communities</string>
+    <string name="drawer_community_name">r/%s</string>
+    <string name="drawer_no_subscriptions">Subscribe from a subreddit page and it will show up here.</string>
+    <string name="drawer_no_match">No match</string>
 
     <string name="tab_home_feed">Feed</string>
     <string name="tab_home_popular">Popular</string>

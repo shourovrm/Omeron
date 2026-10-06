@@ -83,6 +83,7 @@
     <dimen name="tab_indicator_radius">4dp</dimen>
 
     <dimen name="subreddit_drawer_width">275dp</dimen>
+    <dimen name="community_drawer_width">300dp</dimen>
     <dimen name="subreddit_drawer_margin_vertical">16dp</dimen>
     <dimen name="subreddit_drawer_margin_horizontal">8dp</dimen>
 
