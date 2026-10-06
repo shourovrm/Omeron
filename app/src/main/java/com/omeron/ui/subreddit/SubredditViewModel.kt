@@ -92,8 +92,10 @@ class SubredditViewModel @Inject constructor(
         false
     )
 
+    // The scraper returns "" rather than null for a missing display name, so a plain elvis
+    // would never reach the navigation argument.
     private val subredditName: String
-        get() = about.value.dataValue?.displayName ?: subreddit.value
+        get() = about.value.dataValue?.displayName.orEmpty().ifBlank { subreddit.value }
 
     private val icon: String?
         get() = about.value.dataValue?.icon
