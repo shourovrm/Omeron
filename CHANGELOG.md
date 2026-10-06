@@ -1,3 +1,15 @@
+# 0.5.1 - 2026/10/07
+
+### Added
+- Filmstrip viewer: swipe up or down on the picture or video to move to the
+  next or previous post; the media follows the finger and slides a full page
+- Card layout: tapping a post's image, gallery or video opens the Filmstrip
+  viewer at that post and continues through the feed's other media posts
+
+### Changed
+- Closing the viewer scrolls the list to the post last viewed, in any layout
+- The viewer keeps loading further pages when a page contains no media
+
 # 0.5.0 - 2026/10/07
 
 ### Added
