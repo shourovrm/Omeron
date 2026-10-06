@@ -176,7 +176,9 @@ class PostScraper(
         val galleryData = expando?.toGalleryData()
         val mediaMetadata = expando?.toMediaMetadata()
 
-        val selfTextHtml = selectFirst("div.usertext-body")
+        // Listing pages keep a self post's body inside the expando's cachedhtml rather than in
+        // the live DOM, so look there too; without it feed rows have no excerpt to show.
+        val selfTextHtml = (selectFirst("div.usertext-body") ?: expando?.selectFirst("div.usertext-body"))
             ?.selectFirst(Selector.MD)?.outerHtml()
 
         val tagline = getTagline()
