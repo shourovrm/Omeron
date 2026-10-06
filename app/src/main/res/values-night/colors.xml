@@ -4,6 +4,9 @@
 
     <color name="text_color">#E6E4E0</color>
 
+    <color name="text_color_secondary">#A0A0A8</color>
+    <color name="text_color_post_info">#9E9E9E</color>
+
     <color name="background">#17171A</color>
 
     <color name="icon_tint">#E6E4E0</color>
