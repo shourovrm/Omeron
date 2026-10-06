@@ -97,6 +97,19 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
+            <!-- Seek bar for the playing video. It lives in the overlay rather than in the pager
+                 page so that it sits above the info block and receives its own drags. -->
+            <com.google.android.exoplayer2.ui.PlayerControlView
+                android:id="@+id/video_seek"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/bottom_inset_space"
+                android:visibility="gone"
+                app:controller_layout_id="@layout/layout_filmstrip_seek"
+                app:show_timeout="0"/>
+
             <!-- The whole block is one touch target: a tap or an upward swipe opens the details. -->
             <LinearLayout
                 android:id="@+id/info"
@@ -104,10 +117,11 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/rail"
-                app:layout_constraintBottom_toTopOf="@id/bottom_inset_space"
+                app:layout_constraintBottom_toTopOf="@id/video_seek"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="4dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="4dp"
+                app:layout_goneMarginBottom="16dp"
                 android:minHeight="48dp"
                 android:orientation="vertical"
                 android:clickable="true"
@@ -170,9 +184,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/bottom_inset_space"
+                app:layout_constraintBottom_toTopOf="@id/video_seek"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="4dp"
+                app:layout_goneMarginBottom="16dp"
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 

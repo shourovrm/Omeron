@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp">
+
+    <TextView
+        android:id="@id/exo_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:includeFontPadding="false"
+        tools:text="00:01"/>
+
+    <!-- 48dp tall so the thin bar is still easy to grab and drag. -->
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@id/exo_progress"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        app:bar_height="3dp"
+        app:touch_target_height="48dp"
+        app:buffered_color="@color/exoplayer_buffered_color"
+        app:played_color="@color/white"
+        app:scrubber_color="@color/white"
+        app:unplayed_color="@color/exoplayer_unplayed_color"/>
+
+    <TextView
+        android:id="@id/exo_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:includeFontPadding="false"
+        tools:text="01:18"/>
+
+</LinearLayout>

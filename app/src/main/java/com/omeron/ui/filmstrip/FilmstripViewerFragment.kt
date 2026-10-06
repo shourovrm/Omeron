@@ -168,9 +168,18 @@ class FilmstripViewerFragment : BaseFragment() {
     }
 
     private fun initPlayback() {
-        playback = FilmstripPlayback(requireContext()) { hasAudio ->
-            _binding?.let { it.buttonMute.isVisible = hasAudio && currentFrame?.isVideo == true }
-        }
+        playback = FilmstripPlayback(
+            requireContext(),
+            onAudioAvailable = { hasAudio ->
+                _binding?.let { it.buttonMute.isVisible = hasAudio && currentFrame?.isVideo == true }
+            },
+            onPlayerChanged = { player ->
+                _binding?.videoSeek?.let { videoSeek ->
+                    videoSeek.setPlayer(player)
+                    if (player != null) videoSeek.show() else videoSeek.hide()
+                }
+            }
+        )
     }
 
     private fun initPager() {

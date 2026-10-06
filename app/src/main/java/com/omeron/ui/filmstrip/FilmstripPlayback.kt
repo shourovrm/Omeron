@@ -3,6 +3,7 @@ package com.omeron.ui.filmstrip
 import android.content.Context
 import com.omeron.data.model.GalleryMedia
 import com.omeron.ui.mediaviewer.ViewerVideoPlayerFactory
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 
@@ -12,7 +13,10 @@ import com.google.android.exoplayer2.ui.PlayerView
  */
 class FilmstripPlayback(
     context: Context,
-    private val onAudioAvailable: (Boolean) -> Unit
+    private val onAudioAvailable: (Boolean) -> Unit,
+    // Receives the player when a video starts and null when it stops, so the viewer can attach
+    // and detach its seek bar.
+    private val onPlayerChanged: (Player?) -> Unit
 ) {
 
     private val applicationContext = context.applicationContext
@@ -64,6 +68,7 @@ class FilmstripPlayback(
         playerView = view
         view.player = newPlayer
         applyVolume()
+        onPlayerChanged(newPlayer)
     }
 
     /** Stops playback if [view] is the one currently playing; other views are left alone. */
@@ -72,6 +77,7 @@ class FilmstripPlayback(
     }
 
     fun stop() {
+        onPlayerChanged(null)
         playerView?.player = null
         player?.release()
         player = null
