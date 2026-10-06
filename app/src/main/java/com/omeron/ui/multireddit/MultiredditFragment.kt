@@ -25,8 +25,10 @@ import com.omeron.ui.sort.SortFragment
 import com.omeron.ui.subscriptions.MultiredditEditDialogFragment
 import com.omeron.util.extension.addLoadStateListener
 import com.omeron.util.extension.applyWindowInsets
+import com.omeron.util.extension.filteredForLayout
 import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.layoutManager
+import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.launchRepeat
@@ -103,7 +105,7 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
             }
 
             launch {
-                viewModel.postDataFlow.collectLatest {
+                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout).collectLatest {
                     postListAdapter.submitData(it)
                 }
             }
@@ -151,9 +153,9 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
 
     private fun applyPostLayout(layout: PostLayout) {
         postListAdapter.postLayout = layout
-        binding.listPost.layoutManager = layout.layoutManager(requireContext())
+        binding.listPost.layoutManager = layout.layoutManager(requireContext()) { postListAdapter.itemCount }
         binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
-        binding.appBar.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)
+        binding.appBar.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
     }
 
     private fun initResultListener() {

@@ -95,4 +95,6 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="black_25">#40000000</color>
+    <!-- Sits on photos in both themes, so it does not change with night mode. -->
+    <color name="filmstrip_badge_background">#A8000000</color>
 </resources>

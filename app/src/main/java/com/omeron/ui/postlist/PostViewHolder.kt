@@ -14,6 +14,7 @@ import com.omeron.databinding.IncludePostFlairsBinding
 import com.omeron.databinding.IncludePostInfoBinding
 import com.omeron.databinding.IncludePostMetricsBinding
 import com.omeron.databinding.ItemPostCompactBinding
+import com.omeron.databinding.ItemPostFilmstripBinding
 import com.omeron.databinding.ItemPostGalleryBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
@@ -346,6 +347,92 @@ abstract class PostViewHolder(
                     else -> visibility = View.GONE
                 }
             }
+        }
+    }
+
+    // Media-only grid tile: preview, a corner badge and nothing else. Tap and long-press go
+    // through the same Listener calls as the gallery tile.
+    class FilmstripPostViewHolder(
+        private val binding: ItemPostFilmstripBinding,
+        listener: PostListAdapter.Listener
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            itemView.setOnClickListener {
+                listener.onClick(bindingAdapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                listener.onClick(bindingAdapterPosition, true)
+                true
+            }
+        }
+
+        fun bind(postEntity: PostEntity, contentPreferences: ContentPreferences) {
+            binding.imageFilmstripPreview.load(
+                postEntity.preview,
+                !postEntity.shouldShowPreview(contentPreferences)
+            ) {
+                error(R.drawable.preview_image_fallback)
+                fallback(R.drawable.preview_image_fallback)
+            }
+
+            bindBadge(postEntity)
+            itemView.contentDescription = describe(postEntity)
+            update(postEntity)
+        }
+
+        // Also called alone when a tap marks the post as seen, so the tile dims without a rebind.
+        fun update(postEntity: PostEntity) {
+            itemView.alpha = if (postEntity.seen) SEEN_TILE_ALPHA else 1F
+        }
+
+        private fun bindBadge(postEntity: PostEntity) {
+            val galleryCount = postEntity.gallery.size
+            when {
+                postEntity.type == PostType.VIDEO -> showBadge(R.drawable.ic_play, null)
+
+                postEntity.isGallery -> showBadge(
+                    R.drawable.ic_gallery,
+                    galleryCount.takeIf { it > 0 }?.toString()
+                )
+
+                else -> binding.badgeFilmstrip.isVisible = false
+            }
+        }
+
+        private fun showBadge(iconRes: Int, countText: String?) {
+            binding.badgeFilmstrip.isVisible = true
+            binding.iconFilmstripBadge.setImageResource(iconRes)
+            binding.textFilmstripBadgeCount.apply {
+                text = countText
+                isVisible = countText != null
+            }
+        }
+
+        private fun describe(postEntity: PostEntity): String {
+            val resources = itemView.resources
+            val galleryCount = postEntity.gallery.size
+            return when {
+                postEntity.type == PostType.VIDEO ->
+                    resources.getString(R.string.filmstrip_tile_video, postEntity.title)
+
+                postEntity.isGallery && galleryCount > 0 -> resources.getQuantityString(
+                    R.plurals.filmstrip_tile_gallery_count,
+                    galleryCount,
+                    galleryCount,
+                    postEntity.title
+                )
+
+                postEntity.isGallery ->
+                    resources.getString(R.string.filmstrip_tile_gallery, postEntity.title)
+
+                else -> resources.getString(R.string.filmstrip_tile_image, postEntity.title)
+            }
+        }
+
+        private companion object {
+            // Dim enough to tell read posts apart at a glance, light enough to keep the photo legible.
+            const val SEEN_TILE_ALPHA = 0.6F
         }
     }
 

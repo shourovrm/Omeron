@@ -39,4 +39,29 @@ class PostLayoutTest {
         assertEquals(PostLayout.CARD, PostLayout.fromValue(-1))
         assertEquals(PostLayout.GALLERY, PostLayout.fromValue(1))
     }
+
+    @Test
+    fun `filmstrip is persisted as 3 and existing values keep their numbers`() {
+        assertEquals(0, PostLayout.CARD.value)
+        assertEquals(1, PostLayout.GALLERY.value)
+        assertEquals(2, PostLayout.COMPACT.value)
+        assertEquals(3, PostLayout.FILMSTRIP.value)
+        assertEquals(PostLayout.FILMSTRIP, PostLayout.fromValue(3))
+    }
+
+    @Test
+    fun `next cycles through all four layouts`() {
+        assertEquals(PostLayout.GALLERY, PostLayout.CARD.next())
+        assertEquals(PostLayout.COMPACT, PostLayout.GALLERY.next())
+        assertEquals(PostLayout.FILMSTRIP, PostLayout.COMPACT.next())
+        assertEquals(PostLayout.CARD, PostLayout.FILMSTRIP.next())
+    }
+
+    @Test
+    fun `screens without a grid show gallery for filmstrip and skip it when toggling`() {
+        assertEquals(PostLayout.GALLERY, PostLayout.FILMSTRIP.withoutFilmstrip())
+        assertEquals(PostLayout.COMPACT, PostLayout.FILMSTRIP.nextWithoutFilmstrip())
+        assertEquals(PostLayout.CARD, PostLayout.COMPACT.nextWithoutFilmstrip())
+        assertEquals(PostLayout.GALLERY, PostLayout.CARD.nextWithoutFilmstrip())
+    }
 }

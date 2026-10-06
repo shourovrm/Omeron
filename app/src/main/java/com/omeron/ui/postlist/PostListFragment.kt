@@ -39,9 +39,12 @@ import com.omeron.ui.login.RedditLoginActivity
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.applyMarginWindowInsets
+import com.omeron.util.extension.filteredForLayout
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.isEmpty
 import com.omeron.util.extension.isLoginRequired
 import com.omeron.util.extension.layoutManager
+import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearNavigationListener
@@ -194,7 +197,7 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             }
 
             launch {
-                viewModel.postDataFlow.collectLatest {
+                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout).collectLatest {
                     postListAdapter.submitData(it)
                 }
             }
@@ -310,6 +313,13 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
                     }
                 }
 
+                // Nothing to list is normal for the Filmstrip filter on a feed without media, and
+                // the Multis tab already explains its own empty case.
+                binding.emptyPosts.isVisible = loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    isEmpty() &&
+                    !binding.emptyMultireddits.isVisible
+
                 val errorState = loadState.source.refresh as? LoadState.Error
                 errorState?.let {
                     isShowingLoginPrompt = it.error.isLoginRequired
@@ -402,6 +412,7 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         if (latestMultis.isEmpty()) {
             binding.multiTabs.isVisible = false
             binding.emptyMultireddits.isVisible = true
+            binding.emptyPosts.isVisible = false
             // ponytail: hide the shared list instead of plumbing a "no source" pager state.
             binding.pullRefresh.isVisible = false
             viewModel.setSelectedMulti(null)
@@ -447,9 +458,9 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         postListAdapter.postLayout = layout
         if (appliedPostLayout == layout) return
         appliedPostLayout = layout
-        binding.listPost.layoutManager = layout.layoutManager(requireContext())
+        binding.listPost.layoutManager = layout.layoutManager(requireContext()) { postListAdapter.itemCount }
         binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
-        binding.appBar.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)
+        binding.appBar.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
     }
 
     private fun initResultListener() {

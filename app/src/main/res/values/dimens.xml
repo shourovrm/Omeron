@@ -3,6 +3,7 @@
 
     <dimen name="post_margin_horizontal">8dp</dimen>
     <dimen name="post_margin_vertical">16dp</dimen>
+    <dimen name="filmstrip_tile_gap">2dp</dimen>
 
     <dimen name="post_padding_horizontal">16dp</dimen>
 

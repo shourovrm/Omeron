@@ -23,6 +23,7 @@ import com.omeron.util.extension.clearNavigationListener
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setNavigationListener
@@ -106,6 +107,7 @@ class SearchFragment : BaseFragment() {
                 viewModel.postLayout.collect { layout ->
                     currentPostLayout = layout
                     binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
+                    binding.appBar.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
                 }
             }
         }
@@ -210,7 +212,7 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun toggleLayout() {
-        viewModel.setPostLayout(currentPostLayout.next())
+        viewModel.setPostLayout(currentPostLayout.nextWithoutFilmstrip())
     }
 
     override fun onDestroyView() {

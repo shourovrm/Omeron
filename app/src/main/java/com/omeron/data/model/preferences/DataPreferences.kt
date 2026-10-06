@@ -27,10 +27,20 @@ data class DataPreferences(
 }
 
 enum class PostLayout(val value: Int) {
-    CARD(0), GALLERY(1), COMPACT(2);
+    CARD(0), GALLERY(1), COMPACT(2), FILMSTRIP(3);
 
-    // Toggle cycles CARD -> GALLERY -> COMPACT -> CARD.
+    // Toggle cycles CARD -> GALLERY -> COMPACT -> FILMSTRIP -> CARD. The persisted values stay
+    // fixed (they are stored in DataStore), so the cycle order follows declaration order only.
     fun next(): PostLayout = values()[(ordinal + 1) % values().size]
+
+    // Screens that show posts of every kind (search results, user posts) have no media-only
+    // grid, so they show the closest tile layout instead and skip the grid when toggling.
+    fun withoutFilmstrip(): PostLayout = if (this == FILMSTRIP) GALLERY else this
+
+    fun nextWithoutFilmstrip(): PostLayout {
+        val following = withoutFilmstrip().next()
+        return if (following == FILMSTRIP) following.next() else following
+    }
 
     companion object {
         fun fromValue(value: Int): PostLayout = values().find { it.value == value } ?: CARD

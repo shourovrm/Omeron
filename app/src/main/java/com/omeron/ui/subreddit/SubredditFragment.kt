@@ -42,8 +42,10 @@ import com.omeron.ui.sort.SortFragment
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.addLoadStateListener
 import com.omeron.util.extension.applyWindowInsets
+import com.omeron.util.extension.filteredForLayout
 import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.layoutManager
+import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.clearWindowInsetsListener
@@ -175,7 +177,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             }
 
             launch {
-                viewModel.postDataFlow.collectLatest {
+                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout).collectLatest {
                     postListAdapter.submitData(it)
                 }
             }
@@ -289,9 +291,9 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         postListAdapter.postLayout = layout
         if (appliedPostLayout == layout) return
         appliedPostLayout = layout
-        bindingContent.listPost.layoutManager = layout.layoutManager(requireContext())
+        bindingContent.listPost.layoutManager = layout.layoutManager(requireContext()) { postListAdapter.itemCount }
         bindingContent.layoutToggleCard.setIcon(layout.iconRes())
-        bindingContent.layoutToggleCard.contentDescription = getString(R.string.layout_toggle)
+        bindingContent.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
     }
 
     private fun initResultListener() {

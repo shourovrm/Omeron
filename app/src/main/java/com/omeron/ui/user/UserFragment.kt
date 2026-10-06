@@ -29,6 +29,7 @@ import com.omeron.ui.sort.SortFragment
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.scrollToTop
@@ -99,6 +100,7 @@ class UserFragment : BaseFragment() {
                 viewModel.postLayout.collect { layout ->
                     currentPostLayout = layout
                     binding.layoutToggleCard.setIcon(layout.iconRes())
+                    binding.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
                 }
             }
 
@@ -188,7 +190,7 @@ class UserFragment : BaseFragment() {
     }
 
     private fun toggleLayout() {
-        viewModel.setPostLayout(currentPostLayout.next())
+        viewModel.setPostLayout(currentPostLayout.nextWithoutFilmstrip())
     }
 
     private fun initResultListener() {

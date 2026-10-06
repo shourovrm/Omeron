@@ -57,7 +57,8 @@ class SearchViewModel @Inject constructor(
         preferencesRepository.getContentPreferences()
 
     // Search results aren't scoped to one subreddit, so this is always the global default.
-    val postLayout: Flow<PostLayout> = preferencesRepository.getPostLayout()
+    val postLayout: Flow<PostLayout> =
+        preferencesRepository.getPostLayout().map { it.withoutFilmstrip() }
 
     private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
     val sorting: StateFlow<Sorting> = _sorting

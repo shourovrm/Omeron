@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image_filmstrip_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"
+        android:importantForAccessibility="no"
+        tools:src="@tools:sample/backgrounds/scenic"/>
+
+    <LinearLayout
+        android:id="@+id/badge_filmstrip"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_margin="6dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="6dp"
+        android:background="@drawable/filmstrip_badge_background"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="@id/image_filmstrip_preview"
+        app:layout_constraintTop_toTopOf="@id/image_filmstrip_preview">
+
+        <ImageView
+            android:id="@+id/icon_filmstrip_badge"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
+            android:importantForAccessibility="no"
+            app:tint="@color/white"
+            tools:src="@drawable/ic_play"/>
+
+        <TextView
+            android:id="@+id/text_filmstrip_badge_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="5"
+            tools:visibility="visible"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

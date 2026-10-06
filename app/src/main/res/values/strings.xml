@@ -100,8 +100,17 @@
     <string name="fragment_preferences_label">Preferences</string>
 
     <string name="layout_toggle">Toggle layout</string>
-    <string name="layout_toggle_card">Switch to card layout</string>
-    <string name="layout_toggle_gallery">Switch to gallery layout</string>
+    <string name="layout_toggle_card">Card layout. Tap to change layout</string>
+    <string name="layout_toggle_gallery">Gallery layout. Tap to change layout</string>
+    <string name="layout_toggle_compact">Compact layout. Tap to change layout</string>
+    <string name="layout_toggle_filmstrip">Filmstrip layout. Tap to change layout</string>
+    <string name="filmstrip_tile_image">Image: %1$s</string>
+    <string name="filmstrip_tile_video">Video: %1$s</string>
+    <string name="filmstrip_tile_gallery">Gallery: %1$s</string>
+    <plurals name="filmstrip_tile_gallery_count">
+        <item quantity="one">Gallery, %1$d image: %2$s</item>
+        <item quantity="other">Gallery, %1$d images: %2$s</item>
+    </plurals>
     <string name="post_age_separated" translatable="false">· %1$s</string>
     <string name="post_save_description">Save post</string>
     <string name="post_unsave_description">Remove from saved</string>

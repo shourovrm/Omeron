@@ -55,7 +55,7 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
                     adapter.postLayout = layout
                     if (appliedPostLayout == layout) return@collect
                     appliedPostLayout = layout
-                    binding.listContent.layoutManager = layout.layoutManager(requireContext())
+                    binding.listContent.layoutManager = layout.layoutManager(requireContext()) { adapter.itemCount }
                 }
             }
         }

@@ -11,6 +11,7 @@ import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.databinding.ItemPostCompactBinding
+import com.omeron.databinding.ItemPostFilmstripBinding
 import com.omeron.databinding.ItemPostGalleryBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
@@ -88,7 +89,7 @@ class PostListAdapter(
             }
         }
 
-    // Card vs gallery is a full re-layout (every view type changes), so a full rebind is fine here.
+    // Switching layout is a full re-layout (every view type changes), so a full rebind is fine here.
     var postLayout: PostLayout = PostLayout.CARD
         set(value) {
             if (field != value) {
@@ -152,6 +153,11 @@ class PostListAdapter(
                 ItemPostCompactBinding.inflate(inflater, parent, false),
                 listener
             )
+            // Filmstrip tile (media posts only, when postLayout == FILMSTRIP)
+            FILMSTRIP_VIEW_TYPE -> PostViewHolder.FilmstripPostViewHolder(
+                ItemPostFilmstripBinding.inflate(inflater, parent, false),
+                listener
+            )
             // Text post
             PostType.TEXT.value -> PostViewHolder.TextPostViewHolder(
                 ItemPostTextBinding.inflate(inflater, parent, false),
@@ -180,6 +186,7 @@ class PostListAdapter(
     override fun getItemViewType(position: Int): Int {
         if (postLayout == PostLayout.GALLERY) return GALLERY_VIEW_TYPE
         if (postLayout == PostLayout.COMPACT) return COMPACT_VIEW_TYPE
+        if (postLayout == PostLayout.FILMSTRIP) return FILMSTRIP_VIEW_TYPE
         return getItem(position)?.type?.value ?: -1
     }
 
@@ -194,6 +201,11 @@ class PostListAdapter(
             )
             // Compact row
             COMPACT_VIEW_TYPE -> (holder as PostViewHolder.CompactPostViewHolder).bind(
+                item,
+                contentPreferences
+            )
+            // Filmstrip tile
+            FILMSTRIP_VIEW_TYPE -> (holder as PostViewHolder.FilmstripPostViewHolder).bind(
                 item,
                 contentPreferences
             )
@@ -231,6 +243,7 @@ class PostListAdapter(
         } else {
             val item = getItem(position) ?: return
             (holder as? PostViewHolder)?.update(item)
+            (holder as? PostViewHolder.FilmstripPostViewHolder)?.update(item)
         }
     }
 
@@ -244,6 +257,7 @@ class PostListAdapter(
         // into a single compact view type.
         const val GALLERY_VIEW_TYPE = 100
         const val COMPACT_VIEW_TYPE = 101
+        const val FILMSTRIP_VIEW_TYPE = 102
 
         private val POST_COMPARATOR = object : DiffUtil.ItemCallback<PostEntity>() {
             override fun areItemsTheSame(oldItem: PostEntity, newItem: PostEntity): Boolean {
