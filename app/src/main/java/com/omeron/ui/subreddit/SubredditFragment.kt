@@ -464,6 +464,10 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         (binding.subredditContent.pullRefresh.refreshView as? PullToRefreshLayout.RefreshCallback)
             ?.reset()
 
+        // The next view starts with the default layout manager and toggle icon, so the saved
+        // layout has to be applied to it again.
+        appliedPostLayout = null
+
         // Save progress of MotionLayout to restore it in case of fragment recreation
         // currentState is not always properly updated
         viewModel.contentLayoutProgress = bindingContent.layoutRoot.progress

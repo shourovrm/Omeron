@@ -523,6 +523,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
         viewModel.isDrawerOpen = isDrawerOpen
 
+        // The next view starts with the default layout manager and toggle icon, so the saved
+        // layout has to be applied to it again.
+        appliedPostLayout = null
+
         _binding = null
     }
 
