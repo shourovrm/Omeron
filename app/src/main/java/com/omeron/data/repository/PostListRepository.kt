@@ -19,6 +19,7 @@ import com.omeron.data.remote.api.reddit.model.AboutChild
 import com.omeron.data.remote.api.reddit.model.AboutUserChild
 import com.omeron.data.remote.api.reddit.model.Child
 import com.omeron.data.remote.api.reddit.model.Listing
+import com.omeron.data.remote.api.reddit.model.PostChild
 import com.omeron.data.remote.api.reddit.model.MoreChildren
 import com.omeron.data.remote.api.reddit.source.CurrentSource
 import com.omeron.data.remote.datasource.CommentsDataSource
@@ -30,11 +31,11 @@ import com.omeron.data.remote.datasource.SmartPostListDataSource
 import com.omeron.data.remote.datasource.SubredditSearchPostDataSource
 import com.omeron.data.remote.datasource.UserPostsDataSource
 import com.omeron.di.DispatchersModule.DefaultDispatcher
-import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,12 +43,17 @@ import javax.inject.Singleton
 class PostListRepository @Inject constructor(
     private val source: CurrentSource,
     private val redditDatabase: RedditDatabase,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-    @MainImmediateDispatcher private val mainImmediateDispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) {
 
     fun getPost(permalink: String, sorting: Sorting): Flow<List<Listing>> = flow {
-        emit(source.getPost(permalink, sort = sorting.generalSorting))
+        val listings = source.getPost(permalink, sort = sorting.generalSorting)
+        // A removed post or an interstitial page scrapes to an empty listing. Failing here, inside
+        // the flow, lets callers' catch operators show their error state instead of crashing
+        // when the post is read afterwards.
+        val hasPost = listings.firstOrNull()?.data?.children?.firstOrNull() is PostChild
+        if (!hasPost) throw IOException("Post not found")
+        emit(listings)
     }
 
     fun getMoreChildren(children: String, linkId: String, depth: Int = 0): Flow<MoreChildren> =
@@ -67,8 +73,7 @@ class PostListRepository @Inject constructor(
                 source,
                 listOf(subreddit),
                 sorting,
-                defaultDispatcher,
-                mainImmediateDispatcher
+                defaultDispatcher
             )
         }.flow
     }
@@ -83,8 +88,7 @@ class PostListRepository @Inject constructor(
                 source,
                 subreddit,
                 sorting,
-                defaultDispatcher,
-                mainImmediateDispatcher
+                defaultDispatcher
             )
         }.flow
     }
@@ -204,8 +208,7 @@ class PostListRepository @Inject constructor(
                 subreddits,
                 users,
                 sorting,
-                defaultDispatcher,
-                mainImmediateDispatcher
+                defaultDispatcher
             )
         }.flow
     }

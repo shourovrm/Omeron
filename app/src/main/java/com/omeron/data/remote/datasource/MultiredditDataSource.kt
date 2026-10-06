@@ -11,10 +11,10 @@ import com.omeron.util.RedditUtil
 import com.omeron.util.extension.interlace
 import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
@@ -32,11 +32,8 @@ class MultiredditDataSource(
     private val subreddits: List<String>,
     private val users: List<String>,
     private val sorting: Sorting,
-    private val defaultDispatcher: CoroutineDispatcher,
-    mainImmediateDispatcher: CoroutineDispatcher
+    private val defaultDispatcher: CoroutineDispatcher
 ) : PagingSource<List<String>, Child>() {
-
-    private val scope = CoroutineScope(mainImmediateDispatcher + SupervisorJob())
 
     private val chunkSize by lazy {
         if (subreddits.isEmpty()) 1 else {
@@ -59,6 +56,12 @@ class MultiredditDataSource(
             LoadResult.Error(exception)
         } catch (exception: JsonDataException) {
             LoadResult.Error(exception)
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            // Scraper failures (malformed HTML, missing nodes) are not IO errors but must not
+            // take the app down.
+            LoadResult.Error(exception)
         }
     }
 
@@ -74,30 +77,38 @@ class MultiredditDataSource(
             return LoadResult.Page(emptyList(), null, null)
         }
 
-        // Subreddit chunks occupy key slots [0, subredditChunks.size), users occupy the rest.
-        val subredditJobs = subredditChunks.mapIndexed { index, chunk ->
-            scope.async {
-                source.getSubreddit(chunk, sorting.generalSorting, sorting.timeSorting, params.key?.getOrNull(index))
-            }
-        }
-        val userJobs = users.mapIndexed { index, user ->
-            val keyIndex = subredditChunks.size + index
-            scope.async {
-                source.getUserPosts(user, sorting.generalSorting, sorting.timeSorting, params.key?.getOrNull(keyIndex))
-            }
-        }
+        // A source whose last page returned no `after` is stored as "" in the key. It must be
+        // skipped: requesting it again with a null `after` would return its first page.
+        val isFirstLoad = params.key == null
+        fun isExhausted(keyIndex: Int) = !isFirstLoad && params.key?.getOrNull(keyIndex).isNullOrEmpty()
 
-        val responses = (subredditJobs + userJobs).awaitAll()
+        // Subreddit chunks occupy key slots [0, subredditChunks.size), users occupy the rest.
+        // Skipped sources yield null so response positions stay aligned with key slots.
+        val responses = coroutineScope {
+            val subredditJobs = subredditChunks.mapIndexed { index, chunk ->
+                async {
+                    if (isExhausted(index)) return@async null
+                    source.getSubreddit(chunk, sorting.generalSorting, sorting.timeSorting, params.key?.getOrNull(index))
+                }
+            }
+            val userJobs = users.mapIndexed { index, user ->
+                val keyIndex = subredditChunks.size + index
+                async {
+                    if (isExhausted(keyIndex)) return@async null
+                    source.getUserPosts(user, sorting.generalSorting, sorting.timeSorting, params.key?.getOrNull(keyIndex))
+                }
+            }
+            (subredditJobs + userJobs).awaitAll()
+        }
 
         val data = withContext(defaultDispatcher) {
-            responses.map { it.data.children }.sort(sorting)
+            responses.map { it?.data?.children.orEmpty() }.sort(sorting)
         }
 
-        val after = withContext(defaultDispatcher) {
-            responses.map { it.data.after ?: "" }
-        }
+        val after = responses.map { it?.data?.after.orEmpty() }
+        val nextKey = if (after.all { it.isEmpty() }) null else after
 
-        return LoadResult.Page(data, null, after)
+        return LoadResult.Page(data, null, nextKey)
     }
 
     private fun List<List<Child>>.sort(sorting: Sorting): List<Child> {

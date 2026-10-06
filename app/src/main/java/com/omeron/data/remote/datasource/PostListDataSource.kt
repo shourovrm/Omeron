@@ -8,6 +8,7 @@ import com.omeron.data.remote.api.reddit.model.Child
 import com.omeron.data.remote.api.reddit.model.Listing
 import com.omeron.data.remote.api.reddit.source.CurrentSource
 import com.squareup.moshi.JsonDataException
+import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -32,6 +33,10 @@ open class PostListDataSource(
             Log.e("PostListDataSource", "Error", exception)
             LoadResult.Error(exception)
         } catch (exception: JsonDataException) {
+            LoadResult.Error(exception)
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
             LoadResult.Error(exception)
         }
     }

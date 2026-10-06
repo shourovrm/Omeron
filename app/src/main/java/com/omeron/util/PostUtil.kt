@@ -54,6 +54,6 @@ object PostUtil {
     }
 
     fun getCommentsData(listings: List<Listing>): List<Child> {
-        return listings[1].data.children
+        return listings.getOrNull(1)?.data?.children.orEmpty()
     }
 }

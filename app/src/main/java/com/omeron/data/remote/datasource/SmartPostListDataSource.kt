@@ -11,10 +11,10 @@ import com.omeron.util.RedditUtil
 import com.omeron.util.extension.interlace
 import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
@@ -24,11 +24,8 @@ class SmartPostListDataSource(
     private val source: CurrentSource,
     private val query: List<String>,
     private val sorting: Sorting,
-    private val defaultDispatcher: CoroutineDispatcher,
-    mainImmediateDispatcher: CoroutineDispatcher
+    private val defaultDispatcher: CoroutineDispatcher
 ) : PagingSource<List<String>, Child>() {
-
-    private val scope = CoroutineScope(mainImmediateDispatcher + SupervisorJob())
 
     private val joinedQuery by lazy { RedditUtil.joinSubredditList(query) }
     private val chunkSize by lazy {
@@ -46,6 +43,12 @@ class SmartPostListDataSource(
         } catch (exception: HttpException) {
             LoadResult.Error(exception)
         } catch (exception: JsonDataException) {
+            LoadResult.Error(exception)
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            // Scraper failures (malformed HTML, missing nodes) are not IO errors but must not
+            // take the app down.
             LoadResult.Error(exception)
         }
     }
@@ -69,33 +72,39 @@ class SmartPostListDataSource(
                 .mapIndexed { index, chunkedList -> chunkedList to params.key?.getOrNull(index) }
         }
 
-        // Step 4: Request the posts for each chunk in parallel
-        val responses = queries
-            .map {
-                scope.async {
-                    source.getSubreddit(
-                        it.first,
-                        sorting.generalSorting,
-                        sorting.timeSorting,
-                        it.second
-                    )
+        // Step 4: Request the posts for each chunk in parallel. A chunk whose last page returned
+        // no `after` is stored as "" in the key and is skipped: requesting it again with a null
+        // `after` would return its first page.
+        val isFirstLoad = params.key == null
+        val responses = coroutineScope {
+            queries
+                .map { (chunkQuery, after) ->
+                    async {
+                        if (!isFirstLoad && after.isNullOrEmpty()) return@async null
+                        source.getSubreddit(
+                            chunkQuery,
+                            sorting.generalSorting,
+                            sorting.timeSorting,
+                            after
+                        )
+                    }
                 }
-            }
-            .awaitAll()
+                .awaitAll()
+        }
 
         // Step 5: Flatten (and sort) the responses in order to have a single list of posts
         val data = withContext(defaultDispatcher) {
             responses
-                .map { it.data.children }
+                .map { it?.data?.children.orEmpty() }
                 .sort(sorting)
         }
 
-        // Step 6: Retrieve the `after` key for each response and create a list out of them
-        val after = withContext(defaultDispatcher) {
-            responses.map { it.data.after ?: "" }
-        }
+        // Step 6: Retrieve the `after` key for each response and create a list out of them.
+        // Once every chunk is exhausted there is no next page.
+        val after = responses.map { it?.data?.after.orEmpty() }
+        val nextKey = if (after.all { it.isEmpty() }) null else after
 
-        return LoadResult.Page(data, null, after)
+        return LoadResult.Page(data, null, nextKey)
     }
 
     private suspend fun getData(params: LoadParams<List<String>>): LoadResult<List<String>, Child> {
