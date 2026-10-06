@@ -6,6 +6,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 object DateUtil {
@@ -75,8 +76,14 @@ object DateUtil {
         return DateFormat.getTimeInstance(DateFormat.MEDIUM).format(Date(timeInMillis))
     }
 
-    fun getDateFromString(pattern: String, string: String): Date? {
-        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    fun getDateFromString(
+        pattern: String,
+        string: String,
+        timeZone: TimeZone = TimeZone.getDefault()
+    ): Date? {
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault()).apply {
+            this.timeZone = timeZone
+        }
         return formatter.parse(string)
     }
 }

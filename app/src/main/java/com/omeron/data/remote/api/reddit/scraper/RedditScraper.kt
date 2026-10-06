@@ -9,6 +9,7 @@ import com.omeron.util.extension.toSeconds
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Element
+import java.util.TimeZone
 
 abstract class RedditScraper<Result>(
     ioDispatcher: CoroutineDispatcher
@@ -127,7 +128,9 @@ abstract class RedditScraper<Result>(
 
     protected fun Element.toTimeInSeconds(): Long {
         val datetime = attr("datetime")
-        val time = DateUtil.getDateFromString(DATETIME_FORMAT, datetime)?.time
+        // old.reddit emits "2026-06-13T09:47:04+00:00". The pattern stops before the offset (the
+        // 'X' pattern letter needs API 24, minSdk is 23), so the always-UTC zone is applied here.
+        val time = DateUtil.getDateFromString(DATETIME_FORMAT, datetime, TimeZone.getTimeZone("UTC"))?.time
             ?: System.currentTimeMillis()
 
         return time.toSeconds()
