@@ -71,6 +71,8 @@ class RedditLoginActivity : AppCompatActivity() {
         done = true
         lifecycleScope.launch {
             preferencesRepository.setRedditCookies(session)
+            // Lets a screen that sent the user here refresh once the session is stored.
+            setResult(RESULT_OK)
             finish()
         }
     }

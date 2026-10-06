@@ -148,6 +148,8 @@
 
     <string name="network_retry_message">Something went wrong</string>
     <string name="network_retry_action">Retry</string>
+    <string name="login_required_message">Reddit needs you to log in to load posts.</string>
+    <string name="login_required_action">Log in</string>
 
     <string name="dialog_subreddit_not_found_title">Subreddit not found</string>
     <string name="dialog_subreddit_not_found_body">This subreddit does not exist or may have been banned.</string>

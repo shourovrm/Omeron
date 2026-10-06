@@ -1,16 +1,18 @@
 package com.omeron.ui.postlist
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
@@ -32,10 +34,12 @@ import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.widget.PullToRefreshLayout
 import com.omeron.ui.common.widget.PullToRefreshView
 import com.omeron.ui.loadstate.NetworkLoadStateAdapter
+import com.omeron.ui.login.RedditLoginActivity
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.applyMarginWindowInsets
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.isLoginRequired
 import com.omeron.util.extension.layoutManager
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.betterSmoothScrollToPosition
@@ -91,6 +95,15 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
     private lateinit var postListAdapter: PostListAdapter
 
+    // True while the refresh error on screen is the login wall rather than a network failure.
+    private var isShowingLoginPrompt = false
+
+    private val loginLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) postListAdapter.refresh()
+    }
+
     // Guards against layoutManager reassignment on same-value emissions, which resets scroll
     // position (see appliedPostLayout usage in applyPostLayout).
     private var appliedPostLayout: PostLayout? = null
@@ -123,7 +136,9 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
         binding.infoRetry.apply {
             applyMarginWindowInsets(left = false, right = false, bottom = false)
-            setActionClickListener { postListAdapter.retry() }
+            setActionClickListener {
+                if (isShowingLoginPrompt) openLogin() else postListAdapter.retry()
+            }
         }
     }
 
@@ -273,6 +288,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         }
     }
 
+    private fun openLogin() {
+        loginLauncher.launch(Intent(requireContext(), RedditLoginActivity::class.java))
+    }
+
     private fun initRecyclerView() {
         postListAdapter = PostListAdapter(repository, this, this).apply {
             stateRestorationPolicy = PREVENT_WHEN_EMPTY
@@ -291,7 +310,18 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
                 val errorState = loadState.source.refresh as? LoadState.Error
                 errorState?.let {
-                    binding.infoRetry.show()
+                    isShowingLoginPrompt = it.error.isLoginRequired
+                    binding.infoRetry.apply {
+                        setMessage(
+                            if (isShowingLoginPrompt) R.string.login_required_message
+                            else R.string.network_retry_message
+                        )
+                        setActionText(
+                            if (isShowingLoginPrompt) R.string.login_required_action
+                            else R.string.network_retry_action
+                        )
+                        show()
+                    }
                 }
             }
         }
@@ -300,8 +330,8 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             applyWindowInsets(left = false, top = false, right = false)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = postListAdapter.withLoadStateHeaderAndFooter(
-                header = NetworkLoadStateAdapter { postListAdapter.retry() },
-                footer = NetworkLoadStateAdapter { postListAdapter.retry() }
+                header = NetworkLoadStateAdapter(::openLogin) { postListAdapter.retry() },
+                footer = NetworkLoadStateAdapter(::openLogin) { postListAdapter.retry() }
             )
         }
 

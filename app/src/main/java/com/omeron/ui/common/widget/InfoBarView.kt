@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -97,6 +98,14 @@ class InfoBarView @JvmOverloads constructor(
         }
 
         transition.slideEdge = slideEdge
+    }
+
+    fun setMessage(@StringRes messageRes: Int) {
+        message.setText(messageRes)
+    }
+
+    fun setActionText(@StringRes actionRes: Int) {
+        action.setText(actionRes)
     }
 
     fun setActionClickListener(action: () -> Unit) {
