@@ -20,8 +20,10 @@ import com.omeron.databinding.ItemPostLinkBinding
 import com.omeron.databinding.ItemPostTextBinding
 import com.omeron.ui.common.widget.AwardView
 import com.omeron.util.ClickableMovementMethod
+import com.omeron.util.DateUtil
 import com.omeron.util.extension.load
 import com.omeron.util.extension.setRatio
+import com.omeron.util.extension.setSaved
 
 abstract class PostViewHolder(
     itemView: View,
@@ -84,7 +86,7 @@ abstract class PostViewHolder(
         }
 
         postInfoBinding.textPostAuthor.apply {
-            setTextColor(ContextCompat.getColor(context, postEntity.posterType.color))
+            setTextColor(ContextCompat.getColor(context, postEntity.authorColor))
         }
 
         when {
@@ -126,12 +128,12 @@ abstract class PostViewHolder(
             else -> postInfoBinding.groupCrosspost.isVisible = false
         }
 
-        postMetricsBinding.buttonSave.isChecked = postEntity.saved
+        postMetricsBinding.setSaved(postEntity.saved)
     }
 
     open fun update(post: PostEntity) {
         title.setTextColor(ContextCompat.getColor(title.context, post.textColor))
-        postMetricsBinding.buttonSave.isChecked = post.saved
+        postMetricsBinding.setSaved(post.saved)
     }
 
     class ImagePostViewHolder(
@@ -248,20 +250,10 @@ abstract class PostViewHolder(
 
             binding.textPostSelf.apply {
                 if (postEntity.shouldShowPreview(contentPreferences) && previewText != null) {
-                    binding.textPostSelfCard.visibility = View.VISIBLE
+                    visibility = View.VISIBLE
                     setText(previewText, false)
-                    setTextColor(ContextCompat.getColor(context, postEntity.textColor))
                 } else {
-                    binding.textPostSelfCard.visibility = View.GONE
-                }
-            }
-        }
-
-        override fun update(post: PostEntity) {
-            super.update(post)
-            if (binding.textPostSelfCard.isVisible) {
-                binding.textPostSelf.apply {
-                    setTextColor(ContextCompat.getColor(context, post.textColor))
+                    visibility = View.GONE
                 }
             }
         }
@@ -376,24 +368,48 @@ abstract class PostViewHolder(
         }
 
         fun bind(postEntity: PostEntity, contentPreferences: ContentPreferences) {
+            binding.avatarCompactCommunity.setText(postEntity.subredditName)
+            binding.textCompactSubreddit.text = postEntity.subreddit
+            binding.textCompactAge.text = itemView.context.getString(
+                R.string.post_age_separated,
+                DateUtil.getTimeDifference(itemView.context, postEntity.created, false)
+            )
+
             binding.textCompactTitle.apply {
                 text = postEntity.title
                 setTextColor(ContextCompat.getColor(context, postEntity.textColor))
             }
-            binding.textCompactInfo.text = itemView.context.getString(
-                R.string.compact_post_info, postEntity.subreddit, postEntity.score
-            )
 
-            binding.imageCompactPreview.load(
-                postEntity.preview,
-                !postEntity.shouldShowPreview(contentPreferences)
-            ) {
-                error(R.drawable.preview_image_fallback)
-                fallback(R.drawable.preview_image_fallback)
+            // Plain text keeps the excerpt in the secondary colour; the styled preview text would
+            // bring its own link and emphasis colours.
+            val excerpt = postEntity.previewText
+                ?.takeIf { postEntity.shouldShowPreview(contentPreferences) }
+                ?.toString()
+                ?.trim()
+            binding.textCompactExcerpt.apply {
+                text = excerpt
+                isVisible = !excerpt.isNullOrEmpty()
+            }
+
+            binding.textCompactScore.text = postEntity.score
+            binding.textCompactComments.text = postEntity.commentsNumber
+
+            val hasPreview = !postEntity.preview.isNullOrEmpty()
+            binding.imageCompactPreview.isVisible = hasPreview
+            if (hasPreview) {
+                binding.imageCompactPreview.load(
+                    postEntity.preview,
+                    !postEntity.shouldShowPreview(contentPreferences)
+                ) {
+                    error(R.drawable.image_placeholder)
+                    fallback(R.drawable.image_placeholder)
+                }
             }
 
             binding.buttonCompactTypeIndicator.apply {
                 when {
+                    !hasPreview -> visibility = View.GONE
+
                     postEntity.type == PostType.VIDEO -> {
                         visibility = View.VISIBLE
                         setIcon(R.drawable.ic_play)

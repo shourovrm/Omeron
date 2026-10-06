@@ -38,37 +38,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_post_title"
-        app:layout_constraintBottom_toTopOf="@id/text_post_self_card"
+        app:layout_constraintBottom_toTopOf="@id/text_post_self"
         android:layout_marginTop="@dimen/post_margin_top_small"
         layout="@layout/include_post_flairs"/>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/text_post_self_card"
+    <com.omeron.ui.common.widget.RedditTextView
+        android:id="@+id/text_post_self"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/include_post_flairs"
         app:layout_constraintBottom_toTopOf="@id/awards"
-        app:layout_constraintHeight_max="@dimen/post_text_max_height"
-        android:layout_marginHorizontal="@dimen/post_content_margin_horizontal"
-        android:layout_marginTop="@dimen/post_margin_top_large"
-        app:cardCornerRadius="@dimen/post_text_card_radius"
-        app:cardElevation="@dimen/post_elevation">
-
-        <com.omeron.ui.common.widget.RedditTextView
-            android:id="@+id/text_post_self"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/post_text_padding" />
-
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_marginHorizontal="@dimen/post_title_margin"
+        android:layout_marginTop="@dimen/post_margin_top_small"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:textColor="@color/text_color_secondary"/>
 
     <com.omeron.ui.common.widget.AwardView
         android:id="@+id/awards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/text_post_self_card"
+        app:layout_constraintTop_toBottomOf="@id/text_post_self"
         app:layout_constraintBottom_toTopOf="@id/include_post_metrics"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/post_margin_top_small"

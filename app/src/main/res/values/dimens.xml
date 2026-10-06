@@ -25,6 +25,10 @@
     <dimen name="post_margin_top_large">16dp</dimen>
 
     <dimen name="post_icon_size">24dp</dimen>
+    <dimen name="post_action_button_size">48dp</dimen>
+    <dimen name="post_action_button_padding">12dp</dimen>
+    <dimen name="post_avatar_size">20dp</dimen>
+    <dimen name="post_meta_icon_size">14dp</dimen>
     <dimen name="post_icon_text_margin">5dp</dimen>
 
     <dimen name="post_awards_height">38dp</dimen>
@@ -32,7 +36,6 @@
     <dimen name="post_flair_padding">4dp</dimen>
     <dimen name="post_flair_gap">8dp</dimen>
 
-    <dimen name="post_divider_inset">64dp</dimen>
 
     <dimen name="post_type_indicator_margin">16dp</dimen>
 

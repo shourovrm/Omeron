@@ -15,6 +15,8 @@
 
     <color name="card_background_color">#202024</color>
 
+    <color name="post_divider_color">#2E2E33</color>
+
     <color name="admin_color">#EF5350</color>
     <color name="moderator_color">#66BB6A</color>
 

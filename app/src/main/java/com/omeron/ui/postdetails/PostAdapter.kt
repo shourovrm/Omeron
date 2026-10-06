@@ -17,6 +17,7 @@ import com.omeron.ui.common.widget.RedditView
 import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.util.extension.load
 import com.omeron.util.extension.setRatio
+import com.omeron.util.extension.setSaved
 
 class PostAdapter(
     private val contentPreferences: ContentPreferences,
@@ -92,7 +93,7 @@ class PostAdapter(
 
             binding.includePostInfo.groupCrosspost.isVisible = false
             binding.includePostInfo.textPostAuthor.apply {
-                setTextColor(ContextCompat.getColor(context, post.posterType.color))
+                setTextColor(ContextCompat.getColor(context, post.authorColor))
             }
 
             bindText(post)
@@ -197,14 +198,14 @@ class PostAdapter(
                 else -> binding.includeCrosspost.root.isVisible = false
             }
 
-            binding.includePostMetrics.buttonSave.isChecked = post.saved
+            binding.includePostMetrics.setSaved(post.saved)
         }
 
         fun update(post: PostEntity) {
             binding.includePostMetrics.post = post
             binding.includePostFlairs.post = post
 
-            binding.includePostMetrics.buttonSave.isChecked = post.saved
+            binding.includePostMetrics.setSaved(post.saved)
 
             bindText(post)
 

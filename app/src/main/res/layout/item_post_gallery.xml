@@ -38,13 +38,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/post_margin_top_small"
-        android:maxLines="2"
+        android:maxLines="3"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearancePostTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_gallery_preview"
-        tools:text="This is a compact gallery tile title that can wrap onto two lines"/>
+        tools:text="This is a compact gallery tile title that can wrap onto three lines"/>
 
     <TextView
         android:id="@+id/text_gallery_score"

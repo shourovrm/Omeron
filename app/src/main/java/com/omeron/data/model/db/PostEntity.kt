@@ -142,6 +142,15 @@ data class PostEntity @JvmOverloads constructor(
     val textColor: Int
         get() = if (seen) R.color.text_color_post_seen else R.color.text_color
 
+    // Scraped subreddit names arrive as "r/name"; avatars and navigation want the bare name.
+    val subredditName: String
+        get() = subreddit.removePrefix("r/")
+
+    // Regular authors read as secondary text so the subreddit stays the header's focal point;
+    // admins and moderators keep their role colour.
+    val authorColor: Int
+        get() = if (posterType == PosterType.REGULAR) R.color.text_color_secondary else posterType.color
+
     fun shouldShowPreview(contentPreferences: ContentPreferences): Boolean {
         return (contentPreferences.showNsfwPreview || !isOver18) &&
                 (contentPreferences.showSpoilerPreview || !isSpoiler)
