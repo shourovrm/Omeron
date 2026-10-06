@@ -40,6 +40,17 @@ sealed interface PostMediaState {
 }
 
 /**
+ * Swaps in the full post for every feed post that was fetched in full (search results, which the
+ * feed only lists as pointers). Keeps order and length, so the pager never shifts.
+ */
+fun withHydratedPosts(
+    posts: List<PostEntity>,
+    hydratedPosts: Map<String, PostEntity>
+): List<PostEntity> {
+    return posts.map { post -> hydratedPosts[post.id] ?: post }
+}
+
+/**
  * Flattens posts into the pager's frames. A gallery contributes one frame per image, so swiping
  * moves through a gallery and on to the next post without special cases.
  *

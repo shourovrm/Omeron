@@ -20,7 +20,9 @@ class FilmstripFramesTest {
         id: String,
         type: PostType = PostType.IMAGE,
         mediaType: MediaType = MediaType.IMAGE,
-        gallery: List<GalleryMedia> = emptyList()
+        gallery: List<GalleryMedia> = emptyList(),
+        url: String = "https://example.com/$id",
+        preview: String? = "https://preview/$id.jpg"
     ) = PostEntity(
         id = id,
         subreddit = "r/test",
@@ -35,7 +37,7 @@ class FilmstripFramesTest {
         selfTextHtml = null,
         suggestedSorting = Sorting(Sort.BEST),
         isOver18 = false,
-        preview = "https://preview/$id.jpg",
+        preview = preview,
         isSpoiler = false,
         isArchived = false,
         isLocked = false,
@@ -44,7 +46,7 @@ class FilmstripFramesTest {
         commentsNumber = "0",
         permalink = "/r/test/comments/$id",
         isStickied = false,
-        url = "https://example.com/$id",
+        url = url,
         created = 0L,
         mediaType = mediaType,
         mediaUrl = "https://media/$id",
@@ -171,5 +173,90 @@ class FilmstripFramesTest {
         )
 
         assertEquals(FrameStatus.FAILED, frames.single().status)
+    }
+
+    // A search result as the scraper maps it: no link, only a thumbnail.
+    private fun searchResult(id: String) = post(
+        id,
+        type = PostType.LINK,
+        mediaType = MediaType.LINK,
+        url = "",
+        preview = "https://thumbs/$id.jpg"
+    )
+
+    private fun fullPost(id: String, mediaType: MediaType = MediaType.IMAGE) = post(
+        id,
+        mediaType = mediaType,
+        preview = "https://preview/full-$id.jpg"
+    )
+
+    @Test
+    fun `search result is a loading placeholder that shows its thumbnail`() {
+        val frames = buildFilmstripFrames(listOf(searchResult("s")), emptyMap(), noInstantMedia)
+
+        assertEquals("s#0", frames.single().id)
+        assertEquals(FrameStatus.LOADING, frames.single().status)
+        assertEquals("https://thumbs/s.jpg", frames.single().post.preview)
+    }
+
+    @Test
+    fun `hydrated posts replace search results in place and keep the order`() {
+        val posts = listOf(searchResult("a"), searchResult("b"), searchResult("c"))
+        val hydrated = mapOf("b" to fullPost("b"))
+
+        val merged = withHydratedPosts(posts, hydrated)
+
+        assertEquals(listOf("a", "b", "c"), merged.map { it.id })
+        assertEquals(posts[0], merged[0])
+        assertEquals(hydrated.getValue("b"), merged[1])
+        assertEquals(posts[2], merged[2])
+    }
+
+    @Test
+    fun `hydrated gallery gets its frames after the placeholder id`() {
+        val hydratedGallery = post(
+            "s",
+            mediaType = MediaType.REDDIT_GALLERY,
+            gallery = listOf(image("1"), image("2"))
+        )
+
+        val frames = buildFilmstripFrames(
+            withHydratedPosts(listOf(searchResult("s"), searchResult("t")), mapOf("s" to hydratedGallery)),
+            mapOf("s" to PostMediaState.Loading),
+            noInstantMedia
+        )
+
+        assertEquals(listOf("s#0", "s#1", "t#0"), frames.map { it.id })
+        assertEquals(FrameStatus.READY, frames[0].status)
+        assertEquals(FrameStatus.LOADING, frames[2].status)
+        assertEquals(hydratedGallery, frames[0].post)
+    }
+
+    @Test
+    fun `hydrated link post resolved to its thumbnail is one ready image frame`() {
+        val thumbnailFrame = GalleryMedia.singleton(GalleryMedia.Type.IMAGE, "https://thumbs/s.jpg")
+        val hydratedLink = fullPost("s", mediaType = MediaType.LINK)
+
+        val frames = buildFilmstripFrames(
+            withHydratedPosts(listOf(searchResult("s")), mapOf("s" to hydratedLink)),
+            mapOf("s" to PostMediaState.Resolved(thumbnailFrame)),
+            noInstantMedia
+        )
+
+        assertEquals(1, frames.size)
+        assertEquals(FrameStatus.READY, frames.single().status)
+        assertEquals("https://thumbs/s.jpg", frames.single().media?.url)
+    }
+
+    @Test
+    fun `failed hydration keeps the search result as a failed placeholder`() {
+        val frames = buildFilmstripFrames(
+            listOf(searchResult("s")),
+            mapOf("s" to PostMediaState.Failed),
+            noInstantMedia
+        )
+
+        assertEquals(FrameStatus.FAILED, frames.single().status)
+        assertEquals(true, frames.single().post.needsHydration)
     }
 }

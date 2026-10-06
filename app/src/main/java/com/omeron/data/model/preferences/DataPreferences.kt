@@ -33,15 +33,6 @@ enum class PostLayout(val value: Int) {
     // fixed (they are stored in DataStore), so the cycle order follows declaration order only.
     fun next(): PostLayout = values()[(ordinal + 1) % values().size]
 
-    // Screens that show posts of every kind (search results, user posts) have no media-only
-    // grid, so they show the closest tile layout instead and skip the grid when toggling.
-    fun withoutFilmstrip(): PostLayout = if (this == FILMSTRIP) GALLERY else this
-
-    fun nextWithoutFilmstrip(): PostLayout {
-        val following = withoutFilmstrip().next()
-        return if (following == FILMSTRIP) following.next() else following
-    }
-
     companion object {
         fun fromValue(value: Int): PostLayout = values().find { it.value == value } ?: CARD
 

@@ -32,12 +32,23 @@ class FilmstripViewerViewModel @Inject constructor(
 
     private val mediaStates = MutableStateFlow<Map<String, PostMediaState>>(emptyMap())
 
+    // Full posts fetched for feed posts that are only pointers (search results), by feed post id.
+    private val hydratedPosts = MutableStateFlow<Map<String, PostEntity>>(emptyMap())
+
     private val resolutionJobs = mutableMapOf<String, Job>()
 
     private val viewedPostIds = mutableSetOf<String>()
 
-    val frames: StateFlow<List<FilmstripFrame>> = combine(feedHolder.posts, mediaStates) { posts, states ->
-        buildFilmstripFrames(posts, states, ::instantMediaFor)
+    // Posts the user has paged to. A pointer post is only recorded in the history once its full
+    // data is here, because a history entry without a link could not be opened again.
+    private val selectedPostIds = mutableSetOf<String>()
+
+    val frames: StateFlow<List<FilmstripFrame>> = combine(
+        feedHolder.posts,
+        hydratedPosts,
+        mediaStates
+    ) { posts, hydrated, states ->
+        buildFilmstripFrames(withHydratedPosts(posts, hydrated), states, ::instantMediaFor)
     }
         .flowOn(defaultDispatcher)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -80,15 +91,15 @@ class FilmstripViewerViewModel @Inject constructor(
 
     fun onFrameSelected(frame: FilmstripFrame) {
         currentFrameId = frame.id
-        if (viewedPostIds.add(frame.post.id)) {
-            frame.post.seen = true
-            insertPostInHistory(frame.post)
-        }
+        selectedPostIds.add(frame.post.id)
+        // The feed's own entity is what dims the grid tile, so it is marked even before hydration.
+        frame.post.seen = true
+        if (!frame.post.needsHydration) markViewed(frame.post)
         onFramesChanged()
     }
 
     fun retryResolution(postId: String) {
-        val post = feedHolder.posts.value.firstOrNull { it.id == postId } ?: return
+        val post = currentPosts().firstOrNull { it.id == postId } ?: return
         startResolution(post)
     }
 
@@ -102,8 +113,19 @@ class FilmstripViewerViewModel @Inject constructor(
         feedHolder.endSession(lastPostId)
     }
 
+    private fun markViewed(post: PostEntity) {
+        if (viewedPostIds.add(post.id)) {
+            post.seen = true
+            insertPostInHistory(post)
+        }
+    }
+
+    private fun currentPosts(): List<PostEntity> {
+        return withHydratedPosts(feedHolder.posts.value, hydratedPosts.value)
+    }
+
     private fun onFramesChanged() {
-        val posts = feedHolder.posts.value
+        val posts = currentPosts()
         val currentIndex = posts.indexOfFirst { it.id == currentPostId() }
         if (currentIndex < 0) return
 
@@ -119,6 +141,9 @@ class FilmstripViewerViewModel @Inject constructor(
     private fun currentPostId(): String? = currentFrameId?.substringBeforeLast('#')
 
     private fun instantMediaFor(post: PostEntity): List<GalleryMedia>? {
+        // A pointer post has no link yet; building media from its empty link would yield a
+        // broken frame instead of waiting for the full post.
+        if (post.needsHydration) return null
         return mediaResolver.resolveWithoutNetwork(post.mediaUrl, post.mediaType)
     }
 
@@ -135,12 +160,10 @@ class FilmstripViewerViewModel @Inject constructor(
 
         resolutionJobs[post.id] = viewModelScope.launch {
             val outcome = try {
-                PostMediaState.Resolved(mediaResolver.resolve(post.mediaUrl, post.mediaType))
+                val fullPost = if (post.needsHydration) hydrate(post) else post
+                PostMediaState.Resolved(resolveMedia(fullPost, fallbackPreview = post.preview))
             } catch (cancellation: CancellationException) {
                 throw cancellation
-            } catch (unsupported: MediaResolver.UnsupportedMediaException) {
-                // The feed listed it as media, so the preview is the best thing left to show.
-                PostMediaState.Resolved(previewFallback(post))
             } catch (throwable: Throwable) {
                 PostMediaState.Failed
             }
@@ -148,8 +171,36 @@ class FilmstripViewerViewModel @Inject constructor(
         }
     }
 
-    private fun previewFallback(post: PostEntity): List<GalleryMedia> {
-        val preview = post.preview ?: return emptyList()
+    private suspend fun resolveMedia(post: PostEntity, fallbackPreview: String?): List<GalleryMedia> {
+        // A hydrated gallery post already carries its images; resolving it again would fetch the
+        // same page a second time.
+        if (post.gallery.isNotEmpty()) return post.gallery
+
+        return try {
+            mediaResolver.resolve(post.mediaUrl, post.mediaType)
+        } catch (unsupported: MediaResolver.UnsupportedMediaException) {
+            // The feed listed it as media, so the preview is the best thing left to show.
+            previewFallback(post.preview ?: fallbackPreview)
+        }
+    }
+
+    // The frame keeps its place in the pager: the full post replaces the pointer under the same
+    // id, so the overlay and details sheet pick up the body text and domain.
+    private suspend fun hydrate(pointerPost: PostEntity): PostEntity {
+        val fullPost = mediaResolver.fetchFullPost(pointerPost.permalink).apply {
+            seen = pointerPost.seen
+            saved = pointerPost.saved
+        }
+        hydratedPosts.value = hydratedPosts.value + (pointerPost.id to fullPost)
+        if (pointerPost.id in selectedPostIds) {
+            pointerPost.seen = true
+            markViewed(fullPost)
+        }
+        return fullPost
+    }
+
+    private fun previewFallback(preview: String?): List<GalleryMedia> {
+        if (preview == null) return emptyList()
         return GalleryMedia.singleton(GalleryMedia.Type.IMAGE, preview)
     }
 

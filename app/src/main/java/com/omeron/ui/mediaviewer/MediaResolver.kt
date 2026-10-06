@@ -6,6 +6,7 @@ import com.omeron.data.model.GalleryMedia.Type
 import com.omeron.data.model.MediaType
 import com.omeron.data.model.Sort
 import com.omeron.data.model.Sorting
+import com.omeron.data.model.db.PostEntity
 import com.omeron.data.repository.GfycatRepository
 import com.omeron.data.repository.ImgurRepository
 import com.omeron.data.repository.PostListRepository
@@ -118,8 +119,12 @@ class MediaResolver @Inject constructor(
     }
 
     private suspend fun resolveRedditGallery(link: String): List<GalleryMedia> {
-        val permalink = LinkUtil.getPermalinkFromMediaUrl(link)
+        return fetchFullPost(LinkUtil.getPermalinkFromMediaUrl(link)).gallery
+    }
+
+    /** Fetches the whole post behind a permalink, the way the post page does. */
+    suspend fun fetchFullPost(permalink: String): PostEntity {
         val listings = postListRepository.getPost(permalink, Sorting(Sort.BEST)).first()
-        return postMapper.dataToEntity(PostUtil.getPostData(listings)).gallery
+        return postMapper.dataToEntity(PostUtil.getPostData(listings))
     }
 }

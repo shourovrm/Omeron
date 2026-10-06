@@ -212,7 +212,7 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun toggleLayout() {
-        viewModel.setPostLayout(currentPostLayout.nextWithoutFilmstrip())
+        viewModel.setPostLayout(currentPostLayout.next())
     }
 
     override fun onDestroyView() {

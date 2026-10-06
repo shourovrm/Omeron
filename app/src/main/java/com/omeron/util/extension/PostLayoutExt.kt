@@ -53,12 +53,14 @@ fun PostLayout.layoutManager(
 }
 
 // The filter sits downstream of the cached paging flow, so switching layouts re-filters the
-// pages already in memory instead of making the repository fetch them again.
+// pages already in memory instead of making the repository fetch them again. Screens whose posts
+// lack media data (search results) pass their own [isFilmstripMedia].
 fun Flow<PagingData<PostEntity>>.filteredForLayout(
-    layout: Flow<PostLayout>
+    layout: Flow<PostLayout>,
+    isFilmstripMedia: (PostEntity) -> Boolean = PostEntity::hasFilmstripMedia
 ): Flow<PagingData<PostEntity>> = combine(this, layout) { posts, postLayout ->
     if (postLayout == PostLayout.FILMSTRIP) {
-        posts.filter { it.hasFilmstripMedia() }
+        posts.filter(isFilmstripMedia)
     } else {
         posts
     }

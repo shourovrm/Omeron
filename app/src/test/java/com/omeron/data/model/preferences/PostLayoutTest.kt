@@ -56,12 +56,4 @@ class PostLayoutTest {
         assertEquals(PostLayout.FILMSTRIP, PostLayout.COMPACT.next())
         assertEquals(PostLayout.CARD, PostLayout.FILMSTRIP.next())
     }
-
-    @Test
-    fun `screens without a grid show gallery for filmstrip and skip it when toggling`() {
-        assertEquals(PostLayout.GALLERY, PostLayout.FILMSTRIP.withoutFilmstrip())
-        assertEquals(PostLayout.COMPACT, PostLayout.FILMSTRIP.nextWithoutFilmstrip())
-        assertEquals(PostLayout.CARD, PostLayout.COMPACT.nextWithoutFilmstrip())
-        assertEquals(PostLayout.GALLERY, PostLayout.CARD.nextWithoutFilmstrip())
-    }
 }

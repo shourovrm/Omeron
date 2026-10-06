@@ -165,8 +165,28 @@ data class PostEntity @JvmOverloads constructor(
         return isMediaType && !preview.isNullOrBlank()
     }
 
+    // Search results are only pointers: no media type or link, just the thumbnail the result card
+    // shows (which the mapper stores as the preview). So any non-self result with a real thumbnail
+    // image may be media; the viewer finds out for sure once it fetches the full post.
+    fun isFilmstripSearchCandidate(): Boolean {
+        if (isSelf) return false
+        val thumbnail = preview?.trim().orEmpty()
+        val isPlaceholderKeyword = thumbnail.removePrefix("https:").lowercase() in THUMBNAIL_PLACEHOLDERS
+        return thumbnail.startsWith("http") && !isPlaceholderKeyword
+    }
+
+    // A search result carries no link at all (the scraper leaves url empty), so a blank url
+    // means the full post still has to be fetched before its media can be found.
+    val needsHydration: Boolean
+        get() = url.isBlank()
+
     fun shouldShowPreview(contentPreferences: ContentPreferences): Boolean {
         return (contentPreferences.showNsfwPreview || !isOver18) &&
                 (contentPreferences.showSpoilerPreview || !isSpoiler)
+    }
+
+    private companion object {
+        // Values Reddit puts in the thumbnail field instead of an image URL.
+        val THUMBNAIL_PLACEHOLDERS = setOf("self", "default", "nsfw", "spoiler", "image")
     }
 }
