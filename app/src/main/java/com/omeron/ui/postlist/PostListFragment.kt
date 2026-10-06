@@ -209,9 +209,14 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             }
 
             launch {
+                // The bottom bar selection is the single source of truth for the feed mode. It is
+                // re-applied on every view creation because the activity-scoped view model may
+                // still hold the mode left over from before the user navigated away.
                 uiViewModel.homeTab.collect { tab ->
-                    if (binding.tabs.selectedTabPosition != tab) {
-                        binding.tabs.getTabAt(tab)?.select()
+                    when (tab) {
+                        0 -> selectFeedMode(PostListViewModel.FeedMode.HOME)
+                        1 -> selectFeedMode(PostListViewModel.FeedMode.POPULAR)
+                        else -> selectMultisMode()
                     }
                 }
             }
@@ -327,32 +332,11 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
     }
 
     private fun initTabs() {
-        binding.tabs.apply {
-            addTab(newTab().setText(R.string.tab_home_feed))
-            addTab(newTab().setText(R.string.tab_home_popular))
-            addTab(newTab().setText(R.string.tab_home_multis))
-
-            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    when (tab.position) {
-                        0 -> selectFeedMode(PostListViewModel.FeedMode.HOME)
-                        1 -> selectFeedMode(PostListViewModel.FeedMode.POPULAR)
-                        else -> selectMultisMode()
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                    // Ignore
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab) {
-                    scrollToTop()
-                }
-            })
-        }
-
         binding.multiTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+                // Rebuilding the strip selects a tab even outside Multis mode; forwarding that
+                // would re-emit the feed source and reshuffle the Home feed.
+                if (viewModel.feedMode.value != PostListViewModel.FeedMode.MULTI) return
                 (tab.tag as? MultiredditWithMembers)?.let { viewModel.setSelectedMulti(it) }
             }
 

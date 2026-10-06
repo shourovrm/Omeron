@@ -28,8 +28,8 @@ class UiViewModel @Inject constructor(
     private val _navigationVisibility = MutableStateFlow(true)
     val navigationVisibility: StateFlow<Boolean> = _navigationVisibility
 
-    // Selected home tab: 0 = Feed, 1 = Popular, 2 = Multis. Shared between the bottom
-    // navigation bar (MainActivity) and the hidden TabLayout in PostListFragment.
+    // Selected home tab: 0 = Feed, 1 = Popular, 2 = Multis. Set by the bottom
+    // navigation bar (MainActivity); PostListFragment derives its feed mode from it.
     private val _homeTab = MutableStateFlow(0)
     val homeTab: StateFlow<Int> = _homeTab
 
