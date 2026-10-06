@@ -1,3 +1,35 @@
+# 0.5.0 - 2026/10/07
+
+### Added
+- Filmstrip: a fourth layout showing only posts with images, videos or
+  galleries as a three-column grid, on Home, subreddits, multireddits, user
+  pages and search results
+- Filmstrip viewer: tap a tile for full screen, swipe left/right through a
+  gallery's images and on to the next post, videos autoplay and loop with a
+  seek bar, swipe up on the title for post details and the comments button,
+  tap the subreddit or user name to open that page
+- Navigation drawer is now a community switcher: filter field, multireddits
+  and every subscribed community one tap away
+- Post rows show a community avatar, post age, score, comment count and a
+  text excerpt; text posts no longer show a placeholder image
+- Home feed shows a "log in" prompt with a button when Reddit asks for a login
+
+### Changed
+- Save is a bookmark instead of a heart; score and comment icons are no longer
+  coloured like buttons
+- Neutral hairline between posts instead of the blue divider
+
+### Fixed
+- Doubled `r/r/` prefix in compact rows
+- Bottom bar showing Feed while a multireddit or Popular was displayed
+- Posts and the app bar drawing under the status bar while scrolling Home
+- Layout toggle icon and layout resetting after leaving and returning to Home
+- Multireddit and large home feeds repeating the first page instead of ending
+- Crash when opening a removed post or when a page failed to parse
+- Comment ages off by the device's UTC offset
+- Unreadable grey metadata text in dark theme
+- Subscription names misaligned; subscribing with a blank name
+
 # 0.4.1 - 2026/08/22
 
 ### Added
