@@ -243,6 +243,17 @@ class FilmstripViewerFragment : BaseFragment() {
             }
         )
 
+        // The names are their own targets inside the info block, so a tap on them goes straight
+        // to that page instead of opening the details first.
+        val openCurrentSubreddit = View.OnClickListener {
+            currentFrame?.post?.let { post -> openSubreddit(post.subredditName) }
+        }
+        binding.avatarCommunity.setOnClickListener(openCurrentSubreddit)
+        binding.textSubreddit.setOnClickListener(openCurrentSubreddit)
+        binding.textAuthorAge.setOnClickListener {
+            currentFrame?.post?.let { post -> openUser(post.author) }
+        }
+
         // The tap is left to the click listener; this only claims the gesture once it is a swipe.
         binding.info.setOnClickListener { expandDetails() }
         binding.info.setOnTouchListener { view, event ->
@@ -365,6 +376,10 @@ class FilmstripViewerFragment : BaseFragment() {
             avatarCommunity.setText(post.subredditName)
             textSubreddit.text = post.subreddit
             textAuthorAge.text = getString(R.string.filmstrip_info_meta, post.author, age)
+            textSubreddit.contentDescription =
+                getString(R.string.filmstrip_go_to_subreddit, post.subredditName)
+            textAuthorAge.contentDescription =
+                getString(R.string.filmstrip_go_to_user, post.author)
             textTitle.text = post.title
 
             segments.isVisible = frame.isGalleryFrame
