@@ -102,7 +102,7 @@
     <string name="layout_toggle">Toggle layout</string>
     <string name="layout_toggle_card">Switch to card layout</string>
     <string name="layout_toggle_gallery">Switch to gallery layout</string>
-    <string name="compact_post_info" translatable="false">r/%1$s · %2$s</string>
+    <string name="compact_post_info" translatable="false">%1$s · %2$s</string>
 
     <string name="tab_search_post">Posts</string>
     <string name="tab_search_subreddit">Subreddits</string>
