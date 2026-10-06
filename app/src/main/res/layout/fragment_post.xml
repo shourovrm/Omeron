@@ -105,6 +105,15 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Last child so it draws over the app bar as it scrolls up through the
+                 status bar area; its height is set to the status bar inset in code. -->
+            <View
+                android:id="@+id/status_bar_scrim"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="top"
+                android:background="?attr/colorSurface" />
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.cardview.widget.CardView>
 

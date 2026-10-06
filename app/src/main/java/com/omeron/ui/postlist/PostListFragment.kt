@@ -13,6 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
@@ -154,6 +155,7 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             // Padding on the non-scrolling AppBarLayout, not a margin on the scrolling app bar:
             // a margin scrolls away with it and lets list content draw under the status icons.
             binding.appBarLayout.updatePadding(top = insets.top)
+            binding.statusBarScrim.updateLayoutParams { height = insets.top }
 
             binding.listProfiles.run {
                 updatePadding(
