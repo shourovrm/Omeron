@@ -24,11 +24,12 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
 
     override val viewModel: SearchViewModel by hiltNavGraphViewModels(R.id.search)
 
+    // Results are pointers without media data, so the viewer's own lookup decides what a
+    // candidate really is.
+    override val filmstripMediaPredicate: (PostEntity) -> Boolean = PostEntity::isFilmstripSearchCandidate
+
     override val flow: Flow<PagingData<PostEntity>>
-        get() = viewModel.postDataFlow.filteredForLayout(
-            viewModel.postLayout,
-            PostEntity::isFilmstripSearchCandidate
-        )
+        get() = viewModel.postDataFlow.filteredForLayout(viewModel.postLayout, filmstripMediaPredicate)
 
     override val showItemDecoration: Boolean
         get() = true
@@ -101,12 +102,16 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
         onClick(hostFragmentManager, post)
     }
 
-    // In card/gallery layout the tile's media is tappable, but a search result carries no media
-    // url, so the default handlers would open empty media and force-close. Route every media tap
-    // to the post detail (same as the card tap) so it opens the real, re-fetched post instead.
-    override fun onImageClick(post: PostEntity) = onClick(post)
+    // A candidate's media tap opens the viewer, which fetches the full post. A result that is not
+    // a candidate (or a link preview) carries no media url, so the default handlers would open
+    // empty media and force-close; it opens the post page instead, which re-fetches the post.
+    override fun onImageClick(post: PostEntity) = openInFilmstripOrPostPage(post)
 
-    override fun onVideoClick(post: PostEntity) = onClick(post)
+    override fun onVideoClick(post: PostEntity) = openInFilmstripOrPostPage(post)
 
     override fun onLinkClick(post: PostEntity) = onClick(post)
+
+    private fun openInFilmstripOrPostPage(post: PostEntity) {
+        if (!openInFilmstripIfMedia(post)) onClick(post)
+    }
 }

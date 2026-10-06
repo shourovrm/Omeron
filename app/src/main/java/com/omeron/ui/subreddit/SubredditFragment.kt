@@ -75,6 +75,8 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
     override val viewModel: SubredditViewModel by viewModels()
 
+    override val filmstripMediaPredicate: (PostEntity) -> Boolean = PostEntity::hasFilmstripMedia
+
     private val args: SubredditFragmentArgs by navArgs()
 
     private lateinit var postListAdapter: PostListAdapter
@@ -177,7 +179,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             }
 
             launch {
-                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout).collectLatest {
+                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout, filmstripMediaPredicate).collectLatest {
                     postListAdapter.submitData(it)
                 }
             }

@@ -70,6 +70,8 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
     private val binding get() = _binding!!
 
     override val viewModel: PostListViewModel by activityViewModels()
+
+    override val filmstripMediaPredicate: (PostEntity) -> Boolean = PostEntity::hasFilmstripMedia
     private val uiViewModel: UiViewModel by activityViewModels()
 
     // Workaround for nested CoordinatorLayout that prevents bottom navigation from being hidden on
@@ -198,7 +200,7 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             }
 
             launch {
-                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout).collectLatest {
+                viewModel.postDataFlow.filteredForLayout(viewModel.postLayout, filmstripMediaPredicate).collectLatest {
                     postListAdapter.submitData(it)
                 }
             }

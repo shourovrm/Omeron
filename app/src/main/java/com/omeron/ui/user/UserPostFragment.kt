@@ -26,8 +26,10 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
 
     override val viewModel: UserViewModel by hiltNavGraphViewModels(R.id.user)
 
+    override val filmstripMediaPredicate: (PostEntity) -> Boolean = PostEntity::hasFilmstripMedia
+
     override val flow: Flow<PagingData<PostEntity>>
-        get() = viewModel.postDataFlow.filteredForLayout(viewModel.postLayout)
+        get() = viewModel.postDataFlow.filteredForLayout(viewModel.postLayout, filmstripMediaPredicate)
 
     override val showItemDecoration: Boolean
         get() = true

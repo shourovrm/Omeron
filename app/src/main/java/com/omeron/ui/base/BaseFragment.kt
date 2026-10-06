@@ -51,6 +51,13 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     @Inject
     lateinit var filmstripFeedHolder: FilmstripFeedHolder
 
+    /**
+     * Which of the feed's posts the Filmstrip viewer shows. A screen with a post list that opens
+     * the viewer overrides this once; null (the default) means the screen has no viewer and its
+     * media taps open the plain media viewer.
+     */
+    protected open val filmstripMediaPredicate: ((PostEntity) -> Boolean)? = null
+
     private var filmstripFeedLink: FilmstripFeedLink? = null
 
     // Remembered across view recreation (opening a subreddit from the viewer destroys this
@@ -91,8 +98,15 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         // its own parent manager belongs to the pager and has no such container.
         fragmentManager: FragmentManager = parentFragmentManager
     ) {
+        val isFilmstripMedia = filmstripMediaPredicate ?: return
         filmstripFeedLink?.dispose()
-        val link = FilmstripFeedLink.begin(filmstripFeedHolder, adapter, list, viewLifecycleOwner)
+        val link = FilmstripFeedLink.begin(
+            filmstripFeedHolder,
+            adapter,
+            list,
+            isFilmstripMedia,
+            viewLifecycleOwner
+        )
         filmstripFeedLink = link
         filmstripSessionId = link.sessionId
 
@@ -116,12 +130,14 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     protected fun resumeFilmstripFeed(adapter: PostListAdapter, list: RecyclerView) {
         val sessionId = filmstripSessionId ?: return
         if (sessionId != filmstripFeedHolder.activeSessionId) return
+        val isFilmstripMedia = filmstripMediaPredicate ?: return
 
         filmstripFeedLink = FilmstripFeedLink.resume(
             filmstripFeedHolder,
             sessionId,
             adapter,
             list,
+            isFilmstripMedia,
             viewLifecycleOwner
         )
     }
@@ -182,7 +198,20 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         openSubreddit(subreddit.removePrefix("r/"))
     }
 
+    /**
+     * Opens [post] in the Filmstrip viewer when this screen has one and the post is media it
+     * shows; returns false so the caller can fall back to the plain media viewer.
+     */
+    protected fun openInFilmstripIfMedia(post: PostEntity): Boolean {
+        val isFilmstripMedia = filmstripMediaPredicate ?: return false
+        if (!isFilmstripMedia(post)) return false
+
+        onFilmstripClick(post)
+        return true
+    }
+
     override fun onImageClick(post: PostEntity) {
+        if (openInFilmstripIfMedia(post)) return
         viewModel?.insertPostInHistory(post)
         if (post.gallery.isNotEmpty()) {
             linkHandler.openGallery(post.gallery)
@@ -192,6 +221,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     }
 
     override fun onVideoClick(post: PostEntity) {
+        if (openInFilmstripIfMedia(post)) return
         viewModel?.insertPostInHistory(post)
         linkHandler.openMedia(post.mediaUrl, post.mediaType)
     }

@@ -3,6 +3,8 @@ package com.omeron.ui.filmstrip
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.data.model.db.PostEntity
@@ -11,23 +13,42 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
- * The feed list's side of the Filmstrip hand-off: publishes the adapter's loaded posts to the
- * [FilmstripFeedHolder], loads another page when the viewer asks, and scrolls the grid to the
- * last viewed tile when the viewer closes. Lives as long as the list's view.
+ * The feed list's side of the Filmstrip hand-off: publishes the adapter's loaded media posts to
+ * the [FilmstripFeedHolder], loads another page when the viewer asks, and scrolls the list to the
+ * last viewed post when the viewer closes. Lives as long as the list's view.
+ *
+ * The adapter holds every post when the list is not in the Filmstrip layout, so the published
+ * posts are the adapter's posts that pass [isFilmstripMedia]; their positions are not adapter
+ * positions.
  */
 class FilmstripFeedLink private constructor(
     private val holder: FilmstripFeedHolder,
     val sessionId: Int,
     private val adapter: PostListAdapter,
     private val list: RecyclerView,
+    private val isFilmstripMedia: (PostEntity) -> Boolean,
     lifecycleOwner: LifecycleOwner
 ) {
 
+    // Set while a viewer request for more media is unanswered. A page of only text posts leaves
+    // the published list unchanged, which the viewer cannot tell apart from "nothing arrived yet",
+    // so the link keeps loading on its behalf.
+    private var mediaCountAtLoadRequest: Int? = null
+
+    private var appendLoadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
+
+    private val trackAppendLoadState: (CombinedLoadStates) -> Unit = { loadStates ->
+        appendLoadState = loadStates.append
+    }
+
     private val publishLoadedPosts: () -> Unit = {
-        holder.publish(sessionId, loadedPosts(adapter))
+        val mediaPosts = loadedMediaPosts()
+        holder.publish(sessionId, mediaPosts)
+        continueLoadingUntilMediaArrives(mediaPosts.size)
     }
 
     init {
+        adapter.addLoadStateListener(trackAppendLoadState)
         adapter.addOnPagesUpdatedListener(publishLoadedPosts)
 
         lifecycleOwner.lifecycleScope.launch {
@@ -49,18 +70,41 @@ class FilmstripFeedLink private constructor(
     }
 
     fun dispose() {
+        adapter.removeLoadStateListener(trackAppendLoadState)
         adapter.removeOnPagesUpdatedListener(publishLoadedPosts)
     }
 
     // Paging loads the next page when an item near the end is read, so reading the last one is
     // how the viewer's request reaches the pager.
     private fun loadNextPage() {
+        if (isFeedExhausted()) return
         val lastIndex = adapter.itemCount - 1
-        if (lastIndex >= 0) adapter.loadAround(lastIndex)
+        if (lastIndex < 0) return
+
+        if (mediaCountAtLoadRequest == null) {
+            mediaCountAtLoadRequest = loadedMediaPosts().size
+        }
+        adapter.loadAround(lastIndex)
     }
 
+    private fun continueLoadingUntilMediaArrives(mediaCount: Int) {
+        val mediaCountAtRequest = mediaCountAtLoadRequest ?: return
+        if (shouldKeepLoading(mediaCountAtRequest, mediaCount, isFeedExhausted())) {
+            loadNextPage()
+        } else {
+            mediaCountAtLoadRequest = null
+        }
+    }
+
+    // A failed page is not retried on its own: that would loop on an offline device.
+    private fun isFeedExhausted(): Boolean {
+        return appendLoadState.endOfPaginationReached || appendLoadState is LoadState.Error
+    }
+
+    private fun loadedMediaPosts(): List<PostEntity> = mediaPosts(adapter.snapshot(), isFilmstripMedia)
+
     private fun revealPost(postId: String?) {
-        val index = loadedPosts(adapter).indexOfFirst { it.id == postId }
+        val index = adapterPositionOfPost(adapter.snapshot(), postId)
         val layoutManager = list.layoutManager as? LinearLayoutManager ?: return
         if (index < 0) return
 
@@ -79,10 +123,11 @@ class FilmstripFeedLink private constructor(
             holder: FilmstripFeedHolder,
             adapter: PostListAdapter,
             list: RecyclerView,
+            isFilmstripMedia: (PostEntity) -> Boolean,
             lifecycleOwner: LifecycleOwner
         ): FilmstripFeedLink {
-            val sessionId = holder.beginSession(loadedPosts(adapter))
-            return FilmstripFeedLink(holder, sessionId, adapter, list, lifecycleOwner)
+            val sessionId = holder.beginSession(mediaPosts(adapter.snapshot(), isFilmstripMedia))
+            return FilmstripFeedLink(holder, sessionId, adapter, list, isFilmstripMedia, lifecycleOwner)
         }
 
         /** Reattaches a list whose view was recreated while its viewer session is still open. */
@@ -91,13 +136,34 @@ class FilmstripFeedLink private constructor(
             sessionId: Int,
             adapter: PostListAdapter,
             list: RecyclerView,
+            isFilmstripMedia: (PostEntity) -> Boolean,
             lifecycleOwner: LifecycleOwner
         ): FilmstripFeedLink {
-            return FilmstripFeedLink(holder, sessionId, adapter, list, lifecycleOwner)
+            return FilmstripFeedLink(holder, sessionId, adapter, list, isFilmstripMedia, lifecycleOwner)
         }
 
-        private fun loadedPosts(adapter: PostListAdapter): List<PostEntity> {
-            return adapter.snapshot().filterNotNull()
+        internal fun mediaPosts(
+            adapterPosts: List<PostEntity?>,
+            isFilmstripMedia: (PostEntity) -> Boolean
+        ): List<PostEntity> {
+            return adapterPosts.filterNotNull().filter(isFilmstripMedia)
+        }
+
+        /** Position of the post in the adapter, which counts the posts [mediaPosts] leaves out. */
+        internal fun adapterPositionOfPost(adapterPosts: List<PostEntity?>, postId: String?): Int {
+            return adapterPosts.indexOfFirst { it != null && it.id == postId }
+        }
+
+        /**
+         * The viewer asked for more media; a page that added none leaves it with nothing new to
+         * react to, so loading goes on until media arrives or the feed has no more pages.
+         */
+        internal fun shouldKeepLoading(
+            mediaCountAtRequest: Int,
+            mediaCountNow: Int,
+            isFeedExhausted: Boolean
+        ): Boolean {
+            return mediaCountNow == mediaCountAtRequest && !isFeedExhausted
         }
     }
 }
