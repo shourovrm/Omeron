@@ -86,14 +86,17 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     protected fun openFilmstripViewer(
         post: PostEntity,
         adapter: PostListAdapter,
-        list: RecyclerView
+        list: RecyclerView,
+        // A list nested in a tab pager must pass the manager that owns the screen container;
+        // its own parent manager belongs to the pager and has no such container.
+        fragmentManager: FragmentManager = parentFragmentManager
     ) {
         filmstripFeedLink?.dispose()
         val link = FilmstripFeedLink.begin(filmstripFeedHolder, adapter, list, viewLifecycleOwner)
         filmstripFeedLink = link
         filmstripSessionId = link.sessionId
 
-        parentFragmentManager.beginTransaction()
+        fragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.nav_enter_anim,
                 R.anim.nav_exit_anim,

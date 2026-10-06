@@ -64,8 +64,7 @@ class UserViewModel @Inject constructor(
         preferencesRepository.getContentPreferences()
 
     // User post listings aren't scoped to one subreddit, so this is always the global default.
-    val postLayout: Flow<PostLayout> =
-        preferencesRepository.getPostLayout().map { it.withoutFilmstrip() }
+    val postLayout: Flow<PostLayout> = preferencesRepository.getPostLayout()
 
     private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
     val sorting: StateFlow<Sorting> = _sorting

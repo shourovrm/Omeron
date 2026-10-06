@@ -190,7 +190,7 @@ class UserFragment : BaseFragment() {
     }
 
     private fun toggleLayout() {
-        viewModel.setPostLayout(currentPostLayout.nextWithoutFilmstrip())
+        viewModel.setPostLayout(currentPostLayout.next())
     }
 
     private fun initResultListener() {

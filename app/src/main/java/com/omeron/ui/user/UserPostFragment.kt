@@ -9,8 +9,11 @@ import com.omeron.R
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
+import com.omeron.ui.common.FilmstripGapItemDecoration
 import com.omeron.ui.common.fragment.PagingListFragment
 import com.omeron.ui.postlist.PostListAdapter
+import com.omeron.util.extension.currentNavigationFragment
+import com.omeron.util.extension.filteredForLayout
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.layoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +27,7 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
     override val viewModel: UserViewModel by hiltNavGraphViewModels(R.id.user)
 
     override val flow: Flow<PagingData<PostEntity>>
-        get() = viewModel.postDataFlow
+        get() = viewModel.postDataFlow.filteredForLayout(viewModel.postLayout)
 
     override val showItemDecoration: Boolean
         get() = true
@@ -64,5 +67,23 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
 
     override fun createPagingAdapter(): PostListAdapter {
         return PostListAdapter(repository, this, this)
+    }
+
+    override fun initRecyclerView() {
+        super.initRecyclerView()
+        // The shared list is a plain RecyclerView, so the grid's tile gaps are added here.
+        binding.listContent.addItemDecoration(FilmstripGapItemDecoration(requireContext()))
+        resumeFilmstripFeed(adapter, binding.listContent)
+    }
+
+    override fun onFilmstripClick(post: PostEntity) {
+        activity?.currentNavigationFragment?.let { currentFragment ->
+            openFilmstripViewer(
+                post,
+                adapter,
+                binding.listContent,
+                currentFragment.parentFragmentManager
+            )
+        }
     }
 }
