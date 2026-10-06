@@ -136,9 +136,9 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
         ViewCompat.setOnApplyWindowInsetsListener(view) { rootView, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            binding.appBar.root.updateLayoutParams<AppBarLayout.LayoutParams> {
-                topMargin = insets.top
-            }
+            // Padding on the non-scrolling AppBarLayout, not a margin on the scrolling app bar:
+            // a margin scrolls away with it and lets list content draw under the status icons.
+            binding.appBarLayout.updatePadding(top = insets.top)
 
             binding.listProfiles.run {
                 updatePadding(
