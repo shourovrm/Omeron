@@ -1,14 +1,9 @@
 package com.omeron.ui.mediaviewer
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -26,19 +21,16 @@ import com.omeron.R
 import com.omeron.data.model.GalleryMedia
 import com.omeron.data.model.MediaType
 import com.omeron.data.model.Resource
-import com.omeron.data.worker.MediaDownloadWorker
 import com.omeron.databinding.FragmentMediaViewerBinding
 import com.omeron.ui.common.FullscreenBottomSheetFragment
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearWindowInsetsListener
 import com.omeron.util.extension.getRecyclerView
-import com.omeron.util.extension.isPermissionGranted
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.parcelableArrayList
 import com.omeron.util.extension.serializable
 import com.omeron.util.extension.showWithAlpha
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -60,26 +52,7 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
     private lateinit var mediaAdapter: MediaViewerAdapter
     private lateinit var thumbnailAdapter: MediaViewerThumbnailAdapter
 
-    private val requestStoragePermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            downloadMedia()
-        } else {
-            Snackbar.make(
-                binding.root,
-                R.string.snackbar_permission_storage_denied_message,
-                Snackbar.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    private val requestNotificationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) {
-        // Download media regardless of the result
-        downloadMedia()
-    }
+    private val downloadRequester = MediaDownloadRequester(this) { binding.root }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -257,65 +230,8 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
     }
 
     private fun requestMediaDownload() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestNotificationPermission()
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // No need to request storage permission on Android 10+
-            downloadMedia()
-        } else {
-            requestStoragePermission()
-        }
-    }
-
-    private fun requestStoragePermission() {
-        when {
-            isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                downloadMedia()
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                Snackbar.make(
-                    binding.root,
-                    R.string.snackbar_permission_storage_request_message,
-                    Snackbar.LENGTH_INDEFINITE
-                ).setAction(R.string.ok) {
-                    requestStoragePermissionLauncher
-                        .launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }.show()
-            }
-            else -> {
-                requestStoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun requestNotificationPermission() {
-        if (!isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS) ||
-            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)
-        ) {
-            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            downloadMedia()
-        }
-    }
-
-    private fun downloadMedia() {
         val page = viewerViewModel.selectedPage.value
-
-        val media = mediaAdapter.getItem(page)
-        media?.let {
-            MediaDownloadWorker.enqueueWork(
-                requireContext().applicationContext,
-                it.url,
-                it.type
-            )
-
-            Toast.makeText(
-                requireContext(),
-                R.string.toast_download_started,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        mediaAdapter.getItem(page)?.let { downloadRequester.request(it) }
     }
 
     private fun handleError(code: Int?) {

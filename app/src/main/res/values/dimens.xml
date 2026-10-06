@@ -168,4 +168,7 @@
     <dimen name="profile_content_margin">48dp</dimen>
 
     <dimen name="popup_radius">16dp</dimen>
+
+    <dimen name="filmstrip_scrim_height">280dp</dimen>
+    <dimen name="filmstrip_sheet_radius">18dp</dimen>
 </resources>

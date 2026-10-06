@@ -482,4 +482,32 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+
+    <style name="FilmstripSheetAction" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:drawableTint">@color/filmstrip_sheet_text</item>
+        <item name="android:background">@drawable/filmstrip_sheet_action_background</item>
+        <item name="android:textColor">@color/filmstrip_sheet_text_secondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="FilmstripSheetLink" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawableEnd">@drawable/ic_chevron_right</item>
+        <item name="android:drawableTint">@color/filmstrip_sheet_text_secondary</item>
+        <item name="android:textColor">@color/filmstrip_sheet_text</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 </resources>

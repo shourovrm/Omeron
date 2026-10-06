@@ -253,6 +253,8 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             )
         }
 
+        resumeFilmstripFeed(postListAdapter, bindingContent.listPost)
+
         bindingContent.pullRefresh.setOnRefreshListener(this)
 
         launchRepeat(Lifecycle.State.STARTED) {
@@ -281,6 +283,10 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             subredditName.setOnClickListener { scrollToTop() }
             subredditImage.setOnClickListener { scrollToTop() }
         }
+    }
+
+    override fun onFilmstripClick(post: PostEntity) {
+        openFilmstripViewer(post, postListAdapter, bindingContent.listPost)
     }
 
     private fun toggleLayout() {

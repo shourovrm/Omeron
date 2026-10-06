@@ -40,6 +40,8 @@ class PostListAdapter(
 
         fun onSaveClick(post: PostEntity)
 
+        fun onFilmstripClick(post: PostEntity)
+
         fun onUserClick(user: String)
 
         fun onSubredditClick(subreddit: String)
@@ -47,6 +49,9 @@ class PostListAdapter(
 
     interface Listener {
         fun onClick(position: Int, isLong: Boolean = false)
+
+        // Only the Filmstrip tile calls this; other holders never do, so they need no override.
+        fun onFilmstripClick(position: Int) = onClick(position)
 
         fun onMediaClick(position: Int)
 
@@ -107,6 +112,13 @@ class PostListAdapter(
                     setPostSeen(position, it)
                     postClickListener.onClick(it)
                 }
+            }
+        }
+
+        override fun onFilmstripClick(position: Int) {
+            getItem(position)?.let {
+                setPostSeen(position, it)
+                postClickListener.onFilmstripClick(it)
             }
         }
 
@@ -245,6 +257,12 @@ class PostListAdapter(
             (holder as? PostViewHolder)?.update(item)
             (holder as? PostViewHolder.FilmstripPostViewHolder)?.update(item)
         }
+    }
+
+    // PagingDataAdapter.getItem is what tells Paging which item is on screen, and so when to
+    // fetch the next page; the Filmstrip viewer uses it to ask for more without a visible list.
+    fun loadAround(position: Int) {
+        getItem(position)
     }
 
     private fun setPostSeen(position: Int, post: PostEntity) {

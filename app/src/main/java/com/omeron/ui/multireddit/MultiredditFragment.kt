@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omeron.R
 import com.omeron.data.model.db.MultiredditWithMembers
+import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.databinding.FragmentMultiredditBinding
@@ -130,6 +131,8 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
             )
         }
 
+        resumeFilmstripFeed(postListAdapter, binding.listPost)
+
         launchRepeat(Lifecycle.State.STARTED) {
             postListAdapter.onRefreshFromNetwork {
                 scrollToTop()
@@ -145,6 +148,10 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
             moreCard.setOnClickListener { showMenu() }
             label.setOnClickListener { scrollToTop() }
         }
+    }
+
+    override fun onFilmstripClick(post: PostEntity) {
+        openFilmstripViewer(post, postListAdapter, binding.listPost)
     }
 
     private fun toggleLayout() {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/filmstrip_sheet_divider">
+    <item>
+        <shape>
+            <solid android:color="@color/filmstrip_sheet_action_background"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</ripple>

@@ -2,39 +2,22 @@ package com.omeron.ui.mediaviewer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omeron.data.local.mapper.PostMapper2
 import com.omeron.data.model.GalleryMedia
-import com.omeron.data.model.GalleryMedia.Type
 import com.omeron.data.model.MediaType
 import com.omeron.data.model.Resource
-import com.omeron.data.model.Sort
-import com.omeron.data.model.Sorting
-import com.omeron.data.repository.GfycatRepository
-import com.omeron.data.repository.ImgurRepository
-import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
-import com.omeron.data.repository.RedgifsRepository
-import com.omeron.data.repository.StreamableRepository
-import com.omeron.di.DispatchersModule.DefaultDispatcher
-import com.omeron.util.LinkUtil
-import com.omeron.util.LinkUtil.https
-import com.omeron.util.PostUtil
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -42,14 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MediaViewerViewModel
 @Inject constructor(
-    private val imgurRepository: ImgurRepository,
-    private val streamableRepository: StreamableRepository,
-    private val gfycatRepository: GfycatRepository,
-    private val redgifsRepository: RedgifsRepository,
-    private val postListRepository: PostListRepository,
-    private val postMapper: PostMapper2,
-    private val preferencesRepository: PreferencesRepository,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    private val mediaResolver: MediaResolver,
+    private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
     private val _media: MutableStateFlow<Resource<List<GalleryMedia>>> =
@@ -75,123 +52,26 @@ class MediaViewerViewModel
 
     fun loadMedia(link: String, mediaType: MediaType, forceUpdate: Boolean = false) {
         if (_media.value !is Resource.Success || forceUpdate) {
-            viewModelScope.launch {
-                val httpsLink = withContext(defaultDispatcher) { link.https }
-                retrieveMedia(httpsLink, mediaType)
-            }
+            viewModelScope.launch { retrieveMedia(link, mediaType) }
         }
     }
 
     private suspend fun retrieveMedia(link: String, mediaType: MediaType) {
-        when (mediaType) {
-            MediaType.IMGUR_IMAGE, MediaType.IMAGE -> {
-                setMedia(GalleryMedia.singleton(Type.IMAGE, link))
-            }
-            MediaType.IMGUR_LINK -> {
-                val id = LinkUtil.getImageIdFromImgurLink(link)
-                setMedia(GalleryMedia.singleton(Type.IMAGE, LinkUtil.getUrlFromImgurId(id)))
-            }
-            MediaType.IMGUR_GIF -> {
-                setMedia(GalleryMedia.singleton(Type.VIDEO, LinkUtil.getImgurVideo(link)))
-            }
-            MediaType.REDDIT_GIF, MediaType.IMGUR_VIDEO, MediaType.VIDEO -> {
-                setMedia(GalleryMedia.singleton(Type.VIDEO, link))
-            }
-            MediaType.REDDIT_VIDEO -> {
-                setMedia(
-                    GalleryMedia.singleton(Type.VIDEO, link, LinkUtil.getRedditSoundTrackOrNull(link))
-                )
-            }
-            MediaType.GFYCAT -> {
-                val id = LinkUtil.getGfycatId(link)
+        val instantMedia = mediaResolver.resolveWithoutNetwork(link, mediaType)
+        if (instantMedia != null) {
+            setMedia(instantMedia)
+            return
+        }
 
-                gfycatRepository.getGfycatGif(id)
-                    .onStart {
-                        _media.value = Resource.Loading()
-                    }
-                    .catch {
-                        catchError(it)
-                    }
-                    .map {
-                        GalleryMedia.singleton(Type.VIDEO, it.gfyItem.contentUrls.mp4.url)
-                    }
-                    .collect {
-                        setMedia(it)
-                    }
-            }
-            MediaType.REDGIFS -> {
-                val id = LinkUtil.getGfycatId(link)
-
-                redgifsRepository.getRedgifsGif(id)
-                    .onStart {
-                        _media.value = Resource.Loading()
-                    }
-                    .catch {
-                        catchError(it)
-                    }
-                    .map {
-                        GalleryMedia.singleton(Type.VIDEO, it.gif.urls.hd)
-                    }
-                    .collect {
-                        setMedia(it)
-                    }
-            }
-            MediaType.STREAMABLE -> {
-                val shortcode = LinkUtil.getStreamableShortcode(link)
-                streamableRepository.getVideo(shortcode).onStart {
-                    _media.value = Resource.Loading()
-                }.catch {
-                    catchError(it)
-                }.map { video ->
-                    GalleryMedia.singleton(Type.VIDEO, video.files.mp4.url)
-                }.collect {
-                    setMedia(it)
-                }
-            }
-            MediaType.IMGUR_ALBUM, MediaType.IMGUR_GALLERY -> {
-                val albumId = LinkUtil.getAlbumIdFromImgurLink(link)
-                imgurRepository.getAlbum(albumId)
-                    .map { album ->
-                        album.data.images.map { image ->
-                            GalleryMedia(
-                                if (image.preferVideo) Type.VIDEO else Type.IMAGE,
-                                LinkUtil.getUrlFromImgurImage(image),
-                                description = image.description
-                            )
-                        }
-                    }
-                    .map {
-                        // Some Imgur galleries are empty and actually point to a single image
-                        it.ifEmpty {
-                            GalleryMedia.singleton(Type.IMAGE, LinkUtil.getUrlFromImgurId(albumId))
-                        }
-                    }
-                    .flowOn(defaultDispatcher)
-                    .onStart {
-                        _media.value = Resource.Loading()
-                    }
-                    .catch {
-                        catchError(it)
-                    }
-                    .collect {
-                        setMedia(it)
-                    }
-            }
-            MediaType.REDDIT_GALLERY -> {
-                val permalink = LinkUtil.getPermalinkFromMediaUrl(link)
-                postListRepository.getPost(permalink, Sorting(Sort.BEST)).onStart {
-                    _media.value = Resource.Loading()
-                }.catch {
-                    catchError(it)
-                }.map { listings ->
-                    postMapper.dataToEntity(PostUtil.getPostData(listings)).gallery
-                }.collect {
-                    setMedia(it)
-                }
-            }
-            else -> {
-                _media.value = Resource.Error()
-            }
+        _media.value = Resource.Loading()
+        try {
+            setMedia(mediaResolver.resolve(link, mediaType))
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (unsupported: MediaResolver.UnsupportedMediaException) {
+            _media.value = Resource.Error()
+        } catch (throwable: Throwable) {
+            catchError(throwable)
         }
     }
 

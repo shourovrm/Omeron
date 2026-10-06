@@ -10,10 +10,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.omeron.NavigationGraphDirections
 import com.omeron.R
 import com.omeron.data.model.db.PostEntity
 import com.omeron.ui.common.widget.RedditView
+import com.omeron.ui.filmstrip.FilmstripFeedHolder
+import com.omeron.ui.filmstrip.FilmstripFeedLink
+import com.omeron.ui.filmstrip.FilmstripViewerFragment
 import com.omeron.ui.linkmenu.LinkMenuFragment
 import com.omeron.ui.postdetails.PostDetailsFragment
 import com.omeron.ui.postlist.PostListAdapter
@@ -44,6 +48,15 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     @Inject
     lateinit var linkHandler: LinkHandler
 
+    @Inject
+    lateinit var filmstripFeedHolder: FilmstripFeedHolder
+
+    private var filmstripFeedLink: FilmstripFeedLink? = null
+
+    // Remembered across view recreation (opening a subreddit from the viewer destroys this
+    // fragment's view while the viewer stays open on the back stack).
+    private var filmstripSessionId: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedCallback = requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -63,6 +76,57 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     protected open fun onBackPressed() {
         onBackPressedCallback.isEnabled = false
         findNavController().navigateUp()
+    }
+
+    /**
+     * Opens the Filmstrip viewer on top of this feed. The viewer gets its posts from
+     * [adapter] through the activity-wide feed holder and asks it for more pages as the user
+     * nears the end; the feed stays in place underneath.
+     */
+    protected fun openFilmstripViewer(
+        post: PostEntity,
+        adapter: PostListAdapter,
+        list: RecyclerView
+    ) {
+        filmstripFeedLink?.dispose()
+        val link = FilmstripFeedLink.begin(filmstripFeedHolder, adapter, list, viewLifecycleOwner)
+        filmstripFeedLink = link
+        filmstripSessionId = link.sessionId
+
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.nav_enter_anim,
+                R.anim.nav_exit_anim,
+                R.anim.nav_enter_anim,
+                R.anim.nav_exit_anim
+            )
+            .add(
+                R.id.fragment_container,
+                FilmstripViewerFragment.newInstance(post.id),
+                FilmstripViewerFragment.TAG
+            )
+            .addToBackStack(null)
+            .commit()
+    }
+
+    /** Call after the list's adapter exists, so a viewer opened earlier keeps loading pages. */
+    protected fun resumeFilmstripFeed(adapter: PostListAdapter, list: RecyclerView) {
+        val sessionId = filmstripSessionId ?: return
+        if (sessionId != filmstripFeedHolder.activeSessionId) return
+
+        filmstripFeedLink = FilmstripFeedLink.resume(
+            filmstripFeedHolder,
+            sessionId,
+            adapter,
+            list,
+            viewLifecycleOwner
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        filmstripFeedLink?.dispose()
+        filmstripFeedLink = null
     }
 
     protected fun navigate(directions: NavDirections, navOptions: NavOptions = this.navOptions) {
@@ -92,6 +156,11 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
             )
             .addToBackStack(null)
             .commit()
+    }
+
+    // A feed without a Filmstrip viewer opens the post like a tap on any other layout.
+    override fun onFilmstripClick(post: PostEntity) {
+        onClick(post)
     }
 
     override fun onLongClick(post: PostEntity) {

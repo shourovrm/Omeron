@@ -111,6 +111,23 @@
         <item quantity="one">Gallery, %1$d image: %2$s</item>
         <item quantity="other">Gallery, %1$d images: %2$s</item>
     </plurals>
+    <string name="filmstrip_close">Close viewer</string>
+    <string name="filmstrip_position">%1$d / %2$d</string>
+    <string name="filmstrip_score_description">Score: %1$s</string>
+    <string name="filmstrip_comments_description">Open post, %1$s comments</string>
+    <string name="filmstrip_mute_description">Mute video</string>
+    <string name="filmstrip_info_description">Post details. Tap or swipe up to expand</string>
+    <string name="filmstrip_info_meta">u/%1$s · %2$s</string>
+    <string name="filmstrip_details_meta">u/%1$s · %2$s · %3$s</string>
+    <string name="filmstrip_open_post">Open post · %1$s comments</string>
+    <string name="filmstrip_open_post_single">Open post · 1 comment</string>
+    <string name="filmstrip_action_save">Save</string>
+    <string name="filmstrip_action_saved">Saved</string>
+    <string name="filmstrip_action_share">Share</string>
+    <string name="filmstrip_action_download">Download</string>
+    <string name="filmstrip_go_to_subreddit">Go to r/%1$s</string>
+    <string name="filmstrip_go_to_user">Go to u/%1$s</string>
+    <string name="filmstrip_details_handle">Details panel</string>
     <string name="post_age_separated" translatable="false">· %1$s</string>
     <string name="post_save_description">Save post</string>
     <string name="post_unsave_description">Remove from saved</string>

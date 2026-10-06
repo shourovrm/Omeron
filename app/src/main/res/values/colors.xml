@@ -97,4 +97,16 @@
     <color name="black_25">#40000000</color>
     <!-- Sits on photos in both themes, so it does not change with night mode. -->
     <color name="filmstrip_badge_background">#A8000000</color>
+    <!-- The viewer is dark in both themes, so its details sheet does not follow night mode. -->
+    <color name="filmstrip_sheet_background">#131316</color>
+    <color name="filmstrip_sheet_text">#E9E7E3</color>
+    <color name="filmstrip_sheet_text_secondary">#A5A3A0</color>
+    <color name="filmstrip_sheet_action_background">#1D1D21</color>
+    <color name="filmstrip_sheet_divider">#2C2C31</color>
+    <color name="filmstrip_sheet_handle">#4A4A52</color>
+    <color name="filmstrip_primary_button_background">#9DAEF5</color>
+    <color name="filmstrip_primary_button_text">#0E1A4D</color>
+    <color name="filmstrip_scrim_bottom">#CC000000</color>
+    <color name="filmstrip_details_dim">#99000000</color>
+    <color name="filmstrip_segment_inactive">#4DFFFFFF</color>
 </resources>

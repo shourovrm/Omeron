@@ -28,6 +28,7 @@ import com.omeron.R
 import com.omeron.UiViewModel
 import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.Profile
+import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.repository.PostListRepository
 import com.omeron.databinding.FragmentPostBinding
@@ -347,6 +348,8 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             )
         }
 
+        resumeFilmstripFeed(postListAdapter, binding.listPost)
+
         binding.pullRefresh.setOnRefreshListener(this)
 
         launchRepeat(Lifecycle.State.STARTED) {
@@ -448,6 +451,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
                 .let { if (it >= 0) it else 0 }
             binding.multiTabs.getTabAt(indexToSelect)?.select()
         }
+    }
+
+    override fun onFilmstripClick(post: PostEntity) {
+        openFilmstripViewer(post, postListAdapter, binding.listPost)
     }
 
     private fun toggleLayout() {

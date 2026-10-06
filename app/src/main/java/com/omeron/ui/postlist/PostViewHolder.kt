@@ -350,8 +350,8 @@ abstract class PostViewHolder(
         }
     }
 
-    // Media-only grid tile: preview, a corner badge and nothing else. Tap and long-press go
-    // through the same Listener calls as the gallery tile.
+    // Media-only grid tile: preview, a corner badge and nothing else. A tap opens the viewer
+    // through its own Listener call; long-press is the same as on the gallery tile.
     class FilmstripPostViewHolder(
         private val binding: ItemPostFilmstripBinding,
         listener: PostListAdapter.Listener
@@ -359,7 +359,7 @@ abstract class PostViewHolder(
 
         init {
             itemView.setOnClickListener {
-                listener.onClick(bindingAdapterPosition)
+                listener.onFilmstripClick(bindingAdapterPosition)
             }
             itemView.setOnLongClickListener {
                 listener.onClick(bindingAdapterPosition, true)
