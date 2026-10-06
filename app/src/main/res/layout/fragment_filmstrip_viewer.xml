@@ -15,10 +15,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
+        <!-- Only the pager is inside, so touches on the overlay's buttons, info block and seek bar
+             never reach the vertical swipe detection. -->
+        <com.omeron.ui.filmstrip.VerticalPostSwipeLayout
+            android:id="@+id/post_swipe_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.omeron.ui.filmstrip.VerticalPostSwipeLayout>
 
         <!-- Not clickable on purpose: touches on empty overlay areas fall through to the page. -->
         <androidx.constraintlayout.widget.ConstraintLayout

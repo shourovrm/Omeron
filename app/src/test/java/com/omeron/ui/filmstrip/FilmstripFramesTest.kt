@@ -259,4 +259,91 @@ class FilmstripFramesTest {
         assertEquals(FrameStatus.FAILED, frames.single().status)
         assertEquals(true, frames.single().post.needsHydration)
     }
+
+    private fun framesFor(vararg postsWithImageCounts: Pair<String, Int>): List<FilmstripFrame> {
+        val imageCounts = postsWithImageCounts.toMap()
+        return buildFilmstripFrames(
+            postsWithImageCounts.map { (id, _) -> post(id) },
+            emptyMap()
+        ) { post -> (0 until imageCounts.getValue(post.id)).map { image("${post.id}$it") } }
+    }
+
+    @Test
+    fun `next post from a single frame post is the following frame`() {
+        val frames = framesFor("a" to 1, "b" to 1, "c" to 1)
+
+        assertEquals(1, postSwipeTargetIndex(frames, 0, PostSwipeDirection.NEXT))
+        assertEquals(2, postSwipeTargetIndex(frames, 1, PostSwipeDirection.NEXT))
+    }
+
+    @Test
+    fun `next post from the middle of a gallery skips its remaining images`() {
+        val frames = framesFor("a" to 1, "g" to 4, "c" to 2)
+
+        // g occupies indices 1..4; from g#1 (index 2) the next post starts at index 5.
+        assertEquals(5, postSwipeTargetIndex(frames, 2, PostSwipeDirection.NEXT))
+    }
+
+    @Test
+    fun `previous post from the middle of a gallery goes to the previous post not the gallery start`() {
+        val frames = framesFor("a" to 1, "g" to 4, "c" to 1)
+
+        assertEquals(0, postSwipeTargetIndex(frames, 3, PostSwipeDirection.PREVIOUS))
+    }
+
+    @Test
+    fun `previous post lands on the first frame of a previous gallery`() {
+        val frames = framesFor("g" to 3, "c" to 2)
+
+        // c#1 is index 4; g starts at index 0.
+        assertEquals(0, postSwipeTargetIndex(frames, 4, PostSwipeDirection.PREVIOUS))
+        assertEquals(0, postSwipeTargetIndex(frames, 3, PostSwipeDirection.PREVIOUS))
+    }
+
+    @Test
+    fun `previous post from the first frame of a post is the previous post`() {
+        val frames = framesFor("a" to 2, "b" to 1, "c" to 3)
+
+        assertEquals(2, postSwipeTargetIndex(frames, 3, PostSwipeDirection.PREVIOUS))
+        assertEquals(0, postSwipeTargetIndex(frames, 2, PostSwipeDirection.PREVIOUS))
+    }
+
+    @Test
+    fun `no previous post from any frame of the first post`() {
+        val frames = framesFor("g" to 3, "b" to 1)
+
+        assertNull(postSwipeTargetIndex(frames, 0, PostSwipeDirection.PREVIOUS))
+        assertNull(postSwipeTargetIndex(frames, 2, PostSwipeDirection.PREVIOUS))
+    }
+
+    @Test
+    fun `no next post from any frame of the last loaded post`() {
+        val frames = framesFor("a" to 1, "g" to 3)
+
+        assertNull(postSwipeTargetIndex(frames, 1, PostSwipeDirection.NEXT))
+        assertNull(postSwipeTargetIndex(frames, 3, PostSwipeDirection.NEXT))
+    }
+
+    @Test
+    fun `placeholder frames count as posts to move between`() {
+        val frames = buildFilmstripFrames(
+            listOf(post("a"), post("loading"), post("failed"), post("d")),
+            mapOf("failed" to PostMediaState.Failed)
+        ) { post -> if (post.id == "a" || post.id == "d") listOf(image(post.id)) else null }
+
+        assertEquals(FrameStatus.LOADING, frames[1].status)
+        assertEquals(FrameStatus.FAILED, frames[2].status)
+        assertEquals(1, postSwipeTargetIndex(frames, 0, PostSwipeDirection.NEXT))
+        assertEquals(2, postSwipeTargetIndex(frames, 1, PostSwipeDirection.NEXT))
+        assertEquals(1, postSwipeTargetIndex(frames, 2, PostSwipeDirection.PREVIOUS))
+        assertEquals(2, postSwipeTargetIndex(frames, 3, PostSwipeDirection.PREVIOUS))
+    }
+
+    @Test
+    fun `an index outside the frames has no target`() {
+        val frames = framesFor("a" to 1)
+
+        assertNull(postSwipeTargetIndex(frames, -1, PostSwipeDirection.NEXT))
+        assertNull(postSwipeTargetIndex(emptyList(), 0, PostSwipeDirection.PREVIOUS))
+    }
 }

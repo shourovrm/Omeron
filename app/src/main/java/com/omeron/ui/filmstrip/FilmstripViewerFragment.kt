@@ -2,6 +2,7 @@ package com.omeron.ui.filmstrip
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.provider.Settings
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -189,6 +190,11 @@ class FilmstripViewerFragment : BaseFragment() {
             onRetryResolution = { frame -> viewModel.retryResolution(frame.post.id) }
         )
 
+        binding.postSwipeLayout.apply {
+            canSwipeToPost = ::canSwipeToPost
+            onPostSwipe = ::swipeToPost
+        }
+
         binding.viewPager.apply {
             adapter = frameAdapter
             // The view model remembers the page; the pager's own saved state would restore it
@@ -201,6 +207,55 @@ class FilmstripViewerFragment : BaseFragment() {
                     frameAdapter.currentList.getOrNull(position)?.let(::selectFrame)
                 }
             })
+        }
+    }
+
+    private fun canSwipeToPost(): Boolean {
+        val isDetailsOpen = detailsBehavior.state != BottomSheetBehavior.STATE_HIDDEN
+        // A zoomed image keeps its vertical drags for panning.
+        val isZoomedIn = frameAdapter.isFrameZoomedIn(
+            binding.viewPager.currentItem,
+            binding.viewPager.getRecyclerView()
+        )
+        return !isDetailsOpen && !isZoomedIn
+    }
+
+    private fun swipeToPost(direction: PostSwipeDirection) {
+        val targetIndex = postSwipeTargetIndex(
+            frameAdapter.currentList,
+            binding.viewPager.currentItem,
+            direction
+        )
+
+        if (targetIndex != null) {
+            // The pager is horizontal, so a jump plus a short slide is what reads as vertical.
+            binding.viewPager.setCurrentItem(targetIndex, false)
+            animatePostChange(direction)
+        } else if (direction == PostSwipeDirection.NEXT) {
+            viewModel.requestMorePosts()
+        }
+    }
+
+    private fun animatePostChange(direction: PostSwipeDirection) {
+        val areAnimationsEnabled = Settings.Global.getFloat(
+            requireContext().contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            1F
+        ) > 0F
+        if (!areAnimationsEnabled) return
+
+        // New content enters from the side the finger is heading away from.
+        val slideDistance = binding.viewPager.height * POST_CHANGE_SLIDE_FRACTION
+        val enterOffset = if (direction == PostSwipeDirection.NEXT) slideDistance else -slideDistance
+        binding.viewPager.run {
+            animate().cancel()
+            translationY = enterOffset
+            alpha = 0F
+            animate()
+                .translationY(0F)
+                .alpha(1F)
+                .setDuration(POST_CHANGE_MILLIS)
+                .start()
         }
     }
 
@@ -513,6 +568,8 @@ class FilmstripViewerFragment : BaseFragment() {
         private const val KEY_POST_ID = "KEY_POST_ID"
         private const val SINGLE_COMMENT = "1"
         private const val OVERLAY_FADE_MILLIS = 200L
+        private const val POST_CHANGE_MILLIS = 180L
+        private const val POST_CHANGE_SLIDE_FRACTION = 0.08F
         private const val DISABLED_ACTION_ALPHA = 0.4F
 
         fun newInstance(postId: String) = FilmstripViewerFragment().apply {

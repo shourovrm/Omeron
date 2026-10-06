@@ -50,6 +50,12 @@ class FilmstripFrameAdapter(
         if (activeIndex >= 0) notifyItemChanged(activeIndex, ACTIVE_CHANGED)
     }
 
+    /** True when the frame at [position] is an image the user has zoomed in on. */
+    fun isFrameZoomedIn(position: Int, pagerRecyclerView: RecyclerView?): Boolean {
+        val holder = pagerRecyclerView?.findViewHolderForAdapterPosition(position)
+        return (holder as? ImageFrameViewHolder)?.isZoomedIn == true
+    }
+
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position).isVideo) VIEW_TYPE_VIDEO else VIEW_TYPE_IMAGE
     }
@@ -118,6 +124,9 @@ class FilmstripFrameAdapter(
                 }
             }
         }
+
+        val isZoomedIn: Boolean
+            get() = binding.image.isZoomed
 
         override fun bind(frame: FilmstripFrame) {
             binding.image.contentDescription = frame.post.title

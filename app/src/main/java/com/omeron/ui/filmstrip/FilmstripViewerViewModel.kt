@@ -103,6 +103,11 @@ class FilmstripViewerViewModel @Inject constructor(
         startResolution(post)
     }
 
+    /** Asks the feed for another page, for a swipe that ran into the last loaded post. */
+    fun requestMorePosts() {
+        feedHolder.requestMore()
+    }
+
     fun setMuted(muted: Boolean) {
         _isMuted.value = muted
         viewModelScope.launch { preferencesRepository.setMuteVideo(muted) }

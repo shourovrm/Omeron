@@ -96,4 +96,38 @@ fun buildFilmstripFrames(
     }
 }
 
+/** Which neighbouring post a vertical swipe moves to. */
+enum class PostSwipeDirection { PREVIOUS, NEXT }
+
+/**
+ * Index of the first frame of the post a vertical swipe lands on, or null when there is no such
+ * post (first post going back, last loaded post going forward). The rest of a gallery is skipped
+ * going forward, and going back always lands on the previous post, never on the start of the
+ * current one. A post's frames are contiguous, so only the post ids need comparing.
+ */
+fun postSwipeTargetIndex(
+    frames: List<FilmstripFrame>,
+    currentIndex: Int,
+    direction: PostSwipeDirection
+): Int? {
+    val currentPostId = frames.getOrNull(currentIndex)?.post?.id ?: return null
+
+    return when (direction) {
+        PostSwipeDirection.NEXT -> {
+            (currentIndex + 1 until frames.size).firstOrNull { frames[it].post.id != currentPostId }
+        }
+        PostSwipeDirection.PREVIOUS -> {
+            val currentPostStart = (currentIndex downTo 0)
+                .takeWhile { frames[it].post.id == currentPostId }
+                .last()
+            val previousPostEnd = currentPostStart - 1
+            if (previousPostEnd < 0) return null
+            val previousPostId = frames[previousPostEnd].post.id
+            (previousPostEnd downTo 0)
+                .takeWhile { frames[it].post.id == previousPostId }
+                .last()
+        }
+    }
+}
+
 private fun frameId(post: PostEntity, indexInPost: Int) = "${post.id}#$indexInPost"
