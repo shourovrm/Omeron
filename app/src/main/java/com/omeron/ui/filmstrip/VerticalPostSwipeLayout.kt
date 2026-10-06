@@ -31,6 +31,12 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
 
     var onPostSwipe: (PostSwipeDirection) -> Unit = {}
 
+    /** Reports the finger's vertical offset from where the claimed swipe started. */
+    var onSwipeDrag: (verticalOffset: Float) -> Unit = {}
+
+    /** The claimed swipe ended without changing post; whatever followed the finger goes back. */
+    var onSwipeAbandoned: () -> Unit = {}
+
     private enum class GestureState { UNDECIDED, IGNORED, CLAIMED }
 
     private val viewConfiguration = ViewConfiguration.get(context)
@@ -72,12 +78,19 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
 
         velocityTracker?.addMovement(event)
         when (event.actionMasked) {
-            MotionEvent.ACTION_POINTER_DOWN -> gestureState = GestureState.IGNORED
+            MotionEvent.ACTION_MOVE -> onSwipeDrag(event.y - downY)
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                gestureState = GestureState.IGNORED
+                onSwipeAbandoned()
+            }
             MotionEvent.ACTION_UP -> {
                 completeGesture(event)
                 endGesture()
             }
-            MotionEvent.ACTION_CANCEL -> endGesture()
+            MotionEvent.ACTION_CANCEL -> {
+                onSwipeAbandoned()
+                endGesture()
+            }
         }
         return true
     }
@@ -107,7 +120,7 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
 
     private fun completeGesture(releaseEvent: MotionEvent) {
         val verticalTravel = releaseEvent.y - downY
-        val tracker = velocityTracker ?: return
+        val tracker = velocityTracker ?: return onSwipeAbandoned()
         tracker.computeCurrentVelocity(
             VELOCITY_UNITS_PER_SECOND,
             viewConfiguration.scaledMaximumFlingVelocity.toFloat()
@@ -118,7 +131,7 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
         val isFlingInTravelDirection = verticalTravel * verticalVelocity > 0F &&
             abs(verticalVelocity) >= flingVelocityThreshold
         val isFarEnough = abs(verticalTravel) >= distanceThreshold
-        if (!isFarEnough && !isFlingInTravelDirection) return
+        if (!isFarEnough && !isFlingInTravelDirection) return onSwipeAbandoned()
 
         onPostSwipe(if (verticalTravel < 0F) PostSwipeDirection.NEXT else PostSwipeDirection.PREVIOUS)
     }

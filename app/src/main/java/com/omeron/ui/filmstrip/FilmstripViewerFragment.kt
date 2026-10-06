@@ -9,6 +9,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -193,6 +195,8 @@ class FilmstripViewerFragment : BaseFragment() {
         binding.postSwipeLayout.apply {
             canSwipeToPost = ::canSwipeToPost
             onPostSwipe = ::swipeToPost
+            onSwipeDrag = ::followPostSwipe
+            onSwipeAbandoned = ::settlePagerInPlace
         }
 
         binding.viewPager.apply {
@@ -228,35 +232,82 @@ class FilmstripViewerFragment : BaseFragment() {
         )
 
         if (targetIndex != null) {
-            // The pager is horizontal, so a jump plus a short slide is what reads as vertical.
-            binding.viewPager.setCurrentItem(targetIndex, false)
-            animatePostChange(direction)
-        } else if (direction == PostSwipeDirection.NEXT) {
-            viewModel.requestMorePosts()
+            slideToPost(targetIndex, direction)
+        } else {
+            if (direction == PostSwipeDirection.NEXT) viewModel.requestMorePosts()
+            settlePagerInPlace()
         }
     }
 
-    private fun animatePostChange(direction: PostSwipeDirection) {
-        val areAnimationsEnabled = Settings.Global.getFloat(
+    /** Moves the media with the finger so a vertical swipe feels like the horizontal pager. */
+    private fun followPostSwipe(verticalOffset: Float) {
+        val direction =
+            if (verticalOffset < 0F) PostSwipeDirection.NEXT else PostSwipeDirection.PREVIOUS
+        val hasTarget = postSwipeTargetIndex(
+            frameAdapter.currentList,
+            binding.viewPager.currentItem,
+            direction
+        ) != null
+
+        binding.viewPager.run {
+            animate().cancel()
+            // With no post to go to, the media resists the drag instead of following it fully.
+            translationY = if (hasTarget) verticalOffset else verticalOffset * EDGE_DRAG_RESISTANCE
+        }
+    }
+
+    private fun settlePagerInPlace() {
+        val pager = _binding?.viewPager ?: return
+        pager.animate().cancel()
+        if (!areAnimationsEnabled()) {
+            pager.translationY = 0F
+            return
+        }
+        pager.animate()
+            .translationY(0F)
+            .setDuration(POST_SLIDE_IN_MILLIS)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+    }
+
+    /**
+     * The pager is horizontal, so the vertical move is done by hand: the current media slides
+     * off in the swipe direction, the page changes while it is off screen, and the new media
+     * slides in from the opposite edge.
+     */
+    private fun slideToPost(targetIndex: Int, direction: PostSwipeDirection) {
+        val pager = binding.viewPager
+        pager.animate().cancel()
+        if (!areAnimationsEnabled()) {
+            pager.setCurrentItem(targetIndex, false)
+            pager.translationY = 0F
+            return
+        }
+
+        val exitOffset = pager.height.toFloat() * if (direction == PostSwipeDirection.NEXT) -1F else 1F
+        pager.animate()
+            .translationY(exitOffset)
+            .setDuration(POST_SLIDE_OUT_MILLIS)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction {
+                val currentPager = _binding?.viewPager ?: return@withEndAction
+                currentPager.setCurrentItem(targetIndex, false)
+                currentPager.translationY = -exitOffset
+                currentPager.animate()
+                    .translationY(0F)
+                    .setDuration(POST_SLIDE_IN_MILLIS)
+                    .setInterpolator(DecelerateInterpolator())
+                    .start()
+            }
+            .start()
+    }
+
+    private fun areAnimationsEnabled(): Boolean {
+        return Settings.Global.getFloat(
             requireContext().contentResolver,
             Settings.Global.ANIMATOR_DURATION_SCALE,
             1F
         ) > 0F
-        if (!areAnimationsEnabled) return
-
-        // New content enters from the side the finger is heading away from.
-        val slideDistance = binding.viewPager.height * POST_CHANGE_SLIDE_FRACTION
-        val enterOffset = if (direction == PostSwipeDirection.NEXT) slideDistance else -slideDistance
-        binding.viewPager.run {
-            animate().cancel()
-            translationY = enterOffset
-            alpha = 0F
-            animate()
-                .translationY(0F)
-                .alpha(1F)
-                .setDuration(POST_CHANGE_MILLIS)
-                .start()
-        }
     }
 
     private fun initOverlay() {
@@ -568,8 +619,11 @@ class FilmstripViewerFragment : BaseFragment() {
         private const val KEY_POST_ID = "KEY_POST_ID"
         private const val SINGLE_COMMENT = "1"
         private const val OVERLAY_FADE_MILLIS = 200L
-        private const val POST_CHANGE_MILLIS = 180L
-        private const val POST_CHANGE_SLIDE_FRACTION = 0.08F
+        private const val POST_SLIDE_OUT_MILLIS = 140L
+        private const val POST_SLIDE_IN_MILLIS = 220L
+
+        // Fraction of the finger's travel the media moves when there is no post in that direction.
+        private const val EDGE_DRAG_RESISTANCE = 0.3F
         private const val DISABLED_ACTION_ALPHA = 0.4F
 
         fun newInstance(postId: String) = FilmstripViewerFragment().apply {
