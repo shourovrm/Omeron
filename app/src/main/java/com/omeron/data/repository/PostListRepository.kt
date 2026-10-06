@@ -109,6 +109,8 @@ class PostListRepository @Inject constructor(
     }
 
     suspend fun subscribe(name: String, profileId: Int, icon: String? = null) {
+        // A blank primary key would render as an unnamed row that can't be opened.
+        if (name.isBlank()) return
         redditDatabase.subscriptionDao().insert(
             Subscription(name, System.currentTimeMillis(), icon, profileId)
         )
