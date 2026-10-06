@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
@@ -41,6 +42,7 @@ import com.omeron.util.ShareLinkResolver
 import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.clearWindowInsetsListener
 import com.omeron.util.extension.currentNavigationFragment
+import com.omeron.util.extension.hideSoftKeyboard
 import com.omeron.util.extension.isPast
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.normalizeRedditLink
@@ -255,10 +257,33 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             adapter = drawerAdapter
         }
 
-        binding.drawerFilter.doAfterTextChanged { viewModel.setDrawerFilterQuery(it.toString()) }
+        // Rows that reappear when the filter changes are inserted above the current scroll
+        // anchor, which would leave the multireddits hidden off the top of the list.
+        var shouldScrollListToTop = false
+        binding.drawerFilter.doAfterTextChanged {
+            shouldScrollListToTop = true
+            viewModel.setDrawerFilterQuery(it.toString())
+        }
+
+        // A filter left behind would hide most communities the next time the drawer opens, and
+        // the keyboard would otherwise stay up over the screen the user just navigated to.
+        binding.drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerClosed(drawerView: View) {
+                binding.drawerFilter.hideSoftKeyboard()
+                binding.drawerFilter.clearFocus()
+                binding.drawerFilter.text?.clear()
+            }
+        })
 
         launchRepeat(Lifecycle.State.STARTED) {
-            viewModel.drawerItems.collect(drawerAdapter::submitList)
+            viewModel.drawerItems.collect { drawerItems ->
+                drawerAdapter.submitList(drawerItems) {
+                    if (shouldScrollListToTop) {
+                        shouldScrollListToTop = false
+                        binding.drawerList.scrollToPosition(0)
+                    }
+                }
+            }
         }
     }
 
