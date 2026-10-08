@@ -28,13 +28,13 @@ class AboutFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAppBar()
+        binding.buttonGithub.setOnClickListener { linkHandler.openBrowser(githubLink) }
         binding.appVersion.text = BuildConfig.VERSION_NAME
     }
 
     private fun initAppBar() {
         binding.appBar.run {
             backCard.setOnClickListener { onBackPressed() }
-            buttonGithub.setOnClickListener { linkHandler.openBrowser(githubLink) }
         }
     }
 
