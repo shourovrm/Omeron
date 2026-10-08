@@ -67,18 +67,6 @@
     <dimen name="switch_thumb_size">20dp</dimen>
     <dimen name="switch_track_radius">16dp</dimen>
 
-    <dimen name="search_subreddit_card_height">@dimen/card_height</dimen>
-    <dimen name="search_subreddit_image_size">@dimen/card_image_size</dimen>
-    <dimen name="search_subreddit_margin_horizontal">@dimen/card_margin_horizontal</dimen>
-    <dimen name="search_subreddit_margin_vertical">@dimen/card_margin_vertical</dimen>
-    <dimen name="search_subreddit_padding">@dimen/card_padding</dimen>
-
-    <dimen name="search_user_card_height">@dimen/card_height</dimen>
-    <dimen name="search_user_image_size">@dimen/card_image_size</dimen>
-    <dimen name="search_user_margin_horizontal">@dimen/card_margin_horizontal</dimen>
-    <dimen name="search_user_margin_vertical">@dimen/card_margin_vertical</dimen>
-    <dimen name="search_user_padding">@dimen/card_padding</dimen>
-
     <dimen name="tab_indicator_width">32dp</dimen>
     <dimen name="tab_indicator_height">4dp</dimen>
     <dimen name="tab_indicator_radius">4dp</dimen>

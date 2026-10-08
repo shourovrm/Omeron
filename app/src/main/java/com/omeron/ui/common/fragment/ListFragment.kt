@@ -32,6 +32,9 @@ abstract class ListFragment<T : Adapter<out ViewHolder>> : BaseFragment(),
 
     protected open val enablePullToRefresh: Boolean = true
 
+    /** Height of a bar floating over the bottom of the list; the list scrolls clear of it. */
+    protected open val bottomOverlayHeight: Int = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,7 +66,7 @@ abstract class ListFragment<T : Adapter<out ViewHolder>> : BaseFragment(),
         }
 
         binding.listContent.apply {
-            applyWindowInsets(left = false, top = false, right = false)
+            applyWindowInsets(left = false, top = false, right = false, extraBottom = bottomOverlayHeight)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = attachedAdapter(this@ListFragment.adapter)
             if (showItemDecoration) {

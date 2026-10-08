@@ -5,12 +5,10 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.size.Precision
-import coil.size.Scale
 import com.omeron.R
 import com.omeron.data.model.User
 import com.omeron.databinding.ItemSearchUserBinding
+import com.omeron.util.extension.loadSubredditIcon
 
 class SearchUserAdapter(
     private val listener: (String) -> Unit
@@ -31,16 +29,9 @@ class SearchUserAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) {
-            binding.user = user
-
-            binding.userImage.load(user.icon) {
-                crossfade(true)
-                scale(Scale.FILL)
-                precision(Precision.AUTOMATIC)
-                placeholder(R.drawable.icon_reddit_placeholder)
-                error(R.drawable.icon_reddit_placeholder)
-                fallback(R.drawable.icon_reddit_placeholder)
-            }
+            binding.userName.text =
+                binding.root.context.getString(R.string.reddit_user_prefixed, user.displayName)
+            binding.userImage.loadSubredditIcon(user.icon)
 
             itemView.setOnClickListener { listener(user.displayName) }
         }

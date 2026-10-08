@@ -3,6 +3,7 @@ package com.omeron.data.repository
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import com.omeron.data.local.RedditDatabase
@@ -13,7 +14,9 @@ import com.omeron.data.model.preferences.MediaPreferences
 import com.omeron.data.model.preferences.PolicyDisclaimerPreferences
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.ProfilePreferences
+import com.omeron.data.model.preferences.SearchPreferences
 import com.omeron.data.model.preferences.UiPreferences
+import com.omeron.util.SearchUtil
 import com.omeron.util.extension.getValue
 import com.omeron.util.extension.setValue
 import kotlinx.coroutines.flow.Flow
@@ -256,4 +259,36 @@ class PreferencesRepository @Inject constructor(
     }
 
     //endregion
+
+    //region Search
+
+    /** Queries searched before, newest first. They belong to the app, not to a profile. */
+    fun getRecentSearchQueries(): Flow<List<String>> {
+        return preferencesDatastore.getValue(SearchPreferences.PreferencesKeys.RECENT_QUERIES, "")
+            .map { stored -> stored.split(RECENT_QUERY_SEPARATOR).filter { it.isNotBlank() } }
+    }
+
+    suspend fun addRecentSearchQuery(query: String) {
+        updateRecentSearchQueries { recentQueries -> SearchUtil.withRecentQuery(recentQueries, query) }
+    }
+
+    suspend fun removeRecentSearchQuery(query: String) {
+        updateRecentSearchQueries { recentQueries -> recentQueries - query }
+    }
+
+    // One edit block, so two quick searches cannot overwrite each other's change.
+    private suspend fun updateRecentSearchQueries(change: (List<String>) -> List<String>) {
+        preferencesDatastore.edit { preferences ->
+            val stored = preferences[SearchPreferences.PreferencesKeys.RECENT_QUERIES].orEmpty()
+            val recentQueries = stored.split(RECENT_QUERY_SEPARATOR).filter { it.isNotBlank() }
+            preferences[SearchPreferences.PreferencesKeys.RECENT_QUERIES] =
+                change(recentQueries).joinToString(RECENT_QUERY_SEPARATOR)
+        }
+    }
+
+    //endregion
+
+    private companion object {
+        const val RECENT_QUERY_SEPARATOR = "\n"
+    }
 }

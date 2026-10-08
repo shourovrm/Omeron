@@ -136,7 +136,7 @@
     <string name="post_more_description">More options</string>
 
     <string name="tab_search_post">Posts</string>
-    <string name="tab_search_subreddit">Subreddits</string>
+    <string name="tab_search_subreddit">Communities</string>
     <string name="tab_search_user">Users</string>
 
     <string name="subreddit_button_unsubscribe">Unsubscribe</string>
@@ -395,4 +395,16 @@
     <string name="update_up_to_date">You\'re up to date</string>
     <string name="update_check_failed">Couldn\'t check for updates</string>
     <string name="filmstrip_link_caption">Link</string>
+    <string name="search_hint_reddit">Search Reddit</string>
+    <string name="search_clear_description">Clear search</string>
+    <string name="search_min_length_hint">Type at least %1$d characters</string>
+    <string name="search_recent_section">Recent</string>
+    <string name="search_communities_section">Your communities</string>
+    <string name="search_remove_recent_description">Remove %1$s from recent searches</string>
+    <string name="search_community_detail">%1$s members · %2$s</string>
+    <string name="search_community_members">%1$s members</string>
+    <string name="search_join">Join</string>
+    <string name="search_joined">Joined</string>
+    <string name="search_join_description">Join r/%1$s</string>
+    <string name="search_joined_description">Joined r/%1$s. Tap to leave</string>
 </resources>

@@ -34,6 +34,11 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
     override val showItemDecoration: Boolean
         get() = true
 
+    override val bottomOverlayHeight: Int
+        get() = resources.getDimensionPixelSize(
+            com.google.android.material.R.dimen.design_bottom_navigation_height
+        )
+
     @Inject
     lateinit var repository: PostListRepository
 

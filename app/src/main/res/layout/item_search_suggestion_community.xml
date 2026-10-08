@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="56dp"
+    android:minHeight="48dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:paddingStart="16dp"
@@ -13,24 +12,22 @@
     android:paddingBottom="4dp"
     android:background="?attr/selectableItemBackground">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/user_image"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+    <com.omeron.ui.common.widget.AvatarView
+        android:id="@+id/community_avatar"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:importantForAccessibility="no"
-        app:shapeAppearanceOverlay="@style/CircularImageViewStyle"
-        tools:src="@tools:sample/avatars"/>
+        tools:text="AN"/>
 
     <TextView
-        android:id="@+id/user_name"
+        android:id="@+id/community_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="12dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:fontFamily="@font/inter_semibold"
         android:textAppearance="?attr/textAppearanceBody1"
-        tools:text="u/spez"/>
+        tools:text="r/android"/>
 
 </LinearLayout>

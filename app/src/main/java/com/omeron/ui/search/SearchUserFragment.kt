@@ -20,6 +20,11 @@ class SearchUserFragment : PagingListFragment<SearchUserAdapter, User>() {
     override val flow: Flow<PagingData<User>>
         get() = viewModel.userDataFlow
 
+    override val bottomOverlayHeight: Int
+        get() = resources.getDimensionPixelSize(
+            com.google.android.material.R.dimen.design_bottom_navigation_height
+        )
+
     override fun bindViewModel() {
         super.bindViewModel()
         viewLifecycleOwner.lifecycleScope.launch {
