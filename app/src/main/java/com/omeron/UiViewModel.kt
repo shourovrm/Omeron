@@ -33,6 +33,11 @@ class UiViewModel @Inject constructor(
     private val _navigationVisibility = MutableStateFlow(true)
     val navigationVisibility: StateFlow<Boolean> = _navigationVisibility
 
+    // Height of the bottom bar including the system navigation inset, published by MainActivity
+    // so list screens shown above the bar can keep their last items clear of it.
+    private val _bottomNavigationHeight = MutableStateFlow(0)
+    val bottomNavigationHeight: StateFlow<Int> = _bottomNavigationHeight
+
     // Selected home tab: 0 = Feed, 1 = Popular, 2 = Multis. Set by the bottom
     // navigation bar (MainActivity); PostListFragment derives its feed mode from it.
     private val _homeTab = MutableStateFlow(0)
@@ -87,6 +92,10 @@ class UiViewModel @Inject constructor(
 
     fun setNavigationVisibility(visible: Boolean) {
         _navigationVisibility.updateValue(visible)
+    }
+
+    fun setBottomNavigationHeight(height: Int) {
+        _bottomNavigationHeight.updateValue(height)
     }
 
     fun setHomeTab(tab: Int) {

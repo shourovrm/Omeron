@@ -18,7 +18,6 @@ import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
@@ -370,9 +369,6 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
             menuCard.isVisible = true
             menuCard.setOnClickListener { (activity as? MainActivity)?.openNavigationDrawer() }
-
-            searchCard.isVisible = true
-            searchCard.setOnClickListener { findNavController().navigate(R.id.search) }
         }
         binding.appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener)
         initTabs()

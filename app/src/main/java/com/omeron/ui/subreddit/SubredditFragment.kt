@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.omeron.R
+import com.omeron.UiViewModel
 import com.omeron.data.model.Resource
 import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.PostEntity
@@ -40,10 +42,12 @@ import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.sort.SortFragment
 import com.omeron.util.DateUtil
+import com.omeron.util.HideNavigationOnScrollListener
 import com.omeron.util.extension.addLoadStateListener
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.filteredForLayout
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.keepClearOfBottomNavigation
 import com.omeron.util.extension.layoutManager
 import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.betterSmoothScrollToPosition
@@ -52,6 +56,7 @@ import com.omeron.util.extension.clearWindowInsetsListener
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.loadSubredditIcon
 import com.omeron.util.extension.onRefreshFromNetwork
+import com.omeron.util.extension.setNavigationListener
 import com.omeron.util.extension.setSortingListener
 import com.omeron.util.extension.toPixels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -74,6 +79,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
     private val bindingAbout get() = _bindingAbout!!
 
     override val viewModel: SubredditViewModel by viewModels()
+    private val uiViewModel: UiViewModel by activityViewModels()
 
     override val filmstripMediaPredicate: (PostEntity) -> Boolean = PostEntity::hasFilmstripMedia
 
@@ -247,13 +253,15 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             }
         }
         bindingContent.listPost.apply {
-            applyWindowInsets(left = false, top = false, right = false)
             layoutManager = LinearLayoutManager(requireContext())
+            addOnScrollListener(HideNavigationOnScrollListener(uiViewModel))
             adapter = postListAdapter.withLoadStateHeaderAndFooter(
                 header = NetworkLoadStateAdapter { postListAdapter.retry() },
                 footer = NetworkLoadStateAdapter { postListAdapter.retry() }
             )
         }
+
+        keepClearOfBottomNavigation(bindingContent.listPost, uiViewModel.bottomNavigationHeight)
 
         resumeFilmstripFeed(postListAdapter, bindingContent.listPost)
 
@@ -306,6 +314,12 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
     private fun initResultListener() {
         setSortingListener { sorting -> sorting?.let { viewModel.setSorting(it) } }
+
+        // A post page opened on top of this screen hides the bottom bar and reports back here
+        // when it closes.
+        setNavigationListener { showNavigation ->
+            uiViewModel.setNavigationVisibility(showNavigation)
+        }
     }
 
     private fun bindInfo(about: SubredditEntity) {

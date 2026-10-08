@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omeron.R
+import com.omeron.UiViewModel
 import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.PostLayout
@@ -26,15 +28,16 @@ import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.ui.sort.SortFragment
 import com.omeron.ui.subscriptions.MultiredditEditDialogFragment
 import com.omeron.util.extension.addLoadStateListener
-import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.filteredForLayout
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.keepClearOfBottomNavigation
 import com.omeron.util.extension.layoutManager
 import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.onRefreshFromNetwork
+import com.omeron.util.extension.setNavigationListener
 import com.omeron.util.extension.setSortingListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +51,7 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
     private val binding get() = _binding!!
 
     override val viewModel: MultiredditViewModel by viewModels()
+    private val uiViewModel: UiViewModel by activityViewModels()
 
     override val filmstripMediaPredicate: (PostEntity) -> Boolean = PostEntity::hasFilmstripMedia
 
@@ -131,13 +135,16 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
         }
 
         binding.listPost.apply {
-            applyWindowInsets(left = false, top = false, right = false)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = postListAdapter.withLoadStateHeaderAndFooter(
                 header = NetworkLoadStateAdapter { postListAdapter.retry() },
                 footer = NetworkLoadStateAdapter { postListAdapter.retry() }
             )
         }
+
+        // The list sits in a plain ConstraintLayout, so scrolling reaches the bar's hide-on-scroll
+        // behavior without help.
+        keepClearOfBottomNavigation(binding.listPost, uiViewModel.bottomNavigationHeight)
 
         resumeFilmstripFeed(postListAdapter, binding.listPost)
 
@@ -177,6 +184,12 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
 
     private fun initResultListener() {
         setSortingListener { sorting -> sorting?.let { viewModel.setSorting(it) } }
+
+        // A post page opened on top of this screen hides the bottom bar and reports back here
+        // when it closes.
+        setNavigationListener { showNavigation ->
+            uiViewModel.setNavigationVisibility(showNavigation)
+        }
     }
 
     private fun scrollToTop() {

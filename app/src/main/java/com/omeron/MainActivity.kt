@@ -193,31 +193,50 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.home, R.id.popular, R.id.multis -> {
-                        viewModel.setHomeTab(HOME_TAB_ITEMS.indexOf(item.itemId))
-                        if (navController.currentDestination?.id != R.id.postListFragment) {
-                            NavigationUI.onNavDestinationSelected(
-                                menu.findItem(R.id.home),
-                                navController
-                            )
-                        }
+                        showHomeTab(item.itemId)
                         true
                     }
 
                     else -> NavigationUI.onNavDestinationSelected(item, navController)
                 }
             }
-            setOnItemReselectedListener {
-                when (it.itemId) {
-                    R.id.home, R.id.popular, R.id.multis ->
-                        (currentNavigationFragment as? PostListFragment)?.scrollToTop()
-                    else -> {
-                        // Ignore
+            setOnItemReselectedListener { item ->
+                when (item.itemId) {
+                    R.id.home, R.id.popular, R.id.multis -> {
+                        // The item checked on arrival at a subreddit, user or multireddit page
+                        // is still checked there, so tapping it must leave that page.
+                        val postListFragment = currentNavigationFragment as? PostListFragment
+                        if (postListFragment != null) {
+                            postListFragment.scrollToTop()
+                        } else {
+                            showHomeTab(item.itemId)
+                        }
+                    }
+
+                    R.id.search -> {
+                        if (navController.currentDestination?.id != R.id.searchFragment) {
+                            NavigationUI.onNavDestinationSelected(item, navController)
+                        }
                     }
                 }
+            }
+            addOnLayoutChangeListener { _, _, top, _, bottom, _, _, _, _ ->
+                viewModel.setBottomNavigationHeight(bottom - top)
             }
         }
 
         initDrawer()
+    }
+
+    // Pops back to the home feed instead of pushing a second copy of it onto the back stack.
+    private fun showHomeTab(menuItemId: Int) {
+        viewModel.setHomeTab(HOME_TAB_ITEMS.indexOf(menuItemId))
+        if (navController.currentDestination?.id != R.id.postListFragment) {
+            NavigationUI.onNavDestinationSelected(
+                binding.bottomNavigation.menu.findItem(R.id.home),
+                navController
+            )
+        }
     }
 
     private fun initDrawer() {
@@ -366,14 +385,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        when (destination.id) {
-            R.id.postListFragment,
-            R.id.subscriptionsFragment -> {
-                viewModel.setNavigationVisibility(true)
-            }
-
-            else -> viewModel.setNavigationVisibility(false)
-        }
+        viewModel.setNavigationVisibility(destination.id in BOTTOM_NAVIGATION_DESTINATIONS)
 
         // Every drawer row and pinned entry navigates, so the drawer is done once we arrive
         binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -390,7 +402,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         // Keep the checked bottom bar item in sync on back navigation
         when (destination.id) {
             R.id.postListFragment -> HOME_TAB_ITEMS[viewModel.homeTab.value]
-            R.id.subscriptionsFragment -> R.id.subscriptions
+            R.id.searchFragment -> R.id.search
             else -> null
         }?.let { binding.bottomNavigation.menu.findItem(it)?.isChecked = true }
     }
@@ -416,6 +428,16 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         private const val RELEASES_PAGE_URL = "https://github.com/shourovrm/Omeron/releases/latest"
 
         private val REDDIT_URL_REGEX = Regex("""https?://\S+""")
+
+        // The bar is hidden everywhere else (post page, viewer, settings, edit page...).
+        private val BOTTOM_NAVIGATION_DESTINATIONS = setOf(
+            R.id.postListFragment,
+            R.id.searchFragment,
+            R.id.subredditFragment,
+            R.id.multiredditFragment,
+            R.id.userFragment,
+            R.id.subscriptionsFragment
+        )
 
         // Index = home tab position (Feed/Popular/Multis)
         private val HOME_TAB_ITEMS = listOf(R.id.home, R.id.popular, R.id.multis)
