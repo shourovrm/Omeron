@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omeron.R
@@ -55,6 +56,10 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
     private lateinit var postListAdapter: PostListAdapter
 
     private var latestMulti: MultiredditWithMembers? = null
+
+    // Guards against layoutManager reassignment on same-value emissions, which resets scroll
+    // position (collected on every return to the foreground).
+    private var appliedPostLayout: PostLayout? = null
 
     @Inject
     lateinit var repository: PostListRepository
@@ -119,6 +124,7 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
         // ponytail: no pull-to-refresh chrome here - mirrors SubredditSearchFragment (a plain
         // pushed list page), not the collapsing-toolbar SubredditFragment which needs it.
         postListAdapter = PostListAdapter(repository, this, this).apply {
+            stateRestorationPolicy = PREVENT_WHEN_EMPTY
             addLoadStateListener(binding.listPost, binding.loadingState) {
                 showRetryBar()
             }
@@ -162,6 +168,8 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
 
     private fun applyPostLayout(layout: PostLayout) {
         postListAdapter.postLayout = layout
+        if (appliedPostLayout == layout) return
+        appliedPostLayout = layout
         binding.listPost.layoutManager = layout.layoutManager(requireContext()) { postListAdapter.itemCount }
         binding.appBar.layoutToggleCard.setIcon(layout.iconRes())
         binding.appBar.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
@@ -227,6 +235,7 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         clearSortingListener()
+        appliedPostLayout = null
         _binding = null
     }
 
