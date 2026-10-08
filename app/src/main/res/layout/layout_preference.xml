@@ -3,12 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/preference_card_height"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/preference_card_height"
     style="@style/CardStylePreference">
 
+    <!-- Grows with the summary; a fixed height clipped summaries longer than one line. -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/preference_card_height"
         android:padding="@dimen/preference_padding"
         android:background="@drawable/card_background">
 
