@@ -26,6 +26,22 @@
             android:src="@drawable/ic_search"
             app:tint="?attr/colorControlNormal"/>
 
+        <!-- Shown when the search is limited to one community; its close icon lifts the limit. -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_scope"
+            style="@style/Widget.MaterialComponents.Chip.Entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:checkable="false"
+            android:maxWidth="160dp"
+            android:ellipsize="end"
+            android:visibility="gone"
+            app:chipBackgroundColor="?attr/colorSurface"
+            app:closeIconEnabled="true"
+            tools:text="r/Android"
+            tools:visibility="visible"/>
+
         <EditText
             android:id="@+id/input_search"
             android:layout_width="0dp"

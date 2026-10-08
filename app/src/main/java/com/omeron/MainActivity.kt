@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,8 @@ import com.omeron.ui.drawer.DrawerItem
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
 import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
+import com.omeron.ui.search.SearchFragmentArgs
+import com.omeron.ui.subreddit.SubredditFragment
 import com.omeron.ui.subscriptions.SubscriptionMenus
 import com.omeron.ui.subscriptions.SubscriptionsViewModel
 import com.omeron.util.HideBottomViewBehavior
@@ -205,7 +208,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                         true
                     }
 
-                    else -> NavigationUI.onNavDestinationSelected(item, navController)
+                    else -> openSearch(item)
                 }
             }
             setOnItemReselectedListener { item ->
@@ -223,7 +226,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
                     R.id.search -> {
                         if (navController.currentDestination?.id != R.id.searchFragment) {
-                            NavigationUI.onNavDestinationSelected(item, navController)
+                            openSearch(item)
                         }
                     }
                 }
@@ -234,6 +237,21 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
 
         initDrawer()
+    }
+
+    // From a community page the search is scoped to that community and goes on top of the
+    // page, so Back returns to it; from anywhere else it is the site-wide search tab.
+    private fun openSearch(searchItem: MenuItem): Boolean {
+        val subredditName = (currentNavigationFragment as? SubredditFragment)?.subredditName
+        if (subredditName.isNullOrBlank()) {
+            return NavigationUI.onNavDestinationSelected(searchItem, navController)
+        }
+
+        navController.navigate(
+            R.id.search,
+            SearchFragmentArgs(subreddit = subredditName).toBundle()
+        )
+        return true
     }
 
     // Pops back to the home feed instead of pushing a second copy of it onto the back stack.

@@ -85,6 +85,10 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
     private val args: SubredditFragmentArgs by navArgs()
 
+    /** The community this page shows; the bottom bar's Search opens scoped to it. */
+    val subredditName: String
+        get() = viewModel.subreddit.value
+
     private lateinit var postListAdapter: PostListAdapter
 
     // Guards against layoutManager reassignment on same-value emissions, which resets scroll
@@ -383,15 +387,6 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         bindingContent.listPost.betterSmoothScrollToPosition(0)
     }
 
-    private fun showSearchFragment() {
-        navigate(
-            SubredditFragmentDirections.openSearch(
-                viewModel.subreddit.value,
-                viewModel.about.value.dataValue?.icon
-            )
-        )
-    }
-
     private fun showSortDialog() {
         SortFragment.show(childFragmentManager, viewModel.sorting.value)
     }
@@ -460,7 +455,6 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
     override fun onMenuItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.search -> showSearchFragment()
             R.id.sidebar -> openDrawer()
             R.id.add_to_multireddit -> showMultiredditPicker()
             else -> {

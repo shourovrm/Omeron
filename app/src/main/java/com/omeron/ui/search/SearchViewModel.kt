@@ -65,12 +65,18 @@ class SearchViewModel @Inject constructor(
     val postLayout: Flow<PostLayout> =
         preferencesRepository.getPostLayout()
 
-    private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
+    private val _sorting: MutableStateFlow<Sorting> =
+        MutableStateFlow(defaultSorting(savedStateHandle.get<String>(KEY_SCOPE)))
     val sorting: StateFlow<Sorting> = _sorting
 
     private val _query: MutableStateFlow<String> =
         MutableStateFlow(savedStateHandle.get<String>(KEY_QUERY).orEmpty())
     val query: StateFlow<String> get() = _query
+
+    // The community the search is limited to; null searches all of Reddit.
+    private val _scope: MutableStateFlow<String?> =
+        MutableStateFlow(savedStateHandle.get<String>(KEY_SCOPE))
+    val scope: StateFlow<String?> get() = _scope
 
     // What is in the search field, searched or not: the communities are filtered by it.
     private val typedText = MutableStateFlow("")
@@ -85,9 +91,16 @@ class SearchViewModel @Inject constructor(
     val suggestions: Flow<List<SearchSuggestionItem>> = combine(
         recentQueries,
         visibleCommunityNames,
-        typedText
-    ) { recent, communityNames, typed ->
-        buildSearchSuggestions(recent, SearchUtil.filterCommunityNames(communityNames, typed))
+        typedText,
+        scope
+    ) { recent, communityNames, typed, scope ->
+        // Inside one community there is no other community to jump to.
+        val suggestedCommunities = if (scope == null) {
+            SearchUtil.filterCommunityNames(communityNames, typed)
+        } else {
+            emptyList()
+        }
+        buildSearchSuggestions(recent, suggestedCommunities)
     }
 
     // Lowercase, because the stored names ignore case and a result may spell a name differently.
@@ -112,15 +125,22 @@ class SearchViewModel @Inject constructor(
     val subredditDataFlow: Flow<PagingData<SubredditEntity>>
     val userDataFlow: Flow<PagingData<User>>
 
-    private val searchData: StateFlow<Data.Fetch> = combine(
+    private data class SearchRequest(
+        val query: String,
+        val sorting: Sorting,
+        val subreddit: String?
+    )
+
+    private val searchRequest: StateFlow<SearchRequest> = combine(
         query,
-        sorting
-    ) { query, sorting ->
-        Data.Fetch(query, sorting)
+        sorting,
+        scope
+    ) { query, sorting, scope ->
+        SearchRequest(query, sorting, scope)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        Data.Fetch("", DEFAULT_SORTING)
+        SearchRequest("", _sorting.value, _scope.value)
     )
 
     private val userData: Flow<Data.User> = combine(
@@ -133,9 +153,13 @@ class SearchViewModel @Inject constructor(
 
     // A blank query (the field was cleared) must not search for nothing; the last results stay
     // untouched until the next real query.
-    val data: Flow<Pair<Data.Fetch, Data.User>> = searchData
+    private val data: Flow<Pair<SearchRequest, Data.User>> = searchRequest
         .filter { it.query.isNotBlank() }
-        .flatMapLatest { searchData -> userData.take(1).map { searchData to it } }
+        .flatMapLatest { request -> userData.take(1).map { request to it } }
+
+    // Communities and users are only searched site-wide; a scoped search shows posts alone.
+    private val siteWideData: Flow<Pair<SearchRequest, Data.User>> =
+        data.filter { it.first.subreddit == null }
 
     init {
         postDataFlow = data
@@ -143,32 +167,37 @@ class SearchViewModel @Inject constructor(
             .onEach { _lastRefreshPost.value = System.currentTimeMillis() }
             .cachedIn(viewModelScope)
 
-        subredditDataFlow = data
+        subredditDataFlow = siteWideData
             .flatMapLatest { data -> getSubreddits(data.first, data.second) }
             .onEach { _lastRefreshSubreddit.value = System.currentTimeMillis() }
             .cachedIn(viewModelScope)
 
-        userDataFlow = data
+        userDataFlow = siteWideData
             .flatMapLatest { data -> getUsers(data.first, data.second) }
             .onEach { _lastRefreshUser.value = System.currentTimeMillis() }
             .cachedIn(viewModelScope)
     }
 
     private fun getPosts(
-        data: Data.Fetch,
+        request: SearchRequest,
         user: Data.User
     ): Flow<PagingData<PostEntity>> {
-        return repository.searchPost(data.query, data.sorting)
+        val posts = if (request.subreddit == null) {
+            repository.searchPost(request.query, request.sorting)
+        } else {
+            repository.searchInSubreddit(request.query, request.subreddit, request.sorting)
+        }
+        return posts
             .map { pagingData ->
                 PostUtil.filterPosts(pagingData, user, postMapper, defaultDispatcher)
             }
     }
 
     private fun getSubreddits(
-        data: Data.Fetch,
+        request: SearchRequest,
         user: Data.User
     ): Flow<PagingData<SubredditEntity>> {
-        return repository.searchSubreddit(data.query, data.sorting)
+        return repository.searchSubreddit(request.query, request.sorting)
             .map { pagingData ->
                 pagingData
                     .map { subredditMapper.dataToEntity((it as AboutChild).data) }
@@ -178,10 +207,10 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun getUsers(
-        data: Data.Fetch,
+        request: SearchRequest,
         user: Data.User
     ): Flow<PagingData<User>> {
-        return repository.searchUser(data.query, data.sorting)
+        return repository.searchUser(request.query, request.sorting)
             .map { pagingData ->
                 pagingData
                     .map { userMapper.dataToEntity((it as AboutUserChild).data) }
@@ -201,6 +230,17 @@ class SearchViewModel @Inject constructor(
     fun setQuery(query: String) {
         savedStateHandle[KEY_QUERY] = query
         _query.updateValue(query)
+    }
+
+    /**
+     * Limits the search to [subreddit], or to nothing when null. The sorting follows: inside a
+     * community the newest matches come first, because Reddit's relevance order puts old,
+     * high-scoring posts ahead of the recent ones a reader has just seen in the feed.
+     */
+    fun setScope(subreddit: String?) {
+        savedStateHandle[KEY_SCOPE] = subreddit
+        _scope.value = subreddit
+        _sorting.value = defaultSorting(subreddit)
     }
 
     fun setTypedText(text: String) {
@@ -230,7 +270,14 @@ class SearchViewModel @Inject constructor(
 
     companion object {
         private const val KEY_QUERY = "KEY_QUERY"
+        private const val KEY_SCOPE = "KEY_SCOPE"
 
-        private val DEFAULT_SORTING = Sorting(Sort.RELEVANCE, TimeSorting.ALL)
+        private fun defaultSorting(subreddit: String?): Sorting {
+            return if (subreddit == null) {
+                Sorting(Sort.RELEVANCE, TimeSorting.ALL)
+            } else {
+                Sorting(Sort.NEW, TimeSorting.ALL)
+            }
+        }
     }
 }

@@ -64,7 +64,10 @@ class SearchFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         // After a restart the view model gets the query back from its saved state, and the
         // arguments would only bring back the query the screen was first opened with.
-        if (savedInstanceState == null) applyArgumentsQuery()
+        if (savedInstanceState == null) {
+            viewModel.setScope(args.subreddit)
+            applyArgumentsQuery()
+        }
     }
 
     override fun onCreateView(
@@ -116,6 +119,7 @@ class SearchFragment : BaseFragment() {
                 inputSearch.text.clear()
                 inputSearch.showSoftKeyboard()
             }
+            chipScope.setOnCloseIconClickListener { viewModel.setScope(null) }
         }
     }
 
@@ -178,6 +182,10 @@ class SearchFragment : BaseFragment() {
             }
 
             launch {
+                viewModel.scope.collect { subreddit -> showScope(subreddit) }
+            }
+
+            launch {
                 viewModel.sorting.collect {
                     binding.sortIcon.setSorting(it)
                 }
@@ -203,6 +211,25 @@ class SearchFragment : BaseFragment() {
             if (hasQuery && binding.inputSearch.text.toString() != query) {
                 binding.inputSearch.setText(query)
             }
+        }
+    }
+
+    /** A search inside one community lists posts only, so the scope tabs make way. */
+    private fun showScope(subreddit: String?) {
+        val isScoped = subreddit != null
+        binding.run {
+            chipScope.isVisible = isScoped
+            inputSearch.setHint(
+                if (isScoped) R.string.search_hint_in_community else R.string.search_hint_reddit
+            )
+            if (subreddit != null) {
+                chipScope.text = getString(R.string.drawer_community_name, subreddit)
+                chipScope.closeIconContentDescription =
+                    getString(R.string.search_scope_remove_description, subreddit)
+                viewPager.setCurrentItem(POSTS_TAB_POSITION, false)
+            }
+            tabs.isVisible = !isScoped
+            viewPager.isUserInputEnabled = !isScoped
         }
     }
 

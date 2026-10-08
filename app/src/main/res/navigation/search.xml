@@ -13,6 +13,12 @@
             android:name="query"
             app:argType="string"
             android:defaultValue=""/>
+        <!-- Set when search is opened from a community page: results stay inside it. -->
+        <argument
+            android:name="subreddit"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
 
 </navigation>

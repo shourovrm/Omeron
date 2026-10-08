@@ -89,7 +89,6 @@
     <string name="multireddit_menu_delete">Delete</string>
 
     <string name="search_hint">Search through Reddit</string>
-    <string name="search_hint_subreddit">Search in %1$s</string>
 
     <string name="fragment_preferences_label">Preferences</string>
 
@@ -348,7 +347,6 @@
     <string name="shelf_card_transition_name" translatable="false">shelf_transition_%1$d</string>
     <string name="post_list_transition_name" translatable="false">post_list_transition</string>
 
-    <string name="menu_search">Search</string>
     <string name="menu_sidebar">Sidebar</string>
     <string name="menu_refresh">Refresh</string>
     <string name="add_to_multireddit">Add to multireddit</string>
@@ -464,4 +462,6 @@
     <string name="update_banner_message">Update available: v%1$s</string>
     <string name="update_banner_get">Get</string>
     <string name="update_banner_dismiss">Dismiss update notice</string>
+    <string name="search_hint_in_community">Search this community</string>
+    <string name="search_scope_remove_description">Stop limiting the search to r/%1$s</string>
 </resources>
