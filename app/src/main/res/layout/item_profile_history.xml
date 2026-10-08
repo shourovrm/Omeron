@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Without a preview the thumbnail stays an empty block in the neutral card colour. -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/history_thumbnail"
+        android:layout_width="@dimen/profile_history_thumbnail_size"
+        android:layout_height="@dimen/profile_history_thumbnail_size"
+        android:background="@color/chip_background_color"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/history_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:fontFamily="@font/inter_semibold"
+            android:textAppearance="?attr/textAppearanceBody1"
+            tools:text="My first hand-wired build, 62 keys"/>
+
+        <TextView
+            android:id="@+id/history_secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="@color/text_color_post_info"
+            tools:text="r/MechanicalKeyboards · 20m ago"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -10,8 +10,8 @@ import com.omeron.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,19 +22,22 @@ class ProfileManagerViewModel @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : BaseViewModel(preferencesRepository, repository) {
 
-    val profiles: Flow<List<ProfileItem>> = repository.getAllProfiles()
-        .map { list ->
-            list.map {
-                ProfileItem.UserProfile(it.apply { canDelete = list.size > 1 })
-            }
+    val profiles: Flow<List<ProfileItem>> = combine(
+        repository.getAllProfiles(),
+        repository.getProfileCounts()
+    ) { profiles, countsByProfile ->
+        val countsByProfileId = countsByProfile.associateBy { it.profileId }
+        val items = profiles.map { profile ->
+            profile.canDelete = profiles.size > 1
+            val counts = countsByProfileId[profile.id]
+            ProfileItem.UserProfile(
+                profile,
+                communityCount = counts?.communityCount ?: 0,
+                savedPostCount = counts?.savedPostCount ?: 0
+            )
         }
-        .map {
-            mutableListOf<ProfileItem>().apply {
-                addAll(it)
-                add(ProfileItem.NewProfile)
-            }
-        }
-        .flowOn(defaultDispatcher)
+        items + ProfileItem.NewProfile
+    }.flowOn(defaultDispatcher)
 
     fun selectProfile(profile: Profile) {
         viewModelScope.launch {

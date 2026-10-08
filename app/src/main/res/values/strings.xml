@@ -269,9 +269,6 @@
     <string name="unsave">Unsave</string>
 
     <string name="tab_profile_saved">Saved</string>
-    <string name="tab_profile_posts">Posts</string>
-    <string name="tab_profile_comments">Comments</string>
-    <string name="tab_profile_history">History</string>
 
     <string name="profile_search_hint">Search</string>
 
@@ -303,7 +300,6 @@
     <string name="profile_already_exists_error">Profile already exists</string>
     <string name="profile_blank_error">Profile name cannot be blank</string>
 
-    <string name="profile_manager_add_profile">Add Profile</string>
 
     <string name="contributor_uDEV2019_description">German translation</string>
     <string name="contributor_anothersapiens_description">Spanish translation</string>
@@ -442,4 +438,27 @@
 
     <string name="app_author" translatable="false">Riad Mashrub Shourov</string>
     <string name="about_github_button">Github</string>
+
+    <string name="profile_tab_saved_posts">Saved posts</string>
+    <string name="profile_tab_saved_comments">Saved comments</string>
+    <string name="profile_tab_history">History</string>
+    <string name="profile_switch">Switch</string>
+    <string name="profile_reddit_logged_in">Reddit: logged in</string>
+    <string name="profile_reddit_logged_out">Reddit: not logged in</string>
+    <string name="profile_saved_count">%1$d saved</string>
+    <string name="profile_post_saved_age">· saved %1$s</string>
+    <string name="profile_history_clear">Clear history</string>
+    <string name="profile_history_today">Today</string>
+    <string name="profile_history_yesterday">Yesterday</string>
+    <string name="profile_history_secondary" translatable="false">%1$s · %2$s</string>
+    <string name="profile_sheet_title">Profiles</string>
+    <string name="profile_new">New profile</string>
+    <string name="profile_edit_description">Edit profile</string>
+    <string name="profile_delete_action">Delete</string>
+    <string name="profile_row_summary" translatable="false">%1$s · %2$s</string>
+    <string name="profile_row_summary_current">Current · %1$s</string>
+    <plurals name="profile_community_count">
+        <item quantity="one">%1$d community</item>
+        <item quantity="other">%1$d communities</item>
+    </plurals>
 </resources>

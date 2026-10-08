@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:minHeight="56dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:background="?attr/selectableItemBackground">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/image_add"
-        android:layout_width="@dimen/user_image_size_expanded"
-        android:layout_height="@dimen/user_image_size_expanded"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/label_add"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:shapeAppearanceOverlay="@style/CircularImageViewStyle"
-        app:contentPadding="8dp"
-        android:background="@color/profile_new_background"
-        app:srcCompat="@drawable/ic_add"/>
+    <ImageView
+        android:layout_width="@dimen/manage_row_image_size"
+        android:layout_height="@dimen/manage_row_image_size"
+        android:src="@drawable/ic_add"
+        android:padding="6dp"
+        android:importantForAccessibility="no"
+        app:tint="@color/colorPrimary"/>
 
     <TextView
-        android:id="@+id/label_add"
-        style="@style/Widget.TextView.ProfileName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="@dimen/profile_name_margin"
-        android:text="@string/profile_manager_add_profile" />
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/profile_new"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:textColor="@color/colorPrimary"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

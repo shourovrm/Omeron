@@ -2,21 +2,17 @@ package com.omeron.ui.profile
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentTransaction
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.omeron.R
 import com.omeron.data.model.Comment
 import com.omeron.data.model.SavedItem
 import com.omeron.data.model.db.PostEntity
 import com.omeron.ui.commentmenu.CommentMenuFragment
-import com.omeron.ui.common.fragment.ListFragment
 import com.omeron.ui.postdetails.PostDetailsFragment
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.user.UserCommentsAdapter
@@ -30,48 +26,30 @@ import kotlinx.coroutines.launch
 // ponytail: two thin leaf fragments (below) pick the tab's flow, since
 // FragmentAdapter.Page instantiates via Class.newInstance() with no args.
 // Base is not @AndroidEntryPoint - Hilt only needs it on the leaf classes.
-abstract class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
+abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
     UserCommentsAdapter.CommentClickListener {
-
-    override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.profile)
-
-    override val enablePullToRefresh: Boolean
-        get() = false
 
     protected abstract val savedFlow: Flow<List<SavedItem>>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateContentView()
         bindViewModel()
     }
 
-    private fun updateContentView() {
-        // Update empty data view to be higher than usual
-        val contentMargin = resources.getDimension(R.dimen.profile_content_margin).toInt()
+    override fun currentPosts(): List<PostEntity> = adapter.currentPosts()
 
-        binding.loadingState.run {
-            ConstraintSet().apply {
-                clone(root)
-                clear(textEmptyData.id, ConstraintSet.BOTTOM)
-                applyTo(root)
-            }
-
-            emptyData.updateLayoutParams<MarginLayoutParams> { topMargin = contentMargin }
-        }
+    /** Called with every list the tab shows, after it was handed to the adapter. */
+    protected open fun onItemsShown(items: List<SavedItem>) {
+        // Nothing by default
     }
 
     private fun bindViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             combine(savedFlow, viewModel.contentPreferences) { items, preferences ->
-                adapter.run {
-                    contentPreferences = preferences
-                    submitList(items)
-                    binding.loadingState.run {
-                        emptyData.isVisible = items.isEmpty()
-                        textEmptyData.isVisible = items.isEmpty()
-                    }
-                }
+                adapter.contentPreferences = preferences
+                adapter.submitList(items)
+                showEmptyState(items.isEmpty())
+                onItemsShown(items)
             }.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED).collect()
         }
     }
@@ -107,6 +85,16 @@ abstract class ProfileSavedFragment : ListFragment<ProfileSavedAdapter>(),
 class ProfileSavedPostsFragment : ProfileSavedFragment() {
     override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedPosts
 
+    private val savedCountAdapter = ProfileSavedCountAdapter()
+
+    override fun attachedAdapter(adapter: ProfileSavedAdapter): RecyclerView.Adapter<out RecyclerView.ViewHolder> {
+        return ConcatAdapter(savedCountAdapter, adapter)
+    }
+
+    override fun onItemsShown(items: List<SavedItem>) {
+        savedCountAdapter.savedCount = items.size
+    }
+
     override fun onLongClick(post: PostEntity) {
         PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.SAVED)
     }
@@ -115,13 +103,4 @@ class ProfileSavedPostsFragment : ProfileSavedFragment() {
 @AndroidEntryPoint
 class ProfileSavedCommentsFragment : ProfileSavedFragment() {
     override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedComments
-}
-
-@AndroidEntryPoint
-class ProfileHistoryFragment : ProfileSavedFragment() {
-    override val savedFlow: Flow<List<SavedItem>> get() = viewModel.historyPosts
-
-    override fun onLongClick(post: PostEntity) {
-        PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.HISTORY)
-    }
 }

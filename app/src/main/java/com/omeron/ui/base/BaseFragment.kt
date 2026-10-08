@@ -141,6 +141,25 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         )
     }
 
+    /**
+     * Opens the viewer on a fixed list of [posts] (a saved or history tab) at [post]. The posts
+     * the viewer cannot show are left out. The viewer ends the session when it closes, as it does
+     * for a single post.
+     */
+    protected fun openFilmstripViewerOnPosts(post: PostEntity, posts: List<PostEntity>) {
+        val viewerPosts = posts.filter(PostEntity::hasFilmstripMedia)
+        if (viewerPosts.none { it.id == post.id }) {
+            openSinglePostViewer(post)
+            return
+        }
+
+        val sessionId = filmstripFeedHolder.beginSession(viewerPosts, canLoadMore = false)
+        addViewer(
+            screenFragmentManager,
+            FilmstripViewerFragment.newInstance(sessionId, post.id, returnsToPostPage = false)
+        )
+    }
+
     /** Opens the viewer on a media link that has no post behind it. */
     fun openMediaLink(link: String, mediaType: MediaType) {
         addViewer(screenFragmentManager, FilmstripViewerFragment.newInstance(link, mediaType))

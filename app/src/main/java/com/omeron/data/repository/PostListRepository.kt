@@ -14,6 +14,7 @@ import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
+import com.omeron.data.model.db.ProfileCounts
 import com.omeron.data.model.db.Subscription
 import com.omeron.data.remote.api.reddit.model.AboutChild
 import com.omeron.data.remote.api.reddit.model.AboutUserChild
@@ -328,6 +329,10 @@ class PostListRepository @Inject constructor(
 
     fun getAllProfiles(): Flow<List<Profile>> {
         return redditDatabase.profileDao().getAllProfiles()
+    }
+
+    fun getProfileCounts(): Flow<List<ProfileCounts>> {
+        return redditDatabase.profileDao().getProfileCounts()
     }
 
     suspend fun deleteProfile(profileId: Int) {
