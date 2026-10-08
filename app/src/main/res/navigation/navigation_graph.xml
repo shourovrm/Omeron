@@ -16,7 +16,6 @@
     <include app:graph="@navigation/subreddit" />
     <include app:graph="@navigation/multireddit" />
     <include app:graph="@navigation/user" />
-    <include app:graph="@navigation/viewer" />
 
     <!-- Reached from the drawer on the home screen. A destination inside a nested graph cannot
          be navigated to from outside that graph, so these sit at the top level. -->
@@ -36,25 +35,6 @@
         tools:layout="@layout/fragment_about"/>
 
     <!-- Global Actions -->
-    <action
-        android:id="@+id/openGallery"
-        app:destination="@id/viewer">
-        <argument
-            android:name="images"
-            app:argType="com.omeron.data.model.GalleryMedia[]"/>
-    </action>
-
-    <action
-        android:id="@+id/openMedia"
-        app:destination="@id/viewer">
-        <argument
-            android:name="link"
-            app:argType="string"/>
-        <argument
-            android:name="type"
-            app:argType="com.omeron.data.model.MediaType"/>
-    </action>
-
     <action
         android:id="@+id/openSubreddit"
         app:destination="@id/subreddit">

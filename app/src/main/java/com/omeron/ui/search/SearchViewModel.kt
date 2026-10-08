@@ -1,5 +1,6 @@
 package com.omeron.ui.search
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -24,6 +25,8 @@ import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule
 import com.omeron.ui.base.BaseViewModel
 import com.omeron.util.PostUtil
+import com.omeron.util.SearchUtil
+import com.omeron.util.extension.latest
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,7 +36,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.dropWhile
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -50,6 +53,8 @@ class SearchViewModel @Inject constructor(
     private val postMapper: PostMapper2,
     private val subredditMapper: SubredditMapper2,
     private val userMapper: UserMapper2,
+    // Kept by the navigation graph across process death, which the view model itself is not.
+    private val savedStateHandle: SavedStateHandle,
     @DispatchersModule.DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : BaseViewModel(preferencesRepository, repository) {
 
@@ -63,8 +68,33 @@ class SearchViewModel @Inject constructor(
     private val _sorting: MutableStateFlow<Sorting> = MutableStateFlow(DEFAULT_SORTING)
     val sorting: StateFlow<Sorting> = _sorting
 
-    private val _query: MutableStateFlow<String> = MutableStateFlow("")
+    private val _query: MutableStateFlow<String> =
+        MutableStateFlow(savedStateHandle.get<String>(KEY_QUERY).orEmpty())
     val query: StateFlow<String> get() = _query
+
+    // What is in the search field, searched or not: the communities are filtered by it.
+    private val typedText = MutableStateFlow("")
+
+    private val recentQueries: Flow<List<String>> = preferencesRepository.getRecentSearchQueries()
+
+    private val visibleCommunityNames: Flow<List<String>> = currentProfile.flatMapLatest {
+        repository.getVisibleSubscriptionsNames(it.id)
+    }
+
+    /** Recent queries and the matching communities, shown while no query is searched. */
+    val suggestions: Flow<List<SearchSuggestionItem>> = combine(
+        recentQueries,
+        visibleCommunityNames,
+        typedText
+    ) { recent, communityNames, typed ->
+        buildSearchSuggestions(recent, SearchUtil.filterCommunityNames(communityNames, typed))
+    }
+
+    // Lowercase, because the stored names ignore case and a result may spell a name differently.
+    // Hidden communities are still joined, so every subscription counts.
+    val joinedCommunityNames: StateFlow<Set<String>> = subscriptionsNames
+        .map { names -> names.map { it.lowercase() }.toSet() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
     private val _lastRefreshPost: MutableStateFlow<Long> =
         MutableStateFlow(System.currentTimeMillis())
@@ -101,8 +131,10 @@ class SearchViewModel @Inject constructor(
         Data.User(history, saved, prefs)
     }
 
+    // A blank query (the field was cleared) must not search for nothing; the last results stay
+    // untouched until the next real query.
     val data: Flow<Pair<Data.Fetch, Data.User>> = searchData
-        .dropWhile { it.query.isBlank() }
+        .filter { it.query.isNotBlank() }
         .flatMapLatest { searchData -> userData.take(1).map { searchData to it } }
 
     init {
@@ -167,10 +199,38 @@ class SearchViewModel @Inject constructor(
     }
 
     fun setQuery(query: String) {
+        savedStateHandle[KEY_QUERY] = query
         _query.updateValue(query)
     }
 
+    fun setTypedText(text: String) {
+        typedText.value = text
+    }
+
+    /** Searches [query] and remembers it in the recent queries. */
+    fun searchFor(query: String) {
+        setQuery(query)
+        viewModelScope.launch { preferencesRepository.addRecentSearchQuery(query) }
+    }
+
+    fun removeRecentQuery(query: String) {
+        viewModelScope.launch { preferencesRepository.removeRecentSearchQuery(query) }
+    }
+
+    fun toggleSubscription(subredditName: String, icon: String?) {
+        viewModelScope.launch {
+            val profileId = currentProfile.latest?.id ?: return@launch
+            if (subredditName.lowercase() in joinedCommunityNames.value) {
+                repository.unsubscribe(subredditName, profileId)
+            } else {
+                repository.subscribe(subredditName, profileId, icon)
+            }
+        }
+    }
+
     companion object {
+        private const val KEY_QUERY = "KEY_QUERY"
+
         private val DEFAULT_SORTING = Sorting(Sort.RELEVANCE, TimeSorting.ALL)
     }
 }

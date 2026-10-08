@@ -53,7 +53,7 @@ class PostSearchScraper(
         // re-fetch the wrong URL -> a media-less post (image shown as link, video black).
         val commentsHref = selectFirst("a.search-comments")
             ?.attr(Scraper.Selector.Attr.HREF)
-            ?.takeIf { it.isNotBlank() }
+            ?.takeIf { COMMENTS_PATH_MARKER in it }
         val permalink = commentsHref?.let { it.toHttpUrlOrNull()?.encodedPath ?: it }
             ?: titleHref.toHttpUrlOrNull()?.encodedPath
             ?: titleHref
@@ -142,5 +142,8 @@ class PostSearchScraper(
 
     companion object {
         private const val KIND = "t3"
+
+        // Some result cards carry "#" as the comments link, which is no permalink at all.
+        private const val COMMENTS_PATH_MARKER = "/comments/"
     }
 }

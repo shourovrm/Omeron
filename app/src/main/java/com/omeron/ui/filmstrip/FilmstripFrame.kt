@@ -14,17 +14,44 @@ enum class FrameStatus {
     FAILED
 }
 
-/** One swipeable page of the viewer: a whole post, or a single image of a gallery post. */
+/** Where a frame's media comes from. All frames of one source sit next to each other. */
+sealed interface FrameSource {
+
+    /** Used to tell sources apart, and as the prefix of the ids of the source's frames. */
+    val key: String
+
+    /** A post of a feed, shown with its title, score and comments. */
+    data class OfPost(val post: PostEntity) : FrameSource {
+        override val key: String
+            get() = post.id
+    }
+
+    /** A bare media link with no post behind it, such as a link inside a comment. */
+    data class OfLink(val url: String) : FrameSource {
+        override val key: String
+            get() = LINK_KEY
+
+        companion object {
+            const val LINK_KEY = "link"
+        }
+    }
+}
+
+/** One swipeable page of the viewer: a whole post or link, or a single image of a gallery. */
 data class FilmstripFrame(
     val id: String,
-    val post: PostEntity,
-    val indexInPost: Int,
-    val framesInPost: Int,
+    val source: FrameSource,
+    val indexInSource: Int,
+    val framesInSource: Int,
     val media: GalleryMedia?,
     val status: FrameStatus
 ) {
+    /** Null when the frame belongs to a bare link. */
+    val post: PostEntity?
+        get() = (source as? FrameSource.OfPost)?.post
+
     val isGalleryFrame: Boolean
-        get() = framesInPost > 1
+        get() = framesInSource > 1
 
     val isVideo: Boolean
         get() = media?.type == GalleryMedia.Type.VIDEO
@@ -71,28 +98,47 @@ fun buildFilmstripFrames(
             post.gallery.isNotEmpty() -> post.gallery
             else -> instantMedia(post)
         }
+        framesOfSource(FrameSource.OfPost(post), media, mediaState)
+    }
+}
 
-        if (media.isNullOrEmpty()) {
-            val status = if (mediaState is PostMediaState.Failed || mediaState is PostMediaState.Resolved) {
-                FrameStatus.FAILED
-            } else {
-                FrameStatus.LOADING
-            }
-            listOf(
-                FilmstripFrame(frameId(post, 0), post, 0, 1, null, status)
-            )
+/**
+ * Frames of a bare media link. The media comes from a finished lookup, or else from
+ * [instantMedia], the link's media when it needs no lookup. Without either there is one
+ * placeholder frame, "link#0", that the lookup later replaces in place.
+ */
+fun buildLinkFrames(
+    url: String,
+    mediaState: PostMediaState?,
+    instantMedia: List<GalleryMedia>?
+): List<FilmstripFrame> {
+    val media = (mediaState as? PostMediaState.Resolved)?.media ?: instantMedia
+    return framesOfSource(FrameSource.OfLink(url), media, mediaState)
+}
+
+private fun framesOfSource(
+    source: FrameSource,
+    media: List<GalleryMedia>?,
+    mediaState: PostMediaState?
+): List<FilmstripFrame> {
+    if (media.isNullOrEmpty()) {
+        val status = if (mediaState is PostMediaState.Failed || mediaState is PostMediaState.Resolved) {
+            FrameStatus.FAILED
         } else {
-            media.mapIndexed { index, galleryMedia ->
-                FilmstripFrame(
-                    frameId(post, index),
-                    post,
-                    index,
-                    media.size,
-                    galleryMedia,
-                    FrameStatus.READY
-                )
-            }
+            FrameStatus.LOADING
         }
+        return listOf(FilmstripFrame(frameId(source, 0), source, 0, 1, null, status))
+    }
+
+    return media.mapIndexed { index, galleryMedia ->
+        FilmstripFrame(
+            frameId(source, index),
+            source,
+            index,
+            media.size,
+            galleryMedia,
+            FrameStatus.READY
+        )
     }
 }
 
@@ -110,24 +156,24 @@ fun postSwipeTargetIndex(
     currentIndex: Int,
     direction: PostSwipeDirection
 ): Int? {
-    val currentPostId = frames.getOrNull(currentIndex)?.post?.id ?: return null
+    val currentPostId = frames.getOrNull(currentIndex)?.source?.key ?: return null
 
     return when (direction) {
         PostSwipeDirection.NEXT -> {
-            (currentIndex + 1 until frames.size).firstOrNull { frames[it].post.id != currentPostId }
+            (currentIndex + 1 until frames.size).firstOrNull { frames[it].source.key != currentPostId }
         }
         PostSwipeDirection.PREVIOUS -> {
             val currentPostStart = (currentIndex downTo 0)
-                .takeWhile { frames[it].post.id == currentPostId }
+                .takeWhile { frames[it].source.key == currentPostId }
                 .last()
             val previousPostEnd = currentPostStart - 1
             if (previousPostEnd < 0) return null
-            val previousPostId = frames[previousPostEnd].post.id
+            val previousPostId = frames[previousPostEnd].source.key
             (previousPostEnd downTo 0)
-                .takeWhile { frames[it].post.id == previousPostId }
+                .takeWhile { frames[it].source.key == previousPostId }
                 .last()
         }
     }
 }
 
-private fun frameId(post: PostEntity, indexInPost: Int) = "${post.id}#$indexInPost"
+private fun frameId(source: FrameSource, indexInSource: Int) = "${source.key}#$indexInSource"

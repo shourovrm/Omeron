@@ -78,7 +78,9 @@ fun View.applyWindowInsets(
     left: Boolean = true,
     top: Boolean = true,
     right: Boolean = true,
-    bottom: Boolean = true
+    bottom: Boolean = true,
+    // Space to keep clear below the system bars, for a bar that floats over the content.
+    extraBottom: Int = 0
 ) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
         val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -86,7 +88,7 @@ fun View.applyWindowInsets(
         val paddingLeft = if (left) insets.left else view.paddingLeft
         val paddingTop = if (top) insets.top else view.paddingTop
         val paddingRight = if (right) insets.right else view.paddingRight
-        val paddingBottom = if (bottom) insets.bottom else view.paddingBottom
+        val paddingBottom = if (bottom) insets.bottom + extraBottom else view.paddingBottom
 
         view.run {
             updatePadding(

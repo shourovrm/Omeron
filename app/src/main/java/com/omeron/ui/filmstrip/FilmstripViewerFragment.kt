@@ -1,6 +1,7 @@
 package com.omeron.ui.filmstrip
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.GestureDetector
@@ -11,6 +12,7 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -28,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.omeron.R
 import com.omeron.UiViewModel
+import com.omeron.data.model.MediaType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.databinding.FragmentFilmstripViewerBinding
 import com.omeron.ui.base.BaseFragment
@@ -35,16 +38,20 @@ import com.omeron.ui.mediaviewer.MediaDownloadRequester
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.launchRepeat
+import com.omeron.util.extension.serializable
 import com.omeron.util.extension.shareExternalLink
 import com.omeron.util.extension.showWithAlpha
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 /**
- * Full-screen viewer that pages through the media of the feed it was opened from. It is added
- * on top of the feed's fragment, which stays alive underneath.
+ * Full-screen viewer for every media entry point. Opened on a post session it pages through the
+ * media of the feed (or the single post) it was opened from; opened on a link it shows that
+ * link's media with a reduced overlay, because there is no post to score, comment on or save.
+ * It is added on top of the fragment it was opened from, which stays alive underneath.
  */
 @AndroidEntryPoint
 class FilmstripViewerFragment : BaseFragment() {
@@ -62,6 +69,8 @@ class FilmstripViewerFragment : BaseFragment() {
     private val downloadRequester = MediaDownloadRequester(this) { binding.root }
 
     private var currentFrame: FilmstripFrame? = null
+
+    private var mediaGoneDialog: AlertDialog? = null
 
     // False until the pager has been moved to the tapped post; a new view always starts at page 0.
     private var isPagerPlaced = false
@@ -86,7 +95,7 @@ class FilmstripViewerFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.initialPostId = arguments?.getString(KEY_POST_ID)
+        viewModel.open(sourceFromArguments())
     }
 
     override fun onCreateView(
@@ -102,7 +111,7 @@ class FilmstripViewerFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // After process death the feed this viewer was showing is gone, so there is nothing to page.
-        if (!viewModel.hasFeed) {
+        if (!viewModel.hasMedia) {
             parentFragmentManager.popBackStack()
             return
         }
@@ -113,6 +122,7 @@ class FilmstripViewerFragment : BaseFragment() {
 
         initPlayback()
         initPager()
+        showControlsForViewerKind()
         initOverlay()
         initDetailsSheet()
         bindViewModel()
@@ -157,6 +167,8 @@ class FilmstripViewerFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
+        mediaGoneDialog?.dismiss()
+        mediaGoneDialog = null
         parentFragmentManager.removeOnBackStackChangedListener(backStackListener)
         if (::playback.isInitialized) playback.release()
         showSystemBars(true)
@@ -194,7 +206,7 @@ class FilmstripViewerFragment : BaseFragment() {
         frameAdapter = FilmstripFrameAdapter(
             playback,
             onFrameClick = { toggleOverlay() },
-            onRetryResolution = { frame -> viewModel.retryResolution(frame.post.id) }
+            onRetryResolution = { frame -> viewModel.retryResolution(frame.source.key) }
         )
 
         binding.postSwipeLayout.apply {
@@ -325,13 +337,39 @@ class FilmstripViewerFragment : BaseFragment() {
             buttonClose.setOnClickListener { close() }
             railComments.setOnClickListener { openPost() }
             buttonSave.setOnClickListener { toggleSave() }
+            buttonShareLink.setOnClickListener { shareLink() }
+            buttonDownload.setOnClickListener { downloadCurrentMedia() }
             buttonMute.setOnCheckedChangeListener { _, isMuted -> viewModel.setMuted(isMuted) }
         }
         initInfoGestures()
     }
 
+    /** A link has no post, so the post's score, comments and save give way to share and download. */
+    private fun showControlsForViewerKind() {
+        val isLinkViewer = viewModel.isLinkViewer
+        binding.run {
+            rowPostSource.isVisible = !isLinkViewer
+            textLinkCaption.isVisible = isLinkViewer
+            railScore.isVisible = !isLinkViewer
+            railComments.isVisible = !isLinkViewer
+            buttonSave.isVisible = !isLinkViewer
+            buttonShareLink.isVisible = isLinkViewer
+            buttonDownload.isVisible = isLinkViewer
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun initInfoGestures() {
+        if (viewModel.isLinkViewer) {
+            // Nothing to expand: a tap on the caption falls through to the page and toggles the overlay.
+            binding.info.run {
+                isClickable = false
+                isFocusable = false
+                contentDescription = null
+            }
+            return
+        }
+
         val swipeThreshold = ViewConfiguration.get(requireContext()).scaledTouchSlop * 3
         var hasExpandedBySwipe = false
 
@@ -446,6 +484,10 @@ class FilmstripViewerFragment : BaseFragment() {
             }
 
             launch {
+                viewModel.isLinkMediaGone.collect { isGone -> if (isGone) showMediaGoneDialog() }
+            }
+
+            launch {
                 viewModel.isMuted.collect { isMuted ->
                     playback.isMuted = isMuted
                     binding.buttonMute.isChecked = isMuted
@@ -479,7 +521,37 @@ class FilmstripViewerFragment : BaseFragment() {
 
     private fun bindOverlay(frame: FilmstripFrame) {
         currentFrame = frame
+
+        binding.run {
+            segments.isVisible = frame.isGalleryFrame
+            textPosition.isVisible = frame.isGalleryFrame
+            segments.setPosition(frame.indexInSource, frame.framesInSource)
+            textPosition.text = getString(
+                R.string.filmstrip_position,
+                frame.indexInSource + 1,
+                frame.framesInSource
+            )
+
+            // The mute button reappears when the player reports an audio track.
+            if (!frame.isVideo) buttonMute.isVisible = false
+
+            buttonDownload.isEnabled = frame.status == FrameStatus.READY
+            buttonDownload.alpha = if (buttonDownload.isEnabled) 1F else DISABLED_ACTION_ALPHA
+        }
+
         val post = frame.post
+        if (post != null) {
+            bindPostOverlay(frame, post)
+        } else {
+            bindLinkOverlay(frame.source as FrameSource.OfLink)
+        }
+    }
+
+    private fun bindLinkOverlay(link: FrameSource.OfLink) {
+        binding.textTitle.text = Uri.parse(link.url).host?.removePrefix("www.") ?: link.url
+    }
+
+    private fun bindPostOverlay(frame: FilmstripFrame, post: PostEntity) {
         val age = DateUtil.getTimeDifference(requireContext(), post.created, false)
 
         binding.run {
@@ -492,15 +564,6 @@ class FilmstripViewerFragment : BaseFragment() {
                 getString(R.string.filmstrip_go_to_user, post.author)
             textTitle.text = post.title
 
-            segments.isVisible = frame.isGalleryFrame
-            textPosition.isVisible = frame.isGalleryFrame
-            segments.setPosition(frame.indexInPost, frame.framesInPost)
-            textPosition.text = getString(
-                R.string.filmstrip_position,
-                frame.indexInPost + 1,
-                frame.framesInPost
-            )
-
             textScore.text = post.score
             railScore.contentDescription = getString(R.string.filmstrip_score_description, post.score)
             textComments.text = post.commentsNumber
@@ -508,17 +571,13 @@ class FilmstripViewerFragment : BaseFragment() {
                 R.string.filmstrip_comments_description,
                 post.commentsNumber
             )
-
-            // The mute button reappears when the player reports an audio track.
-            if (!frame.isVideo) buttonMute.isVisible = false
         }
 
         bindSavedState(post)
-        bindDetails(frame, age)
+        bindDetails(frame, post, age)
     }
 
-    private fun bindDetails(frame: FilmstripFrame, age: String) {
-        val post = frame.post
+    private fun bindDetails(frame: FilmstripFrame, post: PostEntity, age: String) {
         val body = post.previewText?.toString()?.trim()
 
         binding.run {
@@ -578,6 +637,11 @@ class FilmstripViewerFragment : BaseFragment() {
         shareExternalLink("https://www.reddit.com${post.permalink}", post.title)
     }
 
+    private fun shareLink() {
+        val link = currentFrame?.source as? FrameSource.OfLink ?: return
+        shareExternalLink(link.url)
+    }
+
     private fun downloadCurrentMedia() {
         currentFrame?.media?.let { downloadRequester.request(it) }
     }
@@ -585,7 +649,36 @@ class FilmstripViewerFragment : BaseFragment() {
     private fun openPost() {
         val post = currentFrame?.post ?: return
         collapseDetails()
-        onClick(post)
+        if (arguments?.getBoolean(KEY_RETURNS_TO_POST_PAGE) == true) {
+            // The post page this viewer was opened from is right underneath; a second copy of it
+            // on top would need two back presses to get out of.
+            close()
+        } else {
+            onClick(post)
+        }
+    }
+
+    private fun showMediaGoneDialog() {
+        if (mediaGoneDialog?.isShowing == true) return
+        mediaGoneDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_media_not_found_title)
+            .setMessage(R.string.dialog_media_not_found_body)
+            .setPositiveButton(R.string.dialog_ok) { _, _ -> close() }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun sourceFromArguments(): FilmstripViewerSource {
+        val arguments = requireArguments()
+        val link = arguments.getString(KEY_LINK)
+        if (link != null) {
+            val mediaType = arguments.serializable(KEY_MEDIA_TYPE) ?: MediaType.LINK
+            return FilmstripViewerSource.MediaLink(link, mediaType)
+        }
+        return FilmstripViewerSource.PostSession(
+            arguments.getInt(KEY_SESSION_ID),
+            arguments.getString(KEY_POST_ID).orEmpty()
+        )
     }
 
     private fun toggleOverlay() {
@@ -635,6 +728,10 @@ class FilmstripViewerFragment : BaseFragment() {
         const val TAG = "FilmstripViewerFragment"
 
         private const val KEY_POST_ID = "KEY_POST_ID"
+        private const val KEY_SESSION_ID = "KEY_SESSION_ID"
+        private const val KEY_RETURNS_TO_POST_PAGE = "KEY_RETURNS_TO_POST_PAGE"
+        private const val KEY_LINK = "KEY_LINK"
+        private const val KEY_MEDIA_TYPE = "KEY_MEDIA_TYPE"
         private const val SINGLE_COMMENT = "1"
         private const val OVERLAY_FADE_MILLIS = 200L
         private const val POST_SLIDE_OUT_MILLIS = 140L
@@ -644,8 +741,23 @@ class FilmstripViewerFragment : BaseFragment() {
         private const val EDGE_DRAG_RESISTANCE = 0.3F
         private const val DISABLED_ACTION_ALPHA = 0.4F
 
-        fun newInstance(postId: String) = FilmstripViewerFragment().apply {
-            arguments = bundleOf(KEY_POST_ID to postId)
+        /**
+         * Viewer on the posts published under [sessionId], opened on [postId]. With
+         * [returnsToPostPage] the comments buttons close the viewer, because the page of that
+         * post is the screen underneath.
+         */
+        fun newInstance(sessionId: Int, postId: String, returnsToPostPage: Boolean) =
+            FilmstripViewerFragment().apply {
+                arguments = bundleOf(
+                    KEY_SESSION_ID to sessionId,
+                    KEY_POST_ID to postId,
+                    KEY_RETURNS_TO_POST_PAGE to returnsToPostPage
+                )
+            }
+
+        /** Viewer on a media link that has no post behind it. */
+        fun newInstance(link: String, mediaType: MediaType) = FilmstripViewerFragment().apply {
+            arguments = bundleOf(KEY_LINK to link, KEY_MEDIA_TYPE to mediaType)
         }
     }
 }

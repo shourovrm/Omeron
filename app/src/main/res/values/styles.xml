@@ -58,20 +58,9 @@
         <item name="bottomSheetStyle">@style/Widget.BottomSheetDialog</item>
     </style>
 
-    <style name="ThemeOverlay.App.BottomSheetDialog.MediaViewer" parent="ThemeOverlay.App.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.BottomSheetDialog.MediaViewer</item>
-        <item name="paddingTopSystemWindowInsets">true</item>
-        <item name="paddingBottomSystemWindowInsets">false</item>
-        <item name="enableEdgeToEdge">false</item>
-    </style>
-
     <style name="Widget.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BottomSheetDialog</item>
         <item name="backgroundTint">?attr/colorSurface</item>
-    </style>
-
-    <style name="Widget.BottomSheetDialog.MediaViewer" parent="Widget.BottomSheetDialog">
-        <item name="backgroundTint">@color/black</item>
     </style>
 
     <style name="ShapeAppearance.BottomSheetDialog" parent="ShapeAppearance.MaterialComponents.LargeComponent">
@@ -246,33 +235,11 @@
 
     <!-- Search -->
 
-    <style name="TextAppearanceSearchSubreddit" parent="">
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="TextAppearanceSearchSubredditTitle" parent="">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-
-    <style name="TextAppearanceSearchSubredditSubscribers" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-
     <style name="SearchInputStyle" parent="">
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:inputType">text</item>
         <item name="android:imeOptions">actionSearch</item>
     </style>
-
-    <style name="SubredditCardStyle" parent="CardStyle"/>
-
-    <style name="TextAppearanceSearchUser" parent="">
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="UserCardStyle" parent="CardStyle"/>
 
     <style name="ShapeAppearanceButton" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
@@ -460,10 +427,6 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="Widget.TextView.MediaCounter" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <style name="Widget.App.PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
         <item name="android:popupBackground">@drawable/popup_menu_background</item>
     </style>
@@ -516,5 +479,33 @@
     <style name="FullscreenDialogTheme" parent="AppTheme">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
+    </style>
+
+    <style name="Widget.App.JoinButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:insetTop">6dp</item>
+        <item name="android:insetBottom">6dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">18dp</item>
+    </style>
+
+    <style name="Widget.App.JoinButton.Joined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:insetTop">6dp</item>
+        <item name="android:insetBottom">6dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="cornerRadius">18dp</item>
+        <item name="strokeColor">@color/text_color_secondary</item>
     </style>
 </resources>
