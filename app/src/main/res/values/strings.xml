@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Omeron</string>
-    <string name="app_description">Omeron is a fork of Stealth — the account-free, privacy-oriented Reddit client — with extra features, licensed under the GNU GPLv3.\n\nOriginal app by Cosmos (cosmosapps). Fork developed by Riad Mashrub Shourov.</string>
+    <string name="app_description">Omeron is a Reddit client that reads old.reddit.com directly instead of using the Reddit API.\n\nIt started as a fork of Stealth by Cosmos. I kept its privacy-first approach and added the things I missed: a full-screen media viewer, a community drawer, and a few more post layouts.\n\nFree software, licensed under the GNU GPLv3.</string>
+    <string name="app_author">Riad Mashrub Shourov</string>
     <string name="handle_link_label">Open in Omeron</string>
 
     <string name="gitlab_link" translatable="false">https://gitlab.com/cosmosapps/stealth</string>
