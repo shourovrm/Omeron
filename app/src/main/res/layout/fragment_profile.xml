@@ -10,72 +10,52 @@
             type="com.omeron.data.model.db.Profile" />
     </data>
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/layout_root"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        app:layoutDescription="@xml/scene_profile"
-        tools:showPaths="true">
+        tools:context=".MainActivity">
 
-        <View
-            android:id="@+id/profile_header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/user_header_height" />
-
-        <com.omeron.ui.common.widget.AvatarView
-            android:id="@+id/profile_image"
-            android:layout_width="@dimen/user_image_size_expanded"
-            android:layout_height="@dimen/user_image_size_expanded"
-            android:contentDescription="@null"
-            app:text="@{profile.name}"
-            tools:text="ST"/>
-
-        <TextView
-            android:id="@+id/profile_name"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_app_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{profile.name}"
-            android:textAppearance="@style/TextAppearanceAppBarLabel"
-            android:ellipsize="none"
-            android:singleLine="true"
-            android:requiresFadingEdge="horizontal"
-            tools:text="User"/>
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="?attr/actionBarSize" />
 
         <com.omeron.ui.common.widget.CardButton
-            android:id="@+id/users_card"
+            android:id="@+id/back_card"
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
-            android:layout_marginEnd="@dimen/app_bar_margin"
-            app:icon="@drawable/ic_users"
+            android:layout_marginStart="@dimen/app_bar_margin"
+            app:icon="@drawable/ic_arrow_back"
             style="@style/CardButtonStyle"/>
 
-        <com.omeron.ui.common.widget.CardButton
-            android:id="@+id/clear_history_card"
-            android:layout_width="@dimen/app_bar_button_size"
-            android:layout_height="@dimen/app_bar_button_size"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/back_card"
             app:layout_constraintEnd_toStartOf="@id/search_card"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
-            android:layout_marginEnd="@dimen/app_bar_margin"
-            app:icon="@drawable/ic_delete"
-            android:contentDescription="@string/dialog_clear_history_title"
-            style="@style/CardButtonStyle"
-            tools:visibility="visible"/>
+            android:layout_marginStart="@dimen/app_bar_margin"
+            android:singleLine="true"
+            android:text="@string/navigation_label_profile"
+            android:textAppearance="@style/TextAppearanceAppBarLabel"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/search_card"
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/users_card"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginEnd="@dimen/app_bar_margin"
             app:icon="@drawable/ic_search"
+            android:contentDescription="@string/profile_search_hint"
             style="@style/CardButtonStyle"/>
 
         <com.omeron.ui.common.widget.CardButton
@@ -84,7 +64,7 @@
             android:layout_height="@dimen/app_bar_button_size"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/users_card"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginEnd="@dimen/app_bar_margin"
             app:icon="@drawable/ic_close"
@@ -95,8 +75,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/back_card"
+            app:layout_constraintEnd_toStartOf="@id/cancel_card"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginHorizontal="@dimen/app_bar_margin"
@@ -105,19 +85,77 @@
             android:inputType="text"
             android:imeOptions="actionSearch|flagNoPersonalizedLearning"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_app_bar"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/profile_row"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_app_bar"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="?attr/actionBarSize" />
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp">
+
+            <com.omeron.ui.common.widget.AvatarView
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/manage_row_image_size"
+                android:layout_height="@dimen/manage_row_image_size"
+                android:importantForAccessibility="no"
+                app:text="@{profile.name}"
+                tools:text="DE"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:fontFamily="@font/inter_semibold"
+                    android:text="@{profile.name}"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    tools:text="Default profile"/>
+
+                <TextView
+                    android:id="@+id/reddit_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/text_color_post_info"
+                    tools:text="Reddit: logged in"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/switch_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/profile_switch"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        </LinearLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/profile_header"
+            app:layout_constraintTop_toBottomOf="@id/profile_row"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tabMode="scrollable"
+            app:tabGravity="start"
             style="@style/TabLayoutStyle"/>
 
         <androidx.viewpager2.widget.ViewPager2
@@ -129,5 +167,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabs" />
 
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

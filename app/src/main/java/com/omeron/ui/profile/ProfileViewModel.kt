@@ -36,13 +36,16 @@ class ProfileViewModel @Inject constructor(
 
     val contentPreferences: Flow<ContentPreferences> = preferencesRepository.getContentPreferences()
 
+    // Same rule as the Reddit account row in Settings: a stored session cookie means logged in.
+    val isRedditLoggedIn: Flow<Boolean> = preferencesRepository
+        .getRedditCookies()
+        .map { it.isNotBlank() }
+
     private val _page: MutableStateFlow<Int> = MutableStateFlow(0)
     val page: StateFlow<Int> get() = _page
 
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
     val searchQuery: StateFlow<String> get() = _searchQuery
-
-    var layoutState: Int? = null
 
     private val _savedPosts: Flow<List<PostEntity>> = currentProfile.flatMapLatest {
         repository.getSavedPosts(it.id)

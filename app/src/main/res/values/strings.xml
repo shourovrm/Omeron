@@ -282,9 +282,6 @@
     <string name="unsave">Unsave</string>
 
     <string name="tab_profile_saved">Saved</string>
-    <string name="tab_profile_posts">Posts</string>
-    <string name="tab_profile_comments">Comments</string>
-    <string name="tab_profile_history">History</string>
 
     <string name="profile_search_hint">Search</string>
 
@@ -427,4 +424,11 @@
     <string name="search_joined">Joined</string>
     <string name="search_join_description">Join r/%1$s</string>
     <string name="search_joined_description">Joined r/%1$s. Tap to leave</string>
+
+    <string name="profile_tab_saved_posts">Saved posts</string>
+    <string name="profile_tab_saved_comments">Saved comments</string>
+    <string name="profile_tab_history">History</string>
+    <string name="profile_switch">Switch</string>
+    <string name="profile_reddit_logged_in">Reddit: logged in</string>
+    <string name="profile_reddit_logged_out">Reddit: not logged in</string>
 </resources>
