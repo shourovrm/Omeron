@@ -24,11 +24,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.omeron.ui.about.AboutFragment"
-        tools:layout="@layout/fragment_about"/>
-
-    <fragment
         android:id="@+id/privacyEnhancerFragment"
         android:name="com.omeron.ui.privacyenhancer.PrivacyEnhancerFragment"/>
 
