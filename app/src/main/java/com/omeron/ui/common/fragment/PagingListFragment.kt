@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.omeron.ui.common.widget.PullToRefreshLayout
 import com.omeron.ui.loadstate.NetworkLoadStateAdapter
@@ -48,11 +49,16 @@ abstract class PagingListFragment<T : PagingDataAdapter<R, out ViewHolder>, R : 
             addLoadStateListener(binding.listContent, binding.loadingState, binding.pullRefresh) {
                 showRetryBar()
             }
-            withLoadStateHeaderAndFooter(
-                header = NetworkLoadStateAdapter { adapter.retry() },
-                footer = NetworkLoadStateAdapter { adapter.retry() }
-            )
         }
+    }
+
+    // withLoadStateHeaderAndFooter returns a new adapter that has to be the one the list shows;
+    // calling it on the paging adapter alone adds nothing to the list.
+    final override fun attachedAdapter(adapter: T): Adapter<out ViewHolder> {
+        return adapter.withLoadStateHeaderAndFooter(
+            header = NetworkLoadStateAdapter { adapter.retry() },
+            footer = NetworkLoadStateAdapter { adapter.retry() }
+        )
     }
 
     override fun onRefresh() {

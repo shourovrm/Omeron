@@ -165,7 +165,13 @@ class PostDetailsViewModel @Inject constructor(
         _singleThread.updateValue(singleThread)
     }
 
+    /**
+     * Keeps the comment hierarchy as the adapter shows it (collapsed threads). Ignored unless
+     * the comments have loaded: the adapter is empty while loading or after an error, and
+     * saving that would replace the state with "no comments" and drop the retry button.
+     */
     fun setComments(comments: List<Comment>) {
+        if (_comments.value !is Resource.Success) return
         _comments.updateValue(Resource.Success(comments))
     }
 

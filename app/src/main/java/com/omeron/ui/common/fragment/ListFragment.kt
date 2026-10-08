@@ -65,7 +65,7 @@ abstract class ListFragment<T : Adapter<out ViewHolder>> : BaseFragment(),
         binding.listContent.apply {
             applyWindowInsets(left = false, top = false, right = false)
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@ListFragment.adapter
+            adapter = attachedAdapter(this@ListFragment.adapter)
             if (showItemDecoration) {
                 addItemDecoration(PostDividerItemDecoration(context))
             }
@@ -80,6 +80,12 @@ abstract class ListFragment<T : Adapter<out ViewHolder>> : BaseFragment(),
     }
 
     protected abstract fun createAdapter(): T
+
+    /**
+     * What the RecyclerView is given. A subclass that wraps [adapter] (in a ConcatAdapter, for
+     * example) returns the wrapper here, while the [adapter] property keeps its own type.
+     */
+    protected open fun attachedAdapter(adapter: T): Adapter<out ViewHolder> = adapter
 
     protected fun showRetryBar() {
         if (!binding.loadingState.infoRetry.isVisible) {
