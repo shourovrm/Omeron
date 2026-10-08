@@ -2,10 +2,10 @@ package com.omeron.ui.profilemanager
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.omeron.R
 import com.omeron.data.model.ProfileItem
 import com.omeron.data.model.db.Profile
 import com.omeron.databinding.ItemNewProfileBinding
@@ -19,11 +19,9 @@ class ProfileManagerAdapter(
     interface ProfileClickListener {
         fun onProfileClick(profile: Profile)
 
-        fun onDeleteProfileClick(profile: Profile)
+        fun onEditProfileClick(profile: Profile)
 
         fun onNewProfileClick()
-
-        fun onRenameClick(profile: Profile)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -43,7 +41,7 @@ class ProfileManagerAdapter(
         when (getItemViewType(position)) {
             Type.PROFILE.value -> {
                 val userProfile = getItem(position) as ProfileItem.UserProfile
-                (holder as ProfileViewHolder).bind(userProfile.profile)
+                (holder as ProfileViewHolder).bind(userProfile)
             }
             Type.NEW_PROFILE.value -> {
                 // Ignore
@@ -62,7 +60,7 @@ class ProfileManagerAdapter(
         } else {
             val item = getItem(position)
             if (item is ProfileItem.UserProfile) {
-                (holder as ProfileViewHolder).update(item.profile)
+                (holder as ProfileViewHolder).update(item)
             }
         }
     }
@@ -78,23 +76,34 @@ class ProfileManagerAdapter(
         private val binding: ItemProfileBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(profile: Profile) {
-            update(profile)
+        fun bind(item: ProfileItem.UserProfile) {
+            update(item)
+        }
 
-            itemView.setOnClickListener { profileClickListener.onProfileClick(profile) }
-            binding.deleteIcon.setOnClickListener {
-                profileClickListener.onDeleteProfileClick(profile)
+        // Also runs for a change payload, so the listeners must follow the updated profile.
+        fun update(item: ProfileItem.UserProfile) {
+            binding.profile = item.profile
+            binding.profileSummary.text = summaryText(item)
+
+            itemView.setOnClickListener { profileClickListener.onProfileClick(item.profile) }
+            binding.editButton.setOnClickListener {
+                profileClickListener.onEditProfileClick(item.profile)
             }
         }
 
-        fun update(profile: Profile) {
-            binding.run {
-                this.profile = profile
-                deleteIcon.isVisible = currentProfile?.id != profile.id
-
-                editIcon.setOnClickListener {
-                    profileClickListener.onRenameClick(profile)
-                }
+        private fun summaryText(item: ProfileItem.UserProfile): String {
+            val context = itemView.context
+            val communities = context.resources.getQuantityString(
+                R.plurals.profile_community_count,
+                item.communityCount,
+                item.communityCount
+            )
+            val saved = context.getString(R.string.profile_saved_count, item.savedPostCount)
+            val counts = context.getString(R.string.profile_row_summary, communities, saved)
+            return if (item.profile.id == currentProfile?.id) {
+                context.getString(R.string.profile_row_summary_current, counts)
+            } else {
+                counts
             }
         }
     }

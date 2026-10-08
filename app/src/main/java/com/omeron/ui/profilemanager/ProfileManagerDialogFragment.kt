@@ -6,29 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.omeron.R
 import com.omeron.data.model.ProfileItem
 import com.omeron.data.model.db.Profile
 import com.omeron.databinding.DialogAddProfileBinding
 import com.omeron.databinding.FragmentProfileManagerBinding
-import com.omeron.ui.common.CarouselPageTransformer
 import com.omeron.util.extension.doAndDismiss
-import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.parcelable
 import com.omeron.util.extension.text
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProfileManagerDialogFragment : DialogFragment(), ProfileManagerAdapter.ProfileClickListener {
+class ProfileManagerDialogFragment : BottomSheetDialogFragment(),
+    ProfileManagerAdapter.ProfileClickListener {
 
     private var _binding: FragmentProfileManagerBinding? = null
     private val binding get() = _binding!!
@@ -55,18 +54,16 @@ class ProfileManagerDialogFragment : DialogFragment(), ProfileManagerAdapter.Pro
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewPager()
+        initList()
         bindViewModel()
     }
 
-    private fun initViewPager() {
+    private fun initList() {
         profileAdapter = ProfileManagerAdapter(currentProfile, this)
 
-        binding.viewPager.apply {
+        binding.listProfiles.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = profileAdapter
-            offscreenPageLimit = 3
-            setPageTransformer(CarouselPageTransformer())
-            getRecyclerView()?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
     }
 
@@ -74,14 +71,7 @@ class ProfileManagerDialogFragment : DialogFragment(), ProfileManagerAdapter.Pro
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.profiles
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { profiles ->
-                    profileAdapter.submitList(profiles)
-                    profiles.indexOfFirst { item ->
-                        (item as? ProfileItem.UserProfile)?.profile?.id == currentProfile?.id
-                    }.let { index ->
-                        binding.viewPager.currentItem = index
-                    }
-                }
+                .collect { profiles -> profileAdapter.submitList(profiles) }
         }
     }
 
@@ -178,24 +168,37 @@ class ProfileManagerDialogFragment : DialogFragment(), ProfileManagerAdapter.Pro
             .show()
     }
 
-    override fun getTheme(): Int {
-        return R.style.ProfileManagerDialogStyle
-    }
-
     override fun onProfileClick(profile: Profile) {
         doAndDismiss { viewModel.selectProfile(profile) }
-    }
-
-    override fun onDeleteProfileClick(profile: Profile) {
-        showDeleteProfileDialog(profile)
     }
 
     override fun onNewProfileClick() {
         showAddProfileDialog()
     }
 
-    override fun onRenameClick(profile: Profile) {
-        showRenameProfileDialog(profile)
+    override fun onEditProfileClick(profile: Profile) {
+        // The profile in use and the last remaining profile cannot be deleted.
+        if (profile.canDelete && profile.id != currentProfile?.id) {
+            showEditOptionsDialog(profile)
+        } else {
+            showRenameProfileDialog(profile)
+        }
+    }
+
+    private fun showEditOptionsDialog(profile: Profile) {
+        val options = arrayOf(
+            getString(R.string.dialog_rename_profile_button),
+            getString(R.string.profile_delete_action)
+        )
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(profile.name)
+            .setItems(options) { _, selectedIndex ->
+                when (selectedIndex) {
+                    OPTION_RENAME -> showRenameProfileDialog(profile)
+                    OPTION_DELETE -> showDeleteProfileDialog(profile)
+                }
+            }
+            .show()
     }
 
     override fun onDestroyView() {
@@ -208,6 +211,9 @@ class ProfileManagerDialogFragment : DialogFragment(), ProfileManagerAdapter.Pro
 
         private const val PROFILE_NAME_MIN = 3
         private const val PROFILE_NAME_MAX = 20
+
+        private const val OPTION_RENAME = 0
+        private const val OPTION_DELETE = 1
 
         private const val KEY_CURRENT_PROFILE = "KEY_PROFILE"
 
