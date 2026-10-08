@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.omeron.data.model.PostType
 import com.omeron.data.model.SavedItem
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.databinding.IncludePostInfoBinding
 import com.omeron.databinding.ItemPostImageBinding
 import com.omeron.databinding.ItemPostLinkBinding
 import com.omeron.databinding.ItemPostTextBinding
@@ -168,6 +170,25 @@ class ProfileSavedAdapter(
             )
             else -> throw IllegalArgumentException("Unknown type")
         }
+
+        getPost(position)?.let { showSavedAge(holder, it) }
+    }
+
+    // The card shows the post age; on this tab the date it was saved is the useful one. A post
+    // saved before the time was stored has none, and keeps the post age.
+    private fun showSavedAge(holder: RecyclerView.ViewHolder, post: PostEntity) {
+        if (post.time <= 0) return
+        val postInfoView = holder.itemView.findViewById<View>(R.id.include_post_info)
+        val postInfoBinding = DataBindingUtil.getBinding<IncludePostInfoBinding>(postInfoView)
+            ?: return
+
+        // The binding writes the post age on the next frame and would replace the saved age.
+        postInfoBinding.executePendingBindings()
+        val context = holder.itemView.context
+        postInfoBinding.textPostDate.text = context.getString(
+            R.string.profile_post_saved_age,
+            DateUtil.getTimeDifference(context, post.time)
+        )
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -180,6 +201,10 @@ class ProfileSavedAdapter(
 
     private fun getPost(position: Int): PostEntity? {
         return (getItem(position) as? SavedItem.Post)?.post
+    }
+
+    fun currentPosts(): List<PostEntity> {
+        return currentList.filterIsInstance<SavedItem.Post>().map { it.post }
     }
 
     private inner class CommentViewHolder(
