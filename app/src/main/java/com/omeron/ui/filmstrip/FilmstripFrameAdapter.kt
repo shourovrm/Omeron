@@ -148,12 +148,12 @@ class FilmstripFrameAdapter(
             get() = binding.image.isZoomed
 
         override fun bind(frame: FilmstripFrame) {
-            binding.image.contentDescription = frame.post.title
+            binding.image.contentDescription = frame.post?.title
 
             // A zoom left over from the previous frame this holder showed would carry over.
             binding.image.resetZoom()
 
-            loadImage(frame, frame.media?.url ?: frame.post.preview)
+            loadImage(frame, frame.media?.url ?: frame.post?.preview)
 
             binding.loadingCradle.isVisible = frame.status == FrameStatus.LOADING
             if (frame.status == FrameStatus.FAILED) showRetry(frame) else binding.infoRetry.hide()
@@ -227,8 +227,8 @@ class FilmstripFrameAdapter(
         }
 
         override fun bind(frame: FilmstripFrame) {
-            binding.root.contentDescription = frame.post.title
-            binding.imagePoster.load(frame.post.preview)
+            binding.root.contentDescription = frame.post?.title
+            binding.imagePoster.load(frame.post?.preview)
             binding.infoRetry.hide()
             hasPlaybackFailed = false
             placePlayPauseButton()

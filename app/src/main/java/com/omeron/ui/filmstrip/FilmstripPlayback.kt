@@ -22,7 +22,9 @@ class FilmstripPlayback(
     private val applicationContext = context.applicationContext
 
     // Created on first use and dropped by release(): the factory owns an on-disk cache that only
-    // one instance may hold, and the media viewer opened from the post page needs it.
+    // one instance may hold. Two viewers can be alive at once (a feed viewer, then the post page
+    // and a second viewer on top of it); the covered one halts, which releases its factory so the
+    // top viewer can create its own.
     private var playerFactory: ViewerVideoPlayerFactory? = null
 
     private var player: SimpleExoPlayer? = null

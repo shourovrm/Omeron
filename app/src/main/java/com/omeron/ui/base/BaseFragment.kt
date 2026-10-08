@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.NavigationGraphDirections
 import com.omeron.R
+import com.omeron.data.model.MediaType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.ui.common.widget.RedditView
 import com.omeron.ui.filmstrip.FilmstripFeedHolder
@@ -24,6 +25,7 @@ import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.util.LinkHandler
 import com.omeron.util.extension.applyWindowInsets
+import com.omeron.util.extension.currentNavigationFragment
 import com.omeron.util.extension.normalizeRedditLink
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -53,10 +55,24 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
 
     /**
      * Which of the feed's posts the Filmstrip viewer shows. A screen with a post list that opens
-     * the viewer overrides this once; null (the default) means the screen has no viewer and its
-     * media taps open the plain media viewer.
+     * the viewer overrides this once; null (the default) means the screen has no feed viewer and
+     * its media taps open the viewer on just the tapped post.
      */
     protected open val filmstripMediaPredicate: ((PostEntity) -> Boolean)? = null
+
+    /**
+     * True for the page of a single post. The viewer opened from it is told to return to the page
+     * instead of stacking a second copy of it.
+     */
+    protected open val isPostPage: Boolean = false
+
+    /**
+     * The manager that owns the screen container. A fragment nested in a pager (the tabs of a
+     * user or search screen) has a parent manager that belongs to the pager, so full-screen
+     * pages must go on the manager of the current navigation destination.
+     */
+    protected val screenFragmentManager: FragmentManager
+        get() = activity?.currentNavigationFragment?.parentFragmentManager ?: parentFragmentManager
 
     private var filmstripFeedLink: FilmstripFeedLink? = null
 
@@ -110,6 +126,27 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         filmstripFeedLink = link
         filmstripSessionId = link.sessionId
 
+        addViewer(
+            fragmentManager,
+            FilmstripViewerFragment.newInstance(link.sessionId, post.id, returnsToPostPage = false)
+        )
+    }
+
+    /** Opens the viewer on just [post], for screens that show a post without a feed behind it. */
+    private fun openSinglePostViewer(post: PostEntity) {
+        val sessionId = filmstripFeedHolder.beginSession(listOf(post), canLoadMore = false)
+        addViewer(
+            screenFragmentManager,
+            FilmstripViewerFragment.newInstance(sessionId, post.id, returnsToPostPage = isPostPage)
+        )
+    }
+
+    /** Opens the viewer on a media link that has no post behind it. */
+    fun openMediaLink(link: String, mediaType: MediaType) {
+        addViewer(screenFragmentManager, FilmstripViewerFragment.newInstance(link, mediaType))
+    }
+
+    private fun addViewer(fragmentManager: FragmentManager, viewer: FilmstripViewerFragment) {
         fragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.nav_enter_anim,
@@ -117,11 +154,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
                 R.anim.nav_enter_anim,
                 R.anim.nav_exit_anim
             )
-            .add(
-                R.id.fragment_container,
-                FilmstripViewerFragment.newInstance(post.id),
-                FilmstripViewerFragment.TAG
-            )
+            .add(R.id.fragment_container, viewer, FilmstripViewerFragment.TAG)
             .addToBackStack(null)
             .commit()
     }
@@ -129,7 +162,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     /** Call after the list's adapter exists, so a viewer opened earlier keeps loading pages. */
     protected fun resumeFilmstripFeed(adapter: PostListAdapter, list: RecyclerView) {
         val sessionId = filmstripSessionId ?: return
-        if (sessionId != filmstripFeedHolder.activeSessionId) return
+        if (!filmstripFeedHolder.isOpen(sessionId)) return
         val isFilmstripMedia = filmstripMediaPredicate ?: return
 
         filmstripFeedLink = FilmstripFeedLink.resume(
@@ -200,7 +233,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
 
     /**
      * Opens [post] in the Filmstrip viewer when this screen has one and the post is media it
-     * shows; returns false so the caller can fall back to the plain media viewer.
+     * shows; returns false so the caller can fall back to the viewer on the single post.
      */
     protected fun openInFilmstripIfMedia(post: PostEntity): Boolean {
         val isFilmstripMedia = filmstripMediaPredicate ?: return false
@@ -210,20 +243,13 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         return true
     }
 
+    // The viewer records the post in the history itself when it shows the post.
     override fun onImageClick(post: PostEntity) {
-        if (openInFilmstripIfMedia(post)) return
-        viewModel?.insertPostInHistory(post)
-        if (post.gallery.isNotEmpty()) {
-            linkHandler.openGallery(post.gallery)
-        } else {
-            linkHandler.openMedia(post.mediaUrl, post.mediaType)
-        }
+        if (!openInFilmstripIfMedia(post)) openSinglePostViewer(post)
     }
 
     override fun onVideoClick(post: PostEntity) {
-        if (openInFilmstripIfMedia(post)) return
-        viewModel?.insertPostInHistory(post)
-        linkHandler.openMedia(post.mediaUrl, post.mediaType)
+        if (!openInFilmstripIfMedia(post)) openSinglePostViewer(post)
     }
 
     override fun onLinkClick(post: PostEntity) {

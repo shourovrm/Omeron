@@ -4,14 +4,12 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import com.omeron.R
-import com.omeron.data.model.GalleryMedia
 import com.omeron.data.model.MediaType
 import com.omeron.data.model.db.Redirect
 import com.omeron.data.model.db.Redirect.RedirectMode.ALWAYS_ASK
 import com.omeron.data.model.db.Redirect.RedirectMode.OFF
 import com.omeron.data.model.db.Redirect.RedirectMode.ON
 import com.omeron.ui.base.BaseFragment
-import com.omeron.ui.mediaviewer.MediaViewerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.scopes.FragmentScoped
 import okhttp3.HttpUrl
@@ -60,7 +58,7 @@ class LinkHandler @Inject constructor(
             MediaType.REDGIFS,
             MediaType.STREAMABLE,
             MediaType.IMAGE,
-            MediaType.VIDEO -> openMedia(link, mediaType)
+            MediaType.VIDEO -> baseFragment?.openMediaLink(link, mediaType)
 
             else -> openLink(link)
         }
@@ -106,18 +104,6 @@ class LinkHandler @Inject constructor(
             .setNeutralButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
             .setCancelable(false)
             .show()
-    }
-
-    fun openGallery(images: List<GalleryMedia>) {
-        MediaViewerFragment.newInstance(images).run {
-            show(fragment.parentFragmentManager, MediaViewerFragment.TAG)
-        }
-    }
-
-    fun openMedia(link: String, mediaType: MediaType) {
-        MediaViewerFragment.newInstance(link, mediaType).run {
-            show(fragment.parentFragmentManager, MediaViewerFragment.TAG)
-        }
     }
 
     fun openBrowser(link: String) {

@@ -137,6 +137,7 @@
                 android:contentDescription="@string/filmstrip_info_description">
 
                 <LinearLayout
+                    android:id="@+id/row_post_source"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -178,6 +179,16 @@
                         android:textSize="13sp"
                         tools:text="u/sample_user · 1d"/>
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_link_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filmstrip_link_caption"
+                    android:textColor="@color/white"
+                    android:alpha="0.72"
+                    android:textSize="13sp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/text_title"
@@ -271,6 +282,26 @@
                     android:contentDescription="@string/post_save_description"
                     app:tint="@color/white"
                     app:srcCompat="@drawable/ic_bookmark_outline"/>
+
+                <ImageButton
+                    android:id="@+id/button_share_link"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/filmstrip_action_share"
+                    android:visibility="gone"
+                    app:tint="@color/white"
+                    app:srcCompat="@drawable/ic_share"/>
+
+                <ImageButton
+                    android:id="@+id/button_download"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/filmstrip_action_download"
+                    android:visibility="gone"
+                    app:tint="@color/white"
+                    app:srcCompat="@drawable/ic_download"/>
 
                 <com.omeron.ui.common.widget.CheckableImageView
                     android:id="@+id/button_mute"

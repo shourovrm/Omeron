@@ -59,6 +59,8 @@ class PostDetailsFragment : BaseFragment(),
 
     override val viewModel: PostDetailsViewModel by viewModels()
 
+    override val isPostPage: Boolean = true
+
     private val args: PostDetailsFragmentArgs by navArgs()
 
     private val contentRadius by lazy { resources.getDimension(R.dimen.subreddit_content_radius) }

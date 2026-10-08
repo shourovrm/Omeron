@@ -65,7 +65,7 @@ class FilmstripFramesTest {
         assertEquals(1, frames.size)
         assertEquals("a#0", frames[0].id)
         assertEquals(FrameStatus.READY, frames[0].status)
-        assertEquals(1, frames[0].framesInPost)
+        assertEquals(1, frames[0].framesInSource)
         assertEquals(false, frames[0].isGalleryFrame)
     }
 
@@ -93,8 +93,8 @@ class FilmstripFramesTest {
         )
 
         assertEquals(listOf("g#0", "g#1", "g#2"), frames.map { it.id })
-        assertEquals(listOf(0, 1, 2), frames.map { it.indexInPost })
-        assertTrue(frames.all { it.framesInPost == 3 && it.status == FrameStatus.READY })
+        assertEquals(listOf(0, 1, 2), frames.map { it.indexInSource })
+        assertTrue(frames.all { it.framesInSource == 3 && it.status == FrameStatus.READY })
         assertEquals(gallery, frames.map { it.media })
     }
 
@@ -159,7 +159,7 @@ class FilmstripFramesTest {
         assertEquals(listOf("album#0", "next#0"), before.map { it.id })
         assertEquals(listOf("album#0", "album#1", "album#2", "next#0"), after.map { it.id })
         assertEquals(FrameStatus.READY, after[0].status)
-        assertEquals(3, after[0].framesInPost)
+        assertEquals(3, after[0].framesInSource)
     }
 
     @Test
@@ -196,7 +196,7 @@ class FilmstripFramesTest {
 
         assertEquals("s#0", frames.single().id)
         assertEquals(FrameStatus.LOADING, frames.single().status)
-        assertEquals("https://thumbs/s.jpg", frames.single().post.preview)
+        assertEquals("https://thumbs/s.jpg", frames.single().post?.preview)
     }
 
     @Test
@@ -257,7 +257,7 @@ class FilmstripFramesTest {
         )
 
         assertEquals(FrameStatus.FAILED, frames.single().status)
-        assertEquals(true, frames.single().post.needsHydration)
+        assertEquals(true, frames.single().post?.needsHydration)
     }
 
     private fun framesFor(vararg postsWithImageCounts: Pair<String, Int>): List<FilmstripFrame> {
@@ -345,5 +345,76 @@ class FilmstripFramesTest {
 
         assertNull(postSwipeTargetIndex(frames, -1, PostSwipeDirection.NEXT))
         assertNull(postSwipeTargetIndex(emptyList(), 0, PostSwipeDirection.PREVIOUS))
+    }
+
+    @Test
+    fun `post frames belong to their post`() {
+        val frames = buildFilmstripFrames(listOf(post("a")), emptyMap()) { listOf(image("a")) }
+
+        assertEquals("a", frames.single().source.key)
+        assertEquals("a", frames.single().post?.id)
+    }
+
+    @Test
+    fun `link without a lookup is one ready frame with no post`() {
+        val frames = buildLinkFrames("https://example.com/a.jpg", null, listOf(image("a")))
+
+        assertEquals(listOf("link#0"), frames.map { it.id })
+        assertEquals(FrameStatus.READY, frames.single().status)
+        assertNull(frames.single().post)
+        assertEquals(FrameSource.OfLink("https://example.com/a.jpg"), frames.single().source)
+    }
+
+    @Test
+    fun `link that needs a lookup is a loading placeholder`() {
+        val frames = buildLinkFrames("https://imgur.com/a/xyz", PostMediaState.Loading, null)
+
+        assertEquals("link#0", frames.single().id)
+        assertEquals(FrameStatus.LOADING, frames.single().status)
+        assertNull(frames.single().media)
+    }
+
+    @Test
+    fun `link with no state yet is a loading placeholder`() {
+        val frames = buildLinkFrames("https://imgur.com/a/xyz", null, null)
+
+        assertEquals(FrameStatus.LOADING, frames.single().status)
+    }
+
+    @Test
+    fun `failed link lookup is a failed placeholder`() {
+        val frames = buildLinkFrames("https://imgur.com/a/xyz", PostMediaState.Failed, null)
+
+        assertEquals(FrameStatus.FAILED, frames.single().status)
+    }
+
+    @Test
+    fun `resolved link album keeps the placeholder id and adds frames after it`() {
+        val album = listOf(image("1"), image("2"), image("3"))
+
+        val frames = buildLinkFrames("https://imgur.com/a/xyz", PostMediaState.Resolved(album), null)
+
+        assertEquals(listOf("link#0", "link#1", "link#2"), frames.map { it.id })
+        assertTrue(frames.all { it.status == FrameStatus.READY && it.framesInSource == 3 })
+        assertEquals(album, frames.map { it.media })
+    }
+
+    @Test
+    fun `resolved link with no media is a failed placeholder`() {
+        val frames = buildLinkFrames("https://imgur.com/a/xyz", PostMediaState.Resolved(emptyList()), null)
+
+        assertEquals(FrameStatus.FAILED, frames.single().status)
+    }
+
+    @Test
+    fun `a link has no post to swipe to`() {
+        val frames = buildLinkFrames(
+            "https://imgur.com/a/xyz",
+            PostMediaState.Resolved(listOf(image("1"), image("2"))),
+            null
+        )
+
+        assertNull(postSwipeTargetIndex(frames, 0, PostSwipeDirection.NEXT))
+        assertNull(postSwipeTargetIndex(frames, 1, PostSwipeDirection.PREVIOUS))
     }
 }
