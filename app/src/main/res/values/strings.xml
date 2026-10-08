@@ -461,4 +461,7 @@
         <item quantity="one">%1$d community</item>
         <item quantity="other">%1$d communities</item>
     </plurals>
+    <string name="update_banner_message">Update available: v%1$s</string>
+    <string name="update_banner_get">Get</string>
+    <string name="update_banner_dismiss">Dismiss update notice</string>
 </resources>

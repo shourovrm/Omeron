@@ -6,6 +6,7 @@ import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.ui.base.BaseViewModel
 import com.omeron.ui.drawer.DrawerItem
 import com.omeron.ui.drawer.buildDrawerItems
+import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +39,11 @@ class UiViewModel @Inject constructor(
     private val _bottomNavigationHeight = MutableStateFlow(0)
     val bottomNavigationHeight: StateFlow<Int> = _bottomNavigationHeight
 
+    // The newer release found by the launch-time check; null when there is none or the user
+    // dismissed the notice for this session.
+    private val _updateNotice = MutableStateFlow<UpdateChecker.Update?>(null)
+    val updateNotice: StateFlow<UpdateChecker.Update?> = _updateNotice
+
     // Selected home tab: 0 = Feed, 1 = Popular, 2 = Multis. Set by the bottom
     // navigation bar (MainActivity); PostListFragment derives its feed mode from it.
     private val _homeTab = MutableStateFlow(0)
@@ -66,6 +72,14 @@ class UiViewModel @Inject constructor(
 
     fun setBottomNavigationHeight(height: Int) {
         _bottomNavigationHeight.updateValue(height)
+    }
+
+    fun setUpdateNotice(update: UpdateChecker.Update?) {
+        _updateNotice.value = update
+    }
+
+    fun dismissUpdateNotice() {
+        _updateNotice.value = null
     }
 
     fun setHomeTab(tab: Int) {

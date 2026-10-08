@@ -46,6 +46,12 @@
                     tools:visibility="visible"
                     style="@style/TabLayoutStyle"/>
 
+                <include
+                    android:id="@+id/update_banner"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    android:visibility="gone"
+                    layout="@layout/layout_update_banner" />
+
             </com.google.android.material.appbar.AppBarLayout>
 
             <com.omeron.ui.common.widget.PullToRefreshLayout

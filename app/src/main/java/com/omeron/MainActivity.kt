@@ -51,7 +51,6 @@ import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.normalizeRedditLink
 import com.omeron.util.extension.unredditApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -144,18 +143,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun checkForUpdate() {
         lifecycleScope.launch {
-            val update = updateChecker.check() ?: return@launch
-
-            MaterialAlertDialogBuilder(this@MainActivity)
-                .setTitle(getString(R.string.update_available, update.version))
-                .setMessage(update.changelog.ifBlank { getString(R.string.update_message) })
-                .setPositiveButton(R.string.update_now) { _, _ -> openReleasesPage() }
-                .setNegativeButton(R.string.update_later, null)
-                .show()
+            // The home screen shows the notice as a banner, so launch is never interrupted.
+            viewModel.setUpdateNotice(updateChecker.check())
         }
     }
 
-    private fun openReleasesPage() {
+    fun openReleasesPage() {
         val uri = Uri.parse(RELEASES_PAGE_URL)
         try {
             CustomTabsIntent.Builder().build().launchUrl(this, uri)

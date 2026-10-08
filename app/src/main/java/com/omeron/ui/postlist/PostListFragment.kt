@@ -231,6 +231,16 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
             }
 
             launch {
+                uiViewModel.updateNotice.collect { update ->
+                    binding.updateBanner.root.isVisible = update != null
+                    if (update != null) {
+                        binding.updateBanner.updateMessage.text =
+                            getString(R.string.update_banner_message, update.version)
+                    }
+                }
+            }
+
+            launch {
                 // The bottom bar selection is the single source of truth for the feed mode. It is
                 // re-applied on every view creation because the activity-scoped view model may
                 // still hold the mode left over from before the user navigated away.
@@ -369,6 +379,10 @@ class PostListFragment : BaseFragment(), PullToRefreshLayout.OnRefreshListener {
 
             menuCard.isVisible = true
             menuCard.setOnClickListener { (activity as? MainActivity)?.openNavigationDrawer() }
+        }
+        binding.updateBanner.run {
+            updateGet.setOnClickListener { (activity as? MainActivity)?.openReleasesPage() }
+            updateDismiss.setOnClickListener { uiViewModel.dismissUpdateNotice() }
         }
         binding.appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener)
         initTabs()
