@@ -27,8 +27,9 @@
         app:show_buffering="when_playing"
         app:shutter_background_color="@android:color/transparent"/>
 
-    <ImageView
-        android:id="@+id/icon_paused"
+    <!-- Inside the page rather than the overlay, so a swipe that starts on it still pages. -->
+    <ImageButton
+        android:id="@+id/button_play_pause"
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +37,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:padding="12dp"
-        android:importantForAccessibility="no"
+        android:scaleType="fitCenter"
+        android:background="@drawable/filmstrip_play_pause_background"
+        android:contentDescription="@string/filmstrip_pause_description"
         android:visibility="gone"
         app:tint="@color/white"
-        app:srcCompat="@drawable/ic_play"
+        app:srcCompat="@drawable/ic_pause_exo"
         tools:visibility="visible"/>
 
     <com.omeron.ui.common.widget.InfoBarView

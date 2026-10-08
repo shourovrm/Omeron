@@ -116,6 +116,8 @@
     <string name="filmstrip_score_description">Score: %1$s</string>
     <string name="filmstrip_comments_description">Open post, %1$s comments</string>
     <string name="filmstrip_mute_description">Mute video</string>
+    <string name="filmstrip_play_description">Play video</string>
+    <string name="filmstrip_pause_description">Pause video</string>
     <string name="filmstrip_info_description">Post details. Tap or swipe up to expand</string>
     <string name="filmstrip_info_meta">u/%1$s · %2$s</string>
     <string name="filmstrip_details_meta">u/%1$s · %2$s · %3$s</string>

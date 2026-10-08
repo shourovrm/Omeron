@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.omeron.R
 import com.omeron.databinding.ItemFilmstripImageBinding
 import com.omeron.databinding.ItemFilmstripVideoBinding
 import com.omeron.ui.mediaviewer.ZoomableImageTouchListener
 import com.omeron.ui.mediaviewer.loadViewerImage
+import com.omeron.util.extension.showWithAlpha
 
 /**
  * Pages of the Filmstrip viewer. Frame ids are stable, so frames inserted when a gallery finishes
@@ -20,6 +22,9 @@ import com.omeron.ui.mediaviewer.loadViewerImage
  *
  * Only the frame named by [activeFrameId] may play. The adapter tells a holder when it becomes
  * (in)active, and a holder also re-checks when it attaches to or detaches from the window.
+ *
+ * A tap on any frame is reported through [onFrameClick]; pausing is done with the button in the
+ * middle of a video, which is only shown while [areControlsVisible] is true.
  */
 class FilmstripFrameAdapter(
     private val playback: FilmstripPlayback,
@@ -28,6 +33,15 @@ class FilmstripFrameAdapter(
 ) : ListAdapter<FilmstripFrame, FilmstripFrameAdapter.FrameViewHolder>(FRAME_COMPARATOR) {
 
     private var activeFrameId: String? = null
+
+    /** Mirrors the viewer's overlay, so the play/pause button comes and goes with it. */
+    var areControlsVisible = true
+        set(value) {
+            if (field == value) return
+            field = value
+            val activeIndex = currentList.indexOfFirst { it.id == activeFrameId }
+            if (activeIndex >= 0) notifyItemChanged(activeIndex, CONTROLS_CHANGED)
+        }
 
     init {
         setHasStableIds(true)
@@ -78,10 +92,10 @@ class FilmstripFrameAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (payloads.contains(ACTIVE_CHANGED)) {
-            holder.updatePlayback()
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
+        when {
+            payloads.isEmpty() -> super.onBindViewHolder(holder, position, payloads)
+            payloads.contains(ACTIVE_CHANGED) -> holder.updatePlayback()
+            else -> holder.updateControls()
         }
     }
 
@@ -108,6 +122,9 @@ class FilmstripFrameAdapter(
         open fun updatePlayback() = Unit
 
         open fun stopPlayback() = Unit
+
+        /** [areControlsVisible] changed while this frame is on screen. */
+        open fun updateControls() = Unit
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -179,17 +196,61 @@ class FilmstripFrameAdapter(
         private val binding: ItemFilmstripVideoBinding
     ) : FrameViewHolder(binding.root) {
 
+        private val isPlayingHere: Boolean
+            get() = binding.video.player != null
+
+        // The retry bar takes the button's place, and a failed video has nothing to pause.
+        private var hasPlaybackFailed = false
+
+        private val shouldShowPlayPause: Boolean
+            get() = areControlsVisible && isPlayingHere && !hasPlaybackFailed
+
         init {
             binding.root.setOnClickListener {
-                binding.iconPaused.isVisible = playback.togglePause()
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) onFrameClick(getItem(position))
+            }
+            binding.buttonPlayPause.setOnClickListener {
+                if (isPlayingHere) showPlayPauseIcon(isPaused = playback.togglePause())
             }
         }
 
         override fun bind(frame: FilmstripFrame) {
             binding.root.contentDescription = frame.post.title
             binding.imagePoster.load(frame.post.preview)
-            binding.iconPaused.isVisible = false
             binding.infoRetry.hide()
+            hasPlaybackFailed = false
+            placePlayPauseButton()
+        }
+
+        override fun updateControls() {
+            val shouldShow = shouldShowPlayPause
+            if (shouldShow == binding.buttonPlayPause.isVisible) return
+            showPlayPauseIcon(playback.isPaused)
+            binding.buttonPlayPause.showWithAlpha(shouldShow, CONTROLS_FADE_MILLIS)
+        }
+
+        /** Puts the button in its final state at once, for changes that are not a user's tap. */
+        private fun placePlayPauseButton() {
+            binding.buttonPlayPause.run {
+                animate().cancel()
+                alpha = 1F
+                isVisible = shouldShowPlayPause
+            }
+            showPlayPauseIcon(isPlayingHere && playback.isPaused)
+        }
+
+        private fun showPlayPauseIcon(isPaused: Boolean) {
+            binding.buttonPlayPause.run {
+                setImageResource(if (isPaused) R.drawable.ic_play_exo else R.drawable.ic_pause_exo)
+                contentDescription = context.getString(
+                    if (isPaused) {
+                        R.string.filmstrip_play_description
+                    } else {
+                        R.string.filmstrip_pause_description
+                    }
+                )
+            }
         }
 
         override fun updatePlayback() {
@@ -200,10 +261,11 @@ class FilmstripFrameAdapter(
 
             if (isActive && video != null && binding.root.isAttachedToWindow) {
                 // Re-running for the frame that is already playing would restart it.
-                if (binding.video.player == null) {
-                    binding.iconPaused.isVisible = false
+                if (!isPlayingHere) {
                     binding.infoRetry.hide()
+                    hasPlaybackFailed = false
                     playback.play(video, binding.video) { showRetry() }
+                    placePlayPauseButton()
                 }
             } else {
                 stopPlayback()
@@ -212,6 +274,7 @@ class FilmstripFrameAdapter(
 
         override fun stopPlayback() {
             playback.stopIfPlayingIn(binding.video)
+            placePlayPauseButton()
         }
 
         private fun showRetry() {
@@ -220,6 +283,8 @@ class FilmstripFrameAdapter(
                 playback.stopIfPlayingIn(binding.video)
                 updatePlayback()
             }
+            hasPlaybackFailed = true
+            placePlayPauseButton()
             binding.infoRetry.show()
         }
     }
@@ -229,6 +294,10 @@ class FilmstripFrameAdapter(
         const val VIEW_TYPE_VIDEO = 1
 
         val ACTIVE_CHANGED = Any()
+        val CONTROLS_CHANGED = Any()
+
+        // Same length as the viewer's overlay fade, so the button and the overlay move together.
+        const val CONTROLS_FADE_MILLIS = 200L
 
         val FRAME_COMPARATOR = object : DiffUtil.ItemCallback<FilmstripFrame>() {
             override fun areItemsTheSame(oldItem: FilmstripFrame, newItem: FilmstripFrame) =

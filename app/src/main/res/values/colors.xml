@@ -108,5 +108,6 @@
     <color name="filmstrip_primary_button_text">#0E1A4D</color>
     <color name="filmstrip_scrim_bottom">#CC000000</color>
     <color name="filmstrip_details_dim">#99000000</color>
+    <color name="filmstrip_play_pause_scrim">#73000000</color>
     <color name="filmstrip_segment_inactive">#4DFFFFFF</color>
 </resources>

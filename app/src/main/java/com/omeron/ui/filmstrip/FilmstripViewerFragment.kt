@@ -13,7 +13,9 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -122,7 +124,9 @@ class FilmstripViewerFragment : BaseFragment() {
         detailsBasePaddingBottom = binding.detailsContent.paddingBottom
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, windowInsets ->
-            val bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // The bars are hidden together with the overlay; reading their visible size would
+            // shift the overlay while it fades.
+            val bars = windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars())
             binding.topContainer.updatePadding(left = bars.left, top = bars.top, right = bars.right)
             binding.bottomInsetSpace.updateLayoutParams { height = bars.bottom }
             binding.detailsContent.updatePadding(bottom = detailsBasePaddingBottom + bars.bottom)
@@ -155,6 +159,7 @@ class FilmstripViewerFragment : BaseFragment() {
     override fun onDestroyView() {
         parentFragmentManager.removeOnBackStackChangedListener(backStackListener)
         if (::playback.isInitialized) playback.release()
+        showSystemBars(true)
         uiViewModel.setNavigationVisibility(navigationVisibilityBeforeOpen)
         super.onDestroyView()
         _binding = null
@@ -198,6 +203,8 @@ class FilmstripViewerFragment : BaseFragment() {
             onSwipeDrag = ::followPostSwipe
             onSwipeAbandoned = ::settlePagerInPlace
         }
+
+        frameAdapter.areControlsVisible = viewModel.isOverlayVisible
 
         binding.viewPager.apply {
             adapter = frameAdapter
@@ -313,6 +320,7 @@ class FilmstripViewerFragment : BaseFragment() {
     private fun initOverlay() {
         binding.run {
             overlay.isVisible = viewModel.isOverlayVisible
+            showSystemBars(viewModel.isOverlayVisible)
 
             buttonClose.setOnClickListener { close() }
             railComments.setOnClickListener { openPost() }
@@ -466,10 +474,6 @@ class FilmstripViewerFragment : BaseFragment() {
     private fun selectFrame(frame: FilmstripFrame) {
         viewModel.onFrameSelected(frame)
         frameAdapter.setActiveFrameId(frame.id)
-
-        // A video's tap means pause, so the overlay could never be brought back from a video.
-        if (frame.isVideo && !viewModel.isOverlayVisible) setOverlayVisible(true)
-
         bindOverlay(frame)
     }
 
@@ -591,6 +595,20 @@ class FilmstripViewerFragment : BaseFragment() {
     private fun setOverlayVisible(isVisible: Boolean) {
         viewModel.isOverlayVisible = isVisible
         binding.overlay.showWithAlpha(isVisible, OVERLAY_FADE_MILLIS)
+        frameAdapter.areControlsVisible = isVisible
+        showSystemBars(isVisible)
+    }
+
+    private fun showSystemBars(show: Boolean) {
+        val window = activity?.window ?: return
+        WindowCompat.getInsetsController(window, window.decorView).run {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            if (show) {
+                show(WindowInsetsCompat.Type.systemBars())
+            } else {
+                hide(WindowInsetsCompat.Type.systemBars())
+            }
+        }
     }
 
     private fun expandDetails() {
