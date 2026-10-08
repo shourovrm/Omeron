@@ -327,7 +327,6 @@
 
     <string name="toast_download_started">Download in progress…</string>
 
-    <string name="fragment_backup_label">Import/Export</string>
 
     <string name="backup_operation_backup">Backup</string>
     <string name="backup_operation_restore">Restore</string>

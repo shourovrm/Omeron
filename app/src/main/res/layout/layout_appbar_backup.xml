@@ -26,6 +26,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginStart="@dimen/app_bar_margin"
         android:textAppearance="@style/TextAppearanceAppBarLabel"
-        android:text="@string/fragment_backup_label"/>
+        android:text="@string/settings_backup_and_restore"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
