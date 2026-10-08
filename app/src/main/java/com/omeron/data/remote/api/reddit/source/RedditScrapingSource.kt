@@ -60,8 +60,9 @@ class RedditScrapingSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        // TODO
-        return Listing("t3", ListingData(null, null, emptyList(), null, null))
+        // The subreddit's search page lists results with the same markup as the site-wide one.
+        val response = redditApi.searchInSubreddit(subreddit, query, sort, timeSorting, after)
+        return PostSearchScraper(ioDispatcher).scrap(response.string())
     }
 
     override suspend fun getPost(permalink: String, limit: Int?, sort: Sort): List<Listing> {
