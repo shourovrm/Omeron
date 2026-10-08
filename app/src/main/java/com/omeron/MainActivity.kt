@@ -436,7 +436,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.subredditFragment,
             R.id.multiredditFragment,
             R.id.userFragment,
-            R.id.subscriptionsFragment
+            R.id.manageCommunitiesFragment,
+            R.id.manageMultiredditsFragment
         )
 
         // Index = home tab position (Feed/Popular/Multis)

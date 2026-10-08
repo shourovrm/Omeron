@@ -1,105 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/colorSurface">
 
-    <LinearLayout
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/layout_appbar_manage"/>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/dialog_rename_multireddit_hint"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/multireddit_subreddits_header"
-            android:textAppearance="@style/TextAppearanceCreditSection"/>
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_subreddits"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
-
-        <EditText
-            android:id="@+id/input_add_subreddit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:inputType="text"
-            android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="8dp"
-            android:hint="@string/multireddit_add_subreddit_hint"/>
-
-        <!-- ponytail: plain RecyclerView, no swipe-refresh/paging-footer chrome - this is a
-             small in-dialog pick list, not a full screen. Fixed height (not wrap_content) so it
-             behaves inside the outer ScrollView instead of fighting it for nested scroll. -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_subreddit_search_results"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:overScrollMode="never"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:listitem="@layout/item_multireddit_subreddit_result"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/multireddit_users_header"
-            android:textAppearance="@style/TextAppearanceCreditSection"/>
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_users"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <include
+                android:id="@+id/name_header"
+                layout="@layout/item_manage_section"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:hint="@string/dialog_rename_multireddit_hint"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <include
+                android:id="@+id/members_header"
+                layout="@layout/item_manage_section"/>
+
+            <LinearLayout
+                android:id="@+id/member_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <include
+                android:id="@+id/add_header"
+                layout="@layout/item_manage_section"/>
 
             <EditText
-                android:id="@+id/input_add_user"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
+                android:id="@+id/input_add_member"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:background="@drawable/background_drawer_filter"
+                android:drawableStart="@drawable/ic_search"
+                android:drawablePadding="10dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/multireddit_add_member_hint"
+                android:importantForAutofill="no"
                 android:inputType="text"
-                android:hint="@string/multireddit_add_user_hint"/>
+                android:imeOptions="flagNoPersonalizedLearning"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBody2"/>
 
-            <ImageButton
+            <!-- Subreddit search results are added by tapping; a user cannot be searched for, so
+                 the typed name is offered as a user instead. -->
+            <TextView
                 android:id="@+id/button_add_user"
-                android:layout_width="@dimen/app_bar_button_size"
-                android:layout_height="@dimen/app_bar_button_size"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:tint="@color/icon_tint"
-                android:contentDescription="@string/multireddit_add_user_hint"
-                android:src="@drawable/ic_add"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:visibility="gone"
+                tools:text="Add u/someone as a user"
+                tools:visibility="visible"/>
+
+            <!-- Fixed height so the pick list scrolls on its own inside the page's scroll view
+                 instead of binding every search result at once. -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_subreddit_search_results"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:nestedScrollingEnabled="true"
+                android:overScrollMode="never"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:listitem="@layout/item_multireddit_subreddit_result"/>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-</ScrollView>
+</LinearLayout>

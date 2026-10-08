@@ -510,4 +510,11 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
+
+    <!-- Full-screen page shown as a dialog (multireddit edit); keeps the app's own colours and
+         day/night switching, only the floating dialog window is replaced. -->
+    <style name="FullscreenDialogTheme" parent="AppTheme">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+    </style>
 </resources>

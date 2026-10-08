@@ -42,7 +42,6 @@
      <string name="sort_best">Mejor</string>
      <string name="sort_old">Viejo</string>
      <string name="sort_qa">Q&amp;A</string>
-     <string name="fragment_subscriptions_label">Suscripciones</string>
      <string name="subscriptions_search_hint">Buscar en Reddit</string>
      <string name="search_hint">Buscar en Reddit</string>
      <string name="search_hint_subreddit">Buscar en %1$s</string>
@@ -111,6 +110,5 @@
      <string name="about_section_credits">Créditos</string>
      <string name="about_section_libraries">Librerías</string>
      <string name="navigation_label_home">Inicio</string>
-     <string name="navigation_label_subscriptions">Subs</string>
      <string name="navigation_label_settings">Ajustes</string>
 </resources>
