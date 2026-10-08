@@ -1,30 +1,30 @@
 package com.omeron.ui.subscriptions
 
 import androidx.lifecycle.viewModelScope
-import com.omeron.data.model.db.FollowedUser
-import com.omeron.data.model.db.Multireddit
 import com.omeron.data.model.db.MultiredditMemberType
 import com.omeron.data.model.db.MultiredditWithMembers
-import com.omeron.data.model.db.Subscription
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
 import com.omeron.ui.base.BaseViewModel
-import com.omeron.util.extension.latest
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Activity-scoped so the drawer, both manage pages and the multireddit edit page share it, and
+// so its writes outlive the dialog or page that started them.
+//
+// Writes read the profile with first() instead of the replay cache: the drawer calls in here
+// while nothing collects this ViewModel's currentProfile, which leaves the cache empty.
 @HiltViewModel
 class SubscriptionsViewModel @Inject constructor(
     preferencesRepository: PreferencesRepository,
@@ -32,47 +32,45 @@ class SubscriptionsViewModel @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : BaseViewModel(preferencesRepository, repository) {
 
-    private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+    private val communityFilterQuery: MutableStateFlow<String> = MutableStateFlow("")
 
-    val filteredSubscriptions: Flow<List<Subscription>> = combine(
-        subscriptions,
-        _searchQuery
-    ) { subscriptions, searchQuery ->
-        subscriptions.filter { it.name.contains(searchQuery, ignoreCase = true) }
-    }.flowOn(defaultDispatcher)
-
-    val followedUsers: Flow<List<FollowedUser>> = currentProfile.flatMapLatest {
-        repository.getFollowedUsers(it.id)
-    }
-
-    val multireddits: Flow<List<MultiredditWithMembers>> = currentProfile.flatMapLatest {
+    private val multireddits: Flow<List<MultiredditWithMembers>> = currentProfile.flatMapLatest {
         repository.getMultireddits(it.id)
     }
 
-    fun setSearchQuery(query: String) {
-        _searchQuery.updateValue(query)
+    private val followedUsers = currentProfile.flatMapLatest {
+        repository.getFollowedUsers(it.id)
     }
 
-    fun toggleSubscriptionHidden(subscription: Subscription) {
+    val manageCommunityItems: Flow<List<ManageItem>> = combine(
+        subscriptions,
+        followedUsers,
+        multireddits,
+        communityFilterQuery
+    ) { subscriptions, followedUsers, multireddits, query ->
+        buildManageCommunityItems(subscriptions, followedUsers, multireddits, query)
+    }.flowOn(defaultDispatcher)
+
+    val manageMultiredditItems: Flow<List<ManageItem>> = multireddits.map(::buildManageMultiredditItems)
+
+    fun setCommunityFilterQuery(query: String) {
+        communityFilterQuery.updateValue(query)
+    }
+
+    fun setSubscriptionHidden(name: String, hidden: Boolean) {
         viewModelScope.launch {
-            currentProfile.latest?.let {
-                repository.setSubscriptionHidden(subscription.name, it.id, !subscription.hidden)
-            }
+            repository.setSubscriptionHidden(name, currentProfile.first().id, hidden)
         }
     }
 
     fun unsubscribe(name: String) {
-        viewModelScope.launch {
-            currentProfile.latest?.let { repository.unsubscribe(name, it.id) }
-        }
+        viewModelScope.launch { repository.unsubscribe(name, currentProfile.first().id) }
     }
 
     // ponytail: same one-shot-snapshot pattern as SubredditViewModel.getMultiredditsSnapshot -
     // the picker dialog doesn't need a live flow while it's open.
     suspend fun getMultiredditsSnapshot(): List<MultiredditWithMembers> {
-        val profileId = currentProfile.latest?.id ?: return emptyList()
-        return repository.getMultireddits(profileId).first()
+        return repository.getMultireddits(currentProfile.first().id).first()
     }
 
     fun addTargetToMultireddit(multiId: Long, target: String) {
@@ -85,24 +83,19 @@ class SubscriptionsViewModel @Inject constructor(
 
     fun createMultiredditWithTarget(name: String, target: String) {
         viewModelScope.launch {
-            currentProfile.latest?.let { profile ->
-                val multiId = repository.createMultireddit(name, profile.id)
-                repository.addMember(multiId, target, MultiredditMemberType.SUBREDDIT)
-            }
+            val multiId = repository.createMultireddit(name, currentProfile.first().id)
+            repository.addMember(multiId, target, MultiredditMemberType.SUBREDDIT)
         }
     }
 
-    // Create/rename must run here (activity-scoped) not in the edit dialog's own ViewModel:
-    // the dialog dismisses immediately after Save, cancelling its viewModelScope before the
-    // async DB writes finish. This scope outlives the dialog, and currentProfile is already
-    // warm because the subscriptions screen collects it.
+    // Create/rename must run here (activity-scoped) not in the edit page's own ViewModel:
+    // the page dismisses immediately after Save, cancelling its viewModelScope before the
+    // async DB writes finish. This scope outlives the page.
     fun createMultireddit(name: String, subreddits: List<String>, users: List<String>) {
         viewModelScope.launch {
-            currentProfile.latest?.let { profile ->
-                val multiId = repository.createMultireddit(name, profile.id)
-                subreddits.forEach { repository.addMember(multiId, it, MultiredditMemberType.SUBREDDIT) }
-                users.forEach { repository.addMember(multiId, it, MultiredditMemberType.USER) }
-            }
+            val multiId = repository.createMultireddit(name, currentProfile.first().id)
+            subreddits.forEach { repository.addMember(multiId, it, MultiredditMemberType.SUBREDDIT) }
+            users.forEach { repository.addMember(multiId, it, MultiredditMemberType.USER) }
         }
     }
 
@@ -110,27 +103,21 @@ class SubscriptionsViewModel @Inject constructor(
         viewModelScope.launch { repository.renameMultireddit(id, name) }
     }
 
-    fun toggleUserHidden(user: FollowedUser) {
+    fun setUserHidden(name: String, hidden: Boolean) {
         viewModelScope.launch {
-            currentProfile.latest?.let {
-                repository.setUserHidden(user.name, it.id, !user.hidden)
-            }
+            repository.setUserHidden(name, currentProfile.first().id, hidden)
         }
     }
 
-    fun unfollowUser(user: FollowedUser) {
-        viewModelScope.launch {
-            currentProfile.latest?.let { repository.unfollowUser(user.name, it.id) }
-        }
+    fun unfollowUser(name: String) {
+        viewModelScope.launch { repository.unfollowUser(name, currentProfile.first().id) }
     }
 
     fun deleteMultireddit(id: Long) {
         viewModelScope.launch { repository.deleteMultireddit(id) }
     }
 
-    fun toggleMultiredditHidden(multireddit: Multireddit) {
-        viewModelScope.launch {
-            repository.setMultiredditHidden(multireddit.id, !multireddit.hidden)
-        }
+    fun setMultiredditHidden(id: Long, hidden: Boolean) {
+        viewModelScope.launch { repository.setMultiredditHidden(id, hidden) }
     }
 }

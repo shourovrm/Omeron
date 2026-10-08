@@ -117,8 +117,4 @@ class MultiredditEditViewModel @Inject constructor(
     // activity-scoped SubscriptionsViewModel (this dialog VM is cancelled on dismiss).
     fun pendingMembers(): Pair<List<String>, List<String>> =
         _pendingSubreddits.value to _pendingUsers.value
-
-    fun delete(id: Long) {
-        viewModelScope.launch { repository.deleteMultireddit(id) }
-    }
 }

@@ -49,7 +49,6 @@
     <string name="sort_old">Älteste</string>
     <string name="sort_qa">Q&amp;A</string>
 
-    <string name="fragment_subscriptions_label">Abonnements</string>
     <string name="subscriptions_search_hint">In Reddit suchen</string>
 
     <string name="search_hint">In Reddit suchen</string>
@@ -143,6 +142,5 @@
     <string name="about_section_libraries">Bibliotheken</string>
 
     <string name="navigation_label_home">Startseite</string>
-    <string name="navigation_label_subscriptions">Abos</string>
     <string name="navigation_label_settings">Optionen</string>
 </resources>

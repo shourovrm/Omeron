@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +18,7 @@ import coil.load
 import coil.size.Precision
 import coil.size.Scale
 import com.omeron.R
+import com.omeron.UiViewModel
 import com.omeron.data.model.Resource
 import com.omeron.data.model.User
 import com.omeron.data.model.db.MultiredditMemberType
@@ -26,14 +30,17 @@ import com.omeron.ui.common.adapter.FragmentAdapter
 import com.omeron.ui.common.dialog.MultiredditPickerDialog
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.sort.SortFragment
+import com.omeron.util.HideNavigationOnScrollListener
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.getRecyclerView
+import com.omeron.util.extension.keepClearOfBottomNavigation
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
+import com.omeron.util.extension.setNavigationListener
 import com.omeron.util.extension.setSortingListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -49,7 +56,25 @@ class UserFragment : BaseFragment() {
 
     override val viewModel: UserViewModel by hiltNavGraphViewModels(R.id.user)
 
+    private val uiViewModel: UiViewModel by activityViewModels()
+
     private val args: UserFragmentArgs by navArgs()
+
+    // The tab pages own their lists, which sit in a MotionLayout and so never reach the bar's
+    // hide-on-scroll behavior; each page's list is hooked up as its view is created.
+    private val hideNavigationOnScrollListener by lazy { HideNavigationOnScrollListener(uiViewModel) }
+
+    private val pageLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(
+            fragmentManager: FragmentManager,
+            fragment: Fragment,
+            view: View,
+            savedInstanceState: Bundle?
+        ) {
+            view.findViewById<RecyclerView>(R.id.list_content)
+                ?.addOnScrollListener(hideNavigationOnScrollListener)
+        }
+    }
 
     // ponytail: the submitted/comments tabs share this appbar; the toggle only affects the
     // submitted-posts tab, UserPostFragment applies it to its own adapter.
@@ -71,9 +96,11 @@ class UserFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        childFragmentManager.registerFragmentLifecycleCallbacks(pageLifecycleCallbacks, false)
         initResultListener()
         initAppBar()
         initViewPager()
+        keepClearOfBottomNavigation(binding.viewPager, uiViewModel.bottomNavigationHeight)
         bindViewModel()
         binding.infoRetry.setActionClickListener { retry() }
 
@@ -198,6 +225,12 @@ class UserFragment : BaseFragment() {
             sorting?.let { viewModel.setSorting(sorting) }
         }
         setCommentListener { comment -> comment?.let { viewModel.toggleSaveComment(it) } }
+
+        // A post page opened on top of this screen hides the bottom bar and reports back here
+        // when it closes.
+        setNavigationListener { showNavigation ->
+            uiViewModel.setNavigationVisibility(showNavigation)
+        }
     }
 
     private fun bindInfo(user: User) {
@@ -275,6 +308,7 @@ class UserFragment : BaseFragment() {
 
         clearSortingListener()
         clearCommentListener()
+        childFragmentManager.unregisterFragmentLifecycleCallbacks(pageLifecycleCallbacks)
 
         _binding = null
     }

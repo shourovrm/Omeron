@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/profile_image"
-        app:layout_constraintEnd_toStartOf="@id/search_card"
+        app:layout_constraintEnd_toStartOf="@id/sort_icon"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constrainedWidth="true"
         app:layout_constraintTop_toTopOf="parent"
@@ -68,18 +68,6 @@
         app:layout_constraintEnd_toStartOf="@id/sort_card"
         android:contentDescription="@string/layout_toggle"
         app:icon="@drawable/ic_layout_card"
-        style="@style/CardButtonStyle"/>
-
-    <com.omeron.ui.common.widget.CardButton
-        android:id="@+id/search_card"
-        android:layout_width="@dimen/app_bar_button_size"
-        android:layout_height="@dimen/app_bar_button_size"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sort_icon"
-        android:contentDescription="@string/navigation_label_search"
-        android:visibility="gone"
-        app:icon="@drawable/ic_search"
         style="@style/CardButtonStyle"/>
 
     <com.omeron.ui.common.widget.SortIconView

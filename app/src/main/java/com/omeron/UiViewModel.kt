@@ -3,9 +3,9 @@ package com.omeron
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.data.model.db.MultiredditWithMembers
-import com.omeron.data.model.db.Subscription
 import com.omeron.ui.base.BaseViewModel
 import com.omeron.ui.drawer.DrawerItem
+import com.omeron.ui.drawer.buildDrawerItems
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +33,11 @@ class UiViewModel @Inject constructor(
     private val _navigationVisibility = MutableStateFlow(true)
     val navigationVisibility: StateFlow<Boolean> = _navigationVisibility
 
+    // Height of the bottom bar including the system navigation inset, published by MainActivity
+    // so list screens shown above the bar can keep their last items clear of it.
+    private val _bottomNavigationHeight = MutableStateFlow(0)
+    val bottomNavigationHeight: StateFlow<Int> = _bottomNavigationHeight
+
     // Selected home tab: 0 = Feed, 1 = Popular, 2 = Multis. Set by the bottom
     // navigation bar (MainActivity); PostListFragment derives its feed mode from it.
     private val _homeTab = MutableStateFlow(0)
@@ -55,38 +60,12 @@ class UiViewModel @Inject constructor(
         drawerFilterQuery.updateValue(query)
     }
 
-    private fun buildDrawerItems(
-        multireddits: List<MultiredditWithMembers>,
-        subscriptions: List<Subscription>,
-        query: String
-    ): List<DrawerItem> {
-        val multiredditRows = multireddits
-            .filter { it.multireddit.name.contains(query, ignoreCase = true) }
-            .map { DrawerItem.MultiredditRow(it.multireddit.id, it.multireddit.name, it.members.size) }
-
-        // Blank names cannot be opened, so they never get a row
-        val subscribedNames = subscriptions.map { it.name }.filter { it.isNotBlank() }
-        val communityRows = subscribedNames
-            .filter { it.contains(query, ignoreCase = true) }
-            .sortedBy { it.lowercase() }
-            .map { DrawerItem.CommunityRow(it) }
-
-        val items = mutableListOf<DrawerItem>()
-        if (multiredditRows.isNotEmpty()) {
-            items += DrawerItem.SectionHeader(R.string.drawer_section_multireddits)
-            items += multiredditRows
-        }
-        items += DrawerItem.SectionHeader(R.string.drawer_section_communities)
-        when {
-            subscribedNames.isEmpty() -> items += DrawerItem.Message(R.string.drawer_no_subscriptions)
-            communityRows.isEmpty() -> items += DrawerItem.Message(R.string.drawer_no_match)
-            else -> items += communityRows
-        }
-        return items
-    }
-
     fun setNavigationVisibility(visible: Boolean) {
         _navigationVisibility.updateValue(visible)
+    }
+
+    fun setBottomNavigationHeight(height: Int) {
+        _bottomNavigationHeight.updateValue(height)
     }
 
     fun setHomeTab(tab: Int) {

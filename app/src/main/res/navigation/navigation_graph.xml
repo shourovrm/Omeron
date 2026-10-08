@@ -7,7 +7,6 @@
     <!-- Bottom Navigation -->
     <include app:graph="@navigation/home" />
     <include app:graph="@navigation/search" />
-    <include app:graph="@navigation/subscriptions" />
     <include app:graph="@navigation/profile" />
     <include app:graph="@navigation/settings" />
 
@@ -17,6 +16,7 @@
     <include app:graph="@navigation/multireddit" />
     <include app:graph="@navigation/user" />
     <include app:graph="@navigation/viewer" />
+    <include app:graph="@navigation/manage" />
 
     <!-- Global Actions -->
     <action
@@ -61,5 +61,13 @@
             android:name="multireddit_id"
             app:argType="long" />
     </action>
+
+    <action
+        android:id="@+id/openManageCommunities"
+        app:destination="@id/manageCommunitiesFragment" />
+
+    <action
+        android:id="@+id/openManageMultireddits"
+        app:destination="@id/manageMultiredditsFragment" />
 
 </navigation>

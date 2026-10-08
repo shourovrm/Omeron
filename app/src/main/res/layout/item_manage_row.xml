@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="56dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="4dp"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/row_icon"
+        android:layout_width="@dimen/manage_row_image_size"
+        android:layout_height="@dimen/manage_row_image_size"
+        android:src="@drawable/ic_multireddit"
+        android:padding="6dp"
+        android:importantForAccessibility="no"
+        app:tint="?attr/colorControlNormal"/>
+
+    <com.omeron.ui.common.widget.AvatarView
+        android:id="@+id/row_avatar"
+        android:layout_width="@dimen/manage_row_image_size"
+        android:layout_height="@dimen/manage_row_image_size"
+        android:importantForAccessibility="no"
+        tools:text="AN"/>
+
+    <LinearLayout
+        android:id="@+id/row_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/row_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:fontFamily="@font/inter_semibold"
+            android:textAppearance="?attr/textAppearanceBody1"
+            tools:text="r/android"/>
+
+        <TextView
+            android:id="@+id/row_secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="@color/text_color_post_info"
+            tools:text="Joined 2y ago · in Dev"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/button_toggle_hidden"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="@color/icon_tint"
+        android:src="@drawable/ic_visibility"
+        tools:contentDescription="Hide"/>
+
+    <ImageButton
+        android:id="@+id/button_more"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="@color/icon_tint"
+        android:src="@drawable/ic_more"
+        android:contentDescription="@string/manage_more_actions"/>
+
+</LinearLayout>

@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -65,13 +66,15 @@ class MultiredditViewModel @Inject constructor(
 
     private data class FeedFetch(val subreddits: List<String>, val users: List<String>, val sorting: Sorting)
 
+    // Room re-emits the multireddit on any write to it (rename, hide); only a change to the
+    // member lists or the sorting should rebuild the pager, which FeedFetch equality captures.
     private val fetchData: Flow<FeedFetch> = combine(multireddit, sorting) { multi, sorting ->
         FeedFetch(
             subreddits = membersOf(multi, MultiredditMemberType.SUBREDDIT),
             users = membersOf(multi, MultiredditMemberType.USER),
             sorting = sorting
         )
-    }
+    }.distinctUntilChanged()
 
     private fun membersOf(multi: MultiredditWithMembers?, type: MultiredditMemberType): List<String> {
         return multi?.members
