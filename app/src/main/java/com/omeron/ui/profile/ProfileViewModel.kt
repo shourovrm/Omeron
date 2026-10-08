@@ -86,15 +86,17 @@ class ProfileViewModel @Inject constructor(
         savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }.filterComments(query)
     }.flowOn(defaultDispatcher)
 
-    val historyPosts: Flow<List<SavedItem>> = combine(
+    val historyItems: Flow<List<HistoryListItem>> = combine(
         _history,
         savedPostIds,
         contentPreferences,
         searchQuery
     ) { history, saved, preferences, query ->
-        savedMapper.historyToEntities(history, saved).filter {
-            preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
-        }.filterPosts(query)
+        val posts = history
+            .map { it.toPostEntity(saved = saved.contains(it.postId)) }
+            .filter { preferences.showNsfw || !it.isOver18 }
+            .filter { it.matches(query) }
+        groupHistoryByDay(posts, System.currentTimeMillis())
     }.flowOn(defaultDispatcher)
 
     fun setPage(position: Int) {
@@ -110,12 +112,14 @@ class ProfileViewModel @Inject constructor(
     // diff - matches SubscriptionsViewModel.filteredSubscriptions instead of new DAO LIKE queries.
     private fun List<SavedItem>.filterPosts(query: String): List<SavedItem> {
         if (query.isBlank()) return this
-        return filter {
-            val post = (it as SavedItem.Post).post
-            post.title.contains(query, ignoreCase = true) ||
-                post.subreddit.contains(query, ignoreCase = true) ||
-                post.author.contains(query, ignoreCase = true)
-        }
+        return filter { (it as SavedItem.Post).post.matches(query) }
+    }
+
+    private fun PostEntity.matches(query: String): Boolean {
+        return query.isBlank() ||
+            title.contains(query, ignoreCase = true) ||
+            subreddit.contains(query, ignoreCase = true) ||
+            author.contains(query, ignoreCase = true)
     }
 
     private fun List<SavedItem>.filterComments(query: String): List<SavedItem> {

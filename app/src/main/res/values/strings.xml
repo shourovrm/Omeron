@@ -431,4 +431,10 @@
     <string name="profile_switch">Switch</string>
     <string name="profile_reddit_logged_in">Reddit: logged in</string>
     <string name="profile_reddit_logged_out">Reddit: not logged in</string>
+    <string name="profile_saved_count">%1$d saved</string>
+    <string name="profile_post_saved_age">· saved %1$s</string>
+    <string name="profile_history_clear">Clear history</string>
+    <string name="profile_history_today">Today</string>
+    <string name="profile_history_yesterday">Yesterday</string>
+    <string name="profile_history_secondary" translatable="false">%1$s · %2$s</string>
 </resources>
