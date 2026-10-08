@@ -273,7 +273,7 @@
     <string name="tab_home_feed">Feed</string>
     <string name="tab_home_popular">Popular</string>
     <string name="tab_home_multis">Multis</string>
-    <string name="empty_multireddits">No multireddits yet — create one in Subscriptions</string>
+    <string name="empty_multireddits">No multireddits yet — use Manage in the drawer to create one</string>
 
     <string name="save">Save</string>
     <string name="unsave">Unsave</string>
@@ -410,4 +410,5 @@
     <string name="multireddit_add_member_hint">Community or user name</string>
     <string name="multireddit_add_as_user">Add u/%1$s as a user</string>
     <string name="multireddit_remove_member">Remove %1$s</string>
+    <string name="drawer_manage">Manage</string>
 </resources>

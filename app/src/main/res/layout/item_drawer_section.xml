@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/section_title"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="6dp"
-    android:textAppearance="?attr/textAppearanceCaption"
-    android:textStyle="bold"
-    android:accessibilityHeading="true"
-    tools:text="Communities"
-    xmlns:tools="http://schemas.android.com/tools"/>
+    android:paddingEnd="8dp"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:id="@+id/section_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?attr/textAppearanceCaption"
+        android:textStyle="bold"
+        android:accessibilityHeading="true"
+        tools:text="Communities"/>
+
+    <TextView
+        android:id="@+id/section_manage"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="@string/drawer_manage"
+        android:textAppearance="?attr/textAppearanceCaption"
+        android:textColor="@color/colorPrimaryLight"
+        android:textStyle="bold"/>
+
+</LinearLayout>

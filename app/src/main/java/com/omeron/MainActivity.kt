@@ -34,9 +34,12 @@ import com.omeron.data.model.db.Profile
 import com.omeron.databinding.ActivityMainBinding
 import com.omeron.databinding.LayoutDrawerHeaderBinding
 import com.omeron.ui.drawer.DrawerAdapter
+import com.omeron.ui.drawer.DrawerItem
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
 import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
+import com.omeron.ui.subscriptions.SubscriptionMenus
+import com.omeron.ui.subscriptions.SubscriptionsViewModel
 import com.omeron.util.HideBottomViewBehavior
 import com.omeron.util.ShareLinkResolver
 import com.omeron.util.UpdateChecker
@@ -63,6 +66,18 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private lateinit var binding: ActivityMainBinding
 
     private val viewModel: UiViewModel by viewModels()
+
+    private val subscriptionsViewModel: SubscriptionsViewModel by viewModels()
+
+    private val subscriptionMenus by lazy {
+        SubscriptionMenus(
+            context = this,
+            scope = lifecycleScope,
+            layoutInflater = layoutInflater,
+            fragmentManager = supportFragmentManager,
+            viewModel = subscriptionsViewModel
+        )
+    }
 
     private lateinit var navController: NavController
 
@@ -268,7 +283,14 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             },
             onCommunityClick = { subredditName ->
                 navController.navigate(NavigationGraphDirections.openSubreddit(subredditName))
-            }
+            },
+            onMultiredditLongClick = { row ->
+                subscriptionMenus.showMultiredditMenu(row.multiredditId, row.name, offerHide = true)
+            },
+            onCommunityLongClick = { row ->
+                subscriptionMenus.showCommunityMenu(row.subredditName, offerHide = true)
+            },
+            onManageClick = ::openManagePage
         )
 
         binding.drawerList.apply {
@@ -304,6 +326,15 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 }
             }
         }
+    }
+
+    private fun openManagePage(target: DrawerItem.ManageTarget) {
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        val directions = when (target) {
+            DrawerItem.ManageTarget.MULTIREDDITS -> NavigationGraphDirections.openManageMultireddits()
+            DrawerItem.ManageTarget.COMMUNITIES -> NavigationGraphDirections.openManageCommunities()
+        }
+        navController.navigate(directions)
     }
 
     fun openNavigationDrawer() {

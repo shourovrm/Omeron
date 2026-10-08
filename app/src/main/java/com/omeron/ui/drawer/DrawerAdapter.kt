@@ -13,7 +13,10 @@ import com.omeron.databinding.ItemDrawerSectionBinding
 
 class DrawerAdapter(
     private val onMultiredditClick: (multiredditId: Long) -> Unit,
-    private val onCommunityClick: (subredditName: String) -> Unit
+    private val onCommunityClick: (subredditName: String) -> Unit,
+    private val onMultiredditLongClick: (DrawerItem.MultiredditRow) -> Unit,
+    private val onCommunityLongClick: (DrawerItem.CommunityRow) -> Unit,
+    private val onManageClick: (DrawerItem.ManageTarget) -> Unit
 ) : ListAdapter<DrawerItem, RecyclerView.ViewHolder>(DRAWER_ITEM_COMPARATOR) {
 
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
@@ -42,12 +45,13 @@ class DrawerAdapter(
         }
     }
 
-    private class SectionHeaderViewHolder(
+    private inner class SectionHeaderViewHolder(
         private val binding: ItemDrawerSectionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: DrawerItem.SectionHeader) {
             binding.sectionTitle.setText(item.titleRes)
+            binding.sectionManage.setOnClickListener { onManageClick(item.manageTarget) }
         }
     }
 
@@ -74,6 +78,10 @@ class DrawerAdapter(
                 item.memberCount
             )
             binding.root.setOnClickListener { onMultiredditClick(item.multiredditId) }
+            binding.root.setOnLongClickListener {
+                onMultiredditLongClick(item)
+                true
+            }
         }
 
         fun bind(item: DrawerItem.CommunityRow) {
@@ -84,6 +92,10 @@ class DrawerAdapter(
                 binding.root.context.getString(R.string.drawer_community_name, item.subredditName)
             binding.rowEndText.visibility = View.GONE
             binding.root.setOnClickListener { onCommunityClick(item.subredditName) }
+            binding.root.setOnLongClickListener {
+                onCommunityLongClick(item)
+                true
+            }
         }
     }
 
