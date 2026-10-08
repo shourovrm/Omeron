@@ -2,77 +2,90 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:key="ui_category"
-        app:title="@string/preference_category_ui">
+        app:key="appearance_category"
+        app:title="@string/settings_category_appearance">
 
         <Preference
             app:key="night_mode"
             app:title="@string/preference_night_mode"
             app:persistent="false"/>
 
+        <Preference
+            app:key="post_layout"
+            app:title="@string/settings_default_post_layout"
+            app:persistent="false"/>
+
         <SwitchPreferenceCompat
             app:key="left_handed_mode"
             app:title="@string/preference_left_handed_mode"
+            app:summary="@string/settings_left_handed_mode_summary"
             app:persistent="false"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
         app:key="content_category"
-        app:title="@string/preference_category_content">
+        app:title="@string/settings_category_content">
 
         <SwitchPreferenceCompat
             app:key="show_nsfw"
-            app:title="@string/preference_show_nsfw"
+            app:title="@string/settings_show_nsfw_posts"
             app:persistent="false"/>
 
         <SwitchPreferenceCompat
             app:key="show_nsfw_preview"
-            app:title="@string/preference_show_nsfw_preview"
+            app:title="@string/settings_blur_nsfw_previews"
             app:enabled="false"
             app:persistent="false"/>
 
         <SwitchPreferenceCompat
             app:key="show_spoiler_preview"
-            app:title="@string/preference_show_spoiler_preview"
+            app:title="@string/settings_blur_spoiler_previews"
+            app:persistent="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="mute_video"
+            app:title="@string/settings_start_videos_muted"
             app:persistent="false"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="data_category"
-        app:title="@string/preference_category_data">
+        app:key="reddit_category"
+        app:title="@string/settings_category_reddit">
 
         <Preference
             app:key="reddit_account"
-            app:title="@string/preference_reddit_account"
+            app:title="@string/settings_account"
             app:persistent="false"/>
 
         <Preference
             app:key="reddit_source"
-            app:title="@string/preference_reddit_source"
-            app:persistent="false"/>
-
-        <Preference
-            app:key="privacy_enhancer"
-            app:title="@string/preference_privacy_enhancer"
-            app:persistent="false"/>
-
-        <Preference
-            app:key="backup"
-            app:title="@string/preference_backup"
+            app:title="@string/settings_source"
             app:persistent="false"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="misc_category"
-        app:title="@string/preference_category_misc">
+        app:key="privacy_and_data_category"
+        app:title="@string/settings_category_privacy_and_data">
 
         <Preference
-            app:key="about"
-            app:title="@string/preference_about"
+            app:key="privacy_enhancer"
+            app:title="@string/settings_link_redirects"
             app:persistent="false"/>
+
+        <Preference
+            app:key="backup"
+            app:title="@string/settings_backup_and_restore"
+            app:summary="@string/settings_backup_and_restore_summary"
+            app:persistent="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="about_category"
+        app:title="@string/settings_category_about">
 
         <Preference
             app:key="check_for_updates"
@@ -80,8 +93,8 @@
             app:persistent="false"/>
 
         <Preference
-            app:key="policy_disclaimer"
-            app:title="@string/preference_policy_disclaimer"
+            app:key="about"
+            app:title="@string/settings_about_omeron"
             app:persistent="false"/>
 
     </PreferenceCategory>

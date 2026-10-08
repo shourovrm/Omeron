@@ -2,6 +2,7 @@ package com.omeron.ui.preferences
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.remote.api.reddit.source.CurrentSource
 import com.omeron.data.repository.AssetsRepository
 import com.omeron.data.repository.PreferencesRepository
@@ -37,6 +38,12 @@ class PreferencesViewModel @Inject constructor(
     val showNsfwPreview: Flow<Boolean> = preferencesRepository.getShowNsfwPreview()
 
     val showSpoilerPreview: Flow<Boolean> = preferencesRepository.getShowSpoilerPreview()
+
+    // The viewer's mute button reads this preference with a default of false
+    val muteVideo: Flow<Boolean> = preferencesRepository.getMuteVideo(false)
+
+    val postLayout: SharedFlow<PostLayout> = preferencesRepository.getPostLayout()
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
 
     val redditSource: SharedFlow<Pair<Int, String>> = combine(
         preferencesRepository.getRedditSource(),
@@ -106,6 +113,18 @@ class PreferencesViewModel @Inject constructor(
     fun setShowSpoilerPreview(showSpoilerPreview: Boolean) {
         viewModelScope.launch {
             preferencesRepository.setShowSpoilerPreview(showSpoilerPreview)
+        }
+    }
+
+    fun setMuteVideo(muteVideo: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setMuteVideo(muteVideo)
+        }
+    }
+
+    fun setPostLayout(layout: PostLayout) {
+        viewModelScope.launch {
+            preferencesRepository.setPostLayout(layout = layout)
         }
     }
 

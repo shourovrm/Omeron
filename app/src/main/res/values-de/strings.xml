@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Omeron</string>
-    <string name="app_description">Ein auf die Privatsphäre orientierter, funktionsreicher Reddit-Client, der kein Benutzerkonto erfordert</string>
 
     <string name="post_ratio">%1$d%%</string>
 
@@ -121,18 +120,12 @@
     <string name="empty_data">Nichts zu sehen hier…</string>
     <string name="empty_data_subscriptions">Sie haben derzeit keine Abonnements.\nVerwenden Sie die Suchfunktion um nach Subreddits zu suchen.</string>
 
-    <string name="preference_category_ui">OBERFLÄCHE</string>
-    <string name="preference_category_content">INHALT</string>
-    <string name="preference_category_misc">SONSTIGES</string>
 
     <string name="preference_night_mode">Thema</string>
     <string name="preference_night_mode_light">Hell</string>
     <string name="preference_night_mode_dark">Dunkel</string>
     <string name="preference_night_mode_system">System</string>
 
-    <string name="preference_show_nsfw">NSFW-Inhalt anzeigent</string>
-    <string name="preference_show_nsfw_preview">NSFW-Vorschau anzeigen</string>
-    <string name="preference_show_spoiler_preview">Spoiler-Vorschau anzeigen</string>
 
     <string name="preference_about">Über</string>
 
