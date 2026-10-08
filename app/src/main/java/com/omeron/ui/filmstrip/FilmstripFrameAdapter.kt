@@ -24,7 +24,9 @@ import com.omeron.util.extension.showWithAlpha
  * (in)active, and a holder also re-checks when it attaches to or detaches from the window.
  *
  * A tap on any frame is reported through [onFrameClick]; pausing is done with the button in the
- * middle of a video, which is only shown while [areControlsVisible] is true.
+ * middle of a video. The button appears when a tap brings the controls back, and fades out again
+ * after a moment while the video plays. While the video is paused it stays as long as
+ * [areControlsVisible] is true.
  */
 class FilmstripFrameAdapter(
     private val playback: FilmstripPlayback,
@@ -205,13 +207,22 @@ class FilmstripFrameAdapter(
         private val shouldShowPlayPause: Boolean
             get() = areControlsVisible && isPlayingHere && !hasPlaybackFailed
 
+        private val fadeOutPlayPauseButton = Runnable {
+            binding.buttonPlayPause.showWithAlpha(false, CONTROLS_FADE_MILLIS)
+        }
+
         init {
             binding.root.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) onFrameClick(getItem(position))
             }
             binding.buttonPlayPause.setOnClickListener {
-                if (isPlayingHere) showPlayPauseIcon(isPaused = playback.togglePause())
+                if (!isPlayingHere) return@setOnClickListener
+                // A tap during the fade-out brings the button back to full strength.
+                binding.buttonPlayPause.animate().cancel()
+                binding.buttonPlayPause.alpha = 1F
+                showPlayPauseIcon(isPaused = playback.togglePause())
+                scheduleFadeWhilePlaying()
             }
         }
 
@@ -224,20 +235,46 @@ class FilmstripFrameAdapter(
         }
 
         override fun updateControls() {
-            val shouldShow = shouldShowPlayPause
-            if (shouldShow == binding.buttonPlayPause.isVisible) return
+            binding.buttonPlayPause.removeCallbacks(fadeOutPlayPauseButton)
+
+            if (!shouldShowPlayPause) {
+                if (binding.buttonPlayPause.isVisible) {
+                    binding.buttonPlayPause.showWithAlpha(false, CONTROLS_FADE_MILLIS)
+                }
+                return
+            }
+
             showPlayPauseIcon(playback.isPaused)
-            binding.buttonPlayPause.showWithAlpha(shouldShow, CONTROLS_FADE_MILLIS)
+            if (binding.buttonPlayPause.isVisible) {
+                binding.buttonPlayPause.animate().cancel()
+                binding.buttonPlayPause.alpha = 1F
+            } else {
+                binding.buttonPlayPause.showWithAlpha(true, CONTROLS_FADE_MILLIS)
+            }
+            scheduleFadeWhilePlaying()
         }
 
-        /** Puts the button in its final state at once, for changes that are not a user's tap. */
+        private fun scheduleFadeWhilePlaying() {
+            binding.buttonPlayPause.removeCallbacks(fadeOutPlayPauseButton)
+            if (!playback.isPaused) {
+                binding.buttonPlayPause.postDelayed(fadeOutPlayPauseButton, PLAY_PAUSE_AUTO_FADE_MILLIS)
+            }
+        }
+
+        /**
+         * Puts the button in its final state at once, for changes that are not a user's tap. A
+         * playing video starts without the button, so opening or swiping to a frame never
+         * shows it; only a paused video keeps it.
+         */
         private fun placePlayPauseButton() {
+            val isPaused = isPlayingHere && playback.isPaused
             binding.buttonPlayPause.run {
+                removeCallbacks(fadeOutPlayPauseButton)
                 animate().cancel()
                 alpha = 1F
-                isVisible = shouldShowPlayPause
+                isVisible = shouldShowPlayPause && isPaused
             }
-            showPlayPauseIcon(isPlayingHere && playback.isPaused)
+            showPlayPauseIcon(isPaused)
         }
 
         private fun showPlayPauseIcon(isPaused: Boolean) {
@@ -295,6 +332,9 @@ class FilmstripFrameAdapter(
 
         val ACTIVE_CHANGED = Any()
         val CONTROLS_CHANGED = Any()
+
+        // How long the button stays on a playing video after a tap brought it back.
+        const val PLAY_PAUSE_AUTO_FADE_MILLIS = 2000L
 
         // Same length as the viewer's overlay fade, so the button and the overlay move together.
         const val CONTROLS_FADE_MILLIS = 200L
