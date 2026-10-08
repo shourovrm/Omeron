@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Omeron</string>
-    <string name="app_description">Omeron is a fork of Stealth — the account-free, privacy-oriented Reddit client — with extra features, licensed under the GNU GPLv3.\n\nOriginal app by Cosmos (cosmosapps). Fork developed by Riad Mashrub Shourov.</string>
+    <string name="app_description">Omeron is a privacy-focused Reddit client (a fork of Stealth).\n\nFree software, licensed under the GNU GPLv3.</string>
     <string name="handle_link_label">Open in Omeron</string>
 
     <string name="gitlab_link" translatable="false">https://gitlab.com/cosmosapps/stealth</string>
@@ -208,10 +208,6 @@
     <string name="empty_data">Nothing to see here…</string>
     <string name="empty_data_subscriptions">You have no subscriptions yet.\nUse the search feature to look for Subreddits.</string>
 
-    <string name="preference_category_ui">UI</string>
-    <string name="preference_category_content">CONTENT</string>
-    <string name="preference_category_data">DATA</string>
-    <string name="preference_category_misc">MISC.</string>
 
     <string name="preference_night_mode">Theme</string>
     <string name="preference_night_mode_light">Light Theme</string>
@@ -221,27 +217,19 @@
 
     <string name="preference_left_handed_mode">Left-handed mode</string>
 
-    <string name="preference_show_nsfw">Show NSFW content</string>
-    <string name="preference_show_nsfw_preview">Show NSFW preview</string>
-    <string name="preference_show_spoiler_preview">Show Spoiler preview</string>
 
-    <string name="preference_reddit_account">Reddit account</string>
     <string name="preference_reddit_account_logged_out">Not logged in. Reddit now requires an account for old.reddit; tap to log in</string>
     <string name="preference_reddit_account_logged_in">Logged in. Tap to log out</string>
     <string name="dialog_logout_title">Log out?</string>
     <string name="dialog_logout_message">The session cookies stored on this device will be deleted.</string>
     <string name="dialog_logout">Log out</string>
-    <string name="preference_reddit_source">Reddit Source</string>
     <string name="preference_reddit_source_reddit">Reddit</string>
     <string name="preference_reddit_source_reddit_scrap">Reddit (Web Scraping)</string>
     <string name="preference_reddit_source_teddit">Teddit</string>
 
-    <string name="preference_backup">Import/Export</string>
 
     <string name="preference_about">About</string>
-    <string name="preference_policy_disclaimer">Reddit\'s API Policy Change</string>
 
-    <string name="preference_privacy_enhancer">Privacy Enhancer</string>
     <string name="preference_privacy_enhancer_summary">Redirect links to privacy-friendly frontends</string>
     <string name="preference_privacy_enhancer_enabled">Enabled</string>
     <string name="preference_privacy_enhancer_disabled">Disabled</string>
@@ -389,7 +377,37 @@
     <string name="update_now">Update</string>
     <string name="update_later">Later</string>
     <string name="preference_check_for_updates">Check for updates</string>
-    <string name="preference_check_for_updates_summary">Current version: %1$s</string>
     <string name="update_up_to_date">You\'re up to date</string>
     <string name="update_check_failed">Couldn\'t check for updates</string>
+
+    <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_content">Content</string>
+    <string name="settings_category_reddit">Reddit</string>
+    <string name="settings_category_privacy_and_data">Privacy and data</string>
+    <string name="settings_category_about">About</string>
+
+    <string name="settings_default_post_layout">Default post layout</string>
+    <string name="settings_post_layout_card">Card</string>
+    <string name="settings_post_layout_gallery">Gallery</string>
+    <string name="settings_post_layout_compact">Compact</string>
+    <string name="settings_post_layout_filmstrip">Filmstrip</string>
+    <string name="settings_left_handed_mode_summary">The bottom bar slides out to the left instead of the right when you scroll</string>
+
+    <string name="settings_show_nsfw_posts">Show NSFW posts</string>
+    <string name="settings_blur_nsfw_previews">Blur NSFW previews</string>
+    <string name="settings_blur_spoiler_previews">Blur spoiler previews</string>
+    <string name="settings_start_videos_muted">Start videos muted</string>
+
+    <string name="settings_account">Account</string>
+    <string name="settings_source">Source</string>
+
+    <string name="settings_link_redirects">Link redirects</string>
+    <string name="settings_backup_and_restore">Backup and restore</string>
+    <string name="settings_backup_and_restore_summary">Back up or restore profiles, subscriptions and saved items</string>
+
+    <string name="settings_version_summary">Version %1$s</string>
+    <string name="settings_about_omeron">About Omeron</string>
+
+    <string name="app_author" translatable="false">Riad Mashrub Shourov</string>
+    <string name="about_github_button">Github</string>
 </resources>

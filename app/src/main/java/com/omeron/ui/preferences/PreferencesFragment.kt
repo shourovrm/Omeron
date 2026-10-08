@@ -28,10 +28,11 @@ import com.omeron.data.model.preferences.DataPreferences
 import com.omeron.data.model.preferences.DataPreferences.RedditSource.REDDIT
 import com.omeron.data.model.preferences.DataPreferences.RedditSource.REDDIT_SCRAP
 import com.omeron.data.model.preferences.DataPreferences.RedditSource.TEDDIT
+import com.omeron.data.model.preferences.MediaPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.UiPreferences
 import com.omeron.databinding.LayoutPreferenceListBinding
 import com.omeron.ui.login.RedditLoginActivity
-import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.redditsource.RedditSourceDialogFragment
 import com.omeron.util.UpdateChecker
 import com.omeron.util.extension.applyWindowInsets
@@ -58,17 +59,18 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     private val viewModel: PreferencesViewModel by activityViewModels()
 
     private var nightModePreference: Preference? = null
+    private var postLayoutPreference: Preference? = null
     private var leftHandedModePreference: SwitchPreferenceCompat? = null
     private var showNsfwPreference: SwitchPreferenceCompat? = null
     private var showNsfwPreviewPreference: SwitchPreferenceCompat? = null
     private var showSpoilerPreviewPreference: SwitchPreferenceCompat? = null
+    private var muteVideoPreference: SwitchPreferenceCompat? = null
     private var backupPreference: Preference? = null
     private var redditAccountPreference: Preference? = null
     private var sourcePreference: Preference? = null
     private var privacyEnhancerPreference: Preference? = null
     private var aboutPreference: Preference? = null
     private var checkForUpdatesPreference: Preference? = null
-    private var policyDisclaimerPreference: Preference? = null
 
     private val navOptions: NavOptions by lazy { getNavOptions() }
 
@@ -118,6 +120,15 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             }
         }
 
+        postLayoutPreference = findPreference<Preference>(
+            DataPreferences.PreferencesKeys.POST_LAYOUT.name
+        )?.apply {
+            setOnPreferenceClickListener {
+                viewModel.postLayout.latest?.let { layout -> showPostLayoutDialog(layout) }
+                true
+            }
+        }
+
         leftHandedModePreference = findPreference<SwitchPreferenceCompat>(
             UiPreferences.PreferencesKeys.LEFT_HANDED_MODE.name
         )?.apply {
@@ -140,7 +151,8 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             PreferencesKeys.SHOW_NSFW_PREVIEW.name
         )?.apply {
             setOnPreferenceChangeListener { _, newValue ->
-                viewModel.setShowNsfwPreview(newValue as Boolean)
+                // The switch reads "blur", the stored value reads "show preview"
+                viewModel.setShowNsfwPreview(!(newValue as Boolean))
                 true
             }
         }
@@ -149,7 +161,16 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             PreferencesKeys.SHOW_SPOILER_PREVIEW.name
         )?.apply {
             setOnPreferenceChangeListener { _, newValue ->
-                viewModel.setShowSpoilerPreview(newValue as Boolean)
+                viewModel.setShowSpoilerPreview(!(newValue as Boolean))
+                true
+            }
+        }
+
+        muteVideoPreference = findPreference<SwitchPreferenceCompat>(
+            MediaPreferences.PreferencesKeys.MUTE_VIDEO.name
+        )?.apply {
+            setOnPreferenceChangeListener { _, newValue ->
+                viewModel.setMuteVideo(newValue as Boolean)
                 true
             }
         }
@@ -200,16 +221,9 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         }
 
         checkForUpdatesPreference = findPreference<Preference>("check_for_updates")?.apply {
-            summary = getString(R.string.preference_check_for_updates_summary, BuildConfig.VERSION_NAME)
+            summary = getString(R.string.settings_version_summary, BuildConfig.VERSION_NAME)
             setOnPreferenceClickListener {
                 checkForUpdates()
-                true
-            }
-        }
-
-        policyDisclaimerPreference = findPreference<Preference>("policy_disclaimer")?.apply {
-            setOnPreferenceClickListener {
-                showPolicyDisclaimer()
                 true
             }
         }
@@ -270,6 +284,12 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             }
 
             launch {
+                viewModel.postLayout.collect { layout ->
+                    postLayoutPreference?.summary = getString(layout.labelRes())
+                }
+            }
+
+            launch {
                 viewModel.showNsfw.collect { showNsfw ->
                     showNsfwPreference?.isChecked = showNsfw
                     showNsfwPreviewPreference?.isEnabled = showNsfw
@@ -278,13 +298,19 @@ class PreferencesFragment : PreferenceFragmentCompat() {
 
             launch {
                 viewModel.showNsfwPreview.collect { showNsfwPreview ->
-                    showNsfwPreviewPreference?.isChecked = showNsfwPreview
+                    showNsfwPreviewPreference?.isChecked = !showNsfwPreview
                 }
             }
 
             launch {
                 viewModel.showSpoilerPreview.collect { showSpoilerPreview ->
-                    showSpoilerPreviewPreference?.isChecked = showSpoilerPreview
+                    showSpoilerPreviewPreference?.isChecked = !showSpoilerPreview
+                }
+            }
+
+            launch {
+                viewModel.muteVideo.collect { muteVideo ->
+                    muteVideoPreference?.isChecked = muteVideo
                 }
             }
 
@@ -342,6 +368,27 @@ class PreferencesFragment : PreferenceFragmentCompat() {
                 }
             }
             .show()
+    }
+
+    private fun showPostLayoutDialog(currentLayout: PostLayout) {
+        val layouts = PostLayout.values()
+        val labels = layouts.map { layout -> getString(layout.labelRes()) }.toTypedArray()
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_default_post_layout)
+            .setSingleChoiceItems(labels, currentLayout.ordinal) { dialog, which ->
+                viewModel.setPostLayout(layouts[which])
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    @StringRes
+    private fun PostLayout.labelRes(): Int = when (this) {
+        PostLayout.CARD -> R.string.settings_post_layout_card
+        PostLayout.GALLERY -> R.string.settings_post_layout_gallery
+        PostLayout.COMPACT -> R.string.settings_post_layout_compact
+        PostLayout.FILMSTRIP -> R.string.settings_post_layout_filmstrip
     }
 
     private fun updateNightMode(mode: Int) {
@@ -464,10 +511,6 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         } catch (e: ActivityNotFoundException) {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
-    }
-
-    private fun showPolicyDisclaimer() {
-        PolicyDisclaimerDialogFragment.show(parentFragmentManager)
     }
 
     private fun openPrivacyEnhancer() {

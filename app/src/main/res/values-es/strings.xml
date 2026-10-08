@@ -2,8 +2,6 @@
 <!--Created by The Translator <https://play.google.com/store/apps/details?id=com.sunilpaulmathew.translator>-->
 
     <string name="app_name">Omeron</string>
-     <string name="app_description">Un cliente de Reddit orientado a la privacidad
- repleto de funciones y que no requiere cuenta. </string>
      <string name="post_ratio">%1$d%%</string>
      <string name="time_difference_now">ahora</string>
      <string name="time_difference_minute">hace %1$dm </string>
@@ -96,16 +94,10 @@
      <string name="dialog_credit_show_license">Mostrar Licencia</string>
      <string name="empty_data">No hay nada que ver por acá…</string>
      <string name="empty_data_subscriptions">Aún no tenés suscripciones.\nUsá the la opción de búsqueda para encontrar Subreddits.</string>
-     <string name="preference_category_ui">Interfaz</string>
-     <string name="preference_category_content">CONTENIDO</string>
-     <string name="preference_category_misc">MISC.</string>
      <string name="preference_night_mode">Tema</string>
      <string name="preference_night_mode_light">Tema Claro</string>
      <string name="preference_night_mode_dark">Tema Oscuro</string>
      <string name="preference_night_mode_system">Seguir el del sistema</string>
-     <string name="preference_show_nsfw">Mostrar contenido NSFW</string>
-     <string name="preference_show_nsfw_preview">Mostrar vista previa NSFW</string>
-     <string name="preference_show_spoiler_preview">Mostrar vista previa de Spoiler</string>
      <string name="preference_about">Acerca de</string>
      <string name="fragment_about_label">Acerca de</string>
      <string name="about_section_credits">Créditos</string>
