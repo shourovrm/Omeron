@@ -434,24 +434,27 @@ class FilmstripViewerFragment : BaseFragment() {
                 BottomSheetBehavior.STATE_HIDDEN
             }
             addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                // Opening the post page destroys this view while the sheet is still settling, and
+                // the settle animation keeps calling back afterwards, so the binding may be gone.
                 override fun onStateChanged(sheet: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
                             viewModel.isDetailsExpanded = true
                             // Restoring an open sheet after rotation skips onSlide.
-                            binding.detailsDim.isVisible = true
-                            binding.detailsDim.alpha = 1F
+                            _binding?.detailsDim?.isVisible = true
+                            _binding?.detailsDim?.alpha = 1F
                         }
                         BottomSheetBehavior.STATE_HIDDEN -> {
                             viewModel.isDetailsExpanded = false
-                            binding.detailsDim.isVisible = false
+                            _binding?.detailsDim?.isVisible = false
                         }
                     }
                 }
 
                 override fun onSlide(sheet: View, slideOffset: Float) {
-                    binding.detailsDim.isVisible = true
-                    binding.detailsDim.alpha = slideOffset.coerceIn(0F, 1F)
+                    val detailsDim = _binding?.detailsDim ?: return
+                    detailsDim.isVisible = true
+                    detailsDim.alpha = slideOffset.coerceIn(0F, 1F)
                 }
             })
         }
