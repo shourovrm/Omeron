@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.data.model.db.PostEntity
 import com.omeron.ui.postlist.PostListAdapter
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -47,11 +48,14 @@ class FilmstripFeedLink private constructor(
         continueLoadingUntilMediaArrives(mediaPosts.size)
     }
 
+    // A feed begins a link for every post it opens, so a disposed link must stop listening.
+    private val holderEvents: Job
+
     init {
         adapter.addLoadStateListener(trackAppendLoadState)
         adapter.addOnPagesUpdatedListener(publishLoadedPosts)
 
-        lifecycleOwner.lifecycleScope.launch {
+        holderEvents = lifecycleOwner.lifecycleScope.launch {
             launch {
                 holder.loadMoreRequests.collect { requestedSessionId ->
                     if (requestedSessionId == sessionId) loadNextPage()
@@ -70,6 +74,7 @@ class FilmstripFeedLink private constructor(
     }
 
     fun dispose() {
+        holderEvents.cancel()
         adapter.removeLoadStateListener(trackAppendLoadState)
         adapter.removeOnPagesUpdatedListener(publishLoadedPosts)
     }

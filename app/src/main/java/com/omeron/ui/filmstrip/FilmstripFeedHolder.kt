@@ -20,6 +20,10 @@ import javax.inject.Inject
  * Several sessions can be open at once: a subreddit opened from the home feed, or a viewer
  * opened on a single post from a post page that was itself opened from a viewer. Each session has
  * an id and its own posts, so a viewer covered by another one keeps its own list.
+ *
+ * A session is ended by whoever began it. A post page opened from a feed or from a viewer is
+ * lent that screen's session, so the viewer opened from the page can swipe on to the feed's other
+ * posts; that viewer only borrows the session and leaves it open when it closes.
  */
 @ActivityRetainedScoped
 class FilmstripFeedHolder @Inject constructor() {
@@ -84,6 +88,15 @@ class FilmstripFeedHolder @Inject constructor() {
     fun endSession(sessionId: Int, lastPostId: String?) {
         if (!isOpen(sessionId)) return
         sessions.value = sessions.value - sessionId
+        _viewerClosed.tryEmit(ViewerClosed(sessionId, lastPostId))
+    }
+
+    /**
+     * A viewer that borrowed [sessionId] closed. The session stays open for the screen that lent
+     * it, and its list still reveals [lastPostId].
+     */
+    fun closeBorrowingViewer(sessionId: Int, lastPostId: String?) {
+        if (!isOpen(sessionId)) return
         _viewerClosed.tryEmit(ViewerClosed(sessionId, lastPostId))
     }
 }

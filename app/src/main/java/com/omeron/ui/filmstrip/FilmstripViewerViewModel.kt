@@ -167,8 +167,17 @@ class FilmstripViewerViewModel @Inject constructor(
     /** Tells the list behind this viewer that it closed. A link viewer has no list. */
     fun endSession() {
         val sessionId = sessionId() ?: return
-        val lastPostId = frames.value.firstOrNull { it.id == currentFrameId }?.post?.id
-        feedHolder.endSession(sessionId, lastPostId)
+        feedHolder.endSession(sessionId, lastPostId())
+    }
+
+    /** The same notice from a viewer on a borrowed session, which stays open for its owner. */
+    fun closeBorrowedSession() {
+        val sessionId = sessionId() ?: return
+        feedHolder.closeBorrowingViewer(sessionId, lastPostId())
+    }
+
+    private fun lastPostId(): String? {
+        return frames.value.firstOrNull { it.id == currentFrameId }?.post?.id
     }
 
     private fun sessionId(): Int? {

@@ -116,6 +116,21 @@ class FilmstripFeedHolderTest {
         assertNull(requested)
     }
 
+    @Test
+    fun `a borrowing viewer that closes reveals its post and leaves the session open`() = runBlocking {
+        val holder = FilmstripFeedHolder()
+        val sessionId = holder.beginSession(listOf(post("a"), post("b")))
+
+        val pendingClose = async(start = CoroutineStart.UNDISPATCHED) {
+            withTimeoutOrNull(REQUEST_WAIT_MILLIS) { holder.viewerClosed.first() }
+        }
+        holder.closeBorrowingViewer(sessionId, lastPostId = "b")
+
+        assertEquals(FilmstripFeedHolder.ViewerClosed(sessionId, "b"), pendingClose.await())
+        assertTrue(holder.isOpen(sessionId))
+        assertEquals(listOf("a", "b"), holder.currentPostsOf(sessionId).map { it.id })
+    }
+
     // The request flow has no replay, so the collector has to be running before the request.
     private suspend fun CoroutineScope.requestedSessionAfter(
         holder: FilmstripFeedHolder,

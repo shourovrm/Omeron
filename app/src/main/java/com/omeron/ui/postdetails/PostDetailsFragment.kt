@@ -61,6 +61,9 @@ class PostDetailsFragment : BaseFragment(),
 
     override val isPostPage: Boolean = true
 
+    override val borrowedFeedSessionId: Int?
+        get() = arguments?.getInt(KEY_FEED_SESSION_ID, NO_FEED_SESSION)?.takeIf { it != NO_FEED_SESSION }
+
     private val args: PostDetailsFragmentArgs by navArgs()
 
     private val contentRadius by lazy { resources.getDimension(R.dimen.subreddit_content_radius) }
@@ -328,6 +331,11 @@ class PostDetailsFragment : BaseFragment(),
         PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.DETAILS)
     }
 
+    /** Leaves the page as the back button does, for the viewer on top that moved to another post. */
+    fun close() {
+        onBackPressed()
+    }
+
     override fun onBackPressed() {
         if (isOnlyPostOpen) {
             showNavigation(true)
@@ -380,10 +388,20 @@ class PostDetailsFragment : BaseFragment(),
 
         private const val KEY_THREAD_PERMALINK = "KEY_THREAD_PERMALINK"
 
+        private const val KEY_FEED_SESSION_ID = "KEY_FEED_SESSION_ID"
+
+        // Session ids start at 1.
+        private const val NO_FEED_SESSION = 0
+
+        /**
+         * Page of [post]. With [feedSessionId], the Filmstrip session of the screen it was opened
+         * from, the viewer opened on the page's media swipes on to that screen's other posts.
+         */
         @JvmStatic
-        fun newInstance(post: PostEntity) = PostDetailsFragment().apply {
+        fun newInstance(post: PostEntity, feedSessionId: Int? = null) = PostDetailsFragment().apply {
             arguments = bundleOf(
-                KEY_POST_ENTITY to post
+                KEY_POST_ENTITY to post,
+                KEY_FEED_SESSION_ID to (feedSessionId ?: NO_FEED_SESSION)
             )
         }
 

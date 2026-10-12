@@ -35,6 +35,7 @@ import com.omeron.data.model.db.PostEntity
 import com.omeron.databinding.FragmentFilmstripViewerBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.mediaviewer.MediaDownloadRequester
+import com.omeron.ui.postdetails.PostDetailsFragment
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.launchRepeat
@@ -180,11 +181,38 @@ class FilmstripViewerFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         // Rotation recreates the viewer; only a real close ends the feed session.
-        if (activity?.isChangingConfigurations != true) viewModel.endSession()
+        if (activity?.isChangingConfigurations == true) return
+
+        val ownsSession = arguments?.getBoolean(KEY_OWNS_SESSION, true) ?: true
+        if (ownsSession) viewModel.endSession() else viewModel.closeBorrowedSession()
+    }
+
+    // The page opened from this viewer continues on the posts this viewer is showing.
+    override fun feedSessionForPostPage(): Int? {
+        return (sourceFromArguments() as? FilmstripViewerSource.PostSession)?.sessionId
     }
 
     private fun close() {
+        val postPage = postPageLeftBehind()
         parentFragmentManager.popBackStack()
+        // The page shows a post the user has swiped away from, so going back skips it and lands
+        // on the feed, which reveals the post last viewed.
+        postPage?.close()
+    }
+
+    /**
+     * The post page underneath, when this viewer was opened from it and has since been swiped to
+     * another post; null while the page still matches the post on screen.
+     */
+    private fun postPageLeftBehind(): PostDetailsFragment? {
+        val arguments = arguments ?: return null
+        if (!arguments.getBoolean(KEY_RETURNS_TO_POST_PAGE)) return null
+
+        val currentPostId = currentFrame?.source?.key ?: return null
+        if (currentPostId == arguments.getString(KEY_POST_ID)) return null
+
+        val fragments = parentFragmentManager.fragments
+        return fragments.getOrNull(fragments.indexOf(this) - 1) as? PostDetailsFragment
     }
 
     private fun initPlayback() {
@@ -652,12 +680,22 @@ class FilmstripViewerFragment : BaseFragment() {
     private fun openPost() {
         val post = currentFrame?.post ?: return
         collapseDetails()
-        if (arguments?.getBoolean(KEY_RETURNS_TO_POST_PAGE) == true) {
+        if (arguments?.getBoolean(KEY_RETURNS_TO_POST_PAGE) != true) {
+            onClick(post)
+            return
+        }
+
+        val fragmentManager = parentFragmentManager
+        if (postPageLeftBehind() == null) {
             // The post page this viewer was opened from is right underneath; a second copy of it
             // on top would need two back presses to get out of.
-            close()
+            fragmentManager.popBackStack()
         } else {
-            onClick(post)
+            // The page underneath is of the post this viewer was opened on. The page of the post
+            // on screen takes its place, so back from it still leads to the feed.
+            fragmentManager.popBackStack()
+            fragmentManager.popBackStack()
+            onClick(fragmentManager, post)
         }
     }
 
@@ -733,6 +771,7 @@ class FilmstripViewerFragment : BaseFragment() {
         private const val KEY_POST_ID = "KEY_POST_ID"
         private const val KEY_SESSION_ID = "KEY_SESSION_ID"
         private const val KEY_RETURNS_TO_POST_PAGE = "KEY_RETURNS_TO_POST_PAGE"
+        private const val KEY_OWNS_SESSION = "KEY_OWNS_SESSION"
         private const val KEY_LINK = "KEY_LINK"
         private const val KEY_MEDIA_TYPE = "KEY_MEDIA_TYPE"
         private const val SINGLE_COMMENT = "1"
@@ -747,16 +786,22 @@ class FilmstripViewerFragment : BaseFragment() {
         /**
          * Viewer on the posts published under [sessionId], opened on [postId]. With
          * [returnsToPostPage] the comments buttons close the viewer, because the page of that
-         * post is the screen underneath.
+         * post is the screen underneath. A viewer that does not own the session ([ownsSession]
+         * false) borrowed it from that page and leaves it open when it closes.
          */
-        fun newInstance(sessionId: Int, postId: String, returnsToPostPage: Boolean) =
-            FilmstripViewerFragment().apply {
-                arguments = bundleOf(
-                    KEY_SESSION_ID to sessionId,
-                    KEY_POST_ID to postId,
-                    KEY_RETURNS_TO_POST_PAGE to returnsToPostPage
-                )
-            }
+        fun newInstance(
+            sessionId: Int,
+            postId: String,
+            returnsToPostPage: Boolean,
+            ownsSession: Boolean = true
+        ) = FilmstripViewerFragment().apply {
+            arguments = bundleOf(
+                KEY_SESSION_ID to sessionId,
+                KEY_POST_ID to postId,
+                KEY_RETURNS_TO_POST_PAGE to returnsToPostPage,
+                KEY_OWNS_SESSION to ownsSession
+            )
+        }
 
         /** Viewer on a media link that has no post behind it. */
         fun newInstance(link: String, mediaType: MediaType) = FilmstripViewerFragment().apply {

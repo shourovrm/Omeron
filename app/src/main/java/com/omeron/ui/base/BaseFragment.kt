@@ -67,6 +67,12 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     protected open val isPostPage: Boolean = false
 
     /**
+     * On a post page: the Filmstrip session of the screen the page was opened from, or null when
+     * there is none. The viewer opened from the page borrows it to reach that screen's other posts.
+     */
+    protected open val borrowedFeedSessionId: Int? = null
+
+    /**
      * The manager that owns the screen container. A fragment nested in a pager (the tabs of a
      * user or search screen) has a parent manager that belongs to the pager, so full-screen
      * pages must go on the manager of the current navigation destination.
@@ -80,11 +86,26 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     // fragment's view while the viewer stays open on the back stack).
     private var filmstripSessionId: Int? = null
 
+    // The session begun for the last post page opened from this feed. No viewer ends it, so this
+    // feed does, when it begins another session or goes away.
+    private var lentFeedSessionId: Int? = null
+
+    // The feed's list, set while its view exists.
+    private var filmstripFeedAdapter: PostListAdapter? = null
+    private var filmstripFeedList: RecyclerView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedCallback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             onBackPressed()
         }
+        lentFeedSessionId = savedInstanceState?.getInt(KEY_LENT_FEED_SESSION_ID)?.takeIf { it != 0 }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Kept across rotation so the recreated feed still ends the session it lent.
+        lentFeedSessionId?.let { outState.putInt(KEY_LENT_FEED_SESSION_ID, it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,6 +136,20 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         fragmentManager: FragmentManager = parentFragmentManager
     ) {
         val isFilmstripMedia = filmstripMediaPredicate ?: return
+        val link = beginFeedLink(adapter, list, isFilmstripMedia)
+
+        addViewer(
+            fragmentManager,
+            FilmstripViewerFragment.newInstance(link.sessionId, post.id, returnsToPostPage = false)
+        )
+    }
+
+    private fun beginFeedLink(
+        adapter: PostListAdapter,
+        list: RecyclerView,
+        isFilmstripMedia: (PostEntity) -> Boolean
+    ): FilmstripFeedLink {
+        endLentFeedSession()
         filmstripFeedLink?.dispose()
         val link = FilmstripFeedLink.begin(
             filmstripFeedHolder,
@@ -125,15 +160,51 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         )
         filmstripFeedLink = link
         filmstripSessionId = link.sessionId
-
-        addViewer(
-            fragmentManager,
-            FilmstripViewerFragment.newInstance(link.sessionId, post.id, returnsToPostPage = false)
-        )
+        return link
     }
 
-    /** Opens the viewer on just [post], for screens that show a post without a feed behind it. */
+    /**
+     * The Filmstrip session to lend to a post page opened from this screen, or null when the
+     * screen has no feed of media posts. A feed begins a session of its own here.
+     */
+    protected open fun feedSessionForPostPage(): Int? {
+        val isFilmstripMedia = filmstripMediaPredicate ?: return null
+        val adapter = filmstripFeedAdapter ?: return null
+        val list = filmstripFeedList ?: return null
+
+        val link = beginFeedLink(adapter, list, isFilmstripMedia)
+        lentFeedSessionId = link.sessionId
+        return link.sessionId
+    }
+
+    private fun endLentFeedSession() {
+        // The viewers that borrowed it have already told the list which post to reveal.
+        lentFeedSessionId?.let { filmstripFeedHolder.endSession(it, lastPostId = null) }
+        lentFeedSessionId = null
+    }
+
+    /**
+     * Opens the viewer for a media tap on a screen that shows a post without a feed of its own.
+     * A post page that was lent a feed's session opens the viewer on that feed, so the viewer can
+     * swipe on to its other posts; otherwise the viewer shows just [post].
+     */
     private fun openSinglePostViewer(post: PostEntity) {
+        val feedSessionId = borrowedFeedSessionId?.takeIf { sessionId ->
+            filmstripFeedHolder.currentPostsOf(sessionId).any { it.id == post.id }
+        }
+        if (feedSessionId != null) {
+            addViewer(
+                screenFragmentManager,
+                FilmstripViewerFragment.newInstance(
+                    feedSessionId,
+                    post.id,
+                    returnsToPostPage = true,
+                    ownsSession = false
+                )
+            )
+            return
+        }
+
         val sessionId = filmstripFeedHolder.beginSession(listOf(post), canLoadMore = false)
         addViewer(
             screenFragmentManager,
@@ -178,8 +249,14 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
             .commit()
     }
 
-    /** Call after the list's adapter exists, so a viewer opened earlier keeps loading pages. */
+    /**
+     * Call after the list's adapter exists. A post page opened from this feed is lent a session on
+     * this list, and a viewer opened earlier keeps loading pages.
+     */
     protected fun resumeFilmstripFeed(adapter: PostListAdapter, list: RecyclerView) {
+        filmstripFeedAdapter = adapter
+        filmstripFeedList = list
+
         val sessionId = filmstripSessionId ?: return
         if (!filmstripFeedHolder.isOpen(sessionId)) return
         val isFilmstripMedia = filmstripMediaPredicate ?: return
@@ -198,6 +275,14 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         super.onDestroyView()
         filmstripFeedLink?.dispose()
         filmstripFeedLink = null
+        filmstripFeedAdapter = null
+        filmstripFeedList = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Rotation recreates the feed while the post page it lent the session to stays open.
+        if (activity?.isChangingConfigurations != true) endLentFeedSession()
     }
 
     protected fun navigate(directions: NavDirections, navOptions: NavOptions = this.navOptions) {
@@ -222,7 +307,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
             )
             .add(
                 R.id.fragment_container,
-                PostDetailsFragment.newInstance(post),
+                PostDetailsFragment.newInstance(post, feedSessionForPostPage()),
                 PostDetailsFragment.TAG
             )
             .addToBackStack(null)
@@ -302,5 +387,9 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         } catch (e: IllegalArgumentException) {
             linkHandler.openBrowser(link)
         }
+    }
+
+    companion object {
+        private const val KEY_LENT_FEED_SESSION_ID = "KEY_LENT_FEED_SESSION_ID"
     }
 }
