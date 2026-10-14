@@ -71,6 +71,10 @@ class FilmstripViewerFragment : BaseFragment() {
 
     private var currentFrame: FilmstripFrame? = null
 
+    // Page a slide-out animation will move to once the media is off screen. A swipe that
+    // interrupts the animation cancels its end action, so the move is made here instead.
+    private var pendingSlideTargetIndex: Int? = null
+
     private var mediaGoneDialog: AlertDialog? = null
 
     // False until the pager has been moved to the tapped post; a new view always starts at page 0.
@@ -253,6 +257,10 @@ class FilmstripViewerFragment : BaseFragment() {
             isSaveEnabled = false
             getRecyclerView()?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             getRecyclerView()?.isNestedScrollingEnabled = false
+            // A page is the whole screen, so a change animation (a frame that resolves, or
+            // gains gallery frames) would only crossfade the screen with itself. The animator's
+            // post-layout pass also walked a child without a holder and crashed the viewer.
+            getRecyclerView()?.itemAnimator = null
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     frameAdapter.currentList.getOrNull(position)?.let(::selectFrame)
@@ -297,7 +305,7 @@ class FilmstripViewerFragment : BaseFragment() {
         ) != null
 
         binding.viewPager.run {
-            animate().cancel()
+            cancelPostSlide()
             // With no post to go to, the media resists the drag instead of following it fully.
             translationY = if (hasTarget) verticalOffset else verticalOffset * EDGE_DRAG_RESISTANCE
         }
@@ -305,7 +313,7 @@ class FilmstripViewerFragment : BaseFragment() {
 
     private fun settlePagerInPlace() {
         val pager = _binding?.viewPager ?: return
-        pager.animate().cancel()
+        pager.cancelPostSlide()
         if (!areAnimationsEnabled()) {
             pager.translationY = 0F
             return
@@ -324,7 +332,7 @@ class FilmstripViewerFragment : BaseFragment() {
      */
     private fun slideToPost(targetIndex: Int, direction: PostSwipeDirection) {
         val pager = binding.viewPager
-        pager.animate().cancel()
+        pager.cancelPostSlide()
         if (!areAnimationsEnabled()) {
             pager.setCurrentItem(targetIndex, false)
             pager.translationY = 0F
@@ -332,11 +340,13 @@ class FilmstripViewerFragment : BaseFragment() {
         }
 
         val exitOffset = pager.height.toFloat() * if (direction == PostSwipeDirection.NEXT) -1F else 1F
+        pendingSlideTargetIndex = targetIndex
         pager.animate()
             .translationY(exitOffset)
             .setDuration(POST_SLIDE_OUT_MILLIS)
             .setInterpolator(AccelerateInterpolator())
             .withEndAction {
+                pendingSlideTargetIndex = null
                 val currentPager = _binding?.viewPager ?: return@withEndAction
                 currentPager.setCurrentItem(targetIndex, false)
                 currentPager.translationY = -exitOffset
@@ -347,6 +357,19 @@ class FilmstripViewerFragment : BaseFragment() {
                     .start()
             }
             .start()
+    }
+
+    /**
+     * Stops the slide animation. A cancelled ViewPropertyAnimator never runs its end action, so
+     * a page change the slide-out had not made yet is made here; otherwise a quick second swipe
+     * would slide the post the user just left back in, as if the pager had gone backwards.
+     */
+    private fun ViewPager2.cancelPostSlide() {
+        animate().cancel()
+        pendingSlideTargetIndex?.let { targetIndex ->
+            pendingSlideTargetIndex = null
+            setCurrentItem(targetIndex, false)
+        }
     }
 
     private fun areAnimationsEnabled(): Boolean {
