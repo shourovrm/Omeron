@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Omeron</string>
-    <string name="app_description">Omeron is a privacy-focused Reddit client (a fork of Stealth).\n\nFree software, licensed under the GNU GPLv3.</string>
+    <string name="app_description">Omeron is a lightweight Reddit client (a fork of Stealth). Saved posts, history and subscriptions stay on this device.\n\nFree software, licensed under the GNU GPLv3.</string>
     <string name="handle_link_label">Open in Omeron</string>
 
     <string name="gitlab_link" translatable="false">https://gitlab.com/cosmosapps/stealth</string>

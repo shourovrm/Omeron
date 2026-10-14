@@ -1,7 +1,9 @@
 # Omeron
 
-Omeron is a fork of [**Stealth**](https://gitlab.com/cosmosapps/stealth) (a.k.a. unReddit),
-the account-free, privacy-oriented Reddit client, with a set of extra features added on top.
+Omeron is a lightweight Reddit client for Android, a fork of
+[**Stealth**](https://gitlab.com/cosmosapps/stealth) (a.k.a. unReddit) with a set of extra
+features added on top. Saved posts, history and subscriptions stay on the device; the app
+carries no analytics and talks to Reddit only through the page requests described below.
 
 It uses **no official Reddit API**. All content is fetched by **web scraping
 `old.reddit.com`**, so there are no API keys or rate-limit tokens to configure.
