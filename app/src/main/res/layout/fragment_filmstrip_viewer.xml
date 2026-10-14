@@ -303,6 +303,15 @@
                     app:tint="@color/white"
                     app:srcCompat="@drawable/ic_download"/>
 
+                <ImageButton
+                    android:id="@+id/button_rotate"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/filmstrip_action_rotate"
+                    app:tint="@color/white"
+                    app:srcCompat="@drawable/ic_screen_rotation"/>
+
                 <com.omeron.ui.common.widget.CheckableImageView
                     android:id="@+id/button_mute"
                     android:layout_width="48dp"

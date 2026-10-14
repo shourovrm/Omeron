@@ -1,6 +1,8 @@
 package com.omeron.ui.filmstrip
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -93,13 +95,18 @@ class FilmstripViewerFragment : BaseFragment() {
     private val backStackListener = FragmentManager.OnBackStackChangedListener {
         // The viewer stays resumed when the post page is added on top, so the back stack is the
         // only signal that something now covers it.
-        val topFragment = parentFragmentManager.fragments.lastOrNull()
-        val isCovered = topFragment != null && topFragment !== this
+        val isCovered = isCoveredByOtherFragmentNow()
         if (isCovered != isCoveredByOtherFragment) {
             isCoveredByOtherFragment = isCovered
             applyPlaybackSuspension()
+            applyRequestedOrientation()
             if (!isCovered) uiViewModel.setNavigationVisibility(false)
         }
+    }
+
+    private fun isCoveredByOtherFragmentNow(): Boolean {
+        val topFragment = parentFragmentManager.fragments.lastOrNull()
+        return topFragment != null && topFragment !== this
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +133,8 @@ class FilmstripViewerFragment : BaseFragment() {
         }
 
         isPagerPlaced = false
+        // After a rotation under a post page the viewer comes back already covered.
+        isCoveredByOtherFragment = isCoveredByOtherFragmentNow()
         navigationVisibilityBeforeOpen = uiViewModel.navigationVisibility.value
         uiViewModel.setNavigationVisibility(false)
 
@@ -135,6 +144,7 @@ class FilmstripViewerFragment : BaseFragment() {
         initOverlay()
         initDetailsSheet()
         bindViewModel()
+        applyRequestedOrientation()
 
         parentFragmentManager.addOnBackStackChangedListener(backStackListener)
     }
@@ -181,6 +191,11 @@ class FilmstripViewerFragment : BaseFragment() {
         parentFragmentManager.removeOnBackStackChangedListener(backStackListener)
         if (::playback.isInitialized) playback.release()
         showSystemBars(true)
+        // The screen rotates back only when the viewer really closes; a rotation also destroys
+        // the view, and letting go of the orientation then would rotate the screen twice.
+        if (activity?.isChangingConfigurations != true) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         uiViewModel.setNavigationVisibility(navigationVisibilityBeforeOpen)
         super.onDestroyView()
         _binding = null
@@ -421,6 +436,7 @@ class FilmstripViewerFragment : BaseFragment() {
             buttonClose.setOnClickListener { close() }
             railComments.setOnClickListener { openPost() }
             buttonSave.setOnClickListener { toggleSave() }
+            buttonRotate.setOnClickListener { toggleOrientation() }
             buttonShareLink.setOnClickListener { shareLink() }
             buttonDownload.setOnClickListener { downloadCurrentMedia() }
             buttonMute.setOnCheckedChangeListener { _, isMuted -> viewModel.setMuted(isMuted) }
@@ -707,6 +723,31 @@ class FilmstripViewerFragment : BaseFragment() {
             actionSave.setText(
                 if (post.saved) R.string.filmstrip_action_saved else R.string.filmstrip_action_save
             )
+        }
+    }
+
+    /** Turns the screen the other way round and keeps it there while the viewer is on top. */
+    private fun toggleOrientation() {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        viewModel.requestedOrientation = if (isLandscape) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
+        applyRequestedOrientation()
+    }
+
+    /**
+     * The orientation the rotate button chose holds only while the viewer is the top screen. A
+     * post page opened on top gets the device's own orientation, and the viewer takes its
+     * chosen one back when the page closes.
+     */
+    private fun applyRequestedOrientation() {
+        val activity = activity ?: return
+        activity.requestedOrientation = if (isCoveredByOtherFragment) {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        } else {
+            viewModel.requestedOrientation
         }
     }
 

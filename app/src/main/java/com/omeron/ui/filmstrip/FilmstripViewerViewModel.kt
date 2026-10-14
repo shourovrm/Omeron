@@ -94,6 +94,9 @@ class FilmstripViewerViewModel @Inject constructor(
 
     var isOverlayVisible = true
 
+    /** Orientation the rotate button asked for; survives the recreation the request causes. */
+    var requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
     var isDetailsExpanded = false
 
     /** False after a process restart, when the posts this viewer was paging are gone. */
