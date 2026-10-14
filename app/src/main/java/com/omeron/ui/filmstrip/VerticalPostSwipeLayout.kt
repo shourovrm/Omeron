@@ -18,6 +18,9 @@ import kotlin.math.abs
  * requestDisallowInterceptTouchEvent, the framework stops calling the intercept, so those
  * requests win without any extra code here.
  *
+ * A horizontal gesture is left to the pager only while [canPageSideways] allows it; otherwise it
+ * is swallowed here, so the pager cannot be dragged past the edge of a gallery to another post.
+ *
  * Touches on the info block, seek bar and rail never get here because those views are siblings
  * drawn above the pager.
  */
@@ -29,6 +32,12 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
     /** Asked once per gesture, when it first looks vertical; false leaves the gesture to the page. */
     var canSwipeToPost: () -> Boolean = { true }
 
+    /**
+     * Asked once per gesture, when it first looks horizontal, with true for a drag towards the
+     * next page; false swallows the gesture instead of letting the pager scroll.
+     */
+    var canPageSideways: (towardsNext: Boolean) -> Boolean = { true }
+
     var onPostSwipe: (PostSwipeDirection) -> Unit = {}
 
     /** Reports the finger's vertical offset from where the claimed swipe started. */
@@ -37,7 +46,8 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
     /** The claimed swipe ended without changing post; whatever followed the finger goes back. */
     var onSwipeAbandoned: () -> Unit = {}
 
-    private enum class GestureState { UNDECIDED, IGNORED, CLAIMED }
+    // BLOCKED: a horizontal drag the pager may not have; the events are consumed and dropped.
+    private enum class GestureState { UNDECIDED, IGNORED, CLAIMED, BLOCKED }
 
     private val viewConfiguration = ViewConfiguration.get(context)
     private val touchSlop = viewConfiguration.scaledTouchSlop
@@ -68,10 +78,17 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> endGesture()
         }
-        return gestureState == GestureState.CLAIMED
+        return gestureState == GestureState.CLAIMED || gestureState == GestureState.BLOCKED
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (gestureState == GestureState.BLOCKED) {
+            val isGestureOver = event.actionMasked == MotionEvent.ACTION_UP ||
+                event.actionMasked == MotionEvent.ACTION_CANCEL
+            if (isGestureOver) endGesture()
+            return true
+        }
+
         // Only reached with events the pages did not take, so a gesture that was not claimed
         // here has nothing to do with this view.
         if (gestureState != GestureState.CLAIMED) return false
@@ -109,12 +126,19 @@ class VerticalPostSwipeLayout @JvmOverloads constructor(
         if (maxOf(horizontalTravel, verticalTravel) <= touchSlop) return
 
         val isVertical = verticalTravel > VERTICAL_DOMINANCE_RATIO * horizontalTravel
-        gestureState = if (isVertical && canSwipeToPost()) {
-            // Ancestors must not take a gesture that is already a post swipe.
-            parent?.requestDisallowInterceptTouchEvent(true)
-            GestureState.CLAIMED
-        } else {
-            GestureState.IGNORED
+        gestureState = when {
+            isVertical && canSwipeToPost() -> {
+                // Ancestors must not take a gesture that is already a post swipe.
+                parent?.requestDisallowInterceptTouchEvent(true)
+                GestureState.CLAIMED
+            }
+            isVertical -> GestureState.IGNORED
+            // A finger moving left drags the next page in.
+            canPageSideways(event.x < downX) -> GestureState.IGNORED
+            else -> {
+                parent?.requestDisallowInterceptTouchEvent(true)
+                GestureState.BLOCKED
+            }
         }
     }
 

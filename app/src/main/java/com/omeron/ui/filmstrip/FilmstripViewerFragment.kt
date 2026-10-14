@@ -71,9 +71,13 @@ class FilmstripViewerFragment : BaseFragment() {
 
     private var currentFrame: FilmstripFrame? = null
 
-    // Page a slide-out animation will move to once the media is off screen. A swipe that
-    // interrupts the animation cancels its end action, so the move is made here instead.
-    private var pendingSlideTargetIndex: Int? = null
+    // Frame a slide-out animation will move to once the media is off screen. A swipe that
+    // interrupts the animation cancels its end action, so the move is made here instead. The
+    // frame is kept by id: posts resolve into gallery frames while the animation runs, and an
+    // index taken before that would land on a frame of the post just left.
+    private var pendingSlide: PendingSlide? = null
+
+    private data class PendingSlide(val targetFrameId: String, val direction: PostSwipeDirection)
 
     private var mediaGoneDialog: AlertDialog? = null
 
@@ -243,6 +247,7 @@ class FilmstripViewerFragment : BaseFragment() {
 
         binding.postSwipeLayout.apply {
             canSwipeToPost = ::canSwipeToPost
+            canPageSideways = ::canPageSideways
             onPostSwipe = ::swipeToPost
             onSwipeDrag = ::followPostSwipe
             onSwipeAbandoned = ::settlePagerInPlace
@@ -277,6 +282,20 @@ class FilmstripViewerFragment : BaseFragment() {
             binding.viewPager.getRecyclerView()
         )
         return !isDetailsOpen && !isZoomedIn
+    }
+
+    /**
+     * Horizontal paging stays inside the current gallery. Posts are changed by the vertical
+     * swipe only; a quick thumb swipe that arcs sideways would otherwise page the viewer to the
+     * neighbouring post, which looks like the pager going backwards.
+     */
+    private fun canPageSideways(towardsNext: Boolean): Boolean {
+        val frame = currentFrame ?: return false
+        return if (towardsNext) {
+            frame.indexInSource < frame.framesInSource - 1
+        } else {
+            frame.indexInSource > 0
+        }
     }
 
     private fun swipeToPost(direction: PostSwipeDirection) {
@@ -340,15 +359,15 @@ class FilmstripViewerFragment : BaseFragment() {
         }
 
         val exitOffset = pager.height.toFloat() * if (direction == PostSwipeDirection.NEXT) -1F else 1F
-        pendingSlideTargetIndex = targetIndex
+        val targetFrame = frameAdapter.currentList.getOrNull(targetIndex) ?: return
+        pendingSlide = PendingSlide(targetFrame.id, direction)
         pager.animate()
             .translationY(exitOffset)
             .setDuration(POST_SLIDE_OUT_MILLIS)
             .setInterpolator(AccelerateInterpolator())
             .withEndAction {
-                pendingSlideTargetIndex = null
                 val currentPager = _binding?.viewPager ?: return@withEndAction
-                currentPager.setCurrentItem(targetIndex, false)
+                currentPager.commitPendingSlide()
                 currentPager.translationY = -exitOffset
                 currentPager.animate()
                     .translationY(0F)
@@ -366,10 +385,24 @@ class FilmstripViewerFragment : BaseFragment() {
      */
     private fun ViewPager2.cancelPostSlide() {
         animate().cancel()
-        pendingSlideTargetIndex?.let { targetIndex ->
-            pendingSlideTargetIndex = null
-            setCurrentItem(targetIndex, false)
-        }
+        commitPendingSlide()
+    }
+
+    /**
+     * Moves the pager to the frame a slide was heading for. The frame is looked up again by id,
+     * since the list may have changed during the slide; a frame that is gone (its post was
+     * dropped) is replaced by whatever is now next to the current post in the same direction.
+     */
+    private fun ViewPager2.commitPendingSlide() {
+        val slide = pendingSlide ?: return
+        pendingSlide = null
+
+        val frames = frameAdapter.currentList
+        val targetIndex = frames.indexOfFirst { it.id == slide.targetFrameId }
+            .takeIf { it >= 0 }
+            ?: postSwipeTargetIndex(frames, currentItem, slide.direction)
+            ?: return
+        setCurrentItem(targetIndex, false)
     }
 
     private fun areAnimationsEnabled(): Boolean {
