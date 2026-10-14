@@ -27,6 +27,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -67,6 +68,7 @@ class FilmstripViewerFragment : BaseFragment() {
 
     private lateinit var playback: FilmstripPlayback
     private lateinit var frameAdapter: FilmstripFrameAdapter
+    private lateinit var thumbnailAdapter: FilmstripThumbnailAdapter
     private lateinit var detailsBehavior: BottomSheetBehavior<NestedScrollView>
 
     private val downloadRequester = MediaDownloadRequester(this) { binding.root }
@@ -140,6 +142,7 @@ class FilmstripViewerFragment : BaseFragment() {
 
         initPlayback()
         initPager()
+        initThumbnails()
         showControlsForViewerKind()
         initOverlay()
         initDetailsSheet()
@@ -286,6 +289,42 @@ class FilmstripViewerFragment : BaseFragment() {
                     frameAdapter.currentList.getOrNull(position)?.let(::selectFrame)
                 }
             })
+        }
+    }
+
+    private fun initThumbnails() {
+        thumbnailAdapter = FilmstripThumbnailAdapter(::openThumbnail)
+        binding.thumbnails.adapter = thumbnailAdapter
+    }
+
+    private fun openThumbnail(thumbnail: FilmstripFrame) {
+        val targetIndex = frameAdapter.currentList.indexOfFirst { it.id == thumbnail.id }
+        if (targetIndex < 0) return
+        // Neighbours slide over; a far jump would scroll every page in between.
+        val isNeighbour = abs(targetIndex - binding.viewPager.currentItem) <= 1
+        binding.viewPager.setCurrentItem(targetIndex, isNeighbour)
+    }
+
+    /** Thumbnails of every frame of [frame]'s gallery, with [frame]'s own brought into view. */
+    private fun showGalleryThumbnails(frame: FilmstripFrame) {
+        val galleryFrames = frameAdapter.currentList.filter { it.source.key == frame.source.key }
+        thumbnailAdapter.submitList(galleryFrames) {
+            if (_binding == null) return@submitList
+            thumbnailAdapter.setActiveFrameId(frame.id)
+            binding.thumbnails.post { revealThumbnail(frame.indexInSource) }
+        }
+    }
+
+    private fun revealThumbnail(index: Int) {
+        val list = _binding?.thumbnails ?: return
+        val layoutManager = list.layoutManager as? LinearLayoutManager ?: return
+        val thumbnailSize = resources.getDimensionPixelSize(R.dimen.filmstrip_thumbnail_size)
+        val centredLeft = (list.width - thumbnailSize) / 2
+        val child = layoutManager.findViewByPosition(index)
+        if (child != null) {
+            list.smoothScrollBy(child.left - centredLeft, 0)
+        } else {
+            layoutManager.scrollToPositionWithOffset(index, centredLeft)
         }
     }
 
@@ -626,9 +665,9 @@ class FilmstripViewerFragment : BaseFragment() {
         currentFrame = frame
 
         binding.run {
-            segments.isVisible = frame.isGalleryFrame
+            thumbnails.isVisible = frame.isGalleryFrame
             textPosition.isVisible = frame.isGalleryFrame
-            segments.setPosition(frame.indexInSource, frame.framesInSource)
+            if (frame.isGalleryFrame) showGalleryThumbnails(frame)
             textPosition.text = getString(
                 R.string.filmstrip_position,
                 frame.indexInSource + 1,

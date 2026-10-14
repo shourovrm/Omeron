@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.imageview.ShapeableImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/image"
+    android:layout_width="@dimen/filmstrip_thumbnail_size"
+    android:layout_height="@dimen/filmstrip_thumbnail_size"
+    android:layout_marginEnd="@dimen/filmstrip_thumbnail_gap"
+    android:scaleType="centerCrop"
+    android:background="@color/black_25"
+    android:foreground="?attr/selectableItemBackground"
+    app:shapeAppearanceOverlay="@style/ShapeAppearanceButton"
+    app:strokeColor="@color/white"/>
