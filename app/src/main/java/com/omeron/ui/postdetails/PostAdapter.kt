@@ -151,12 +151,15 @@ class PostAdapter(
                 }
             }
 
+            // The post bound here is replaced by the network copy and updated through update(),
+            // which does not set listeners again. Reading the adapter's post at click time keeps
+            // the saved flag current, so the second tap removes the post from saved.
             binding.includePostMetrics.buttonMore.setOnClickListener {
-                postClickListener.onMenuClick(post)
+                postClickListener.onMenuClick(this@PostAdapter.post ?: post)
             }
 
             binding.includePostMetrics.buttonSave.setOnClickListener {
-                postClickListener.onSaveClick(post)
+                postClickListener.onSaveClick(this@PostAdapter.post ?: post)
             }
 
             when {
