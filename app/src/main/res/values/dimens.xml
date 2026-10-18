@@ -97,7 +97,7 @@
     <dimen name="subscriptions_margin_horizontal">@dimen/card_margin_horizontal</dimen>
     <dimen name="subscriptions_padding">@dimen/card_padding</dimen>
 
-    <dimen name="preference_card_height">@dimen/list_item_two_line</dimen>
+    <dimen name="preference_card_height">@dimen/list_item_one_line</dimen>
     <dimen name="preference_padding">@dimen/space_12</dimen>
     <dimen name="preference_category_margin_horizontal">@dimen/space_16</dimen>
     <dimen name="preference_category_margin_vertical">@dimen/space_16</dimen>

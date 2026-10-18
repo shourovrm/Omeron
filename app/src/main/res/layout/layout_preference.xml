@@ -1,51 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<!-- A 56dp one-line or 72dp-plus two-line list item. The 16dp vertical padding gives 56dp for a
+     24dp title alone and 76dp once a 20dp summary is added. -->
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/preference_card_height"
-    style="@style/CardStylePreference">
+    android:paddingHorizontal="@dimen/space_16"
+    android:paddingVertical="@dimen/space_16"
+    android:background="?attr/selectableItemBackground">
 
-    <!-- Grows with the summary; a fixed height clipped summaries longer than one line. -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/preference_card_height"
-        android:padding="@dimen/preference_padding"
-        android:background="@drawable/card_background">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@android:id/summary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@android:id/widget_frame"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:textAppearance="@style/TextAppearancePreference"
+        android:scrollbars="none"/>
 
-        <TextView
-            android:id="@android:id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@android:id/summary"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearancePreference"
-            android:scrollbars="none"/>
+    <TextView
+        android:id="@android:id/summary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@android:id/title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@android:id/widget_frame"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
+        android:maxLines="10"
+        style="@style/PreferenceSummaryTextStyle"/>
 
-        <TextView
-            android:id="@android:id/summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@android:id/title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textColor="@color/text_color_secondary"
-            android:maxLines="10"
-            style="@style/PreferenceSummaryTextStyle"/>
+    <LinearLayout
+        android:id="@android:id/widget_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/space_16"
+        android:orientation="vertical"/>
 
-        <LinearLayout
-            android:id="@android:id/widget_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:orientation="vertical"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:textColor="@null"
         android:textAppearance="@style/TextAppearanceCategory"/>
 
     <TextView
@@ -29,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@android:id/title"
         android:layout_gravity="start"
         android:textAlignment="viewStart"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
         android:maxLines="10"
         style="@style/PreferenceSummaryTextStyle"/>
 

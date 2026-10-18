@@ -17,8 +17,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="24dp">
+        android:paddingHorizontal="@dimen/space_24"
+        android:paddingTop="@dimen/space_24">
 
         <TextView
             android:id="@+id/text_service"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.App.HeadlineSmall"
             android:text="@{service.name != null ? service.name : StringExtKt.getTitlecase(redirect.service)}"
             tools:text="Reddit"/>
 
@@ -44,7 +44,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/space_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_service"
