@@ -1,9 +1,22 @@
 <resources>
 
-    <style name="Widget.App.JoinButton" parent="ButtonStyle"/>
+    <!-- Rows in a result list repeat, so their action is tonal; the filled button stays unique per screen. -->
+    <style name="Widget.App.JoinButton" parent="ButtonStyle.Tonal"/>
 
     <style name="Widget.App.JoinButton.Joined" parent="ButtonStyle.Outlined">
         <item name="strokeColor">?attr/colorOutline</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Scope chip inside the search field. -->
+    <style name="Widget.App.Chip.Entry" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Chip</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="chipMinHeight">@dimen/chip_height</item>
+        <item name="chipMinTouchTargetSize">@dimen/touch_target</item>
+        <item name="chipStrokeWidth">@dimen/divider_thickness</item>
+        <item name="chipStrokeColor">?attr/colorOutline</item>
+        <item name="chipBackgroundColor">?attr/omeronSurfaceContainerHigh</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 

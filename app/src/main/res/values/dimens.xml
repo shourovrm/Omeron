@@ -31,6 +31,7 @@
     <dimen name="bottom_sheet_radius">28dp</dimen>
     <dimen name="divider_thickness">1dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
+    <dimen name="search_scope_chip_max_width">160dp</dimen>
 
     <!-- Post cards sit 16dp from the screen edge with an 8dp gap, so each card keeps half the gap. -->
     <dimen name="post_card_margin_horizontal">@dimen/space_16</dimen>

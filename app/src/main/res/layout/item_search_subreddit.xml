@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="56dp"
+    android:minHeight="@dimen/list_item_two_line"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
+    android:paddingStart="@dimen/space_16"
+    android:paddingEnd="@dimen/space_16"
+    android:paddingTop="@dimen/space_4"
+    android:paddingBottom="@dimen/space_4"
     android:background="?attr/selectableItemBackground">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/subreddit_image"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:importantForAccessibility="no"
         app:shapeAppearanceOverlay="@style/CircularImageViewStyle"
         tools:src="@tools:sample/avatars"/>
@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="@dimen/space_12"
         android:orientation="vertical">
 
         <TextView
@@ -34,8 +34,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:fontFamily="@font/inter_semibold"
-            android:textAppearance="?attr/textAppearanceBody1"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
             tools:text="r/android"/>
 
         <TextView
@@ -44,8 +43,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textAppearance="?attr/textAppearanceCaption"
-            android:textColor="@color/text_color_post_info"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
             tools:text="2.1m members · Android news and discussion"/>
     </LinearLayout>
 
@@ -53,7 +51,7 @@
         android:id="@+id/button_join"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/space_8"
         android:text="@string/search_join"
         style="@style/Widget.App.JoinButton"/>
 
@@ -61,7 +59,7 @@
         android:id="@+id/button_joined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/space_8"
         android:text="@string/search_joined"
         android:visibility="gone"
         style="@style/Widget.App.JoinButton.Joined"/>

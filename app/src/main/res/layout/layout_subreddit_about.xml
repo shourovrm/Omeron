@@ -40,7 +40,7 @@
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="1"
             android:animateLayoutChanges="true"
-            tools:layout_height="200dp"
+            tools:layout_height="@dimen/subreddit_header_height"
             tools:text="@tools:sample/lorem/random"/>
 
         <TextView

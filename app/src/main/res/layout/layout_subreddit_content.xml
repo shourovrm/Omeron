@@ -21,7 +21,7 @@
         <ImageView
             android:id="@+id/subreddit_metrics_header"
             android:layout_width="match_parent"
-            android:layout_height="275dp"
+            android:layout_height="@dimen/subreddit_metrics_header_height"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@null"
             android:scaleType="centerCrop"

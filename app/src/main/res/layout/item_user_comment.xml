@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/comment_link_title"
             app:layout_constraintTop_toBottomOf="@id/comment_link_title"
-            android:textColor="@null"
             android:textAppearance="@style/TextAppearanceUserCommentInfo"
             android:text="@{@string/comment_link_info(comment.subreddit, comment.linkAuthor)}"
             tools:text="r/subreddit - u/author"/>
