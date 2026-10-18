@@ -6,22 +6,23 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 data class DataPreferences(
     val redditSource: Int,
-    val redditSourceInstance: String,
     val enablePrivacyEnhancer: Boolean
 ) {
     object PreferencesKeys {
         val REDDIT_SOURCE = intPreferencesKey("reddit_source")
-        val REDDIT_SOURCE_INSTANCE = stringPreferencesKey("reddit_source_instance")
         val PRIVACY_ENHANCER = booleanPreferencesKey("privacy_enhancer")
         val POST_LAYOUT = intPreferencesKey("post_layout")
         val REDDIT_COOKIES = stringPreferencesKey("reddit_cookies")
     }
 
     enum class RedditSource(val value: Int) {
-        REDDIT(0), TEDDIT(1), REDDIT_SCRAP(2);
+        REDDIT(0), REDDIT_SCRAP(2);
 
         companion object {
-            fun fromValue(value: Int): RedditSource = values().find { it.value == value } ?: REDDIT
+            // Value 1 was the Teddit source, which no longer exists. Installs that saved it
+            // (and any other unknown value) read as web scraping, the only source that works.
+            fun fromValue(value: Int): RedditSource =
+                values().find { it.value == value } ?: REDDIT_SCRAP
         }
     }
 }

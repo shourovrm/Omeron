@@ -118,20 +118,6 @@ class PreferencesRepository @Inject constructor(
         )
     }
 
-    suspend fun setRedditSourceInstance(instance: String) {
-        preferencesDatastore.setValue(
-            DataPreferences.PreferencesKeys.REDDIT_SOURCE_INSTANCE,
-            instance
-        )
-    }
-
-    fun getRedditSourceInstance(defaultValue: String = ""): Flow<String> {
-        return preferencesDatastore.getValue(
-            DataPreferences.PreferencesKeys.REDDIT_SOURCE_INSTANCE,
-            defaultValue
-        )
-    }
-
     suspend fun setRedditCookies(cookies: String) {
         preferencesDatastore.setValue(DataPreferences.PreferencesKeys.REDDIT_COOKIES, cookies)
     }

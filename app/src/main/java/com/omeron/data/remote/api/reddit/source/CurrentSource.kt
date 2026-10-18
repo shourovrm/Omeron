@@ -18,8 +18,7 @@ import javax.inject.Singleton
 class CurrentSource @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val redditSource: RedditSource,
-    private val redditScrapingSource: RedditScrapingSource,
-    private val tedditSource: TedditSource
+    private val redditScrapingSource: RedditScrapingSource
 ) : BaseRedditSource {
 
     private val mutex = Mutex()
@@ -61,8 +60,8 @@ class CurrentSource @Inject constructor(
         linkId: String,
         depth: Int
     ): MoreChildren {
-        // Teddit has no morechildren endpoint, and reddit intermittently 403s the
-        // official .json api - scraping mode parses old.reddit's widget response instead.
+        // reddit intermittently 403s the official .json api - scraping mode parses
+        // old.reddit's widget response instead.
         return when (source) {
             redditScrapingSource -> redditScrapingSource.getMoreChildren(children, linkId, depth)
             else -> redditSource.getMoreChildren(children, linkId, depth)
@@ -133,7 +132,6 @@ class CurrentSource @Inject constructor(
     private fun getRedditSource(value: Int): BaseRedditSource {
         return when(DataPreferences.RedditSource.fromValue(value)) {
             DataPreferences.RedditSource.REDDIT -> redditSource
-            DataPreferences.RedditSource.TEDDIT -> tedditSource
             DataPreferences.RedditSource.REDDIT_SCRAP -> redditScrapingSource
         }
     }

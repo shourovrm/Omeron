@@ -27,7 +27,6 @@ import com.omeron.data.model.preferences.ContentPreferences.PreferencesKeys
 import com.omeron.data.model.preferences.DataPreferences
 import com.omeron.data.model.preferences.DataPreferences.RedditSource.REDDIT
 import com.omeron.data.model.preferences.DataPreferences.RedditSource.REDDIT_SCRAP
-import com.omeron.data.model.preferences.DataPreferences.RedditSource.TEDDIT
 import com.omeron.data.model.preferences.MediaPreferences
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.UiPreferences
@@ -39,7 +38,6 @@ import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.getNavOptions
 import com.omeron.util.extension.latest
 import com.omeron.util.extension.launchRepeat
-import com.omeron.util.extension.restart
 import com.omeron.util.extension.serializable
 import com.omeron.util.extension.unredditApplication
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -198,7 +196,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         )?.apply {
             setOnPreferenceClickListener {
                 viewModel.redditSource.latest?.let { source ->
-                    showRedditSourceDialog(source.first, source.second)
+                    showRedditSourceDialog(source)
                 }
                 true
             }
@@ -236,7 +234,6 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         ) { _, bundle ->
             val source = bundle.serializable(RedditSourceDialogFragment.KEY_SOURCE)
                 ?: REDDIT
-            val instance = bundle.serializable<String>(RedditSourceDialogFragment.KEY_INSTANCE)
 
             when (source) {
                 REDDIT -> {
@@ -244,21 +241,10 @@ class PreferencesFragment : PreferenceFragmentCompat() {
                     updateRedditSource(source.value)
                 }
 
-                TEDDIT -> {
-                    // Show disclaimer to user
-                    showRedditSourceDisclaimer(
-                        R.string.dialog_reddit_source_disclaimer_body,
-                        source,
-                        instance,
-                        true
-                    )
-                }
-
                 REDDIT_SCRAP -> {
                     showRedditSourceDisclaimer(
                         R.string.dialog_reddit_source_scrap_disclaimer_body,
-                        source,
-                        null
+                        source
                     )
                 }
             }
@@ -325,20 +311,12 @@ class PreferencesFragment : PreferenceFragmentCompat() {
 
             launch {
                 viewModel.redditSource.collect { value ->
-                    DataPreferences.RedditSource.fromValue(value.first).let {
+                    DataPreferences.RedditSource.fromValue(value).let {
                         val summary = when (it) {
                             REDDIT -> getString(R.string.preference_reddit_source_reddit)
 
                             REDDIT_SCRAP -> {
                                 getString(R.string.preference_reddit_source_reddit_scrap)
-                            }
-
-                            TEDDIT -> {
-                                String.format(
-                                    "%s - %s",
-                                    getString(R.string.preference_reddit_source_teddit),
-                                    value.second
-                                )
                             }
                         }
                         sourcePreference?.summary = summary
@@ -406,20 +384,16 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             .show()
     }
 
-    private fun showRedditSourceDialog(source: Int, instance: String) {
+    private fun showRedditSourceDialog(source: Int) {
         RedditSourceDialogFragment.show(
             childFragmentManager,
-            DataPreferences.RedditSource.fromValue(source),
-            instance,
-            viewModel.tedditInstances
+            DataPreferences.RedditSource.fromValue(source)
         )
     }
 
     private fun showRedditSourceDisclaimer(
         @StringRes message: Int,
-        source: DataPreferences.RedditSource,
-        instance: String?,
-        restartRequired: Boolean = false
+        source: DataPreferences.RedditSource
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.dialog_reddit_source_disclaimer_title)
@@ -434,37 +408,14 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             .show()
             .apply {
                 getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                    updateRedditSource(source.value, instance)
-                    if (restartRequired) {
-                        showRestartRequiredDialog()
-                    }
+                    updateRedditSource(source.value)
                     dismiss()
                 }
             }
     }
 
-    private fun showRestartRequiredDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.dialog_restart_required_title)
-            .setMessage(R.string.dialog_restart_required_message)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                // Ignore
-            }
-            .setNeutralButton(R.string.dialog_restart_required_later) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setCancelable(false)
-            .show()
-            .apply {
-                getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                    requireContext().restart()
-                    dismiss()
-                }
-            }
-    }
-
-    private fun updateRedditSource(source: Int, instance: String? = null) {
-        viewModel.setRedditSource(source, instance)
+    private fun updateRedditSource(source: Int) {
+        viewModel.setRedditSource(source)
     }
 
     private fun openBackup() {

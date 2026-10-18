@@ -1,7 +1,6 @@
 package com.omeron.di
 
 import com.omeron.data.remote.RawJsonInterceptor
-import com.omeron.data.remote.TargetRedditInterceptor
 import com.omeron.data.remote.api.gfycat.GfycatApi
 import com.omeron.data.remote.api.imgur.ImgurApi
 import com.omeron.data.remote.api.imgur.adapter.AlbumDataAdapter
@@ -9,7 +8,6 @@ import com.omeron.data.remote.api.reddit.JsonInterceptor
 import com.omeron.data.remote.api.reddit.RedditApi
 import com.omeron.data.remote.api.reddit.RedditCookieInterceptor
 import com.omeron.data.remote.api.reddit.SortingConverterFactory
-import com.omeron.data.remote.api.reddit.TedditApi
 import com.omeron.data.remote.api.reddit.adapter.EditedAdapter
 import com.omeron.data.remote.api.reddit.adapter.MediaMetadataAdapter
 import com.omeron.data.remote.api.reddit.adapter.NullToEmptyStringAdapter
@@ -25,16 +23,12 @@ import com.omeron.data.remote.api.redgifs.RedgifsApi
 import com.omeron.data.remote.api.streamable.StreamableApi
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.util.LinkUtil
-import com.omeron.util.LinkValidator
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -63,10 +57,6 @@ object NetworkModule {
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class RedditOkHttp
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class TedditOkHttp
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
@@ -144,19 +134,6 @@ object NetworkModule {
             .build()
     }
 
-    @TedditOkHttp
-    @Provides
-    @Singleton
-    fun provideTedditOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(RawJsonInterceptor())
-            .addInterceptor(TargetRedditInterceptor())
-            .connectTimeout(TIMEOUT.first, TIMEOUT.second)
-            .readTimeout(TIMEOUT.first, TIMEOUT.second)
-            .writeTimeout(TIMEOUT.first, TIMEOUT.second)
-            .build()
-    }
-
     @GenericOkHttp
     @Provides
     @Singleton
@@ -223,33 +200,6 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
             .create(RedditApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideTedditApi(
-        @RedditMoshi moshi: Moshi,
-        @TedditOkHttp okHttpClient: OkHttpClient,
-        preferencesRepository: PreferencesRepository
-    ): TedditApi {
-        // Get the saved instance unless it's empty, then take Teddit's default instance
-        val url = runBlocking {
-            preferencesRepository
-                .getRedditSourceInstance()
-                .firstOrNull()
-                .takeUnless { it.isNullOrEmpty() }
-                ?: TedditApi.BASE_URL
-        }
-
-        val httpUrl = LinkValidator(url).validUrl ?: TedditApi.BASE_URL.toHttpUrl()
-
-        return Retrofit.Builder()
-            .baseUrl(httpUrl)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addConverterFactory(SortingConverterFactory())
-            .client(okHttpClient)
-            .build()
-            .create(TedditApi::class.java)
     }
 
     @Provides

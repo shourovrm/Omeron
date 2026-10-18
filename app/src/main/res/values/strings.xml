@@ -199,7 +199,6 @@
     <string name="dialog_reddit_source_title">Reddit Source</string>
 
     <string name="dialog_reddit_source_disclaimer_title">Disclaimer</string>
-    <string name="dialog_reddit_source_disclaimer_body">This is an experimental feature.\nTeddit doesn\'t provide an API for all of Reddit\'s content. Therefore, some requests will still be sent to reddit.com.</string>
     <string name="dialog_reddit_source_scrap_disclaimer_body">This is an experimental feature.\nSome data are missing compared to the official APIs, and some features are not implemented/implementable.\nThis source uses old.reddit.com.</string>
 
     <string name="empty_data">Nothing to see here…</string>
@@ -222,7 +221,6 @@
     <string name="dialog_logout">Log out</string>
     <string name="preference_reddit_source_reddit">Reddit</string>
     <string name="preference_reddit_source_reddit_scrap">Reddit (Web Scraping)</string>
-    <string name="preference_reddit_source_teddit">Teddit</string>
 
 
     <string name="preference_about">About</string>
@@ -293,9 +291,6 @@
     <string name="dialog_privacy_enhancer_title">Privacy Enhancer</string>
     <string name="dialog_privacy_enhancer_message">Would you like to redirect %1$s to %2$s?</string>
 
-    <string name="dialog_restart_required_title">Restart Required</string>
-    <string name="dialog_restart_required_message">A restart of the app is required to take the change into account.\nWould you like to restart now?</string>
-    <string name="dialog_restart_required_later">Maybe Later</string>
 
     <string name="profile_name_length_error">Profile name must be between 3 and 20 characters</string>
     <string name="profile_already_exists_error">Profile already exists</string>
