@@ -1,3 +1,91 @@
+# 0.6.7 - 2026/10/14
+
+### Changed
+- About screen and README now describe Omeron as a lightweight Reddit
+  client whose saved posts, history and subscriptions stay on the device
+
+# 0.6.6 - 2026/10/14
+
+### Added
+- Gallery posts in the Filmstrip viewer show a strip of thumbnails at the
+  top: the image on screen is outlined, the strip follows as you swipe,
+  and tapping a thumbnail opens that image
+
+# 0.6.5 - 2026/10/14
+
+### Added
+- Rotate button in the Filmstrip viewer: switches between landscape and
+  portrait while the viewer is open; a post page opened from it uses the
+  device's own orientation, and closing the viewer releases it
+
+### Fixed
+- Filmstrip viewer: a sideways or diagonal swipe no longer jumps to the
+  previous or next post; horizontal swipes stay inside a gallery
+- Post page: tapping the save button a second time removes the post from
+  saved
+
+# 0.6.4 - 2026/10/14
+
+### Fixed
+- Filmstrip viewer no longer crashes while a page is updating
+- A quick second swipe to the next post no longer brings the previous
+  post back
+
+# 0.6.3 - 2026/10/12
+
+### Added
+- Post page opened from a feed: the Filmstrip viewer opened on its media now
+  swipes up or down to the feed's next or previous media post
+- After swiping to another post there, the comments button opens that post's
+  page, and Back returns to the feed at the post last viewed
+
+# 0.6.2 - 2026/10/12
+
+### Fixed
+- Filmstrip viewer: tapping "Open post" in the details sheet could close the app
+
+# 0.6.1 - 2026/10/08
+
+### Changed
+- Search from a community page: the bottom Search tab opens limited to that
+  community, shown as a chip in the field; remove the chip to search all of
+  Reddit. Results use the same screen as the site-wide search
+- Search inside a community lists the newest matches first
+- The Search entry in a community's three-dot menu is removed
+
+### Fixed
+- Search inside a community returned nothing
+
+# 0.6.0 - 2026/10/08
+
+### Added
+- Search is a bottom-bar tab with an always-visible field, recent searches,
+  your communities as you type, and a hint for queries that are too short
+- Manage pages for communities and multireddits, opened from the drawer:
+  hide or show with one tap, add to a multireddit, unsubscribe, edit, delete
+- Update notice as a banner on the home screen instead of a dialog at launch
+- Settings: default post layout and "Start videos muted"
+- Profile: history grouped by day, saved count, profile switcher as a list
+
+### Changed
+- One media viewer everywhere: the post page, saved posts, history and links
+  in comments open the same full-screen viewer as the feed
+- Video in the viewer: a tap hides all controls, another tap brings them back
+  with a play/pause button in the centre
+- Bottom bar is Feed, Popular, Search, Multis and stays on community,
+  multireddit, user and search screens
+- Hidden communities and multireddits no longer appear in the drawer
+- Search results for communities and users use the same rows as the drawer
+- Settings regrouped and relabelled; "Blur" switches replace "Show preview"
+- Shorter About page
+
+### Fixed
+- About in the drawer did nothing
+- Multireddit feed jumped to the top when returning to the app
+- No "loading more" row or retry on user and search lists
+- A comment loading error turned into "no comments" after leaving the app
+- Search results could open the wrong link for some posts
+
 # 0.5.1 - 2026/10/07
 
 ### Added
