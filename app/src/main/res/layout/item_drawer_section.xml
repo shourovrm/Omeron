@@ -5,30 +5,28 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="8dp"
-    android:paddingTop="8dp">
+    android:paddingStart="@dimen/space_16"
+    android:paddingEnd="@dimen/space_8"
+    android:paddingTop="@dimen/space_8">
 
     <TextView
         android:id="@+id/section_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAppearance="?attr/textAppearanceCaption"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.App.LabelLarge"
         android:accessibilityHeading="true"
         tools:text="Communities"/>
 
     <TextView
         android:id="@+id/section_manage"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/space_48"
         android:gravity="center_vertical"
-        android:paddingHorizontal="8dp"
+        android:paddingHorizontal="@dimen/space_8"
         android:background="?attr/selectableItemBackground"
         android:text="@string/drawer_manage"
-        android:textAppearance="?attr/textAppearanceCaption"
-        android:textColor="@color/colorPrimaryLight"
-        android:textStyle="bold"/>
+        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+        android:textColor="?attr/colorPrimary"/>
 
 </LinearLayout>

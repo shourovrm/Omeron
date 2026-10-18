@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:paddingBottom="@dimen/space_16">
 
             <include
                 android:id="@+id/name_header"
@@ -30,7 +30,7 @@
                 android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/space_16"
                 android:hint="@string/dialog_rename_multireddit_hint"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -59,10 +59,10 @@
             <EditText
                 android:id="@+id/input_add_member"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="16dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:layout_height="@dimen/space_48"
+                android:layout_marginHorizontal="@dimen/space_16"
+                android:paddingStart="@dimen/space_12"
+                android:paddingEnd="@dimen/space_12"
                 android:background="@drawable/background_drawer_filter"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="10dp"
@@ -80,9 +80,9 @@
                 android:id="@+id/button_add_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="@dimen/space_48"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="@dimen/space_16"
                 android:background="?attr/selectableItemBackground"
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:visibility="gone"
@@ -94,7 +94,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_subreddit_search_results"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="@dimen/multireddit_edit_list_height"
                 android:nestedScrollingEnabled="true"
                 android:overScrollMode="never"
                 android:visibility="gone"

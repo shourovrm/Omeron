@@ -4,28 +4,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="48dp"
+    android:minHeight="@dimen/list_item_one_line"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
+    android:paddingStart="@dimen/space_16"
+    android:paddingEnd="@dimen/space_16"
+    android:paddingTop="@dimen/space_4"
+    android:paddingBottom="@dimen/space_4"
     android:background="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/row_icon"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:src="@drawable/ic_multireddit"
-        android:padding="2dp"
+        android:padding="@dimen/space_8"
         android:importantForAccessibility="no"
         app:tint="?attr/colorControlNormal"/>
 
     <com.omeron.ui.common.widget.AvatarView
         android:id="@+id/row_avatar"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:importantForAccessibility="no"
         tools:text="AN"/>
 
@@ -34,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="@dimen/space_12"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceBody1"
@@ -44,7 +44,7 @@
         android:id="@+id/row_end_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/space_8"
         android:textAppearance="?attr/textAppearanceCaption"
         android:textColor="@color/text_color_post_info"
         tools:text="3 members"/>

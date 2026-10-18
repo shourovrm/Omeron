@@ -94,10 +94,10 @@
             app:layout_constraintTop_toBottomOf="@id/guideline_app_bar"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="8dp">
+            android:paddingStart="@dimen/space_16"
+            android:paddingEnd="@dimen/space_16"
+            android:paddingTop="@dimen/space_4"
+            android:paddingBottom="@dimen/space_8">
 
             <com.omeron.ui.common.widget.AvatarView
                 android:id="@+id/profile_image"
@@ -111,7 +111,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="@dimen/space_12"
                 android:orientation="vertical">
 
                 <TextView
@@ -120,9 +120,8 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:fontFamily="@font/inter_semibold"
                     android:text="@{profile.name}"
-                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textAppearance="@style/TextAppearance.App.TitleMedium"
                     tools:text="Default profile"/>
 
                 <TextView
@@ -141,7 +140,7 @@
                 android:id="@+id/switch_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/space_8"
                 android:text="@string/profile_switch"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 

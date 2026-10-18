@@ -30,13 +30,13 @@
     <!-- Inside the page rather than the overlay, so a swipe that starts on it still pages. -->
     <ImageButton
         android:id="@+id/button_play_pause"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/space_64"
+        android:layout_height="@dimen/space_64"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="12dp"
+        android:padding="@dimen/space_12"
         android:scaleType="fitCenter"
         android:background="@drawable/filmstrip_play_pause_background"
         android:contentDescription="@string/filmstrip_pause_description"

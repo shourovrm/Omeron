@@ -10,7 +10,7 @@
         android:id="@+id/text_explanation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="@dimen/space_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,12 +44,12 @@
         android:id="@+id/text_filename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:padding="@dimen/space_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pick_button"
         android:textColor="@color/text_color_secondary"
-        android:textSize="12sp"
+        android:textAppearance="@style/TextAppearance.App.BodySmall"
         tools:text="backup.json"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

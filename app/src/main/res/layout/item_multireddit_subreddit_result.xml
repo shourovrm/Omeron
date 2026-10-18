@@ -7,13 +7,13 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground"
-    android:paddingHorizontal="8dp"
-    android:paddingVertical="8dp">
+    android:paddingHorizontal="@dimen/space_8"
+    android:paddingVertical="@dimen/space_8">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_subreddit"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         app:shapeAppearanceOverlay="@style/CircularImageViewStyle"
         tools:src="@tools:sample/avatars"/>
 
@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/space_8"
         android:ellipsize="end"
         android:maxLines="1"
         tools:text="r/AndroidDev"/>

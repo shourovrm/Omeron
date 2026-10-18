@@ -3,16 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:paddingBottom="@dimen/space_8">
 
     <TextView
         android:id="@+id/text_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
-        android:fontFamily="@font/inter_semibold"
+        android:paddingHorizontal="@dimen/space_16"
+        android:paddingTop="@dimen/space_16"
+        android:paddingBottom="@dimen/space_8"
         android:text="@string/profile_sheet_title"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:accessibilityHeading="true"/>

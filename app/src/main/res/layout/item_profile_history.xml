@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="64dp"
+    android:minHeight="@dimen/space_64"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp"
+    android:paddingHorizontal="@dimen/space_16"
+    android:paddingVertical="@dimen/space_8"
     android:background="?attr/selectableItemBackground">
 
     <!-- Without a preview the thumbnail stays an empty block in the neutral card colour. -->
@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="@dimen/space_12"
         android:orientation="vertical">
 
         <TextView
@@ -34,8 +34,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:fontFamily="@font/inter_semibold"
-            android:textAppearance="?attr/textAppearanceBody1"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
             tools:text="My first hand-wired build, 62 keys"/>
 
         <TextView

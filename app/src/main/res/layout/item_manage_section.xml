@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="16dp"
+    android:paddingStart="@dimen/space_16"
+    android:paddingEnd="@dimen/space_16"
+    android:paddingTop="@dimen/space_16"
     android:paddingBottom="6dp">
 
     <TextView
@@ -14,10 +14,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAllCaps="true"
-        android:textAppearance="?attr/textAppearanceCaption"
+        android:textAppearance="@style/TextAppearance.App.LabelLarge"
         android:textColor="@color/text_color_post_info"
-        android:textStyle="bold"
         android:accessibilityHeading="true"
         tools:text="Shown"/>
 
@@ -25,8 +23,8 @@
         android:id="@+id/section_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textAppearance="?attr/textAppearanceCaption"
+        android:layout_marginStart="@dimen/space_8"
+        android:textAppearance="@style/TextAppearance.App.LabelLarge"
         android:textColor="@color/text_color_post_info"
         tools:text="4"/>
 

@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="56dp"
+    android:minHeight="@dimen/space_56"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
+    android:paddingStart="@dimen/space_16"
+    android:paddingEnd="@dimen/space_16"
     android:background="?attr/selectableItemBackground">
 
     <ImageView
@@ -22,10 +22,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
-        android:fontFamily="@font/inter_semibold"
+        android:layout_marginStart="@dimen/space_12"
         android:text="@string/profile_new"
-        android:textAppearance="?attr/textAppearanceBody1"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
         android:textColor="@color/colorPrimary"/>
 
 </LinearLayout>

@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="56dp"
+    android:minHeight="@dimen/space_56"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="4dp"
+    android:paddingStart="@dimen/space_16"
+    android:paddingEnd="@dimen/space_4"
     android:background="?attr/selectableItemBackground">
 
     <ImageView
@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="@dimen/space_12"
         android:orientation="vertical">
 
         <TextView
@@ -41,8 +41,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:fontFamily="@font/inter_semibold"
-            android:textAppearance="?attr/textAppearanceBody1"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
             tools:text="r/android"/>
 
         <TextView
@@ -60,8 +59,8 @@
     <ImageButton
         android:id="@+id/button_toggle_hidden"
         tools:ignore="ContentDescription"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/space_48"
+        android:layout_height="@dimen/space_48"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:tint="@color/icon_tint"
         android:src="@drawable/ic_visibility"
@@ -69,8 +68,8 @@
 
     <ImageButton
         android:id="@+id/button_more"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/space_48"
+        android:layout_height="@dimen/space_48"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:tint="@color/icon_tint"
         android:src="@drawable/ic_more"

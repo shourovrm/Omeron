@@ -31,6 +31,9 @@
     <dimen name="bottom_sheet_radius">28dp</dimen>
     <dimen name="divider_thickness">1dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
+    <dimen name="filmstrip_seek_bar_height">3dp</dimen>
+    <dimen name="multireddit_edit_list_height">240dp</dimen>
+    <dimen name="backup_loading_size">200dp</dimen>
     <dimen name="search_scope_chip_max_width">160dp</dimen>
 
     <!-- Post cards sit 16dp from the screen edge with an 8dp gap, so each card keeps half the gap. -->
