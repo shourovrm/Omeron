@@ -80,8 +80,8 @@ class SubscriptionMenus(
         MaterialAlertDialogBuilder(context)
             .setTitle(name)
             .setMessage(context.getString(R.string.dialog_unsubscribe_message, name))
-            .setPositiveButton(R.string.dialog_yes) { _, _ -> viewModel.unsubscribe(name) }
-            .setNegativeButton(R.string.dialog_no) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.subreddit_button_unsubscribe) { _, _ -> viewModel.unsubscribe(name) }
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
@@ -89,8 +89,8 @@ class SubscriptionMenus(
         MaterialAlertDialogBuilder(context)
             .setTitle(R.string.dialog_delete_multireddit_title)
             .setMessage(R.string.dialog_delete_multireddit_message)
-            .setPositiveButton(R.string.dialog_yes) { _, _ -> viewModel.deleteMultireddit(multiredditId) }
-            .setNegativeButton(R.string.dialog_no) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.dialog_delete_multireddit_button) { _, _ -> viewModel.deleteMultireddit(multiredditId) }
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
             .setCancelable(false)
             .show()
     }

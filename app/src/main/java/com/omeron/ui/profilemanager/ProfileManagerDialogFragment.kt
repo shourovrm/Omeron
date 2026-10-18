@@ -158,10 +158,10 @@ class ProfileManagerDialogFragment : BottomSheetDialogFragment(),
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.dialog_delete_profile_title)
             .setMessage(R.string.dialog_delete_profile_message)
-            .setPositiveButton(R.string.dialog_yes) { _, _ ->
+            .setPositiveButton(R.string.dialog_delete_profile_button) { _, _ ->
                 viewModel.deleteProfile(profile)
             }
-            .setNegativeButton(R.string.dialog_no) { dialog, _ ->
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
                 dialog.dismiss()
             }
             .setCancelable(false)

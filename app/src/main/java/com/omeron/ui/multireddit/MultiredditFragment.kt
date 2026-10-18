@@ -229,11 +229,11 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.dialog_delete_multireddit_title)
             .setMessage(R.string.dialog_delete_multireddit_message)
-            .setPositiveButton(R.string.dialog_yes) { _, _ ->
+            .setPositiveButton(R.string.dialog_delete_multireddit_button) { _, _ ->
                 viewModel.delete()
                 onBackPressed()
             }
-            .setNegativeButton(R.string.dialog_no) { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
             .setCancelable(false)
             .show()
     }

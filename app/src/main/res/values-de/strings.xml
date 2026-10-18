@@ -56,8 +56,6 @@
     <string name="tab_search_subreddit">Subreddits</string>
     <string name="tab_search_user">Benutzer</string>
 
-    <string name="subreddit_button_unsubscribe">Abmelden</string>
-    <string name="subreddit_button_subscribe">Anmelden</string>
     <string name="subreddit_subscribers">Abonnenten</string>
     <string name="subreddit_active_users">Online</string>
 
@@ -81,14 +79,12 @@
 
     <string name="reddit_user_prefixed">u/%1$s</string>
 
-    <string name="menu_open_link">Extern öffnen</string>
     <string name="menu_share_link">Link teilen</string>
     <string name="menu_copy_link">Link kopieren</string>
     <string name="menu_share_post">Beitrag teilen</string>
 
     <string name="post_load_discussion">Komplette Diskussion anzeigen</string>
 
-    <string name="network_retry_message">Etwas ist schief gelaufen</string>
     <string name="network_retry_action">Erneut versuchen</string>
 
     <string name="dialog_subreddit_not_found_title">Subreddit nicht gefunden</string>
@@ -109,7 +105,6 @@
 
 
     <string name="empty_data">Nichts zu sehen hier…</string>
-    <string name="empty_data_subscriptions">Sie haben derzeit keine Abonnements.\nVerwenden Sie die Suchfunktion um nach Subreddits zu suchen.</string>
 
 
     <string name="preference_night_mode">Thema</string>

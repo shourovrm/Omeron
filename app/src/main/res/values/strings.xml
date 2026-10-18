@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Omeron</string>
-    <string name="app_description">Omeron is a lightweight Reddit client (a fork of Stealth). Saved posts, history and subscriptions stay on this device.\n\nFree software, licensed under the GNU GPLv3.</string>
+    <string name="app_description">Omeron is a lightweight Reddit client. Saved posts, history and your communities stay on this device.\n\nFree software under the GNU GPLv3.</string>
     <string name="handle_link_label">Open in Omeron</string>
 
     <string name="github_link" translatable="false">https://github.com/shourovrm/Omeron</string>
@@ -27,10 +27,10 @@
 
     <string name="sort_time_hour">Now</string>
     <string name="sort_time_day">Today</string>
-    <string name="sort_time_week">This Week</string>
-    <string name="sort_time_month">This Month</string>
-    <string name="sort_time_year">This Year</string>
-    <string name="sort_time_all">All Time</string>
+    <string name="sort_time_week">This week</string>
+    <string name="sort_time_month">This month</string>
+    <string name="sort_time_year">This year</string>
+    <string name="sort_time_all">All time</string>
 
     <string name="sort_time_hour_short">Now</string>
     <string name="sort_time_day_short">Day</string>
@@ -56,20 +56,20 @@
 
 
 
-    <string name="dialog_unsubscribe_message">Unsubscribe from r/%1$s?</string>
+    <string name="dialog_unsubscribe_message">Leave r/%1$s?</string>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
 
-    <string name="dialog_create_multireddit_title">Create Multireddit</string>
+    <string name="dialog_create_multireddit_title">Create multi</string>
     <string name="dialog_create_multireddit_hint">Name</string>
-    <string name="dialog_create_multireddit_button">Create</string>
+    <string name="dialog_create_multireddit_button">Create multi</string>
 
     <string name="dialog_rename_multireddit_hint">Name</string>
-    <string name="dialog_delete_multireddit_title">Delete Multireddit</string>
-    <string name="dialog_delete_multireddit_message">Are you sure you want to delete this multireddit?</string>
+    <string name="dialog_delete_multireddit_title">Delete multi</string>
+    <string name="dialog_delete_multireddit_message">Delete this multi? You cannot undo this.</string>
 
     <string name="multireddit_member_count">%d members</string>
-    <string name="multireddit_create">Create multireddit</string>
+    <string name="multireddit_create">Create multi</string>
 
     <string name="multireddit_menu_edit">Edit</string>
     <string name="multireddit_menu_hide">Hide</string>
@@ -77,9 +77,9 @@
     <string name="multireddit_menu_delete">Delete</string>
 
 
-    <string name="fragment_preferences_label">Preferences</string>
+    <string name="fragment_preferences_label">Settings</string>
 
-    <string name="layout_toggle">Toggle layout</string>
+    <string name="layout_toggle">Change layout</string>
     <string name="layout_toggle_card">Card layout. Tap to change layout</string>
     <string name="layout_toggle_gallery">Gallery layout. Tap to change layout</string>
     <string name="layout_toggle_compact">Compact layout. Tap to change layout</string>
@@ -121,22 +121,22 @@
     <string name="tab_search_subreddit">Communities</string>
     <string name="tab_search_user">Users</string>
 
-    <string name="subreddit_button_unsubscribe">Unsubscribe</string>
-    <string name="subreddit_button_subscribe">Subscribe</string>
+    <string name="subreddit_button_unsubscribe">Leave</string>
+    <string name="subreddit_button_subscribe">Join</string>
     <string name="subreddit_subscribers">Subscribers</string>
     <string name="subreddit_active_users">Online</string>
 
-    <string name="user_post_karma">Post Karma</string>
-    <string name="user_comment_karma">Comment Karma</string>
-    <string name="user_cake_day">Cake Day</string>
+    <string name="user_post_karma">Post karma</string>
+    <string name="user_comment_karma">Comment karma</string>
+    <string name="user_cake_day">Cake day</string>
 
     <string name="flair_nsfw">NSFW</string>
     <string name="flair_spoiler">Spoiler</string>
     <string name="flair_oc">OC</string>
 
     <string name="comment_score">%1$s pts</string>
-    <string name="comment_more">More (%1$d)</string>
-    <string name="comment_more_error">Error loading more comments. Tap to retry.</string>
+    <string name="comment_more">Load more (%1$d)</string>
+    <string name="comment_more_error">Could not load more comments. Tap to try again.</string>
     <string name="comment_date_edited">%1$s* (%2$s)</string>
     <string name="comment_controversiality">✝</string>
     <string name="comment_op">OP</string>
@@ -146,26 +146,26 @@
 
     <string name="reddit_user_prefixed">u/%1$s</string>
 
-    <string name="menu_open_link">Open Externally</string>
-    <string name="menu_share_link">Share Link</string>
-    <string name="menu_copy_link">Copy Link</string>
-    <string name="menu_share_post">Share Post</string>
-    <string name="menu_remove_history">Remove from History</string>
-    <string name="menu_remove_saved">Remove from Saved</string>
+    <string name="menu_open_link">Open in browser</string>
+    <string name="menu_share_link">Share link</string>
+    <string name="menu_copy_link">Copy link</string>
+    <string name="menu_share_post">Share post</string>
+    <string name="menu_remove_history">Remove from history</string>
+    <string name="menu_remove_saved">Remove from saved</string>
 
-    <string name="post_load_discussion">View Entire Discussion</string>
+    <string name="post_load_discussion">View all comments</string>
     <string name="post_crosspost">Crosspost</string>
 
-    <string name="network_retry_message">Something went wrong</string>
+    <string name="network_retry_message">Could not load this page. Check your connection.</string>
     <string name="network_retry_action">Retry</string>
-    <string name="login_required_message">Reddit needs you to log in to load posts.</string>
+    <string name="login_required_message">Reddit requires a login to show posts. Log in once with a throwaway account; Omeron keeps only what it needs to read Reddit as that account.</string>
     <string name="login_required_action">Log in</string>
 
-    <string name="dialog_subreddit_not_found_title">Subreddit not found</string>
-    <string name="dialog_subreddit_not_found_body">This subreddit does not exist or may have been banned.</string>
+    <string name="dialog_subreddit_not_found_title">Community not found</string>
+    <string name="dialog_subreddit_not_found_body">This community does not exist or Reddit has banned it.</string>
     <string name="dialog_ok">OK</string>
-    <string name="dialog_subreddit_unauthorized_title">Subreddit is private</string>
-    <string name="dialog_subreddit_unauthorized_body">You do not have access to this subreddit.</string>
+    <string name="dialog_subreddit_unauthorized_title">Community is private</string>
+    <string name="dialog_subreddit_unauthorized_body">You do not have access to this community.</string>
 
     <string name="dialog_user_not_found_title">User not found</string>
     <string name="dialog_user_not_found_body">This user does not exist.</string>
@@ -173,53 +173,53 @@
     <string name="dialog_user_unauthorized_body">This user has been suspended.</string>
 
     <string name="dialog_media_not_found_title">Media not found</string>
-    <string name="dialog_media_not_found_body">This image or video you are looking for does not exist or may have been removed.</string>
+    <string name="dialog_media_not_found_body">This image or video no longer exists.</string>
 
     <string name="dialog_night_mode_title">Theme</string>
 
 
-    <string name="dialog_reddit_source_title">Reddit Source</string>
+    <string name="dialog_reddit_source_title">Reddit connection</string>
 
-    <string name="dialog_reddit_source_disclaimer_title">Disclaimer</string>
-    <string name="dialog_reddit_source_scrap_disclaimer_body">This is an experimental feature.\nSome data are missing compared to the official APIs, and some features are not implemented/implementable.\nThis source uses old.reddit.com.</string>
+    <string name="dialog_reddit_source_disclaimer_title">Experimental</string>
+    <string name="dialog_reddit_source_scrap_disclaimer_body">This option is experimental. Some details are missing and some features do not work. Omeron reads the old Reddit web pages.</string>
 
-    <string name="empty_data">Nothing to see here…</string>
-    <string name="empty_data_subscriptions">You have no subscriptions yet.\nUse the search feature to look for Subreddits.</string>
+    <string name="empty_data">Nothing here yet</string>
+    <string name="empty_data_subscriptions">You have not joined any communities. Search to find some.</string>
 
 
     <string name="preference_night_mode">Theme</string>
-    <string name="preference_night_mode_light">Light Theme</string>
-    <string name="preference_night_mode_dark">Dark Theme</string>
-    <string name="preference_night_mode_system">Follow System</string>
-    <string name="preference_night_mode_amoled">Amoled</string>
+    <string name="preference_night_mode_light">Light</string>
+    <string name="preference_night_mode_dark">Dark</string>
+    <string name="preference_night_mode_system">Follow system</string>
+    <string name="preference_night_mode_amoled">AMOLED black</string>
 
     <string name="preference_left_handed_mode">Left-handed mode</string>
 
 
-    <string name="preference_reddit_account_logged_out">Not logged in. Reddit now requires an account for old.reddit; tap to log in</string>
+    <string name="preference_reddit_account_logged_out">Log in once with a throwaway account</string>
     <string name="preference_reddit_account_logged_in">Logged in. Tap to log out</string>
-    <string name="dialog_logout_title">Log out?</string>
-    <string name="dialog_logout_message">The session cookies stored on this device will be deleted.</string>
+    <string name="dialog_logout_title">Log out</string>
+    <string name="dialog_logout_message">Omeron will remove the Reddit login saved on this device. Log in again to keep reading.</string>
     <string name="dialog_logout">Log out</string>
-    <string name="preference_reddit_source_reddit">Reddit</string>
-    <string name="preference_reddit_source_reddit_scrap">Reddit (Web Scraping)</string>
+    <string name="preference_reddit_source_reddit">Official Reddit data</string>
+    <string name="preference_reddit_source_reddit_scrap">Reddit web pages</string>
 
 
     <string name="preference_about">About</string>
 
-    <string name="preference_privacy_enhancer_summary">Redirect links to privacy-friendly frontends</string>
-    <string name="preference_privacy_enhancer_enabled">Enabled</string>
-    <string name="preference_privacy_enhancer_disabled">Disabled</string>
+    <string name="preference_privacy_enhancer_summary">Open links in privacy-friendly sites</string>
+    <string name="preference_privacy_enhancer_enabled">On</string>
+    <string name="preference_privacy_enhancer_disabled">Off</string>
 
     <string name="preference_privacy_enhancer_service_summary">%1$s - %2$s</string>
 
-    <string name="instance_hint">Instance</string>
-    <string name="instance_empty_error">Instance cannot be empty</string>
-    <string name="instance_invalid_error">Instance URL is invalid</string>
+    <string name="instance_hint">Site address</string>
+    <string name="instance_empty_error">Enter a site address</string>
+    <string name="instance_invalid_error">Enter a valid web address</string>
 
-    <string name="redirect_mode_on">ON</string>
-    <string name="redirect_mode_off">OFF</string>
-    <string name="redirect_mode_ask">Always Ask</string>
+    <string name="redirect_mode_on">On</string>
+    <string name="redirect_mode_off">Off</string>
+    <string name="redirect_mode_ask">Always ask</string>
 
     <string name="fragment_about_label">About</string>
 
@@ -227,19 +227,19 @@
     <string name="navigation_label_search">Search</string>
     <string name="navigation_label_settings">Settings</string>
     <string name="navigation_label_profile">Profile</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_open">Open menu</string>
     <string name="drawer_switch_profile">Switch profile</string>
     <string name="drawer_filter_hint">Find a community</string>
-    <string name="drawer_section_multireddits">Multireddits</string>
+    <string name="drawer_section_multireddits">Multis</string>
     <string name="drawer_section_communities">Communities</string>
     <string name="drawer_community_name">r/%s</string>
-    <string name="drawer_no_subscriptions">Subscribe from a subreddit page and it will show up here.</string>
+    <string name="drawer_no_subscriptions">Join a community and it will show up here.</string>
     <string name="drawer_no_match">No match</string>
 
     <string name="tab_home_feed">Feed</string>
     <string name="tab_home_popular">Popular</string>
     <string name="tab_home_multis">Multis</string>
-    <string name="empty_multireddits">No multireddits yet — use Manage in the drawer to create one</string>
+    <string name="empty_multireddits">No multis yet. Use Manage in the menu to create one.</string>
 
     <string name="save">Save</string>
     <string name="unsave">Unsave</string>
@@ -247,100 +247,103 @@
 
     <string name="profile_search_hint">Search</string>
 
-    <string name="dialog_clear_history_title">Clear History</string>
-    <string name="dialog_clear_history_message">Clear all browsing history for this profile? This can\'t be undone.</string>
+    <string name="dialog_clear_history_title">Clear history</string>
+    <string name="dialog_clear_history_message">Clear all history for this profile? You cannot undo this.</string>
 
-    <string name="dialog_create_profile_title">Create Profile</string>
-    <string name="dialog_create_profile_button">Create</string>
+    <string name="dialog_create_profile_title">Create profile</string>
+    <string name="dialog_create_profile_button">Create profile</string>
     <string name="dialog_create_profile_hint">Name</string>
 
-    <string name="dialog_rename_profile_title">Rename Profile</string>
-    <string name="dialog_rename_profile_button">Rename</string>
+    <string name="dialog_rename_profile_title">Rename profile</string>
+    <string name="dialog_rename_profile_button">Rename profile</string>
 
-    <string name="dialog_delete_profile_title">Delete Profile</string>
-    <string name="dialog_delete_profile_message">Are you sure you want to delete this profile?\nSubscriptions, history and saved items for this profile will be lost.</string>
+    <string name="dialog_delete_profile_title">Delete profile</string>
+    <string name="dialog_delete_profile_message">Delete this profile? Its communities, history and saved items will be lost.</string>
 
     <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_yes">Yes</string>
-    <string name="dialog_no">No</string>
+    <string name="dialog_delete_multireddit_button">Delete multi</string>
+    <string name="dialog_delete_profile_button">Delete profile</string>
+    <string name="dialog_privacy_enhancer_accept">Open private link</string>
+    <string name="dialog_privacy_enhancer_decline">Open original</string>
+    <string name="link_clipboard_label">Link from Reddit</string>
 
-    <string name="dialog_privacy_enhancer_title">Privacy Enhancer</string>
-    <string name="dialog_privacy_enhancer_message">Would you like to redirect %1$s to %2$s?</string>
-
-
-    <string name="profile_name_length_error">Profile name must be between 3 and 20 characters</string>
-    <string name="profile_already_exists_error">Profile already exists</string>
-    <string name="profile_blank_error">Profile name cannot be blank</string>
+    <string name="dialog_privacy_enhancer_title">Open privately</string>
+    <string name="dialog_privacy_enhancer_message">Open this link on %2$s instead of %1$s?</string>
 
 
+    <string name="profile_name_length_error">Profile name needs 3 to 20 characters</string>
+    <string name="profile_already_exists_error">A profile with this name exists. Choose another name.</string>
+    <string name="profile_blank_error">Enter a profile name</string>
 
-    <string name="notification_download_title">Download Manager</string>
-    <string name="notification_download_content_pending">Download in progress</string>
+
+
+    <string name="notification_download_title">Downloads</string>
+    <string name="notification_download_content_pending">Downloading</string>
     <string name="notification_download_content_failed">Download failed</string>
-    <string name="notification_download_content_success">Download completed</string>
+    <string name="notification_download_content_success">Download complete</string>
 
     <string name="notification_download_action_retry">Retry</string>
     <string name="notification_download_action_cancel">Cancel</string>
 
-    <string name="notification_download_channel_name">Download Manager</string>
-    <string name="notification_download_channel_description">Media downloader</string>
+    <string name="notification_download_channel_name">Downloads</string>
+    <string name="notification_download_channel_description">Progress of image and video downloads</string>
 
     <string name="file_date_format">yyyyMMdd_HHmmss</string>
 
-    <string name="snackbar_permission_storage_request_message">Permission to write to external storage is required</string>
-    <string name="snackbar_permission_storage_denied_message">Permission to write to external storage was denied</string>
+    <string name="snackbar_permission_storage_request_message">Omeron needs storage access to save downloads</string>
+    <string name="snackbar_permission_storage_denied_message">Storage access was denied. Allow it in system settings to download.</string>
 
-    <string name="toast_download_started">Download in progress…</string>
+    <string name="toast_download_started">Downloading…</string>
 
 
     <string name="backup_operation_backup">Backup</string>
     <string name="backup_operation_restore">Restore</string>
 
-    <string name="backup_location_button_pick">Pick File</string>
-    <string name="backup_location_explanation_backup">Select a file to back up your profiles, subscriptions, and saved items</string>
-    <string name="backup_location_explanation_restore_omeron">Select an Omeron backup file to restore your profiles, subscriptions, and saved items</string>
-    <string name="backup_location_explanation_restore_reddit">Select Reddit\'s "mine.json" file to import your Reddit\'s subscriptions to Omeron</string>
+    <string name="backup_location_button_pick">Choose file</string>
+    <string name="backup_location_explanation_backup">Choose a file for your profiles, communities and saved items</string>
+    <string name="backup_location_explanation_restore_omeron">Choose an Omeron backup file to restore</string>
+    <string name="backup_location_explanation_restore_reddit">Choose the file named mine.json from your Reddit data export</string>
 
-    <string name="backup_loading_success_backup">Backup complete!</string>
-    <string name="backup_loading_success_restore_omeron">Omeron backup restored successfully!</string>
-    <string name="backup_loading_success_restore_reddit">Reddit data imported successfully!</string>
+    <string name="backup_loading_success_backup">Backup saved.</string>
+    <string name="backup_loading_success_restore_omeron">Backup restored.</string>
+    <string name="backup_loading_success_restore_reddit">Reddit communities imported.</string>
 
-    <string name="backup_loading_failed_backup">Something went wrong while backing up your data.\nPlease try again.</string>
-    <string name="backup_loading_failed_restore_omeron">Something went wrong while restoring up your data.\nPlease try again.</string>
-    <string name="backup_loading_failed_restore_reddit">Something went wrong while importing your data.\nPlease try again.</string>
+    <string name="backup_loading_failed_backup">Backup failed. Choose a file and try again.</string>
+    <string name="backup_loading_failed_restore_omeron">Restore failed. Check the file and try again.</string>
+    <string name="backup_loading_failed_restore_reddit">Import failed. Check the file and try again.</string>
 
-    <string name="backup_button_previous">Previous</string>
+    <string name="backup_button_previous">Back</string>
     <string name="backup_button_next">Next</string>
-    <string name="backup_button_lets_go">Let\'s Go</string>
-    <string name="backup_button_finish">Finish</string>
+    <string name="backup_button_lets_go">Start</string>
+    <string name="backup_button_finish">Done</string>
 
 
     <string name="menu_sidebar">Sidebar</string>
     <string name="menu_refresh">Refresh</string>
-    <string name="add_to_multireddit">Add to multireddit</string>
+    <string name="add_to_multireddit">Add to multi</string>
 
-    <string name="last_refresh">Last refresh: %s</string>
+    <string name="last_refresh">Updated %s</string>
 
 
-    <string name="dialog_policy_disclaimer_title">Reddit\'s API Policy Change</string>
-    <string name="dialog_policy_disclaimer_message">In the coming weeks, a new policy regarding Reddit\'s API will come into effect. Reddit will stop providing a free API (among other things), thus putting a stop to most third-party apps, including Omeron.\n\nTo try to circumvent that issue, a new source for the content has been implemented (available in the preferences, under Reddit Source) based on old.reddit.com. It might not work for long after the policy change, or even at all, but at least it does not rely on any API.\n\nYou can find more information about the new policy <a href="https://www.reddit.com/r/reddit/comments/12qwagm/an_update_regarding_reddits_api/">here</a>.\n\nPlease feel free to use the contact information available in the About section (email, GitLab, or the Matrix channel) if you have any questions.</string>
+    <string name="dialog_policy_disclaimer_title">Reddit policy change</string>
+    <string name="dialog_policy_disclaimer_message">Reddit is ending free access for third-party apps, which may stop Omeron from loading posts. Omeron now reads the old Reddit web pages instead, so it may keep working, but it could stop at any time.\n\n<a href="https://www.reddit.com/r/reddit/comments/12qwagm/an_update_regarding_reddits_api/">Read the announcement from Reddit</a>.\n\nFor questions, use the contact details in About.</string>
 
     <string name="snackbar_policy_disclaimer_message">%1$s might stop working soon</string>
-    <string name="snackbar_policy_disclaimer_action">Learn More</string>
+    <string name="snackbar_policy_disclaimer_action">Learn more</string>
 
     <string name="update_available">Update %1$s available</string>
     <string name="update_message">A new version of Omeron is available.</string>
     <string name="update_now">Update</string>
     <string name="update_later">Later</string>
     <string name="preference_check_for_updates">Check for updates</string>
-    <string name="update_up_to_date">You\'re up to date</string>
-    <string name="update_check_failed">Couldn\'t check for updates</string>
+    <string name="update_up_to_date">Omeron is up to date</string>
+    <string name="update_check_failed">Could not check for updates. Try again later.</string>
 
     <string name="manage_filter_hint">Filter communities</string>
     <string name="manage_section_shown">Shown</string>
     <string name="manage_section_people">People you follow</string>
-    <string name="manage_section_hidden_communities">Hidden from feed and drawer</string>
-    <string name="manage_section_hidden_multireddits">Hidden from Multis and drawer</string>
+    <string name="manage_section_hidden_communities">Hidden from feed and menu</string>
+    <string name="manage_section_hidden_multireddits">Hidden from Multis and menu</string>
     <string name="manage_user_name">u/%s</string>
     <string name="manage_joined">Joined %1$s</string>
     <string name="manage_joined_in">Joined %1$s · in %2$s</string>
@@ -350,9 +353,9 @@
     <string name="manage_show">Show</string>
     <string name="manage_more_actions">More actions</string>
     <string name="manage_new">New</string>
-    <string name="manage_empty_multireddits">You have no multireddits yet.\nTap New to create one.</string>
-    <string name="multireddit_new_title">New multireddit</string>
-    <string name="multireddit_edit_title">Edit multireddit</string>
+    <string name="manage_empty_multireddits">No multis yet. Tap New to create one.</string>
+    <string name="multireddit_new_title">New multi</string>
+    <string name="multireddit_edit_title">Edit multi</string>
     <string name="multireddit_save">Save</string>
     <string name="multireddit_name_label">Name</string>
     <string name="multireddit_add_label">Add</string>
@@ -384,7 +387,7 @@
     <string name="settings_post_layout_gallery">Gallery</string>
     <string name="settings_post_layout_compact">Compact</string>
     <string name="settings_post_layout_filmstrip">Filmstrip</string>
-    <string name="settings_left_handed_mode_summary">The bottom bar slides out to the left instead of the right when you scroll</string>
+    <string name="settings_left_handed_mode_summary">Hide the bottom bar to the left when scrolling</string>
 
     <string name="settings_show_nsfw_posts">Show NSFW posts</string>
     <string name="settings_blur_nsfw_previews">Blur NSFW previews</string>
@@ -392,17 +395,17 @@
     <string name="settings_start_videos_muted">Start videos muted</string>
 
     <string name="settings_account">Account</string>
-    <string name="settings_source">Source</string>
+    <string name="settings_source">Reddit connection</string>
 
     <string name="settings_link_redirects">Link redirects</string>
     <string name="settings_backup_and_restore">Backup and restore</string>
-    <string name="settings_backup_and_restore_summary">Back up or restore profiles, subscriptions and saved items</string>
+    <string name="settings_backup_and_restore_summary">Back up or restore profiles, communities and saved items</string>
 
     <string name="settings_version_summary">Version %1$s</string>
     <string name="settings_about_omeron">About Omeron</string>
 
     <string name="app_author" translatable="false">Riad Mashrub Shourov</string>
-    <string name="about_github_button">Github</string>
+    <string name="about_github_button">GitHub</string>
 
     <string name="profile_tab_saved_posts">Saved posts</string>
     <string name="profile_tab_saved_comments">Saved comments</string>
@@ -427,7 +430,7 @@
         <item quantity="other">%1$d communities</item>
     </plurals>
     <string name="update_banner_message">Update available: v%1$s</string>
-    <string name="update_banner_get">Get</string>
+    <string name="update_banner_get">Update</string>
     <string name="update_banner_dismiss">Dismiss update notice</string>
     <string name="search_hint_in_community">Search this community</string>
     <string name="search_scope_remove_description">Stop limiting the search to r/%1$s</string>

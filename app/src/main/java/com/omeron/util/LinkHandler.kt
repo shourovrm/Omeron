@@ -98,8 +98,8 @@ class LinkHandler @Inject constructor(
                     redirectLink.host
                 )
             )
-            .setPositiveButton(R.string.dialog_yes) { _, _ -> openBrowser(redirectLink.toString()) }
-            .setNegativeButton(R.string.dialog_no) { _, _ -> openBrowser(originalLink.toString()) }
+            .setPositiveButton(R.string.dialog_privacy_enhancer_accept) { _, _ -> openBrowser(redirectLink.toString()) }
+            .setNegativeButton(R.string.dialog_privacy_enhancer_decline) { _, _ -> openBrowser(originalLink.toString()) }
             .setNeutralButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
             .setCancelable(false)
             .show()

@@ -47,8 +47,8 @@ class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.dialog_clear_history_title)
             .setMessage(R.string.dialog_clear_history_message)
-            .setPositiveButton(R.string.dialog_yes) { _, _ -> viewModel.clearHistory() }
-            .setNegativeButton(R.string.dialog_no) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.profile_history_clear) { _, _ -> viewModel.clearHistory() }
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
