@@ -1,0 +1,110 @@
+<resources>
+
+    <!-- Post cards -->
+
+    <style name="TextAppearancePostTitle" parent="TextAppearance.App.TitleMedium"/>
+
+    <style name="TextAppearancePostInfo" parent="TextAppearance.App.BodyMedium.Variant"/>
+
+    <!-- White text sits on the flair pill, which carries the status colour. -->
+    <style name="TextAppearancePostFlair" parent="TextAppearance.App.BodySmall">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="TextAppearancePostDomain" parent="TextAppearance.App.BodySmall.Variant"/>
+
+    <style name="TextAppearanceAward" parent="TextAppearance.App.LabelMedium">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="TextAppearanceAwardPost" parent="TextAppearanceAward"/>
+
+    <!-- Info bar: text wraps beside a 40dp text button. -->
+
+    <style name="InfoBarStyle" parent="">
+        <item name="cardBackgroundColor">?attr/omeronSurfaceContainerHigh</item>
+        <item name="cardElevation">@dimen/info_bar_elevation</item>
+        <item name="cardCornerRadius">@dimen/card_radius</item>
+        <item name="android:layout_marginStart">@dimen/space_16</item>
+        <item name="android:layout_marginEnd">@dimen/space_16</item>
+        <item name="textMessageColor">?attr/colorOnSurface</item>
+        <item name="textActionColor">?attr/colorPrimary</item>
+        <item name="slideEdge">top</item>
+    </style>
+
+    <!-- Sort -->
+
+    <style name="TextAppearanceSortTitle" parent="TextAppearance.App.TitleLarge"/>
+
+    <style name="TextAppearanceSortLabel" parent="TextAppearance.App.BodyLarge"/>
+
+    <style name="TextAppearanceSortLabelAppBar" parent="TextAppearance.App.LabelMedium"/>
+
+    <!-- Subscriptions -->
+
+    <style name="TextAppearanceSubscription" parent="TextAppearance.App.TitleMedium"/>
+
+    <style name="SubscriptionsCardStyle" parent="CardStyle"/>
+
+    <!-- Subreddit -->
+
+    <style name="TextAppearanceSubredditName" parent="TextAppearance.App.HeadlineSmall"/>
+
+    <style name="TextAppearanceSubredditMetrics" parent="TextAppearance.App.TitleSmall"/>
+
+    <style name="TextAppearanceSubredditMetricsMain" parent="TextAppearance.App.TitleSmall">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextAppearanceSubredditMetricsMainLabel" parent="TextAppearance.App.BodySmall">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextAppearanceSubredditTitle" parent="TextAppearance.App.BodyLarge">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <!-- User -->
+
+    <style name="TextAppearanceUserTitle" parent="TextAppearanceSubredditTitle"/>
+    <style name="TextAppearanceUserMetrics" parent="TextAppearanceSubredditMetricsMain"/>
+    <style name="TextAppearanceUserMetricsLabel" parent="TextAppearanceSubredditMetricsMainLabel"/>
+
+    <style name="TextAppearanceUserCommentTitle" parent="TextAppearance.App.TitleMedium"/>
+
+    <style name="TextAppearanceUserCommentInfo" parent="TextAppearance.App.BodyMedium.Variant"/>
+
+    <!-- Media viewer sheet; the viewer is dark in both themes. -->
+
+    <style name="FilmstripSheetAction" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/space_64</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">@dimen/space_4</item>
+        <item name="android:drawableTint">@color/filmstrip_sheet_text</item>
+        <item name="android:background">@drawable/filmstrip_sheet_action_background</item>
+        <item name="android:textColor">@color/filmstrip_sheet_text_secondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelMedium</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="FilmstripSheetLink" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawableEnd">@drawable/ic_chevron_right</item>
+        <item name="android:drawableTint">@color/filmstrip_sheet_text_secondary</item>
+        <item name="android:textColor">@color/filmstrip_sheet_text</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+</resources>

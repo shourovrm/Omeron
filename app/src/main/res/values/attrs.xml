@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Surface container roles; the pinned Material library has no attributes for them. -->
+    <attr name="omeronSurfaceContainerLow" format="color"/>
+    <attr name="omeronSurfaceContainer" format="color"/>
+    <attr name="omeronSurfaceContainerHigh" format="color"/>
+    <attr name="omeronOutlineVariant" format="color"/>
+
     <declare-styleable name="CardButton">
         <attr name="icon" format="reference"/>
     </declare-styleable>

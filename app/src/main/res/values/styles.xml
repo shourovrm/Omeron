@@ -1,20 +1,48 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Theme -->
+
     <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/md_primary</item>
+        <item name="colorOnPrimary">@color/md_on_primary</item>
+        <item name="colorPrimaryContainer">@color/md_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/md_on_primary_container</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondaryContainer">@color/md_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/md_on_secondary_container</item>
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
 
-        <item name="android:colorBackground">@color/background</item>
-        <item name="colorSurface">@color/background</item>
+        <item name="android:colorBackground">@color/md_surface</item>
+        <item name="colorSurface">@color/md_surface</item>
+        <item name="colorOnSurface">@color/md_on_surface</item>
+        <item name="colorOnBackground">@color/md_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/md_on_surface_variant</item>
+        <item name="colorOutline">@color/md_outline</item>
+        <item name="omeronOutlineVariant">@color/md_outline_variant</item>
+        <item name="colorError">@color/md_error</item>
+        <item name="colorOnError">@color/md_on_error</item>
+        <item name="colorErrorContainer">@color/md_error_container</item>
+        <item name="colorOnErrorContainer">@color/md_on_error_container</item>
 
-        <item name="colorOnSurface">@color/colorPrimaryLight</item>
+        <!-- The pinned Material library predates the surface container attributes, so the app owns them. -->
+        <item name="omeronSurfaceContainerLow">@color/md_surface_container_low</item>
+        <item name="omeronSurfaceContainer">@color/md_surface_container</item>
+        <item name="omeronSurfaceContainerHigh">@color/md_surface_container_high</item>
 
         <item name="android:textColor">@color/text_color</item>
+
+        <item name="textAppearanceHeadline6">@style/TextAppearance.App.TitleLarge</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.App.TitleMedium</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.App.TitleSmall</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.App.BodyMedium</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.App.BodySmall</item>
+        <item name="textAppearanceButton">@style/TextAppearance.App.LabelLarge</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.App.LabelMedium</item>
 
         <item name="preferenceTheme">@style/PreferenceTheme</item>
 
@@ -25,6 +53,9 @@
         <item name="popupMenuStyle">@style/Widget.App.PopupMenu</item>
         <item name="snackbarButtonStyle">@style/Widget.App.SnackbarButton</item>
         <item name="snackbarTextViewStyle">@style/Widget.App.SnackbarTextView</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigation</item>
+        <item name="chipStyle">@style/Widget.App.Chip</item>
+        <item name="materialButtonStyle">@style/ButtonStyle</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme"/>
@@ -35,211 +66,97 @@
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
-    <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
-        <item name="cardElevation">0dp</item>
-        <item name="cardCornerRadius">8dp</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+    <!-- Full-screen page shown as a dialog (multireddit edit); keeps the app's own colours and
+         day/night switching, only the floating dialog window is replaced. -->
+    <style name="FullscreenDialogTheme" parent="AppTheme">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 
-    <style name="TextAppearanceAppBarLabel" parent="">
-        <item name="android:textSize">20sp</item>
+    <!-- Text roles. Size, line height and weight come from the design system; colour is left to the theme. -->
+
+    <style name="TextAppearance.App.HeadlineSmall" parent="">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">32sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleLarge" parent="">
+        <item name="android:textSize">22sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">28sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleMedium" parent="">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">24sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleSmall" parent="">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.App.BodyLarge" parent="">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">24sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.App.BodyMedium" parent="">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">20sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.App.BodySmall" parent="">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.App.LabelLarge" parent="">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.App.LabelMedium" parent="">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Variants of a role that only add a colour. -->
+
+    <style name="TextAppearance.App.BodyMedium.Variant" parent="TextAppearance.App.BodyMedium">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="TextAppearance.App.BodySmall.Variant" parent="TextAppearance.App.BodySmall">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="TextAppearanceAppBarLabel" parent="TextAppearance.App.TitleLarge"/>
+
+    <!-- The wordmark is the one place the brand typeface and capitals stay. -->
+    <style name="TextAppearanceAppName" parent="TextAppearance.App.TitleLarge">
         <item name="android:textAllCaps">true</item>
-        <item name="android:fontFamily">@font/lato_light</item>
-    </style>
-
-    <style name="TextAppearanceAppName" parent="TextAppearanceAppBarLabel">
         <item name="android:fontFamily">@font/inter_bold</item>
     </style>
 
-    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.BottomSheetDialog</item>
-    </style>
+    <!-- Surfaces and shapes -->
 
-    <style name="Widget.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BottomSheetDialog</item>
-        <item name="backgroundTint">?attr/colorSurface</item>
-    </style>
-
-    <style name="ShapeAppearance.BottomSheetDialog" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerSizeTopRight">16dp</item>
-        <item name="cornerSizeTopLeft">16dp</item>
-        <item name="cornerFamily">rounded</item>
-    </style>
-
-    <style name="TextAppearanceCommentAuthor" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextAppearanceCommentInfo" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-
-    <style name="TextAppearanceCommentMore" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-
-    <style name="TextAppearanceCommentControversiality" parent="">
-        <item name="android:textSize">10sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="TextAppearanceCommentOp" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/text_color_op</item>
-    </style>
-
-    <!-- Preferences -->
-
-    <style name="PreferenceTheme" parent="PreferenceThemeOverlay">
-        <item name="android:layout">@layout/layout_preference_list</item>
-        <item name="preferenceStyle">@style/Preference</item>
-        <item name="preferenceScreenStyle">@style/PreferenceScreen</item>
-        <item name="preferenceCategoryStyle">@style/PreferenceCategory</item>
-        <item name="preferenceFragmentListStyle">@style/PreferenceListStyle</item>
-        <item name="switchPreferenceStyle">@style/PreferenceSwitch</item>
-        <item name="switchPreferenceCompatStyle">@style/PreferenceSwitch</item>
-    </style>
-
-    <style name="PrivacyPreferenceTheme" parent="PreferenceTheme">
-        <item name="android:layout">@layout/layout_privacy_enhancer</item>
-    </style>
-
-    <style name="Preference" parent="Preference.Material">
-        <item name="layout">@layout/layout_preference</item>
-    </style>
-
-    <style name="PreferenceScreen" parent="Preference.PreferenceScreen.Material">
-        <item name="layout">@layout/layout_preference</item>
-    </style>
-
-    <style name="PreferenceCategory" parent="Preference.Category.Material">
-        <item name="layout">@layout/layout_preference_category</item>
-        <item name="allowDividerAbove">false</item>
-        <item name="allowDividerBelow">false</item>
-    </style>
-
-    <style name="PreferenceSwitch" parent="Preference.SwitchPreferenceCompat.Material">
-        <item name="layout">@layout/layout_preference</item>
-    </style>
-
-    <style name="SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
-        <item name="track">@drawable/switch_track</item>
-        <item name="android:thumb">@drawable/switch_thumb</item>
-    </style>
-
-    <style name="PreferenceListStyle" parent="">
-        <item name="android:overScrollMode">never</item>
-    </style>
-
-    <style name="CardStylePreference" parent="CardStyle">
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="TextAppearancePreference" parent="">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/text_color_selector</item>
-    </style>
-
-    <style name="TextAppearanceCategory" parent="">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:fontFamily">@font/lato_semibold</item>
-    </style>
-
-    <!-- Post -->
-
-    <style name="TextAppearancePostTitle" parent="">
-        <item name="android:textSize">20sp</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-    </style>
-
-
-    <style name="TextAppearancePostInfo" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-
-    <style name="TextAppearancePostFlair" parent="">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:scrollbars">none</item>
-    </style>
-
-    <style name="TextAppearancePostDomain" parent="">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-
-    <style name="RoundedImageViewStyle" parent="">
-        <item name="cornerSize">10%</item>
-    </style>
-
-    <!-- Sort -->
-
-    <style name="TextAppearanceSortTitle" parent="">
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="TextAppearanceSortLabel" parent="">
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="TextAppearanceSortLabelAppBar" parent="">
-        <item name="android:textSize">11sp</item>
-    </style>
-
-    <style name="ChipChoiceStyle" parent="Widget.MaterialComponents.Chip.Choice">
-        <item name="chipIconVisible">true</item>
-        <item name="chipBackgroundColor">@color/chip_background_color</item>
-        <item name="android:textColor">@color/chip_text_color</item>
-    </style>
-
-    <style name="CircularImageViewStyle" parent="">
-        <item name="cornerSize">50%</item>
-    </style>
-
-    <style name="Widget.ShapeableImageView.Circular" parent="">
-        <item name="contentPadding">4dp</item>
-        <item name="shapeAppearanceOverlay">@style/CircularImageViewStyle</item>
-    </style>
-
-    <!-- Subscriptions -->
-
-    <style name="TextAppearanceSubscription" parent="">
-        <item name="android:textSize">18sp</item>
-    </style>
-
-
-    <style name="SubscriptionsCardStyle" parent="CardStyle"/>
-
-    <!-- Search -->
-
-
-    <style name="ShapeAppearanceButton" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-    </style>
-
-    <style name="ThemeOverlayButton" parent="">
-        <item name="colorPrimary">@color/colorPrimaryLight</item>
-    </style>
-
-    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="materialThemeOverlay">@style/ThemeOverlayButton</item>
-        <item name="shapeAppearance">@style/ShapeAppearanceButton</item>
+    <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="cardCornerRadius">@dimen/card_radius</item>
+        <item name="cardBackgroundColor">?attr/omeronSurfaceContainer</item>
+        <item name="android:layout_marginStart">@dimen/space_16</item>
+        <item name="android:layout_marginEnd">@dimen/space_16</item>
+        <item name="android:layout_marginTop">@dimen/space_8</item>
+        <item name="android:layout_marginBottom">@dimen/space_8</item>
     </style>
 
     <style name="CardButtonStyle" parent="Widget.MaterialComponents.CardView">
@@ -248,104 +165,181 @@
         <item name="android:clickable">true</item>
     </style>
 
-    <!-- Subreddit -->
-
-    <style name="TextAppearanceSubredditName" parent="">
-        <item name="android:textSize">32sp</item>
-        <item name="android:textStyle">bold</item>
+    <style name="RoundedImageViewStyle" parent="">
+        <item name="cornerSize">@dimen/card_radius</item>
     </style>
 
-    <style name="TextAppearanceSubredditMetrics" parent="">
-        <item name="android:textSize">24sp</item>
+    <style name="CircularImageViewStyle" parent="">
+        <item name="cornerSize">50%</item>
     </style>
 
-    <style name="TextAppearanceSubredditMetricsMain" parent="">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textStyle">bold</item>
+    <style name="Widget.ShapeableImageView.Circular" parent="">
+        <item name="contentPadding">@dimen/space_4</item>
+        <item name="shapeAppearanceOverlay">@style/CircularImageViewStyle</item>
     </style>
 
-    <style name="TextAppearanceSubredditMetricsMainLabel" parent="">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@android:color/white</item>
+    <!-- Buttons: 40dp visual height inside a 48dp target, full radius, labelLarge. -->
+
+    <style name="ShapeAppearanceButton" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
-    <style name="TextAppearanceSubredditTitle" parent="">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="shapeAppearance">@style/ShapeAppearanceButton</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:minWidth">@dimen/touch_target</item>
+        <item name="android:insetTop">@dimen/space_4</item>
+        <item name="android:insetBottom">@dimen/space_4</item>
+        <item name="android:paddingStart">@dimen/space_24</item>
+        <item name="android:paddingEnd">@dimen/space_24</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="ButtonStyle.Tonal">
+        <item name="backgroundTint">?attr/colorSecondaryContainer</item>
+        <item name="android:textColor">?attr/colorOnSecondaryContainer</item>
+    </style>
+
+    <style name="ButtonStyle.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/ShapeAppearanceButton</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:minWidth">@dimen/touch_target</item>
+        <item name="android:insetTop">@dimen/space_4</item>
+        <item name="android:insetBottom">@dimen/space_4</item>
+        <item name="android:paddingStart">@dimen/space_24</item>
+        <item name="android:paddingEnd">@dimen/space_24</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Destructive actions use an outlined button in the error colour and a confirm dialog. -->
+    <style name="ButtonStyle.Outlined.Destructive">
+        <item name="strokeColor">?attr/colorError</item>
+        <item name="android:textColor">?attr/colorError</item>
+    </style>
+
+    <style name="ButtonStyle.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="shapeAppearance">@style/ShapeAppearanceButton</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:minWidth">@dimen/touch_target</item>
+        <item name="android:insetTop">@dimen/space_4</item>
+        <item name="android:insetBottom">@dimen/space_4</item>
+        <item name="android:paddingStart">@dimen/space_12</item>
+        <item name="android:paddingEnd">@dimen/space_12</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Chips: 32dp high, radius 8dp, 1dp outline or tonal fill, labelLarge. -->
+
+    <style name="ShapeAppearance.App.Chip" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/chip_radius</item>
+    </style>
+
+    <style name="Widget.App.Chip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Chip</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="chipMinHeight">@dimen/chip_height</item>
+        <item name="chipMinTouchTargetSize">@dimen/touch_target</item>
+        <item name="chipStrokeWidth">@dimen/divider_thickness</item>
+        <item name="chipStrokeColor">?attr/colorOutline</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="ChipActionStyle" parent="Widget.App.Chip">
+        <item name="chipIconTint">?attr/colorPrimary</item>
+        <item name="chipStartPadding">@dimen/space_16</item>
+        <item name="chipEndPadding">@dimen/space_16</item>
         <item name="android:textAlignment">center</item>
     </style>
 
-    <!-- User -->
-
-    <style name="TextAppearanceUserTitle" parent="TextAppearanceSubredditTitle"/>
-    <style name="TextAppearanceUserMetrics" parent="TextAppearanceSubredditMetricsMain"/>
-    <style name="TextAppearanceUserMetricsLabel" parent="TextAppearanceSubredditMetricsMainLabel"/>
-
-    <style name="TextAppearanceUserCommentTitle" parent="">
-        <item name="android:textSize">18sp</item>
+    <style name="ChipChoiceStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Chip</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
+        <item name="chipMinHeight">@dimen/chip_height</item>
+        <item name="chipMinTouchTargetSize">@dimen/touch_target</item>
+        <item name="chipIconVisible">true</item>
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="android:textColor">@color/chip_text_color</item>
     </style>
 
-    <style name="TextAppearanceUserCommentInfo" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
+    <!-- Navigation and bars -->
+
+    <style name="Widget.App.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:minHeight">@dimen/bottom_bar_height</item>
+        <item name="backgroundTint">?attr/omeronSurfaceContainer</item>
+        <item name="elevation">@dimen/bottom_navigation_elevation</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemIconTint">@drawable/navigation_color_selector</item>
+        <item name="itemTextColor">@drawable/navigation_color_selector</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.App.LabelMedium</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.App.LabelMedium</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNavigation.ActiveIndicator</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigation.ActiveIndicator" parent="">
+        <item name="android:width">@dimen/bottom_bar_indicator_width</item>
+        <item name="android:height">@dimen/bottom_bar_indicator_height</item>
+        <item name="android:color">?attr/colorSecondaryContainer</item>
+        <item name="marginHorizontal">@dimen/space_4</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Pill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
     <style name="TabLayoutStyle" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabIndicator">@drawable/tab_indicator</item>
         <item name="tabIndicatorFullWidth">false</item>
-        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabIndicatorColor">?attr/colorPrimary</item>
         <item name="tabGravity">center</item>
-        <item name="tabSelectedTextColor">@color/colorPrimary</item>
+        <item name="tabSelectedTextColor">?attr/colorPrimary</item>
+        <item name="tabTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="tabTextAppearance">@style/TextAppearance.App.LabelLarge</item>
         <item name="android:background">?attr/colorSurface</item>
     </style>
 
-    <style name="TextAppearanceAward" parent="">
-        <item name="android:textSize">10sp</item>
-        <item name="android:textColor">@color/text_color</item>
-        <item name="android:scrollbars">none</item>
+    <!-- Sheets, dialogs, menus -->
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.BottomSheetDialog</item>
     </style>
 
-    <style name="TextAppearanceAwardPost" parent="TextAppearanceAward">
-        <item name="android:textSize">12sp</item>
+    <style name="Widget.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BottomSheetDialog</item>
+        <item name="backgroundTint">?attr/omeronSurfaceContainerLow</item>
     </style>
 
-
-    <!-- Menu -->
-
-    <style name="TextAppearanceMenu" parent="">
-        <item name="android:textSize">20sp</item>
+    <style name="ShapeAppearance.BottomSheetDialog" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerSizeTopRight">@dimen/bottom_sheet_radius</item>
+        <item name="cornerSizeTopLeft">@dimen/bottom_sheet_radius</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerFamily">rounded</item>
     </style>
-
-    <style name="ChipActionStyle" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="chipBackgroundColor">?attr/colorSurface</item>
-        <item name="chipStrokeWidth">1dp</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
-        <item name="chipIconTint">@color/colorPrimary</item>
-        <item name="chipStartPadding">16dp</item>
-        <item name="chipEndPadding">16dp</item>
-        <item name="android:textColor">@color/text_color</item>
-        <item name="android:textAlignment">center</item>
-    </style>
-
-    <style name="InfoBarStyle" parent="">
-        <item name="cardBackgroundColor">@color/colorPrimaryLight</item>
-        <item name="cardElevation">@dimen/info_bar_elevation</item>
-        <item name="cardCornerRadius">8dp</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="textMessageColor">@android:color/white</item>
-        <item name="textActionColor">@android:color/white</item>
-        <item name="slideEdge">top</item>
-    </style>
-
-    <!-- Dialog -->
 
     <style name="MaterialAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="alertDialogStyle">@style/MaterialAlertDialogStyle</item>
         <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialogTitleText</item>
         <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialogBodyText</item>
         <item name="android:checkedTextViewStyle">@style/MaterialAlertDialogBodyText</item>
+        <item name="buttonBarPositiveButtonStyle">@style/ButtonStyle.Text</item>
+        <item name="buttonBarNegativeButtonStyle">@style/ButtonStyle.Text</item>
+        <item name="buttonBarNeutralButtonStyle">@style/ButtonStyle.Text</item>
     </style>
 
     <style name="MaterialAlertDialogStyle" parent="MaterialAlertDialog.MaterialComponents">
@@ -354,110 +348,38 @@
 
     <style name="MaterialAlertDialogShapeAppearance" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">@dimen/bottom_sheet_radius</item>
     </style>
 
     <style name="MaterialAlertDialogTitleText" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="MaterialAlertDialogBodyText" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.BodyMedium</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
-
-    <!-- Credits -->
-
-
-
-
-
-
-
-    <!-- Profile Manager -->
-
-
 
     <style name="Widget.App.PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
         <item name="android:popupBackground">@drawable/popup_menu_background</item>
     </style>
 
-    <style name="Widget.TextView.Refresh" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-        <item name="android:gravity">center</item>
-    </style>
-
     <style name="Widget.App.SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">?attr/colorPrimaryContainer</item>
     </style>
 
     <style name="Widget.App.SnackbarTextView" parent="Widget.MaterialComponents.Snackbar.TextView">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">?attr/colorSurface</item>
     </style>
 
+    <!-- Shared text -->
 
-    <style name="FilmstripSheetAction" parent="">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">64dp</item>
-        <item name="android:layout_weight">1</item>
+    <style name="TextAppearanceMenu" parent="TextAppearance.App.TitleMedium"/>
+
+    <style name="Widget.TextView.Refresh" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.App.BodySmall.Variant</item>
         <item name="android:gravity">center</item>
-        <item name="android:drawablePadding">4dp</item>
-        <item name="android:drawableTint">@color/filmstrip_sheet_text</item>
-        <item name="android:background">@drawable/filmstrip_sheet_action_background</item>
-        <item name="android:textColor">@color/filmstrip_sheet_text_secondary</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
     </style>
 
-    <style name="FilmstripSheetLink" parent="">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:drawableEnd">@drawable/ic_chevron_right</item>
-        <item name="android:drawableTint">@color/filmstrip_sheet_text_secondary</item>
-        <item name="android:textColor">@color/filmstrip_sheet_text</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-    </style>
-
-    <!-- Full-screen page shown as a dialog (multireddit edit); keeps the app's own colours and
-         day/night switching, only the floating dialog window is replaced. -->
-    <style name="FullscreenDialogTheme" parent="AppTheme">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">?attr/colorSurface</item>
-    </style>
-
-    <style name="Widget.App.JoinButton" parent="Widget.MaterialComponents.Button">
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:insetTop">6dp</item>
-        <item name="android:insetBottom">6dp</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="cornerRadius">18dp</item>
-    </style>
-
-    <style name="Widget.App.JoinButton.Joined" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:insetTop">6dp</item>
-        <item name="android:insetBottom">6dp</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="cornerRadius">18dp</item>
-        <item name="strokeColor">@color/text_color_secondary</item>
-    </style>
 </resources>

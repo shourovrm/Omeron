@@ -1,0 +1,21 @@
+<resources>
+
+    <style name="TextAppearanceCommentAuthor" parent="TextAppearance.App.TitleSmall"/>
+
+    <style name="TextAppearanceCommentInfo" parent="TextAppearance.App.BodyMedium.Variant"/>
+
+    <!-- "Load more" rows are text buttons. -->
+    <style name="TextAppearanceCommentMore" parent="TextAppearance.App.LabelLarge">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="TextAppearanceCommentControversiality" parent="TextAppearance.App.LabelMedium">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- The OP marker is a status pill; the pill background lives in the layout. -->
+    <style name="TextAppearanceCommentOp" parent="TextAppearance.App.LabelMedium">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+</resources>

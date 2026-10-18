@@ -1,0 +1,54 @@
+<resources>
+
+    <style name="PreferenceTheme" parent="PreferenceThemeOverlay">
+        <item name="android:layout">@layout/layout_preference_list</item>
+        <item name="preferenceStyle">@style/Preference</item>
+        <item name="preferenceScreenStyle">@style/PreferenceScreen</item>
+        <item name="preferenceCategoryStyle">@style/PreferenceCategory</item>
+        <item name="preferenceFragmentListStyle">@style/PreferenceListStyle</item>
+        <item name="switchPreferenceStyle">@style/PreferenceSwitch</item>
+        <item name="switchPreferenceCompatStyle">@style/PreferenceSwitch</item>
+    </style>
+
+    <style name="PrivacyPreferenceTheme" parent="PreferenceTheme">
+        <item name="android:layout">@layout/layout_privacy_enhancer</item>
+    </style>
+
+    <style name="Preference" parent="Preference.Material">
+        <item name="layout">@layout/layout_preference</item>
+    </style>
+
+    <style name="PreferenceScreen" parent="Preference.PreferenceScreen.Material">
+        <item name="layout">@layout/layout_preference</item>
+    </style>
+
+    <style name="PreferenceCategory" parent="Preference.Category.Material">
+        <item name="layout">@layout/layout_preference_category</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+    </style>
+
+    <style name="PreferenceSwitch" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="layout">@layout/layout_preference</item>
+    </style>
+
+    <style name="SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="track">@drawable/switch_track</item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+    </style>
+
+    <style name="PreferenceListStyle" parent="">
+        <item name="android:overScrollMode">never</item>
+    </style>
+
+    <style name="CardStylePreference" parent="CardStyle"/>
+
+    <style name="TextAppearancePreference" parent="TextAppearance.App.TitleMedium">
+        <item name="android:textColor">@color/text_color_selector</item>
+    </style>
+
+    <style name="TextAppearanceCategory" parent="TextAppearance.App.BodyLarge">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+</resources>

@@ -7,7 +7,9 @@
     </style>
 
     <style name="AmoledAppTheme" parent="AppTheme">
-        <item name="android:colorBackground">#000000</item>
-        <item name="colorSurface">#000000</item>
+        <item name="android:colorBackground">@color/black</item>
+        <item name="colorSurface">@color/black</item>
+        <item name="omeronSurfaceContainerLow">@color/amoled_surface_container_low</item>
+        <item name="omeronSurfaceContainer">@color/amoled_surface_container</item>
     </style>
 </resources>

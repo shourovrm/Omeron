@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="Widget.App.JoinButton" parent="ButtonStyle"/>
+
+    <style name="Widget.App.JoinButton.Joined" parent="ButtonStyle.Outlined">
+        <item name="strokeColor">?attr/colorOutline</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+</resources>

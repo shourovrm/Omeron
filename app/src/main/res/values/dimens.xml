@@ -1,93 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="post_margin_horizontal">8dp</dimen>
-    <dimen name="post_margin_vertical">16dp</dimen>
+    <!-- Spacing scale, base unit 8dp. 2dp, 4dp, 6dp and 10dp may appear raw inside a component. -->
+    <dimen name="space_4">4dp</dimen>
+    <dimen name="space_8">8dp</dimen>
+    <dimen name="space_12">12dp</dimen>
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_24">24dp</dimen>
+    <dimen name="space_32">32dp</dimen>
+    <dimen name="space_48">48dp</dimen>
+    <dimen name="space_56">56dp</dimen>
+    <dimen name="space_64">64dp</dimen>
+
+    <!-- Control sizes -->
+    <dimen name="touch_target">48dp</dimen>
+    <dimen name="button_height">40dp</dimen>
+    <dimen name="icon_button_size">40dp</dimen>
+    <dimen name="text_field_height">56dp</dimen>
+    <dimen name="chip_height">32dp</dimen>
+    <dimen name="chip_radius">8dp</dimen>
+    <dimen name="list_item_one_line">56dp</dimen>
+    <dimen name="list_item_two_line">72dp</dimen>
+    <dimen name="list_item_three_line">88dp</dimen>
+    <dimen name="bottom_bar_height">80dp</dimen>
+    <dimen name="bottom_bar_indicator_width">64dp</dimen>
+    <dimen name="bottom_bar_indicator_height">32dp</dimen>
+    <dimen name="app_bar_height">64dp</dimen>
+    <dimen name="bottom_sheet_radius">28dp</dimen>
+    <dimen name="divider_thickness">1dp</dimen>
+    <dimen name="avatar_size">40dp</dimen>
+
+    <dimen name="post_margin_horizontal">@dimen/space_8</dimen>
+    <dimen name="post_margin_vertical">@dimen/space_16</dimen>
     <dimen name="filmstrip_tile_gap">2dp</dimen>
     <dimen name="filmstrip_thumbnail_size">44dp</dimen>
     <dimen name="filmstrip_thumbnail_gap">6dp</dimen>
 
-    <dimen name="post_padding_horizontal">16dp</dimen>
+    <dimen name="post_padding_horizontal">@dimen/space_16</dimen>
 
-    <dimen name="post_content_margin_horizontal">25dp</dimen>
+    <dimen name="post_content_margin_horizontal">@dimen/space_24</dimen>
 
-    <dimen name="post_elevation">8dp</dimen>
+    <dimen name="post_elevation">0dp</dimen>
 
-    <dimen name="post_title_margin">16dp</dimen>
+    <dimen name="post_title_margin">@dimen/space_16</dimen>
 
-    <dimen name="post_text_padding">16dp</dimen>
+    <dimen name="post_text_padding">@dimen/space_16</dimen>
 
     <dimen name="post_image_height">250dp</dimen>
 
     <dimen name="post_link_image_size">100dp</dimen>
-    <dimen name="post_link_image_margin_horizontal">8dp</dimen>
+    <dimen name="post_link_image_margin_horizontal">@dimen/space_8</dimen>
 
-    <dimen name="post_margin_top_small">8dp</dimen>
-    <dimen name="post_margin_top_large">16dp</dimen>
+    <dimen name="post_margin_top_small">@dimen/space_8</dimen>
+    <dimen name="post_margin_top_large">@dimen/space_16</dimen>
 
     <dimen name="post_icon_size">24dp</dimen>
-    <dimen name="post_action_button_size">48dp</dimen>
-    <dimen name="post_action_button_padding">12dp</dimen>
+    <dimen name="post_action_button_size">@dimen/touch_target</dimen>
+    <dimen name="post_action_button_padding">@dimen/space_12</dimen>
     <dimen name="post_avatar_size">20dp</dimen>
     <dimen name="post_meta_icon_size">14dp</dimen>
     <dimen name="post_icon_text_margin">5dp</dimen>
 
     <dimen name="post_awards_height">38dp</dimen>
 
-    <dimen name="post_flair_padding">4dp</dimen>
-    <dimen name="post_flair_gap">8dp</dimen>
+    <dimen name="post_flair_padding">@dimen/space_4</dimen>
+    <dimen name="post_flair_gap">@dimen/space_8</dimen>
 
 
-    <dimen name="post_type_indicator_margin">16dp</dimen>
+    <dimen name="post_type_indicator_margin">@dimen/space_16</dimen>
 
-    <dimen name="sort_padding">16dp</dimen>
-    <dimen name="sort_margin">16dp</dimen>
+    <dimen name="sort_padding">@dimen/space_16</dimen>
+    <dimen name="sort_margin">@dimen/space_16</dimen>
 
-    <dimen name="app_bar_margin">16dp</dimen>
-    <dimen name="app_bar_button_size">32dp</dimen>
-    <dimen name="app_bar_button_elevation">8dp</dimen>
+    <dimen name="app_bar_margin">@dimen/space_16</dimen>
+    <dimen name="app_bar_button_size">@dimen/icon_button_size</dimen>
+    <dimen name="app_bar_button_elevation">0dp</dimen>
 
     <dimen name="card_height">84dp</dimen>
     <dimen name="card_image_size">42dp</dimen>
-    <dimen name="card_margin_horizontal">16dp</dimen>
-    <dimen name="card_padding">12dp</dimen>
+    <dimen name="card_margin_horizontal">@dimen/space_16</dimen>
+    <dimen name="card_padding">@dimen/space_12</dimen>
 
     <dimen name="subscriptions_card_height">@dimen/card_height</dimen>
     <dimen name="subscriptions_image_size">@dimen/card_image_size</dimen>
     <dimen name="subscriptions_margin_horizontal">@dimen/card_margin_horizontal</dimen>
     <dimen name="subscriptions_padding">@dimen/card_padding</dimen>
 
-    <dimen name="preference_card_height">64dp</dimen>
-    <dimen name="preference_padding">12dp</dimen>
-    <dimen name="preference_category_margin_horizontal">16dp</dimen>
-    <dimen name="preference_category_margin_vertical">16dp</dimen>
+    <dimen name="preference_card_height">@dimen/list_item_two_line</dimen>
+    <dimen name="preference_padding">@dimen/space_12</dimen>
+    <dimen name="preference_category_margin_horizontal">@dimen/space_16</dimen>
+    <dimen name="preference_category_margin_vertical">@dimen/space_16</dimen>
 
     <dimen name="switch_thumb_size">20dp</dimen>
     <dimen name="switch_track_radius">16dp</dimen>
 
     <dimen name="tab_indicator_width">32dp</dimen>
-    <dimen name="tab_indicator_height">4dp</dimen>
-    <dimen name="tab_indicator_radius">4dp</dimen>
+    <dimen name="tab_indicator_height">3dp</dimen>
+    <dimen name="tab_indicator_radius">3dp</dimen>
 
     <dimen name="subreddit_drawer_width">275dp</dimen>
     <dimen name="community_drawer_width">300dp</dimen>
-    <dimen name="subreddit_drawer_margin_vertical">16dp</dimen>
-    <dimen name="subreddit_drawer_margin_horizontal">8dp</dimen>
+    <dimen name="subreddit_drawer_margin_vertical">@dimen/space_16</dimen>
+    <dimen name="subreddit_drawer_margin_horizontal">@dimen/space_8</dimen>
 
     <dimen name="subreddit_header_height">200dp</dimen>
     <dimen name="subreddit_metrics_header_height">275dp</dimen>
-    <dimen name="subreddit_header_margin_bottom">12dp</dimen>
+    <dimen name="subreddit_header_margin_bottom">@dimen/space_12</dimen>
     <dimen name="subreddit_image_size_expanded">75dp</dimen>
     <dimen name="subreddit_image_size_collapsed">42dp</dimen>
     <item name="subreddit_name_scale_expanded" type="dimen" format="float">1.50</item>
 
-    <dimen name="subreddit_content_radius">15dp</dimen>
+    <dimen name="subreddit_content_radius">@dimen/card_radius</dimen>
     <dimen name="subreddit_content_elevation">8dp</dimen>
     <item name="subreddit_content_scale" type="dimen" format="float">0.8</item>
 
     <dimen name="user_header_height">@dimen/subreddit_header_height</dimen>
     <dimen name="user_metrics_header_height">@dimen/subreddit_metrics_header_height</dimen>
-    <dimen name="user_metrics_margin_horizontal">16dp</dimen>
+    <dimen name="user_metrics_margin_horizontal">@dimen/space_16</dimen>
     <dimen name="user_header_margin_bottom">@dimen/subreddit_header_margin_bottom</dimen>
     <dimen name="user_image_size_expanded">@dimen/subreddit_image_size_expanded</dimen>
     <dimen name="user_image_size_collapsed">@dimen/subreddit_image_size_collapsed</dimen>
@@ -96,40 +125,40 @@
     <dimen name="flair_background_radius">4dp</dimen>
     <dimen name="flair_image_size">16dp</dimen>
 
-    <dimen name="comment_offset">8dp</dimen>
-    <dimen name="comment_padding_horizontal">16dp</dimen>
-    <dimen name="comment_padding_vertical">8dp</dimen>
+    <dimen name="comment_offset">@dimen/space_8</dimen>
+    <dimen name="comment_padding_horizontal">@dimen/space_16</dimen>
+    <dimen name="comment_padding_vertical">@dimen/space_8</dimen>
     <dimen name="comment_icon_size">16dp</dimen>
 
     <dimen name="award_image_size">16dp</dimen>
     <dimen name="award_chip_padding_vertical">2dp</dimen>
-    <dimen name="award_chip_padding_vertical_post">4dp</dimen>
-    <dimen name="award_chip_padding_horizontal">4dp</dimen>
+    <dimen name="award_chip_padding_vertical_post">@dimen/space_4</dimen>
+    <dimen name="award_chip_padding_horizontal">@dimen/space_4</dimen>
     <dimen name="award_chip_padding_horizontal_post">6dp</dimen>
-    <dimen name="award_count_margin">4dp</dimen>
+    <dimen name="award_count_margin">@dimen/space_4</dimen>
     <dimen name="award_count_image_margin">2dp</dimen>
 
     <dimen name="post_details_dismiss_distance">112dp</dimen>
     <item name="post_details_dismiss_scale" type="dimen" format="float">0.95</item>
 
 
-    <dimen name="dialog_menu_padding">16dp</dimen>
-    <dimen name="dialog_menu_margin">16dp</dimen>
+    <dimen name="dialog_menu_padding">@dimen/space_16</dimen>
+    <dimen name="dialog_menu_margin">@dimen/space_16</dimen>
     <dimen name="dialog_menu_button_size">192dp</dimen>
 
-    <dimen name="info_bar_margin_top">8dp</dimen>
-    <dimen name="info_bar_elevation">8dp</dimen>
+    <dimen name="info_bar_margin_top">@dimen/space_8</dimen>
+    <dimen name="info_bar_elevation">0dp</dimen>
 
-    <dimen name="bottom_navigation_elevation">8dp</dimen>
+    <dimen name="bottom_navigation_elevation">0dp</dimen>
 
-    <dimen name="card_elevation">8dp</dimen>
-    <dimen name="card_radius">15dp</dimen>
+    <dimen name="card_elevation">0dp</dimen>
+    <dimen name="card_radius">12dp</dimen>
 
-    <dimen name="profile_name_margin">8dp</dimen>
+    <dimen name="profile_name_margin">@dimen/space_8</dimen>
 
-    <dimen name="table_padding">8dp</dimen>
+    <dimen name="table_padding">@dimen/space_8</dimen>
 
-    <dimen name="backup_button_margin">16dp</dimen>
+    <dimen name="backup_button_margin">@dimen/space_16</dimen>
     <dimen name="backup_pick_image_size">150dp</dimen>
     <dimen name="backup_operation_card_height">84dp</dimen>
 
@@ -137,12 +166,12 @@
     <dimen name="profile_home_app_bar_size">32dp</dimen>
     <dimen name="profile_home_drawer_width">92dp</dimen>
 
-    <dimen name="profile_content_margin">48dp</dimen>
+    <dimen name="profile_content_margin">@dimen/space_48</dimen>
 
     <dimen name="popup_radius">16dp</dimen>
 
     <dimen name="filmstrip_scrim_height">280dp</dimen>
-    <dimen name="filmstrip_sheet_radius">18dp</dimen>
+    <dimen name="filmstrip_sheet_radius">@dimen/bottom_sheet_radius</dimen>
 
     <dimen name="manage_row_image_size">36dp</dimen>
     <dimen name="profile_history_thumbnail_size">48dp</dimen>
