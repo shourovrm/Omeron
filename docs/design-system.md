@@ -90,7 +90,8 @@ Outlined text field 56dp at 16dp margin, tabs (Posts, Communities, Users) with l
 
 Category labels as bodyLarge in primary at 16dp side padding. Rows are 56dp one-line or 72dp
 two-line list items with titleMedium and bodyMedium summary; switches right-aligned. The Reddit
-account row holds the single primary action of the page (Log in) as a filled button.
+account row is the page's primary action: the whole row opens Log in and its summary shows the
+current state. No filled button, because Preference rows cannot host one without a custom layout.
 
 ## Gates
 
