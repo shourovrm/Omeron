@@ -16,8 +16,6 @@
     <dimen name="post_title_margin">16dp</dimen>
 
     <dimen name="post_text_padding">16dp</dimen>
-    <dimen name="post_text_max_height">200dp</dimen>
-    <dimen name="post_text_card_radius">15dp</dimen>
 
     <dimen name="post_image_height">250dp</dimen>
 
@@ -52,13 +50,11 @@
     <dimen name="card_height">84dp</dimen>
     <dimen name="card_image_size">42dp</dimen>
     <dimen name="card_margin_horizontal">16dp</dimen>
-    <dimen name="card_margin_vertical">8dp</dimen>
     <dimen name="card_padding">12dp</dimen>
 
     <dimen name="subscriptions_card_height">@dimen/card_height</dimen>
     <dimen name="subscriptions_image_size">@dimen/card_image_size</dimen>
     <dimen name="subscriptions_margin_horizontal">@dimen/card_margin_horizontal</dimen>
-    <dimen name="subscriptions_margin_vertical">@dimen/card_margin_vertical</dimen>
     <dimen name="subscriptions_padding">@dimen/card_padding</dimen>
 
     <dimen name="preference_card_height">64dp</dimen>
@@ -106,24 +102,19 @@
     <dimen name="comment_icon_size">16dp</dimen>
 
     <dimen name="award_image_size">16dp</dimen>
-    <dimen name="award_overlap_margin">-8dp</dimen>
     <dimen name="award_chip_padding_vertical">2dp</dimen>
     <dimen name="award_chip_padding_vertical_post">4dp</dimen>
     <dimen name="award_chip_padding_horizontal">4dp</dimen>
     <dimen name="award_chip_padding_horizontal_post">6dp</dimen>
     <dimen name="award_count_margin">4dp</dimen>
     <dimen name="award_count_image_margin">2dp</dimen>
-    <dimen name="award_text_size">12sp</dimen>
 
     <dimen name="post_details_dismiss_distance">112dp</dimen>
     <item name="post_details_dismiss_scale" type="dimen" format="float">0.95</item>
 
-    <dimen name="exoplayer_margin_horizontal">8dp</dimen>
-    <dimen name="exoplayer_button_size">56dp</dimen>
 
     <dimen name="dialog_menu_padding">16dp</dimen>
     <dimen name="dialog_menu_margin">16dp</dimen>
-    <dimen name="dialog_menu_icon_padding">16dp</dimen>
     <dimen name="dialog_menu_button_size">192dp</dimen>
 
     <dimen name="info_bar_margin_top">8dp</dimen>
@@ -134,9 +125,7 @@
     <dimen name="card_elevation">8dp</dimen>
     <dimen name="card_radius">15dp</dimen>
 
-    <dimen name="profile_manager_carousel_height">175dp</dimen>
     <dimen name="profile_name_margin">8dp</dimen>
-    <dimen name="profile_delete_icon_size">20dp</dimen>
 
     <dimen name="table_padding">8dp</dimen>
 

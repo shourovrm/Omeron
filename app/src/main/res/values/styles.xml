@@ -166,10 +166,6 @@
         <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 
-    <style name="TextAppearancePostAuthor" parent="">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
 
     <style name="TextAppearancePostInfo" parent="">
         <item name="android:textSize">14sp</item>
@@ -226,20 +222,11 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="TextAppearanceSubscriptionTime" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_post_info</item>
-    </style>
 
     <style name="SubscriptionsCardStyle" parent="CardStyle"/>
 
     <!-- Search -->
 
-    <style name="SearchInputStyle" parent="">
-        <item name="backgroundTint">@android:color/transparent</item>
-        <item name="android:inputType">text</item>
-        <item name="android:imeOptions">actionSearch</item>
-    </style>
 
     <style name="ShapeAppearanceButton" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
@@ -323,11 +310,6 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="TextAppearancePlayerText" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
 
     <!-- Menu -->
 
@@ -387,45 +369,15 @@
 
     <!-- Credits -->
 
-    <style name="CreditCardStyle" parent="CardStyle"/>
 
-    <style name="TextAppearanceCreditTitle" parent="">
-        <item name="android:textSize">18sp</item>
-    </style>
 
-    <style name="TextAppearanceCreditDescription" parent="">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
 
-    <style name="TextAppearanceCreditAuthor" parent="">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_color_post_info</item>
-    </style>
 
-    <style name="TextAppearanceCreditLicense" parent="">
-        <item name="android:textSize">14sp</item>
-    </style>
 
-    <style name="TextAppearanceCreditSection" parent="TextAppearanceCategory"/>
 
     <!-- Profile Manager -->
 
-    <style name="ProfileManagerDialogStyle" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowBackground">@color/profile_dialog_background</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
 
-    <style name="Widget.TextView.ProfileName" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
 
     <style name="Widget.App.PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
         <item name="android:popupBackground">@drawable/popup_menu_background</item>

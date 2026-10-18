@@ -15,7 +15,6 @@
      <string name="award_count">x%1$d</string>
      <string name="tab_user_comments">Comentarios</string>
      <string name="tab_user_submitted">Planteados</string>
-     <string name="tab_user_gilded">Dorado</string>
      <string name="sort_time_hour">Ahora</string>
      <string name="sort_time_day">Hoy</string>
      <string name="sort_time_week">Esta semana</string>
@@ -40,8 +39,6 @@
      <string name="sort_best">Mejor</string>
      <string name="sort_old">Viejo</string>
      <string name="sort_qa">Q&amp;A</string>
-     <string name="subscriptions_search_hint">Buscar en Reddit</string>
-     <string name="search_hint">Buscar en Reddit</string>
      <string name="fragment_preferences_label">Preferencias</string>
      <string name="tab_search_post">Posts</string>
      <string name="tab_search_subreddit">Subreddits</string>
@@ -63,7 +60,6 @@
      <string name="comment_controversiality">✝</string>
      <string name="comment_op">OP</string>
      <string name="comment_link_info">%1$s - u/%2$s</string>
-     <string name="media_page_counter_label">de</string>
      <string name="reddit_user_prefixed">u/%1$s</string>
      <string name="menu_open_link">Abrir Externamente</string>
      <string name="menu_share_link">Compartir Link</string>
@@ -86,8 +82,6 @@
      <string name="dialog_media_not_found_body">La imagen o el video que intentás ver no existe
  o tal vez fue removido.</string>
      <string name="dialog_night_mode_title">Tema</string>
-     <string name="dialog_credit_show_website">Mostrar sitio Web</string>
-     <string name="dialog_credit_show_license">Mostrar Licencia</string>
      <string name="empty_data">No hay nada que ver por acá…</string>
      <string name="empty_data_subscriptions">Aún no tenés suscripciones.\nUsá the la opción de búsqueda para encontrar Subreddits.</string>
      <string name="preference_night_mode">Tema</string>
@@ -96,8 +90,5 @@
      <string name="preference_night_mode_system">Seguir el del sistema</string>
      <string name="preference_about">Acerca de</string>
      <string name="fragment_about_label">Acerca de</string>
-     <string name="about_section_credits">Créditos</string>
-     <string name="about_section_libraries">Librerías</string>
-     <string name="navigation_label_home">Inicio</string>
      <string name="navigation_label_settings">Ajustes</string>
 </resources>
