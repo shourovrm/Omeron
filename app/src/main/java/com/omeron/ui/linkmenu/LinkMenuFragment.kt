@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
+import com.omeron.R
 import com.omeron.data.model.MediaType
 import com.omeron.databinding.FragmentLinkMenuBinding
 import com.omeron.util.extension.doAndDismiss
@@ -63,7 +64,7 @@ class LinkMenuFragment : BottomSheetDialogFragment() {
                 val clipboard =
                     activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
 
-                val clip = ClipData.newPlainText("link from Reddit", link)
+                val clip = ClipData.newPlainText(getString(R.string.link_clipboard_label), link)
 
                 doAndDismiss {
                     if (clipboard != null) {
