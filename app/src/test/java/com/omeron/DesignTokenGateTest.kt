@@ -1,7 +1,6 @@
 package com.omeron
 
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
@@ -10,7 +9,6 @@ import java.io.File
  * the text roles in styles.xml and every visible string from strings.xml. The Gradle unit test task
  * runs with the app module as working directory, so the paths below are relative to it.
  */
-@Ignore("until layouts are rebuilt")
 class DesignTokenGateTest {
 
     private val layoutDirectory = File("src/main/res/layout")
