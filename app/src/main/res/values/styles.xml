@@ -45,6 +45,8 @@
         <item name="textAppearanceButton">@style/TextAppearance.App.LabelLarge</item>
         <item name="textAppearanceOverline">@style/TextAppearance.App.LabelMedium</item>
 
+        <item name="redditTextViewStyle">@style/Widget.App.RedditText</item>
+
         <item name="preferenceTheme">@style/PreferenceTheme</item>
 
         <item name="switchStyle">@style/SwitchStyle</item>

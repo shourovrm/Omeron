@@ -1,5 +1,10 @@
 <resources>
 
+    <!-- Self text and comment bodies are built in code from RedditTextView, so the role comes from the theme. -->
+    <style name="Widget.App.RedditText" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.App.BodyLarge</item>
+    </style>
+
     <style name="TextAppearanceCommentAuthor" parent="TextAppearance.App.TitleSmall"/>
 
     <style name="TextAppearanceCommentInfo" parent="TextAppearance.App.BodyMedium.Variant"/>

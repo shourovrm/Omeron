@@ -5,6 +5,7 @@
     <attr name="omeronSurfaceContainer" format="color"/>
     <attr name="omeronSurfaceContainerHigh" format="color"/>
     <attr name="omeronOutlineVariant" format="color"/>
+    <attr name="redditTextViewStyle" format="reference"/>
 
     <declare-styleable name="CardButton">
         <attr name="icon" format="reference"/>

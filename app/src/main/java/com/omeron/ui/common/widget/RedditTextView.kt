@@ -10,13 +10,14 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import coil.imageLoader
 import coil.request.ImageRequest
+import com.omeron.R
 import com.omeron.util.UrlDrawable
 import kotlin.math.min
 
 class RedditTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = R.attr.redditTextViewStyle
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     private var scrollEnabled: Boolean = false

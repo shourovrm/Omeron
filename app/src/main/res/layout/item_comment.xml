@@ -27,9 +27,9 @@
             app:layout_constraintBottom_toBottomOf="@id/comment_body"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/space_8"
             android:background="@drawable/comment_indicator_background"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="?attr/colorPrimary"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -43,7 +43,6 @@
             app:layout_constraintEnd_toStartOf="@id/comment_op_text"
             android:textAppearance="@style/TextAppearanceCommentAuthor"
             android:text="@{comment.author}"
-            android:textColor="@color/colorPrimary"
             tools:text="author"/>
 
         <TextView
@@ -52,7 +51,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/comment_author"
             app:layout_constraintTop_toBottomOf="@id/comment_author"
-            android:textColor="@null"
             android:textAppearance="@style/TextAppearanceCommentInfo"
             android:text="@{@string/comment_score(comment.score)}"
             tools:text="1234 pts"/>
@@ -65,7 +63,6 @@
             app:layout_constraintTop_toTopOf="@id/comment_score"
             android:layout_marginStart="1dp"
             android:text="@string/comment_controversiality"
-            android:textColor="@null"
             android:textAppearance="@style/TextAppearanceCommentControversiality"
             android:visibility="@{comment.controversiality > 0 ? View.VISIBLE : View.GONE}"/>
 
@@ -78,7 +75,7 @@
             app:layout_constraintBottom_toBottomOf="@id/comment_score"
             android:paddingVertical="@dimen/award_chip_padding_vertical"
             android:paddingHorizontal="@dimen/award_chip_padding_horizontal"
-            android:layout_marginStart="4dp"/>
+            android:layout_marginStart="@dimen/space_4"/>
 
         <TextView
             android:id="@+id/comment_date"
@@ -86,7 +83,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/comment_score"
-            android:textColor="@null"
             android:textAppearance="@style/TextAppearanceCommentInfo"
             android:text="@{comment.getTimeDifference(context)}"
             tools:text="5h"/>
@@ -99,10 +95,12 @@
             app:layout_constraintEnd_toStartOf="@id/comment_flair"
             app:layout_constraintTop_toTopOf="@id/comment_author"
             app:layout_constraintBottom_toBottomOf="@id/comment_author"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="@dimen/space_4"
             android:text="@string/comment_op"
             android:textAppearance="@style/TextAppearanceCommentOp"
-            android:textColor="@null"
+            android:background="@drawable/status_pill_background"
+            android:paddingHorizontal="@dimen/space_4"
+            android:paddingVertical="2dp"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -115,7 +113,7 @@
             app:layout_constraintTop_toTopOf="@id/comment_author"
             app:layout_constraintBottom_toBottomOf="@id/comment_author"
             app:layout_constrainedWidth="true"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="@dimen/space_4"
             android:paddingHorizontal="@dimen/post_flair_padding"
             android:background="@drawable/post_flair_background"/>
 
@@ -128,7 +126,7 @@
             app:layout_constraintEnd_toStartOf="@id/comment_hidden_indicator"
             app:layout_constraintTop_toTopOf="@id/comment_author"
             app:layout_constraintBottom_toBottomOf="@id/comment_author"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="@dimen/space_4"
             app:srcCompat="@drawable/ic_pin"
             android:visibility="@{comment.stickied ? View.VISIBLE : View.GONE}"/>
 
@@ -139,9 +137,8 @@
             app:layout_constraintTop_toTopOf="@id/comment_author"
             app:layout_constraintBottom_toBottomOf="@id/comment_author"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingStart="4dp"
+            android:paddingStart="@dimen/space_4"
             app:drawableEndCompat="@drawable/ic_reply"
-            android:textColor="@null"
             android:textAppearance="@style/TextAppearanceCommentInfo"
             android:visibility="gone"
             tools:visibility="visible"
@@ -157,7 +154,7 @@
             app:layout_constraintTop_toBottomOf="@id/comment_date"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constrainedWidth="true"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="@dimen/space_8"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
