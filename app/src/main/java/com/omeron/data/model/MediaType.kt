@@ -14,7 +14,8 @@ enum class MediaType {
     // Imgur
     IMGUR_GALLERY, IMGUR_ALBUM, IMGUR_IMAGE, IMGUR_VIDEO, IMGUR_GIF, IMGUR_LINK,
 
-    // Gfycat
+    // Gfycat shut down; GFYCAT stays so rows saved with it still decode, but nothing creates or
+    // resolves it any more.
     GFYCAT, REDGIFS,
 
     // Streamable

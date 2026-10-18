@@ -158,8 +158,8 @@ data class PostEntity @JvmOverloads constructor(
 
     // A post belongs in the media-only grid when it is an image, gif, video or gallery AND has a
     // preview URL to draw as the tile. Link posts (articles, polls) are left out even when the
-    // site supplies a thumbnail, because that thumbnail is not the post's media. Redgifs,
-    // Streamable and Gfycat posts are typed VIDEO, imgur albums and galleries are typed IMAGE.
+    // site supplies a thumbnail, because that thumbnail is not the post's media. Redgifs and
+    // Streamable posts are typed VIDEO, imgur albums and galleries are typed IMAGE.
     fun hasFilmstripMedia(): Boolean {
         val isMediaType = type == PostType.IMAGE || type == PostType.VIDEO
         return isMediaType && !preview.isNullOrBlank()

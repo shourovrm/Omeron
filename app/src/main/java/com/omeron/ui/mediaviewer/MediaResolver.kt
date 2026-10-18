@@ -7,7 +7,6 @@ import com.omeron.data.model.MediaType
 import com.omeron.data.model.Sort
 import com.omeron.data.model.Sorting
 import com.omeron.data.model.db.PostEntity
-import com.omeron.data.repository.GfycatRepository
 import com.omeron.data.repository.ImgurRepository
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.RedgifsRepository
@@ -28,7 +27,6 @@ import javax.inject.Inject
 class MediaResolver @Inject constructor(
     private val imgurRepository: ImgurRepository,
     private val streamableRepository: StreamableRepository,
-    private val gfycatRepository: GfycatRepository,
     private val redgifsRepository: RedgifsRepository,
     private val postListRepository: PostListRepository,
     private val postMapper: PostMapper2,
@@ -79,12 +77,8 @@ class MediaResolver @Inject constructor(
 
         val httpsLink = link.https
         return when (mediaType) {
-            MediaType.GFYCAT -> {
-                val gif = gfycatRepository.getGfycatGif(LinkUtil.getGfycatId(httpsLink)).first()
-                GalleryMedia.singleton(Type.VIDEO, gif.gfyItem.contentUrls.mp4.url)
-            }
             MediaType.REDGIFS -> {
-                val gif = redgifsRepository.getRedgifsGif(LinkUtil.getGfycatId(httpsLink)).first()
+                val gif = redgifsRepository.getRedgifsGif(LinkUtil.getRedgifsId(httpsLink)).first()
                 GalleryMedia.singleton(Type.VIDEO, gif.gif.urls.hd)
             }
             MediaType.STREAMABLE -> {

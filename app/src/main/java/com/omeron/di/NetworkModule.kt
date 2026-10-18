@@ -1,7 +1,6 @@
 package com.omeron.di
 
 import com.omeron.data.remote.RawJsonInterceptor
-import com.omeron.data.remote.api.gfycat.GfycatApi
 import com.omeron.data.remote.api.imgur.ImgurApi
 import com.omeron.data.remote.api.imgur.adapter.AlbumDataAdapter
 import com.omeron.data.remote.api.reddit.JsonInterceptor
@@ -228,20 +227,6 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
             .create(StreamableApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGfycatApi(
-        @BasicMoshi moshi: Moshi,
-        @GenericOkHttp okHttpClient: OkHttpClient
-    ): GfycatApi {
-        return Retrofit.Builder()
-            .baseUrl(GfycatApi.BASE_URL_GFYCAT)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build()
-            .create(GfycatApi::class.java)
     }
 
     @Provides
