@@ -1,3 +1,29 @@
+# 0.7.0 - 2026/10/18
+
+### Added
+- Material 3 look: one spacing scale, nine text styles, filled 12dp cards,
+  an 80dp bottom bar with an active pill, 56dp search field and 48dp touch
+  targets on every screen, in light, dark and AMOLED themes
+- Every screen behind the Reddit login wall now shows "Log in" instead of a
+  retry that cannot succeed, including search, communities, users, multis
+  and post details
+
+### Changed
+- Interface text rewritten in one calm voice: Join and Leave instead of
+  Subscribe, "multi" instead of "multireddit", verb buttons on every
+  confirmation dialog, and no technical wording in Settings
+- The Teddit source and Gfycat links are gone; both services are offline
+- Settings rows are plain list items; unused resources removed, so the APK
+  is about 0.7 MB smaller
+
+### Fixed
+- The Reddit login saved on the device is no longer included in Android
+  backups
+- Info bar text wraps beside its button instead of running under it on
+  narrow screens
+- Building without a signing keystore produces an unsigned APK instead of
+  failing
+
 # 0.6.7 - 2026/10/14
 
 ### Changed
