@@ -31,7 +31,7 @@
         android:scaleType="centerCrop"
         android:elevation="@dimen/post_elevation"
         app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"
-        android:contentDescription="Post preview image"
+        android:contentDescription="@string/post_preview_image_description"
         tools:src="@tools:sample/backgrounds/scenic"/>
 
     <TextView

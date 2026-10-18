@@ -461,4 +461,6 @@
     <string name="update_banner_dismiss">Dismiss update notice</string>
     <string name="search_hint_in_community">Search this community</string>
     <string name="search_scope_remove_description">Stop limiting the search to r/%1$s</string>
+    <string name="post_preview_image_description">Post preview image</string>
+    <string name="link_preview_image_description">Link preview image</string>
 </resources>

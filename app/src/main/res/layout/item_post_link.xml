@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
         android:layout_marginStart="@dimen/post_link_image_margin_horizontal"
         android:elevation="@dimen/post_elevation"
-        android:contentDescription="Link preview image"
+        android:contentDescription="@string/link_preview_image_description"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"
         tools:src="@tools:sample/backgrounds/scenic" />
