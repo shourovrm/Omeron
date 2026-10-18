@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.omeron.UnredditApplication
+import com.omeron.OmeronApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -29,5 +29,5 @@ fun Fragment.keepClearOfBottomNavigation(view: View, bottomNavigationHeight: Flo
     }
 }
 
-val Fragment.unredditApplication: UnredditApplication?
-    get() = activity?.unredditApplication
+val Fragment.omeronApplication: OmeronApplication?
+    get() = activity?.omeronApplication

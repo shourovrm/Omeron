@@ -18,7 +18,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltAndroidApp
-class UnredditApplication : Application(), ImageLoaderFactory, Configuration.Provider {
+class OmeronApplication : Application(), ImageLoaderFactory, Configuration.Provider {
 
     @Inject
     lateinit var preferencesRepository: PreferencesRepository

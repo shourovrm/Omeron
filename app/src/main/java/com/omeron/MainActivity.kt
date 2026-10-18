@@ -52,7 +52,7 @@ import com.omeron.util.extension.hideSoftKeyboard
 import com.omeron.util.extension.isPast
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.normalizeRedditLink
-import com.omeron.util.extension.unredditApplication
+import com.omeron.util.extension.omeronApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     lateinit var updateChecker: UpdateChecker
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(unredditApplication.appTheme)
+        setTheme(omeronApplication.appTheme)
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)

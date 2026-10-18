@@ -39,7 +39,7 @@ import com.omeron.util.extension.getNavOptions
 import com.omeron.util.extension.latest
 import com.omeron.util.extension.launchRepeat
 import com.omeron.util.extension.serializable
-import com.omeron.util.extension.unredditApplication
+import com.omeron.util.extension.omeronApplication
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -370,7 +370,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateNightMode(mode: Int) {
-        unredditApplication?.appTheme = mode
+        omeronApplication?.appTheme = mode
         activity?.recreate() // Recreate activity to force the change between dark and amoled
         viewModel.setNightMode(mode)
     }

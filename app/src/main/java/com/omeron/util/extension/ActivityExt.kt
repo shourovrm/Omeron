@@ -8,7 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.omeron.R
-import com.omeron.UnredditApplication
+import com.omeron.OmeronApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -23,8 +23,8 @@ fun AppCompatActivity.launchRepeat(
     }
 }
 
-val Activity.unredditApplication: UnredditApplication
-    get() = application as UnredditApplication
+val Activity.omeronApplication: OmeronApplication
+    get() = application as OmeronApplication
 
 val FragmentActivity.currentNavigationFragment: Fragment?
     get() = supportFragmentManager.findFragmentById(R.id.fragment_container)
