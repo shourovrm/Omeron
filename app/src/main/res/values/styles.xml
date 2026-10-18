@@ -34,6 +34,7 @@
         <item name="omeronSurfaceContainerHigh">@color/md_surface_container_high</item>
 
         <item name="android:textColor">@color/text_color</item>
+        <item name="actionBarSize">@dimen/app_bar_height</item>
 
         <item name="textAppearanceHeadline6">@style/TextAppearance.App.TitleLarge</item>
         <item name="textAppearanceSubtitle1">@style/TextAppearance.App.TitleMedium</item>

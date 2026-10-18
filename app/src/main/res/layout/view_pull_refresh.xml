@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/space_8"
         tools:text="Last refresh: 11:33:25 PM"/>
 
     <com.omeron.ui.common.widget.CradleView

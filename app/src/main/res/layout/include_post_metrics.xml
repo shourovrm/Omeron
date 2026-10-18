@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
             app:layout_constraintStart_toEndOf="@id/image_vote_icon"
             android:layout_marginStart="@dimen/post_icon_text_margin"
-            android:textColor="@color/text_color_secondary"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
             android:text="@{post.score}"
             tools:text="12345"/>
 
@@ -46,7 +46,7 @@
             app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
             app:layout_constraintStart_toEndOf="@id/text_post_vote"
             android:layout_marginStart="@dimen/post_margin_horizontal"
-            android:textColor="@color/text_color_secondary"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
             tools:text="50%"/>
 
         <ImageView
@@ -56,7 +56,7 @@
             app:layout_constraintTop_toTopOf="@id/image_vote_icon"
             app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
             app:layout_constraintStart_toEndOf="@id/text_post_ratio"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="@dimen/space_24"
             android:importantForAccessibility="no"
             app:tint="@color/text_color_secondary"
             app:srcCompat="@drawable/ic_comments"/>
@@ -69,7 +69,7 @@
             app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
             app:layout_constraintStart_toEndOf="@id/image_comments_icon"
             android:layout_marginStart="@dimen/post_icon_text_margin"
-            android:textColor="@color/text_color_secondary"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
             android:text="@{post.commentsNumber}"
             tools:text="1234"/>
 
@@ -80,7 +80,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="@dimen/space_4"
             android:padding="@dimen/post_action_button_padding"
             android:scaleType="fitCenter"
             android:background="?attr/selectableItemBackgroundBorderless"

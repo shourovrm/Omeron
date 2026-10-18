@@ -50,8 +50,8 @@
 
     <com.omeron.ui.common.widget.CardButton
         android:id="@+id/button_type_indicator"
-        android:layout_width="@dimen/app_bar_button_size"
-        android:layout_height="@dimen/app_bar_button_size"
+        android:layout_width="@dimen/post_type_indicator_size"
+        android:layout_height="@dimen/post_type_indicator_size"
         app:layout_constraintStart_toStartOf="@id/image_post"
         app:layout_constraintBottom_toBottomOf="@id/image_post"
         android:layout_margin="@dimen/post_type_indicator_margin"

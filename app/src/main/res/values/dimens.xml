@@ -23,12 +23,19 @@
     <dimen name="list_item_two_line">72dp</dimen>
     <dimen name="list_item_three_line">88dp</dimen>
     <dimen name="bottom_bar_height">80dp</dimen>
+    <!-- Overrides the Material library value, which the bar and the list padding in code both read. -->
+    <dimen name="design_bottom_navigation_height">@dimen/bottom_bar_height</dimen>
     <dimen name="bottom_bar_indicator_width">64dp</dimen>
     <dimen name="bottom_bar_indicator_height">32dp</dimen>
     <dimen name="app_bar_height">64dp</dimen>
     <dimen name="bottom_sheet_radius">28dp</dimen>
     <dimen name="divider_thickness">1dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
+
+    <!-- Post cards sit 16dp from the screen edge with an 8dp gap, so each card keeps half the gap. -->
+    <dimen name="post_card_margin_horizontal">@dimen/space_16</dimen>
+    <dimen name="post_card_margin_vertical">4dp</dimen>
+    <dimen name="avatar_text_min_size">8sp</dimen>
 
     <dimen name="post_margin_horizontal">@dimen/space_8</dimen>
     <dimen name="post_margin_vertical">@dimen/space_16</dimen>
@@ -38,7 +45,7 @@
 
     <dimen name="post_padding_horizontal">@dimen/space_16</dimen>
 
-    <dimen name="post_content_margin_horizontal">@dimen/space_24</dimen>
+    <dimen name="post_content_margin_horizontal">@dimen/space_12</dimen>
 
     <dimen name="post_elevation">0dp</dimen>
 
@@ -46,7 +53,7 @@
 
     <dimen name="post_text_padding">@dimen/space_16</dimen>
 
-    <dimen name="post_image_height">250dp</dimen>
+    <dimen name="post_image_height">200dp</dimen>
 
     <dimen name="post_link_image_size">100dp</dimen>
     <dimen name="post_link_image_margin_horizontal">@dimen/space_8</dimen>
@@ -54,10 +61,13 @@
     <dimen name="post_margin_top_small">@dimen/space_8</dimen>
     <dimen name="post_margin_top_large">@dimen/space_16</dimen>
 
+    <dimen name="post_type_indicator_size">@dimen/icon_button_size</dimen>
+    <dimen name="post_badge_height">20dp</dimen>
+    <dimen name="post_badge_icon_size">12dp</dimen>
     <dimen name="post_icon_size">24dp</dimen>
     <dimen name="post_action_button_size">@dimen/touch_target</dimen>
     <dimen name="post_action_button_padding">@dimen/space_12</dimen>
-    <dimen name="post_avatar_size">20dp</dimen>
+    <dimen name="post_avatar_size">@dimen/avatar_size</dimen>
     <dimen name="post_meta_icon_size">14dp</dimen>
     <dimen name="post_icon_text_margin">5dp</dimen>
 
@@ -73,7 +83,7 @@
     <dimen name="sort_margin">@dimen/space_16</dimen>
 
     <dimen name="app_bar_margin">@dimen/space_16</dimen>
-    <dimen name="app_bar_button_size">@dimen/icon_button_size</dimen>
+    <dimen name="app_bar_button_size">@dimen/touch_target</dimen>
     <dimen name="app_bar_button_elevation">0dp</dimen>
 
     <dimen name="card_height">84dp</dimen>
@@ -163,7 +173,7 @@
     <dimen name="backup_operation_card_height">84dp</dimen>
 
     <dimen name="profile_home_size">36dp</dimen>
-    <dimen name="profile_home_app_bar_size">32dp</dimen>
+    <dimen name="profile_home_app_bar_size">@dimen/icon_button_size</dimen>
     <dimen name="profile_home_drawer_width">92dp</dimen>
 
     <dimen name="profile_content_margin">@dimen/space_48</dimen>

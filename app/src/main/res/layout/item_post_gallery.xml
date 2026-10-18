@@ -23,8 +23,8 @@
 
     <com.omeron.ui.common.widget.CardButton
         android:id="@+id/button_gallery_type_indicator"
-        android:layout_width="@dimen/app_bar_button_size"
-        android:layout_height="@dimen/app_bar_button_size"
+        android:layout_width="@dimen/post_type_indicator_size"
+        android:layout_height="@dimen/post_type_indicator_size"
         app:layout_constraintStart_toStartOf="@id/image_gallery_preview"
         app:layout_constraintBottom_toBottomOf="@id/image_gallery_preview"
         android:layout_margin="@dimen/post_type_indicator_margin"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/post_margin_top_small"
         android:layout_marginBottom="@dimen/post_margin_top_small"
-        android:textColor="@color/text_color_secondary"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_gallery_title"
         app:layout_constraintBottom_toBottomOf="parent"

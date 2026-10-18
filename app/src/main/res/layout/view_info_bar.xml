@@ -19,8 +19,9 @@
             app:layout_constraintEnd_toStartOf="@id/button_action"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginStart="@dimen/space_16"
+            android:layout_marginEnd="@dimen/space_8"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_action"
@@ -29,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            style="@style/ButtonStyle.Text"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
