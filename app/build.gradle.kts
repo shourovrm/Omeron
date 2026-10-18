@@ -13,10 +13,10 @@ plugins {
 val keystorePropertiesFile = file("../keystore.properties")
 val keystoreProperties = Properties()
 
-if (keystorePropertiesFile.exists()) {
+val hasKeystoreProperties = keystorePropertiesFile.exists()
+
+if (hasKeystoreProperties) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-} else {
-    keystoreProperties["storeFile"] = "keystore.jks"
 }
 
 android {
@@ -49,12 +49,15 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties.getProperty("keyAlias", "")
-            keyPassword = keystoreProperties.getProperty("keyPassword", "")
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties.getProperty("storePassword", "")
+    // Without keystore.properties no signing config exists and the release APK stays unsigned.
+    if (hasKeystoreProperties) {
+        signingConfigs {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias", "")
+                keyPassword = keystoreProperties.getProperty("keyPassword", "")
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties.getProperty("storePassword", "")
+            }
         }
     }
 
@@ -66,7 +69,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            if (hasKeystoreProperties) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
         getByName("debug") {
             applicationIdSuffix = ".dev"

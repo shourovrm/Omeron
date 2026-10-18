@@ -71,8 +71,9 @@ Requires **JDK 17** (Gradle 7.5.1 does not run on newer JDKs) and the Android SD
 JAVA_HOME=/path/to/jdk-17 ./gradlew assembleRelease
 ```
 
-Release signing reads `keystore.properties` + a keystore (both git-ignored). Without them,
-Gradle falls back to an unsigned build.
+Release signing reads `keystore.properties` in the repository root plus the keystore file it
+points to (both git-ignored). When `keystore.properties` is absent, `assembleRelease` still
+succeeds and writes an unsigned `app-release-unsigned.apk` that must be signed before install.
 
 ## License
 
