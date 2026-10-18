@@ -93,6 +93,13 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs = listOf("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+        // values-de and values-es are partial fork translations; English is the source of truth.
+        disable += "MissingTranslation"
+        abortOnError = true
+    }
 }
 
 // Release-only: drop the debug variant entirely (no debug APK built).

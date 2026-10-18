@@ -1,0 +1,1022 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 7.3.1" type="baseline" client="gradle" dependencies="false" name="AGP (7.3.1)" variant="all" version="7.3.1">
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/layout_root, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/layout_root, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/layout_root]"
+        errorLine1="        &lt;include"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/fragment_subreddit.xml"
+            line="39"
+            column="9"
+            message="Duplicate id @+id/layout_root, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/layout_root, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/layout_root]"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_about.xml"
+            line="13"
+            column="9"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/layout_root"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_content.xml"
+            line="14"
+            column="9"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/layout_root"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/subreddit_active_users, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_active_users, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_active_users]"
+        errorLine1="        &lt;include"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/fragment_subreddit.xml"
+            line="39"
+            column="9"
+            message="Duplicate id @+id/subreddit_active_users, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_active_users, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_active_users]"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_about.xml"
+            line="68"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_active_users"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_content.xml"
+            line="163"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_active_users"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/subreddit_active_users_label, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_active_users_label, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_active_users_label]"
+        errorLine1="        &lt;include"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/fragment_subreddit.xml"
+            line="39"
+            column="9"
+            message="Duplicate id @+id/subreddit_active_users_label, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_active_users_label, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_active_users_label]"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_about.xml"
+            line="79"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_active_users_label"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_content.xml"
+            line="172"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_active_users_label"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/subreddit_name, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_name, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_name]"
+        errorLine1="        &lt;include"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/fragment_subreddit.xml"
+            line="39"
+            column="9"
+            message="Duplicate id @+id/subreddit_name, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_name, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_name]"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_about.xml"
+            line="20"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_name"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_content.xml"
+            line="46"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_name"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/subreddit_subscribers, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_subscribers, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_subscribers]"
+        errorLine1="        &lt;include"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/fragment_subreddit.xml"
+            line="39"
+            column="9"
+            message="Duplicate id @+id/subreddit_subscribers, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_subscribers, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_subscribers]"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_about.xml"
+            line="47"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_subscribers"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_content.xml"
+            line="146"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_subscribers"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/subreddit_subscribers_label, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_subscribers_label, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_subscribers_label]"
+        errorLine1="        &lt;include"
+        errorLine2="        ^">
+        <location
+            file="src/main/res/layout/fragment_subreddit.xml"
+            line="39"
+            column="9"
+            message="Duplicate id @+id/subreddit_subscribers_label, defined or included multiple times in layout/fragment_subreddit.xml: [layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_subscribers_label, layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_subscribers_label]"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_about.xml"
+            line="59"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_about.xml defines @+id/subreddit_subscribers_label"/>
+        <location
+            file="src/main/res/layout/layout_subreddit_content.xml"
+            line="155"
+            column="13"
+            message="Defined here, included via layout/fragment_subreddit.xml => layout/layout_subreddit_content.xml defines @+id/subreddit_subscribers_label"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_header.xml: [layout/item_post_header.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_header.xml => layout/include_post_flairs.xml defines @+id/post_flair]"
+        errorLine1="    &lt;include"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/layout/item_post_header.xml"
+            line="84"
+            column="5"
+            message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_header.xml: [layout/item_post_header.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_header.xml => layout/include_post_flairs.xml defines @+id/post_flair]"/>
+        <location
+            file="src/main/res/layout/include_post_info.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_header.xml => layout/include_post_info.xml defines @+id/post_flair"/>
+        <location
+            file="src/main/res/layout/include_post_flairs.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_header.xml => layout/include_post_flairs.xml defines @+id/post_flair"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_image.xml: [layout/item_post_image.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_image.xml => layout/include_post_flairs.xml defines @+id/post_flair]"
+        errorLine1="    &lt;include"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/layout/item_post_image.xml"
+            line="49"
+            column="5"
+            message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_image.xml: [layout/item_post_image.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_image.xml => layout/include_post_flairs.xml defines @+id/post_flair]"/>
+        <location
+            file="src/main/res/layout/include_post_info.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_image.xml => layout/include_post_info.xml defines @+id/post_flair"/>
+        <location
+            file="src/main/res/layout/include_post_flairs.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_image.xml => layout/include_post_flairs.xml defines @+id/post_flair"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_link.xml: [layout/item_post_link.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_link.xml => layout/include_post_flairs.xml defines @+id/post_flair]"
+        errorLine1="    &lt;include"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/layout/item_post_link.xml"
+            line="65"
+            column="5"
+            message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_link.xml: [layout/item_post_link.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_link.xml => layout/include_post_flairs.xml defines @+id/post_flair]"/>
+        <location
+            file="src/main/res/layout/include_post_info.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_link.xml => layout/include_post_info.xml defines @+id/post_flair"/>
+        <location
+            file="src/main/res/layout/include_post_flairs.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_link.xml => layout/include_post_flairs.xml defines @+id/post_flair"/>
+    </issue>
+
+    <issue
+        id="DuplicateIncludedIds"
+        message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_text.xml: [layout/item_post_text.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_text.xml => layout/include_post_flairs.xml defines @+id/post_flair]"
+        errorLine1="    &lt;include"
+        errorLine2="    ^">
+        <location
+            file="src/main/res/layout/item_post_text.xml"
+            line="34"
+            column="5"
+            message="Duplicate id @+id/post_flair, defined or included multiple times in layout/item_post_text.xml: [layout/item_post_text.xml => layout/include_post_info.xml defines @+id/post_flair, layout/item_post_text.xml => layout/include_post_flairs.xml defines @+id/post_flair]"/>
+        <location
+            file="src/main/res/layout/include_post_info.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_text.xml => layout/include_post_info.xml defines @+id/post_flair"/>
+        <location
+            file="src/main/res/layout/include_post_flairs.xml"
+            line="69"
+            column="13"
+            message="Defined here, included via layout/item_post_text.xml => layout/include_post_flairs.xml defines @+id/post_flair"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `networkSecurityConfig` is only used in API level 24 and higher (current min is 23)"
+        errorLine1="        android:networkSecurityConfig=&quot;@xml/network_security_config&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="17"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `accessibilityHeading` is only used in API level 28 and higher (current min is 23)"
+        errorLine1="        android:accessibilityHeading=&quot;true&quot;/>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_profile_manager.xml"
+            line="18"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `accessibilityHeading` is only used in API level 28 and higher (current min is 23)"
+        errorLine1="        android:accessibilityHeading=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_drawer_section.xml"
+            line="19"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `accessibilityHeading` is only used in API level 28 and higher (current min is 23)"
+        errorLine1="        android:accessibilityHeading=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_manage_section.xml"
+            line="21"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `accessibilityHeading` is only used in API level 28 and higher (current min is 23)"
+        errorLine1="        android:accessibilityHeading=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_profile_label.xml"
+            line="22"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `accessibilityHeading` is only used in API level 28 and higher (current min is 23)"
+        errorLine1="    android:accessibilityHeading=&quot;true&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_suggestion_section.xml"
+            line="13"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/design_bottom_navigation_height` is marked as private in com.google.android.material:material:1.7.0"
+        errorLine1="                    com.google.android.material.R.dimen.design_bottom_navigation_height"
+        errorLine2="                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/search/SearchFragment.kt"
+            line="168"
+            column="57"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/design_bottom_navigation_height` is marked as private in com.google.android.material:material:1.7.0"
+        errorLine1="            com.google.android.material.R.dimen.design_bottom_navigation_height"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/search/SearchPostFragment.kt"
+            line="39"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/design_bottom_navigation_height` is marked as private in com.google.android.material:material:1.7.0"
+        errorLine1="            com.google.android.material.R.dimen.design_bottom_navigation_height"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/search/SearchSubredditFragment.kt"
+            line="26"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/design_bottom_navigation_height` is marked as private in com.google.android.material:material:1.7.0"
+        errorLine1="            com.google.android.material.R.dimen.design_bottom_navigation_height"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/search/SearchUserFragment.kt"
+            line="25"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@style/PreferenceSummaryTextStyle` is marked as private in androidx.preference:preference:1.2.0"
+        errorLine1="            style=&quot;@style/PreferenceSummaryTextStyle&quot;/>"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_preference.xml"
+            line="38"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@style/PreferenceSummaryTextStyle` is marked as private in androidx.preference:preference:1.2.0"
+        errorLine1="        style=&quot;@style/PreferenceSummaryTextStyle&quot;/>"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_preference_category.xml"
+            line="34"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@integer/config_navAnimTime` is marked as private in androidx.navigation:navigation-ui:2.5.3"
+        errorLine1="        android:duration=&quot;@integer/config_navAnimTime&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/anim/nav_enter_anim.xml"
+            line="6"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@integer/config_navAnimTime` is marked as private in androidx.navigation:navigation-ui:2.5.3"
+        errorLine1="        android:duration=&quot;@integer/config_navAnimTime&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/anim/nav_enter_anim.xml"
+            line="10"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@integer/config_navAnimTime` is marked as private in androidx.navigation:navigation-ui:2.5.3"
+        errorLine1="        android:duration=&quot;@integer/config_navAnimTime&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/anim/nav_exit_anim.xml"
+            line="6"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@integer/config_navAnimTime` is marked as private in androidx.navigation:navigation-ui:2.5.3"
+        errorLine1="        android:duration=&quot;@integer/config_navAnimTime&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/anim/nav_exit_anim.xml"
+            line="10"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="Overriding `@integer/config_navAnimTime` which is marked as private in androidx.navigation:navigation-ui:2.5.3. If deliberate, use tools:override=&quot;true&quot;, otherwise pick a different name."
+        errorLine1="    &lt;integer name=&quot;config_navAnimTime&quot;>200&lt;/integer>"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/values.xml"
+            line="3"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="SwitchIntDef"
+        message="Switch statement on an `int` with known associated constant missing case `BottomSheetBehavior.STATE_COLLAPSED`, `BottomSheetBehavior.STATE_DRAGGING`, `BottomSheetBehavior.STATE_HALF_EXPANDED`, `BottomSheetBehavior.STATE_SETTLING`"
+        errorLine1="                    when (newState) {"
+        errorLine2="                    ~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/filmstrip/FilmstripViewerFragment.kt"
+            line="579"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseCompatTextViewDrawableXml"
+        message="Use `app:drawableTopCompat` instead of `android:drawableTop`"
+        errorLine1="                    android:drawableTop=&quot;@drawable/ic_bookmark_outline&quot;/>"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_filmstrip_viewer.xml"
+            line="455"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseCompatTextViewDrawableXml"
+        message="Use `app:drawableTopCompat` instead of `android:drawableTop`"
+        errorLine1="                    android:drawableTop=&quot;@drawable/ic_share&quot;/>"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_filmstrip_viewer.xml"
+            line="462"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseCompatTextViewDrawableXml"
+        message="Use `app:drawableTopCompat` instead of `android:drawableTop`"
+        errorLine1="                    android:drawableTop=&quot;@drawable/ic_download&quot;/>"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_filmstrip_viewer.xml"
+            line="469"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseCompatTextViewDrawableXml"
+        message="Use `app:drawableTopCompat` instead of `android:drawableTop`"
+        errorLine1="                    android:drawableTop=&quot;@drawable/empty&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_post.xml"
+            line="104"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;members&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;multireddit_member_count&quot;>%d members&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="71"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;characters&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;search_min_length_hint&quot;>Type at least %1$d characters&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="371"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;saved&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;profile_saved_count&quot;>%1$d saved&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="418"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="                notifyDataSetChanged()"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/postlist/PostListAdapter.kt"
+            line="93"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="                notifyDataSetChanged()"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/postlist/PostListAdapter.kt"
+            line="102"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="                notifyDataSetChanged()"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/profile/ProfileHistoryAdapter.kt"
+            line="37"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="                notifyDataSetChanged()"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/profile/ProfileSavedAdapter.kt"
+            line="73"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 23"
+        errorLine1="            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> PendingIntent.FLAG_IMMUTABLE"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/util/IntentUtil.kt"
+            line="17"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v23`) is unnecessary; `minSdkVersion` is 23. Merge all the resources in this folder into `drawable`.">
+        <location
+            file="src/main/res/drawable-v23"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 23"
+        errorLine1="        &lt;item name=&quot;android:windowLightStatusBar&quot; tools:targetApi=&quot;m&quot;>false&lt;/item>"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-night/styles.xml"
+            line="6"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 23"
+        errorLine1="        &lt;item name=&quot;android:windowLightStatusBar&quot; tools:targetApi=&quot;m&quot;>true&lt;/item>"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="10"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="UseCompoundDrawables"
+        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
+        errorLine1="                &lt;LinearLayout"
+        errorLine2="                 ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_filmstrip_viewer.xml"
+            line="218"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (943 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M21.23,34.89l0.02,-0.06 -0.22,-0.08 0.08,-0.21 -0.06,-0.02 -0.08,0.21 -0.22,-0.08 -0.02,0.06 0.22,0.08 -0.08,0.22 0.06,0.02 0.08,-0.22zM38.45,45.65l0.02,-0.06 -0.22,-0.08 0.08,-0.22 -0.06,-0.02 -0.08,0.22 -0.22,-0.08 -0.02,0.06 0.22,0.08 -0.08,0.21 0.06,0.03 0.08,-0.22zM15.07,48.96l0.03,-0.06 -0.22,-0.08 0.08,-0.22 -0.06,-0.02 -0.08,0.22 -0.22,-0.08 -0.02,0.06 0.22,0.08 -0.08,0.22 0.06,0.02 0.08,-0.22zM34.23,54.2l0.02,-0.06 -0.21,-0.08 0.08,-0.22 -0.06,-0.02 -0.08,0.22 -0.22,-0.08 -0.02,0.06 0.21,0.08 -0.08,0.22 0.06,0.02 0.08,-0.22zM17.49,54.21l0.02,-0.06 -0.22,-0.08 0.08,-0.21 -0.06,-0.03 -0.08,0.22 -0.21,-0.08 -0.03,0.06 0.22,0.08 -0.08,0.22 0.06,0.02 0.08,-0.22zM55.02,41.27l0.02,-0.06 -0.21,-0.08 0.08,-0.22 -0.06,-0.02 -0.08,0.21 -0.22,-0.08 -0.02,0.06 0.22,0.08 -0.08,0.22 0.05,0.02 0.08,-0.21zM10.1,39.17l0.03,-0.06 -0.22,-0.08 0.08,-0.22 -0.06,-0.02 -0.08,0.22 -0.21,-0.08 -0.03,0.06 0.22,0.08 -0.08,0.21 0.06,0.03 0.08,-0.22z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/empty.xml"
+            line="15"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (910 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M35.01,31.2l0.04,0.05 0.19,-0.13 0.13,0.2 0.05,-0.04 -0.13,-0.2 0.2,-0.12 -0.04,-0.05 -0.2,0.13 -0.12,-0.2 -0.06,0.04 0.13,0.2zM50.52,45.33l-0.06,-0.03 -0.08,0.22 -0.21,-0.08 -0.03,0.06 0.22,0.08 -0.08,0.22 0.06,0.02 0.08,-0.22 0.22,0.08 0.02,-0.06 -0.22,-0.08zM48.21,23.36l0.04,0.05 0.19,-0.13 0.13,0.2 0.05,-0.04 -0.13,-0.2 0.2,-0.12 -0.04,-0.05 -0.2,0.13 -0.13,-0.2 -0.05,0.04 0.13,0.2zM59.08,38.93l0.08,-0.21 -0.05,-0.03 -0.09,0.22 -0.21,-0.08 -0.02,0.06 0.21,0.08 -0.08,0.22 0.06,0.02 0.08,-0.22 0.22,0.08 0.02,-0.06zM49.31,17.69l0.04,0.05 0.19,-0.13 0.13,0.2 0.05,-0.04 -0.13,-0.2 0.2,-0.13 -0.04,-0.05 -0.2,0.13 -0.12,-0.2 -0.05,0.04 0.13,0.2zM38.27,51.83l0.08,-0.22 -0.06,-0.02 -0.08,0.22 -0.22,-0.09 -0.02,0.06 0.22,0.08 -0.09,0.22 0.06,0.02 0.08,-0.21 0.22,0.08 0.02,-0.06zM46.53,34.21l0.04,0.05 0.2,-0.13 0.12,0.2 0.05,-0.04 -0.13,-0.2 0.2,-0.12 -0.04,-0.05 -0.2,0.13 -0.12,-0.2 -0.05,0.04 0.13,0.2z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/empty.xml"
+            line="63"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1272 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;m18.2979,14.5532a1.4043,1.4043 0,0 0,0.2809 1.5489l0.0511,0.0511a1.7021,1.7021 0,0 1,0 2.4085,1.7021 1.7021,0 0,1 -2.4085,0l-0.0511,-0.0511a1.4043,1.4043 0,0 0,-1.5489 -0.2809,1.4043 1.4043,0 0,0 -0.8511,1.2851v0.1447a1.7021,1.7021 0,0 1,-1.7021 1.7021,1.7021 1.7021,0 0,1 -1.7021,-1.7021v-0.0766A1.4043,1.4043 0,0 0,9.4468 18.2979,1.4043 1.4043,0 0,0 7.8979,18.5787l-0.0511,0.0511a1.7021,1.7021 0,0 1,-2.4085 0,1.7021 1.7021,0 0,1 0,-2.4085l0.0511,-0.0511A1.4043,1.4043 0,0 0,5.7702 14.6213,1.4043 1.4043,0 0,0 4.4851,13.7702H4.3404A1.7021,1.7021 0,0 1,2.6383 12.0681,1.7021 1.7021,0 0,1 4.3404,10.366h0.0766A1.4043,1.4043 0,0 0,5.7021 9.4468,1.4043 1.4043,0 0,0 5.4213,7.8979l-0.0511,-0.0511a1.7021,1.7021 0,0 1,0 -2.4085,1.7021 1.7021,0 0,1 2.4085,0l0.0511,0.0511a1.4043,1.4043 0,0 0,1.5489 0.2809h0.0681A1.4043,1.4043 0,0 0,10.2979 4.4851V4.3404A1.7021,1.7021 0,0 1,12 2.6383,1.7021 1.7021,0 0,1 13.7021,4.3404v0.0766a1.4043,1.4043 0,0 0,0.8511 1.2851,1.4043 1.4043,0 0,0 1.5489,-0.2809l0.0511,-0.0511a1.7021,1.7021 0,0 1,2.4085 0,1.7021 1.7021,0 0,1 0,2.4085l-0.0511,0.0511a1.4043,1.4043 0,0 0,-0.2809 1.5489v0.0681a1.4043,1.4043 0,0 0,1.2851 0.8511h0.1447A1.7021,1.7021 0,0 1,21.3617 12,1.7021 1.7021,0 0,1 19.6596,13.7021h-0.0766a1.4043,1.4043 0,0 0,-1.2851 0.8511z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/ic_outline_settings.xml"
+            line="14"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (5808 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M316.1,622.8a11.2,11.2 0,0 0,-2.3 -1.1c-2.7,-1 -5.5,-1.3 -8.2,-2.2a11.8,11.8 0,0 1,-4.1 -2.4c-0.2,-0.2 -0.4,-0.4 -0.6,-0.6 1,-0.6 1.9,-1.3 2.9,-1.9a34.4,34.4 0,0 0,-12.1 -12c1.6,-2.4 5.2,-2.2 7.4,-4.1a7,7 0,0 0,2 -3.9c0.8,-3.9 -0.2,-8 -1.2,-11.9 -1.9,-7.6 -3.8,-15.2 -6.9,-22.4a88.1,88.1 0,0 1,-3.7 -9.1c-2.6,-8.6 -0.8,-18 -2.7,-26.8 -0.6,-2.8 -1.6,-5.8 -0.9,-8.6 1.1,-4.3 5.9,-6.9 7,-11.3 3.8,-15.4 4.5,-31.5 6.7,-47.3A60.8,60.8 0,0 0,300.1 448.3c0,-3.2 -0.6,-6.3 -0.8,-9.5 -0.6,-8.9 1.2,-17.9 1.9,-26.8a28,28 0,0 1,3.6 8.9,36.1 36.1,0 0,1 0.2,8.9 41.7,41.7 0,0 1,-0.6 5.9c-0.5,2.3 -1.4,4.5 -1.9,6.9a21.2,21.2 0,0 0,0.9 13.8c1.4,3 4.3,5.8 7.5,4.9 2.2,-0.6 3.5,-2.8 4.4,-4.8 3,-6.4 4.7,-13.7 2.7,-20.5 -1.3,-4.5 -4.3,-8.6 -4.5,-13.3a34.3,34.3 0,0 1,0.4 -5.6c1.3,-10.9 -1.5,-21.8 -2,-32.7 -0.2,-2.9 0.1,-6.5 -0.6,-9.6 -0.1,-0.4 -0.2,-0.7 -0.3,-1.1a2.3,2.3 0,0 1,0.7 0.3,6.5 6.5,0 0,0 -0.1,-5.6 14.2,14.2 0,0 1,-0.9 -1.8c-0.4,-1 -0.3,-2.2 -0.8,-3.1a13.3,13.3 0,0 0,-1 -1.5c-1.3,-1.9 -1.4,-4.3 -1.4,-6.6q-0.2,-17.8 -1,-35.5c-0.3,-6 -0.6,-12.1 -2.7,-17.8a26.6,26.6 0,0 0,-9.4 -12.5,21.9 21.9,0 0,0 -2.1,-1.3 7.3,7.3 0,0 0,0.6 -2.7,6.5 6.5,0 0,0 0,-0.9l-0.1,-0.5v0a21.1,21.1 0,0 0,-2 -6,16.9 16.9,0 0,1 -1.9,-6.6 10.2,10.2 0,0 1,0.1 -1.2v0c0.3,-2.9 1.8,-5.6 2.4,-8.5a14.5,14.5 0,0 0,0.2 -2.7c0,-0.3 0,-0.6 0,-0.9a0.1,0.1 0,0 0,0 0,27.3 27.3,0 0,0 -3.2,-10.1c-0.5,-1 -1,-2 -1.6,-3 -0.3,-1.9 -0.6,-3.7 -0.8,-5.6 -0.2,-1.1 -0.3,-2.2 -0.6,-3.2q-0.2,-0.8 -0.4,-1.6c1.5,-1.5 0.6,-3.6 -0.3,-5.6 -1.9,-3.8 -1.5,-8.3 -2.3,-12.4a37.4,37.4 0,0 0,-2.9 -8.3,18.5 18.5,0 0,0 -3.2,-5.2 19.6,19.6 0,0 0,-4.1 -3,13.1 13.1,0 0,0 -4.1,-1.9c-0.9,-0.2 -1.8,-0.2 -2.7,-0.4a8.7,8.7 0,0 1,-1.7 -0.6,11.4 11.4,0 0,0 -3.6,-1.3 8,8 0,0 0,-3.5 0.7,12.7 12.7,0 0,1 -3.7,1c-0.4,0 -0.9,0 -1.4,0a3.1,3.1 0,0 0,-1.9 0.5,7.2 7.2,0 0,0 -0.8,0.8 11.1,11.1 0,0 1,-2.4 1.6A23.8,23.8 0,0 0,234.6 221.3a10.1,10.1 0,0 1,-0.3 3.3c-0.3,0.8 -0.9,1.6 -1.1,2.4A6.8,6.8 0,0 0,233.1 229.3c0.1,1.2 0.2,2.3 0.3,3.5h0a7.4,7.4 0,0 0,-1.5 3.2v0a4.4,4.4 0,0 0,-0.1 0.6v0.1h0c-0.1,2.1 0.9,4 1.5,6A21.3,21.3 0,0 1,233.1 254.5c-0.7,2.6 -1.8,5.3 -2,8v0c0,0.1 0,0.1 0,0.2a9.7,9.7 0,0 0,0.5 4c0.3,0.9 0.8,1.8 1.1,2.7 1.1,3.3 -0.5,6.7 -2.5,9.5l0,0c-0.3,0.4 -0.6,0.9 -1,1.3l0.1,0 -0.1,0.1 2.1,1.5c-0.6,0.3 -1.2,0.7 -1.8,1a18.9,18.9 0,0 0,-6.8 2.5,27.6 27.6,0 0,0 -5.5,3.7 23.3,23.3 0,0 0,-4.3 6,75.4 75.4,0 0,0 -3.7,7.8 24.3,24.3 0,0 0,-1.9 6.7c-0.9,1.8 -1.6,3.8 -2.4,5.6 -0.4,0.9 -0.8,1.8 -1.2,2.7l-34.4,-84.3 -5.3,2.2 0.4,1 -1.1,0.5 1.5,3.7c-0.2,0.2 -0.4,0.3 -0.6,0.5l-0.3,0.2 -0.6,0.4 -0.3,0.2 -0.6,0.5 -0.2,0.2 -0.7,0.6 0,0c-0.8,0.7 -1.5,1.4 -2.2,2.2l-1.8,1.9 -0.3,0.4 -0.6,0.6 -0.3,0.3 -0.9,0.9 -0.1,0.1 -0.5,0.5 -0.3,0.3c-0.1,0.1 -0.3,0.3 -0.4,0.4l-0.4,0.4 -0.7,0.6 -0.2,0.2 -0.9,0.7a26.1,26.1 0,0 1,-4 2.6c-5.5,2.8 -11.3,5.2 -16.6,8.2a47.8,47.8 0,0 0,-8.2 5.8c-3.5,3.1 -6.5,7 -10.6,9.3l-0.4,0.2c-7.2,3.7 -15.8,1.5 -24,1.3 -1.2,0 -2.4,0 -3.6,0.1 -6.7,0.5 -12.8,3.2 -18.7,6.5 -4.2,2.3 -8.2,4.9 -12.3,7.3 -2.6,1.5 -5.2,3.1 -7.8,4.8 -6.6,4.2 -13.3,8.6 -20.2,11.8 -6.4,2.9 -13,4.8 -20,4.4L5.1,315.2c-0.7,0 -1.3,-0.1 -2,-0.2 -0.6,5.3 3.5,9.5 6.3,14.1a14.3,14.3 0,0 1,2.4 6.7,12 12,0 0,1 -0.2,2.7c-0.6,3.2 -2.1,6.4 -1.6,9.7A11.2,11.2 0,0 0,12.1 353.4c1.8,2.5 4.3,4.8 5.9,7.4 2.5,4 3.2,8.9 4.2,13.6a28.6,28.6 0,0 0,3.3 9.4c2.2,3.5 5.5,6 8.6,8.7 0.6,0.5 1.1,1 1.7,1.5 0.4,0.4 0.8,0.7 1.2,1.1 3.6,3.7 6.3,9.4 4.1,14.1 -0.1,0.2 -0.2,0.3 -0.2,0.4a4,4 0,0 0,0.6 0.3c2.8,1.4 6.3,-0.8 8.6,-3.1 1.1,-1.1 2.2,-2.3 3.2,-3.5 2.8,-3.1 5.3,-6.5 8,-9.7 0.7,-0.9 1.4,-1.7 2.2,-2.6a37,37 0,0 1,9.9 -8,36.3 36.3,0 0,1 6.1,-2.5c3.1,-1 6.3,-1.7 9.4,-2.7a77.3,77.3 0,0 0,12.4 -5.2A190.6,190.6 0,0 0,121.1 360.3l1,-0.6a34.3,34.3 0,0 0,5.9 -4.8c0.3,-0.3 0.6,-0.7 0.9,-1.1 1.6,-2 2.6,-4.4 4,-6.4a20.8,20.8 0,0 1,5.6 -5.4c6.2,-4.2 14.4,-5.7 21.7,-8l0.1,0a84.3,84.3 0,0 0,34.2 -20.3l5.5,13.4q-0.9,2.4 -1.6,4.8c-1.2,4 -2.2,8.1 -4.6,11.5a8.6,8.6 0,0 0,-1.7 3.1,10 10,0 0,1 -0.4,2.5c-0.3,0.7 -1,1.1 -1.3,1.8 -0.4,1 0.1,2.3 -0.4,3.2a5.1,5.1 0,0 1,-0.9 1C187.5,356.3 187.1,358.3 187.1,360.1a17.8,17.8 0,0 1,-0.4 5.5,13.1 13.1,0 0,1 1.3,-0.7 6,6 0,0 0,-0.1 1,11.1 11.1,0 0,0 0.3,2.8 22.2,22.2 0,0 0,2.9 5.8,41.5 41.5,0 0,0 3.1,4.5 41,41 0,0 0,6.6 5.9l10.1,7.8 -1,4.2c-2.2,8.8 -4.4,17.8 -4.5,26.9a115.7,115.7 0,0 0,0.8 12.9l0.9,8.8c0.7,7.1 1.4,14.1 2.2,21.2 0.5,4.5 1,9 2.6,13.2 2.4,6.4 -0.3,13.6 0.8,20.4 0.8,5.3 2.4,10.8 0.8,15.9 -0.6,2 -1.8,3.9 -2.6,5.9 -2,4.9 -2.3,10.4 -2.4,15.7a66.8,66.8 0,0 0,0.5 14c0.9,4.8 2.8,9.5 2.4,14.3 -0.5,6.9 -5.6,12.8 -6.2,19.7 -0.5,5.5 1.9,10.8 4.5,15.7 1.9,3.6 -0.8,8.2 -1.8,12.2 -2,7.8 1.3,15.9 5.4,22.7a1.1,1.1 0,0 0,0.5 0.5c0.5,0.2 0.9,-0.3 1.2,-0.7s0.4,-0.5 0.6,-0.7c0,0.3 0.1,0.6 0.1,0.9 0,0.6 0.1,1.3 0.1,2a20.1,20.1 0,0 0,1.4 7.4,13.1 13.1,0 0,0 0.6,1.3 6.2,6.2 0,0 0,1 1.6,6.1 6.1,0 0,0 4,1.7c3.3,0.4 6.7,-0.3 10,-0.6 3.5,-0.3 7.1,-0.2 10.6,-0.3a1.5,1.5 0,0 0,0.8 -0.2,1.4 1.4,0 0,0 0.4,-0.7 8,8 0,0 0,0.2 -3.9,27.9 27.9,0 0,0 -0.8,-3.1c-0.5,-1.6 -0.9,-3.3 -1.3,-5 -0.1,-0.3 -0.2,-0.6 -0.2,-0.9l0.2,0.1q3.2,-7.3 6.5,-14.5c1.1,-2.5 2.2,-5.1 1.7,-7.7 -0.4,-1.9 -1.6,-3.5 -2.4,-5.2 -2,-4.1 -2.1,-8.8 -2.1,-13.3l-0.1,-25.7c5,-6.4 8.1,-13.9 10,-21.8a70.6,70.6 0,0 1,0.6 34,31.7 31.7,0 0,0 -0.9,5.2c-0.4,7.1 5.2,13.2 6.6,20.1a4.5,4.5 0,0 1,0.1 1.6,6.2 6.2,0 0,1 -0.8,1.9c-2.7,4.9 -2.4,10.8 -2,16.3l1.2,0.2a3.1,3.1 0,0 0,1.2 1.2h0a6.1,6.1 0,0 0,1.5 0.6,38.2 38.2,0 0,0 5.8,0.9c2.8,0.3 5.7,0.6 8.5,0.7 1.1,0.1 2.2,0.1 3.4,0.2a33.5,33.5 0,0 1,4.7 0.3,34 34,0 0,1 5,1.5c7.3,2.4 15.4,3.8 22.5,0.8a10.1,10.1 0,0 0,4.1 -2.9,4.8 4.8,0 0,0 -1.2,-7.5ZM219.4,337.7c1.1,2.1 2.1,4.2 3,6.4 1.7,4.2 2.8,9 1.7,13.4 -0.3,1.3 -2.4,2.3 -2.4,3.6a3,3 0,0 0,-0.2 0.3l-6.5,-16A57.1,57.1 0,0 1,219.4 337.7ZM212.2,371.7a27.7,27.7 0,0 1,-3.5 -6.1c-0.1,-0.3 -0.3,-0.5 -0.4,-0.8a2.4,2.4 0,0 0,0.9 -0.7c1,-1.3 0.5,-3.1 0.6,-4.7a10.2,10.2 0,0 1,1.6 -4l6.1,15q-0.9,2.4 -1.7,4.9A35,35 0,0 1,212.2 371.7Z&quot;>"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/image_failed.xml"
+            line="101"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1090 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M301,316.2a21.6,21.6 0,0 1,-1.8 7.4,30.2 30.2,0 0,0 -3.2,13c-0.8,13.5 -5.9,29.6 1.5,40.9 0.2,0.3 0.4,0.6 0.5,0.9a15.9,15.9 0,0 0,-3.3 2.1c-3.2,-5.5 -4,-12 -4.6,-18.3 -0.3,-3.7 -0.6,-7.3 -0.7,-11a49.3,49.3 0,0 1,0.2 -7.9c0.4,-3 1.3,-5.9 1.8,-8.9a40.7,40.7 0,0 0,0.6 -5.3,51.6 51.6,0 0,0 -0.5,-11.6 71.8,71.8 0,0 0,-2.8 -12c-0.6,-1.8 -1.4,-3.5 -2.1,-5.3l-0.2,-0.6a22.4,22.4 0,0 1,-4.7 6.9,6.3 6.3,0 0,1 -2.4,1.6 7.5,7.5 0,0 1,-2.3 0.2q-4,0 -8,-0.1a28.4,28.4 0,0 1,-6.2 -0.6,22.1 22.1,0 0,1 -6.3,-2.8c-7.5,-4.6 -13.6,-11.7 -16.2,-20 -0.3,-1.1 -0.6,-2.3 0.2,-3.2a3.9,3.9 0,0 1,2.5 -0.9l0.1,0 9,11.1a18,18 0,0 1,2.6 3.9,2.3 2.3,0 0,0 0.8,1.2 2,2 0,0 0,1 0.2c8.4,0 19.7,0 28.2,0a7.3,7.3 0,0 0,-1.2 -4.2c-0.3,0.1 -0.6,0.1 -0.1,-0.1a28.3,28.3 0,0 0,-3.1 -9.3,6.4 6.4,0 0,0 -0.3,-0.6 10.7,10.7 0,0 1,-1.5 -3.2,5.4 5.4,0 0,1 3.3,0c1.2,0.5 1.9,1.9 2.4,3.1 0.5,1 0.9,2.1 1.3,3.1 0,0.1 0.1,0.2 0.1,0.3a22.6,22.6 0,0 1,1.7 6.5c0.1,0.8 0.3,1.9 0.9,2.1a0.9,0.9 0,0 0,0.3 0.1,3.8 3.8,0 0,1 4.1,1 9,9 0,0 1,2 3.9,21.6 21.6,0 0,0 1.4,4.2c1.3,2.5 -0.7,3.6 1.6,5.1a8.1,8.1 0,0 1,2.7 2.5A7.7,7.7 0,0 1,301 316.2Z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/image_failed.xml"
+            line="173"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (2168 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M230.6,283.1c1.5,1.3 3.2,2.4 4.6,3.6 4,3.4 6.5,8.1 9,12.8a8.3,8.3 0,0 1,-4.6 0.3,32.9 32.9,0 0,0 0.4,13.4 12.4,12.4 0,0 0,-4.5 5.6,37.1 37.1,0 0,0 -1.5,7q-2.2,15.6 -4.3,31.2a4.8,4.8 0,0 1,-1 2.8,5.4 5.4,0 0,0 -0.8,0.8 4.2,4.2 0,0 0,-0.3 2.2c-0.1,0.7 -0.5,1.6 -1.3,1.5a1.6,1.6 0,0 1,-0.9 -0.6,20.4 20.4,0 0,1 -2,-2.5c-5.9,11.3 -8.7,23.5 -11.9,35.9 -2.2,8.8 -4.5,17.7 -4.6,26.8a115.7,115.7 0,0 0,0.8 12.9l0.9,8.8c0.7,7.1 1.4,14.1 2.2,21.2 0.5,4.5 1,9 2.6,13.2 2.4,6.4 -0.3,13.6 0.8,20.4 0.8,5.3 2.4,10.8 0.8,15.9 -0.6,2 -1.8,3.9 -2.6,5.9 -2.1,4.9 -2.3,10.4 -2.5,15.7a66,66 0,0 0,0.5 14c0.9,4.8 2.8,9.5 2.4,14.3 -0.5,6.9 -5.6,12.8 -6.2,19.7 -0.5,5.5 1.9,10.8 4.5,15.7 1.9,3.6 -0.8,8.2 -1.8,12.2 -2,7.7 1.3,15.8 5.4,22.7a1.1,1.1 0,0 0,0.5 0.5c0.5,0.2 0.9,-0.3 1.2,-0.7 3.1,-3.9 8.5,-5.4 13.5,-5s9.7,2.5 14.2,4.5L250.9,621.3c1.1,-2.5 2.2,-5.1 1.7,-7.7 -0.4,-1.9 -1.6,-3.5 -2.5,-5.2 -2,-4.1 -2.1,-8.8 -2.1,-13.3l-0.1,-25.7c5.1,-6.4 8.1,-13.9 10.1,-21.8a70,70 0,0 1,0.6 34,30.9 30.9,0 0,0 -1,5.2c-0.4,7.1 5.2,13.2 6.7,20.1a4.3,4.3 0,0 1,0.1 1.6,6.2 6.2,0 0,1 -0.8,1.9c-2.7,4.9 -2.4,10.8 -2,16.3a162.3,162.3 0,0 0,21.2 2.3,11.9 11.9,0 0,0 4.8,-0.5 13.1,13.1 0,0 0,4 -2.9A87.2,87.2 0,0 1,306.4 614.3a34.6,34.6 0,0 0,-12.1 -12c1.6,-2.4 5.3,-2.2 7.4,-4.1a7,7 0,0 0,2 -3.9c0.8,-3.9 -0.2,-8 -1.2,-11.9 -1.9,-7.6 -3.8,-15.2 -7,-22.4a85.9,85.9 0,0 1,-3.8 -9.1c-2.6,-8.6 -0.8,-18 -2.8,-26.8 -0.6,-2.8 -1.7,-5.7 -0.9,-8.5 1.1,-4.3 6,-6.9 7.1,-11.2 3.9,-15.4 4.6,-31.5 6.8,-47.2a60.7,60.7 0,0 0,0.8 -9.1c0,-3.2 -0.6,-6.3 -0.8,-9.5 -0.9,-12.7 3.2,-25.4 2.1,-38.2a48,48 0,0 0,-7.5 -22c-7.3,-11.4 -2.2,-27.4 -1.5,-40.9a30.1,30.1 0,0 1,3.1 -13,21.3 21.3,0 0,0 1.9,-7.4 7.7,7.7 0,0 0,-0.6 -4.7,7.9 7.9,0 0,0 -2.7,-2.5c-2.3,-1.5 -0.4,-2.6 -1.6,-5.1a21.3,21.3 0,0 1,-1.4 -4.2,8.9 8.9,0 0,0 -2,-3.9 3.8,3.8 0,0 0,-4.1 -1c-0.9,0 -1.2,-1.3 -1.3,-2.2 -0.3,-3.5 -1.7,-6.8 -3.1,-9.9 -0.5,-1.2 -1.2,-2.6 -2.4,-3.1a5.5,5.5 0,0 0,-3.3 0,10.6 10.6,0 0,0 1.5,3.3 28.2,28.2 0,0 1,3.4 9.8c-1,0.3 1,0 0,0a7,7 0,0 1,1.3 4.3c-8.4,0 -19.7,0 -28.1,0a2,2 0,0 1,-1 -0.2,2.4 2.4,0 0,1 -0.8,-1.2 17.3,17.3 0,0 0,-2.6 -3.9L241.1,280.4a2.5,2.5 0,0 0,-0.9 -0.8,2.3 2.3,0 0,0 -1.3,0C235.8,280.1 233.4,281.5 230.6,283.1Z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/image_failed.xml"
+            line="192"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1051 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M290.2,293a20.2,20.2 0,0 1,-16.2 -6.4,2.5 2.5,0 0,1 -0.7,-1.2 2.3,2.3 0,0 1,0.5 -1.6c1.2,-1.9 3.3,-3.1 4.2,-5.1s0.6,-4.3 0.7,-6.5c0.2,-3.9 1.7,-7.8 1.8,-11.6a12.1,12.1 0,0 0,-0.2 -2.9,18.4 18.4,0 0,1 -0.8,-4.4c0.1,-2.9 2.8,-5.2 3.2,-8.1 0.6,-3.7 -2.5,-6.9 -5.6,-9a33.1,33.1 0,0 0,-7.6 -3.9,24.6 24.6,0 0,0 -5.1,-1.2 19.8,19.8 0,0 0,-9.6 1.1,15.6 15.6,0 0,0 -3.6,1.9 4.8,4.8 0,0 0,-1.6 1.6,5.4 5.4,0 0,0 -0.4,2.4c-0.1,4.1 0.4,8.4 -1.5,12 -1,1.9 -2.7,3.5 -3.5,5.5a9.1,9.1 0,0 0,-0.6 2.6,26.5 26.5,0 0,0 -0.2,2.8c-0.1,5.3 0,10.8 2.7,15.4a40.2,40.2 0,0 1,2.6 4.3,4.9 4.9,0 0,1 -0.3,4.8 5.4,5.4 0,0 1,-2 1.5,16 16,0 0,1 -12.8,0.5 16.2,16.2 0,0 0,3.8 -18.1,10.7 10.7,0 0,1 -1.4,-4 10.1,10.1 0,0 1,1 -3.7,20 20,0 0,0 0.6,-11.7c-0.6,-2.4 -1.7,-4.7 -1.9,-7.1a21.6,21.6 0,0 1,0.2 -5.5,18 18,0 0,1 12.3,-14.2c0.5,-0.2 1,-0.3 1.6,-0.5a33.3,33.3 0,0 1,7.4 -0.8c5.6,-0.2 11.2,-0.3 16.5,1.1a22.2,22.2 0,0 1,8.6 4.4,15.4 15.4,0 0,1 4.1,5.5 19,19 0,0 1,1.2 3.8c0.2,1.1 0.4,2.2 0.6,3.2 1.2,7.7 2.4,15.5 1.1,23.2 -0.5,3 -1.4,6 -1.8,9.1C286.7,279.2 288.5,286.2 290.2,293Z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/image_failed.xml"
+            line="222"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1361 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M9.5,329.2c-2.8,-4.6 -7.1,-8.9 -6.4,-14.1 7.8,0.9 15.1,-1 22.2,-4.3s13.7,-7.6 20.4,-11.8c2.6,-1.6 5.2,-3.3 7.8,-4.8 4.1,-2.4 8.2,-5 12.4,-7.3 6,-3.3 12.1,-6 18.9,-6.5a34.4,34.4 0,0 1,3.7 -0.1c8.3,0.2 16.9,2.4 24.2,-1.3l0.4,-0.2c4.1,-2.3 7.2,-6.1 10.7,-9.3a47.8,47.8 0,0 1,8.3 -5.8c5.4,-3 11.2,-5.4 16.7,-8.2a25.4,25.4 0,0 0,4 -2.6l0.9,-0.8 0.2,-0.2c0.2,-0.2 0.5,-0.4 0.7,-0.6l0.4,-0.4 0.4,-0.4 0.3,-0.3 0.6,-0.5 0.1,-0.1 0.9,-0.9 0.3,-0.3 0.6,-0.6 0.4,-0.4c0.6,-0.6 1.2,-1.3 1.8,-1.9s1.5,-1.5 2.2,-2.2l0,0 0.7,-0.6 0.2,-0.2 0.6,-0.5 0.3,-0.2 0.6,-0.4 0.3,-0.2c0.3,-0.2 0.6,-0.4 0.9,-0.6a6.3,6.3 0,0 1,0.8 -0.5l-1.9,-4.5 5.4,-2.2 74.2,180.1 -5.4,2.2 -42.4,-103 -0.3,0.3a85.2,85.2 0,0 1,-35.1 20.9l-0.1,0c-7.4,2.2 -15.7,3.8 -21.9,7.9a21,21 0,0 0,-5.7 5.4c-1.5,2.1 -2.5,4.4 -4,6.4 -0.3,0.4 -0.6,0.7 -0.9,1.1a34.8,34.8 0,0 1,-6 4.8l-0.9,0.6a194.5,194.5 0,0 1,-20.1 12.4,79.3 79.3,0 0,1 -12.5,5.2c-3.1,1 -6.4,1.7 -9.5,2.7a37.2,37.2 0,0 0,-6.1 2.5c-5.3,2.8 -9.4,7.1 -13.2,11.7 -3.4,4.1 -6.6,8.4 -10.3,12.1 -2.3,2.3 -5.8,4.5 -8.6,3.1l-0.6,-0.3c0.1,-0.2 0.2,-0.3 0.2,-0.5 2.2,-4.6 -0.5,-10.4 -4.2,-14.1 -0.4,-0.4 -0.8,-0.8 -1.2,-1.1s-1.1,-1 -1.7,-1.5c-3.1,-2.7 -6.5,-5.2 -8.6,-8.7a28.3,28.3 0,0 1,-3.3 -9.4c-1,-4.7 -1.7,-9.6 -4.2,-13.6 -1.7,-2.7 -4.2,-4.9 -6,-7.4a11.4,11.4 0,0 1,-2.2 -5.1c-0.4,-3.3 1.1,-6.4 1.7,-9.7a12.1,12.1 0,0 0,0.2 -2.7A14.2,14.2 0,0 0,9.5 329.2Z&quot;>"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/image_failed.xml"
+            line="294"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (1343 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="      android:pathData=&quot;M20,360.2c2.5,4 3.2,8.7 4.2,13.3a28.1,28.1 0,0 0,3.3 9.3c2.1,3.4 5.4,5.9 8.5,8.5 0.6,0.5 1.1,1 1.7,1.5 0.4,0.3 0.8,0.7 1.1,1.1 3.6,3.7 6.3,9.3 4.1,13.8a3.8,3.8 0,0 1,-0.2 0.4,4.6 4.6,0 0,0 0.6,0.3c2.8,1.3 6.2,-0.8 8.5,-3.1 3.6,-3.6 6.8,-7.9 10.1,-11.9 3.8,-4.6 7.8,-8.8 13,-11.6a36,36 0,0 1,6 -2.4c3.1,-1 6.3,-1.7 9.3,-2.7a78.5,78.5 0,0 0,12.3 -5.1A192.5,192.5 0,0 0,122.1 359.6l0.9,-0.6a34.3,34.3 0,0 0,5.9 -4.7c0.3,-0.3 0.6,-0.7 0.9,-1.1 1.5,-2 2.5,-4.3 4,-6.3a20.7,20.7 0,0 1,5.6 -5.3c6.1,-4.1 14.2,-5.6 21.5,-7.8l0.1,0a83.9,83.9 0,0 0,34.5 -20.5,5.6 5.6,0 0,0 1.7,-2.5c0.3,-1.4 -0.4,-2.8 -1.2,-4.1 -0.9,-1.5 -1.7,-2.9 -2.5,-4.4a196.5,196.5 0,0 1,-9.9 -20.7c-0.6,-1.6 -1.2,-3.1 -1.8,-4.7q-2.3,-6 -4.1,-12.2c-0.4,-1.4 -0.8,-2.7 -1.2,-4.1 -0.1,-0.3 -0.2,-0.5 -0.2,-0.8 -1.7,-6.7 -3.9,-22.3 -10.7,-17.6a39.6,39.6 0,0 0,-5.7 4.9c-1.3,1.4 -2.6,2.7 -4,4.1a40.4,40.4 0,0 1,-3.5 3.1,25.9 25.9,0 0,1 -4,2.5c-5.4,2.8 -11.2,5.1 -16.5,8.1a46.8,46.8 0,0 0,-8.2 5.7c-3.5,3.1 -6.4,6.9 -10.5,9.1l-0.4,0.2c-7.2,3.7 -15.6,1.5 -23.8,1.3a35.9,35.9 0,0 0,-3.6 0.1c-6.6,0.5 -12.7,3.2 -18.5,6.4 -4.1,2.3 -8.1,4.9 -12.2,7.2 -2.6,1.5 -5.1,3.1 -7.7,4.7 -6.5,4.1 -13.2,8.4 -20,11.6 -7,3.2 -14.2,5.1 -21.9,4.2 -0.6,5.2 3.5,9.3 6.3,13.9a13.8,13.8 0,0 1,2.3 6.6,11.6 11.6,0 0,1 -0.2,2.6c-0.6,3.2 -2,6.3 -1.6,9.5A11.1,11.1 0,0 0,14.1 352.9C15.9,355.4 18.3,357.6 20,360.2Z&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/image_failed.xml"
+            line="300"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (2013 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector."
+        errorLine1="  &lt;path android:fillColor=&quot;#FF000000&quot; android:pathData=&quot;M1309 688V768Q1309 933 1266.0 1064.0Q1223 1195 1143.5 1287.0Q1064 1379 953.0 1427.5Q842 1476 707 1476Q573 1476 462.5 1427.5Q352 1379 271.0 1287.0Q190 1195 145.5 1064.0Q101 933 101 768V688Q101 523 145.0 392.5Q189 262 269.5 169.5Q350 77 460.5 28.5Q571 -20 705 -20Q840 -20 951.0 28.5Q1062 77 1142.0 169.5Q1222 262 1265.5 392.5Q1309 523 1309 688ZM1058 768V686Q1058 564 1034.5 470.5Q1011 377 965.5 313.5Q920 250 854.0 217.5Q788 185 705 185Q622 185 557.0 217.5Q492 250 446.5 313.5Q401 377 377.0 470.5Q353 564 353 686V768Q353 890 377.0 984.0Q401 1078 447.5 1142.5Q494 1207 559.0 1239.5Q624 1272 707 1272Q791 1272 856.0 1239.5Q921 1207 966.0 1142.5Q1011 1078 1034.5 984.0Q1058 890 1058 768Z M1781 0H2005L2426 1123L2846 0H3070L2514 1456H2336ZM1679 0H1892L1929 972V1456H1679ZM2959 0H3173V1456H2922V972Z M4543 1257V1456H3770V1257ZM3841 0V1456H3590V0ZM4442 608V804H3770V608ZM4538 0V200H3770V0Z M4867 0H5382Q5548 0 5665.0 50.0Q5782 100 5844.5 197.5Q5907 295 5907 438Q5907 547 5867.0 630.0Q5827 713 5754.0 769.5Q5681 826 5580 857L5504 894H5041L5039 695H5386Q5476 695 5536.0 663.0Q5596 631 5626.5 575.5Q5657 520 5657 450Q5657 374 5627.5 317.5Q5598 261 5537.0 230.5Q5476 200 5382 200H5118V1456H4867ZM5698 1456 5356 802 5619 801 5966 1443V1456Z M7437 688V768Q7437 933 7394.0 1064.0Q7351 1195 7271.5 1287.0Q7192 1379 7081.0 1427.5Q6970 1476 6835 1476Q6701 1476 6590.5 1427.5Q6480 1379 6399.0 1287.0Q6318 1195 6273.5 1064.0Q6229 933 6229 768V688Q6229 523 6273.0 392.5Q6317 262 6397.5 169.5Q6478 77 6588.5 28.5Q6699 -20 6833 -20Q6968 -20 7079.0 28.5Q7190 77 7270.0 169.5Q7350 262 7393.5 392.5Q7437 523 7437 688ZM7186 768V686Q7186 564 7162.5 470.5Q7139 377 7093.5 313.5Q7048 250 6982.0 217.5Q6916 185 6833 185Q6750 185 6685.0 217.5Q6620 250 6574.5 313.5Q6529 377 6505.0 470.5Q6481 564 6481 686V768Q6481 890 6505.0 984.0Q6529 1078 6575.5 1142.5Q6622 1207 6687.0 1239.5Q6752 1272 6835 1272Q6919 1272 6984.0 1239.5Q7049 1207 7094.0 1142.5Q7139 1078 7162.5 984.0Q7186 890 7186 768Z M8962 0V1456H8711L8058 413V1456H7807V0H8058L8713 1045V0Z&quot;/>"
+        errorLine2="                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/omeron_wordmark.xml"
+            line="7"
+            column="57"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/dialog_multireddit_edit.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `@color/black` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;@color/black&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_filmstrip_viewer.xml"
+            line="9"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_drawer_row.xml"
+            line="14"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `@color/black_25` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;@color/black_25&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_filmstrip_thumbnail.xml"
+            line="10"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_manage_row.xml"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_multireddit_subreddit_result.xml"
+            line="9"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_new_profile.xml"
+            line="11"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_profile_history.xml"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_subreddit.xml"
+            line="14"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_suggestion_community.xml"
+            line="13"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_suggestion_recent.xml"
+            line="11"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_user.xml"
+            line="14"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_about.xml"
+            line="6"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_backup.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_manage.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_multireddit.xml"
+            line="8"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_post.xml"
+            line="8"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_preferences.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/colorSurface&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_appbar_privacy_enhancer.xml"
+            line="6"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_drawer_header.xml"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.array.pref_reddit_source_labels` appears to be unused"
+        errorLine1="    &lt;string-array name=&quot;pref_reddit_source_labels&quot;>"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/arrays.xml"
+            line="11"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary"
+        errorLine1="                &lt;LinearLayout"
+        errorLine2="                 ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_filmstrip_viewer.xml"
+            line="55"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/image_fallback.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/image_fallback.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/link_fallback.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/link_fallback.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/video_fallback.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/video_fallback.png"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        message="Custom view `VerticalPostSwipeLayout` overrides `onTouchEvent` but not `performClick`"
+        errorLine1="    override fun onTouchEvent(event: MotionEvent): Boolean {"
+        errorLine2="                 ~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/filmstrip/VerticalPostSwipeLayout.kt"
+            line="84"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="        binding.membersHeader.sectionCount.text = (subredditMembers.size + userMembers.size).toString()"
+        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/omeron/ui/subscriptions/MultiredditEditDialogFragment.kt"
+            line="137"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
+        errorLine1="        android:paddingStart=&quot;12dp&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_search.xml"
+            line="19"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
+        errorLine1="    android:paddingStart=&quot;16dp&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_suggestion_recent.xml"
+            line="10"
+            column="5"/>
+    </issue>
+
+</issues>
