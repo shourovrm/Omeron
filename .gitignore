@@ -28,3 +28,6 @@ captures/
 *.keystore
 keystore.properties
 signing.properties
+
+# Design-system mockups (local)
+.design-mockups/
