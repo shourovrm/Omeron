@@ -114,7 +114,7 @@ class BackupLocationFragment : BaseFragment() {
 
     private fun getRestoreExplanationText(backupType: BackupType): String {
         return when (backupType) {
-            BackupType.OMERON -> getString(R.string.backup_location_explanation_restore_stealth)
+            BackupType.OMERON -> getString(R.string.backup_location_explanation_restore_omeron)
             BackupType.REDDIT -> getString(R.string.backup_location_explanation_restore_reddit)
         }
     }

@@ -298,15 +298,15 @@
 
     <string name="backup_location_button_pick">Pick File</string>
     <string name="backup_location_explanation_backup">Select a file to back up your profiles, subscriptions, and saved items</string>
-    <string name="backup_location_explanation_restore_stealth">Select an Omeron backup file to restore your profiles, subscriptions, and saved items</string>
+    <string name="backup_location_explanation_restore_omeron">Select an Omeron backup file to restore your profiles, subscriptions, and saved items</string>
     <string name="backup_location_explanation_restore_reddit">Select Reddit\'s "mine.json" file to import your Reddit\'s subscriptions to Omeron</string>
 
     <string name="backup_loading_success_backup">Backup complete!</string>
-    <string name="backup_loading_success_restore_stealth">Omeron backup restored successfully!</string>
+    <string name="backup_loading_success_restore_omeron">Omeron backup restored successfully!</string>
     <string name="backup_loading_success_restore_reddit">Reddit data imported successfully!</string>
 
     <string name="backup_loading_failed_backup">Something went wrong while backing up your data.\nPlease try again.</string>
-    <string name="backup_loading_failed_restore_stealth">Something went wrong while restoring up your data.\nPlease try again.</string>
+    <string name="backup_loading_failed_restore_omeron">Something went wrong while restoring up your data.\nPlease try again.</string>
     <string name="backup_loading_failed_restore_reddit">Something went wrong while importing your data.\nPlease try again.</string>
 
     <string name="backup_button_previous">Previous</string>

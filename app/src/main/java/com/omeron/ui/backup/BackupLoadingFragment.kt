@@ -100,9 +100,9 @@ class BackupLoadingFragment : BaseFragment() {
         return when (backupType) {
             BackupType.OMERON -> {
                 if (success) {
-                    getString(R.string.backup_loading_success_restore_stealth)
+                    getString(R.string.backup_loading_success_restore_omeron)
                 } else {
-                    getString(R.string.backup_loading_failed_restore_stealth)
+                    getString(R.string.backup_loading_failed_restore_omeron)
                 }
             }
             BackupType.REDDIT -> {
