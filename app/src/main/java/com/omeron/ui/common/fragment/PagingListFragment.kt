@@ -25,7 +25,7 @@ abstract class PagingListFragment<T : PagingDataAdapter<R, out ViewHolder>, R : 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
-        binding.loadingState.infoRetry.setActionClickListener { adapter.retry() }
+        binding.loadingState.infoRetry.setActionClickListener { retryOrLogin { adapter.retry() } }
     }
 
     protected open fun bindViewModel() {
@@ -47,7 +47,7 @@ abstract class PagingListFragment<T : PagingDataAdapter<R, out ViewHolder>, R : 
     final override fun createAdapter(): T {
         return createPagingAdapter().apply {
             addLoadStateListener(binding.listContent, binding.loadingState, binding.pullRefresh) {
-                showRetryBar()
+                showRetryBar(it)
             }
         }
     }
@@ -56,12 +56,16 @@ abstract class PagingListFragment<T : PagingDataAdapter<R, out ViewHolder>, R : 
     // calling it on the paging adapter alone adds nothing to the list.
     final override fun attachedAdapter(adapter: T): Adapter<out ViewHolder> {
         return adapter.withLoadStateHeaderAndFooter(
-            header = NetworkLoadStateAdapter { adapter.retry() },
-            footer = NetworkLoadStateAdapter { adapter.retry() }
+            header = NetworkLoadStateAdapter(::openLogin) { adapter.retry() },
+            footer = NetworkLoadStateAdapter(::openLogin) { adapter.retry() }
         )
     }
 
     override fun onRefresh() {
+        adapter.refresh()
+    }
+
+    override fun onLoginCompleted() {
         adapter.refresh()
     }
 

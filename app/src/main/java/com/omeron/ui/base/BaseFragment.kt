@@ -1,10 +1,13 @@
 package com.omeron.ui.base
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavDirections
@@ -15,17 +18,20 @@ import com.omeron.NavigationGraphDirections
 import com.omeron.R
 import com.omeron.data.model.MediaType
 import com.omeron.data.model.db.PostEntity
+import com.omeron.ui.common.widget.InfoBarView
 import com.omeron.ui.common.widget.RedditView
 import com.omeron.ui.filmstrip.FilmstripFeedHolder
 import com.omeron.ui.filmstrip.FilmstripFeedLink
 import com.omeron.ui.filmstrip.FilmstripViewerFragment
 import com.omeron.ui.linkmenu.LinkMenuFragment
+import com.omeron.ui.login.RedditLoginActivity
 import com.omeron.ui.postdetails.PostDetailsFragment
 import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.util.LinkHandler
 import com.omeron.util.extension.applyWindowInsets
 import com.omeron.util.extension.currentNavigationFragment
+import com.omeron.util.extension.isLoginRequired
 import com.omeron.util.extension.normalizeRedditLink
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -93,6 +99,47 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
     // The feed's list, set while its view exists.
     private var filmstripFeedAdapter: PostListAdapter? = null
     private var filmstripFeedList: RecyclerView? = null
+
+    // True while the error banner on screen is the login wall rather than a network failure.
+    protected var isShowingLoginPrompt = false
+        private set
+
+    private val loginLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) onLoginCompleted()
+    }
+
+    /** Called after the user signed in, so the screen can reload what the login wall blocked. */
+    protected open fun onLoginCompleted() {
+        // Screens without network content have nothing to reload.
+    }
+
+    protected fun openLogin() {
+        loginLauncher.launch(Intent(requireContext(), RedditLoginActivity::class.java))
+    }
+
+    /**
+     * Shows [infoBar] with the login prompt when [error] is the login wall, and with the plain
+     * retry prompt otherwise. Pair it with [retryOrLogin] as the bar's action.
+     */
+    protected fun showErrorBar(infoBar: InfoBarView, error: Throwable?) {
+        isShowingLoginPrompt = error?.isLoginRequired == true
+        infoBar.setMessage(
+            if (isShowingLoginPrompt) R.string.login_required_message
+            else R.string.network_retry_message
+        )
+        infoBar.setActionText(
+            if (isShowingLoginPrompt) R.string.login_required_action
+            else R.string.network_retry_action
+        )
+        infoBar.show()
+    }
+
+    /** The action of a bar filled by [showErrorBar]: retrying cannot pass the wall, login can. */
+    protected fun retryOrLogin(retry: () -> Unit) {
+        if (isShowingLoginPrompt) openLogin() else retry()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

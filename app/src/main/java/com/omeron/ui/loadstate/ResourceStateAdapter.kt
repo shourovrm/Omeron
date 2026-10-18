@@ -4,10 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.omeron.R
 import com.omeron.data.model.Resource
 import com.omeron.databinding.ItemResourceStateBinding
+import com.omeron.util.extension.isLoginRequired
 
 class ResourceStateAdapter(
+    // Screens that cannot launch the login flow leave this out and keep the plain retry button.
+    private val login: (() -> Unit)? = null,
     private val retry: () -> Unit
 ) : RecyclerView.Adapter<ResourceStateAdapter.ViewHolder>() {
 
@@ -57,11 +61,24 @@ class ResourceStateAdapter(
         private val binding: ItemResourceStateBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var loginRequired = false
+
         init {
-            binding.buttonRetry.setOnClickListener { retry.invoke() }
+            // Retrying can never get past the login wall, so the button opens the login screen.
+            binding.buttonRetry.setOnClickListener {
+                if (loginRequired) login?.invoke() else retry.invoke()
+            }
         }
 
         fun bind(resource: Resource<Any>?) {
+            loginRequired = login != null &&
+                (resource as? Resource.Error)?.throwable?.isLoginRequired == true
+            binding.textError.setText(
+                if (loginRequired) R.string.login_required_message else R.string.network_retry_message
+            )
+            binding.buttonRetry.setText(
+                if (loginRequired) R.string.login_required_action else R.string.network_retry_action
+            )
             binding.loadingCradle.isVisible = resource is Resource.Loading
             binding.buttonRetry.isVisible = resource is Resource.Error
             binding.textError.isVisible = resource is Resource.Error

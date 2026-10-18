@@ -12,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -131,7 +130,9 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         initDrawer()
         bindViewModel()
         bindingAbout.subredditSubscribeButton.setOnClickListener { toggleSubscription() }
-        bindingContent.loadingState.infoRetry.setActionClickListener { retry() }
+        bindingContent.loadingState.infoRetry.setActionClickListener {
+            retryOrLogin { retry() }
+        }
 
         viewModel.contentLayoutProgress?.let { bindingContent.layoutRoot.progress = it }
         viewModel.drawerContentLayoutProgress?.let { binding.drawerContent.progress = it }
@@ -198,7 +199,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
                 viewModel.about.collect {
                     when (it) {
                         is Resource.Success -> bindInfo(it.data)
-                        is Resource.Error -> handleError(it.code)
+                        is Resource.Error -> handleError(it.code, it.throwable)
                         is Resource.Loading -> {
                             // ignore
                         }
@@ -253,15 +254,15 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
                 bindingContent.loadingState,
                 bindingContent.pullRefresh
             ) {
-                showRetryBar()
+                showRetryBar(it)
             }
         }
         bindingContent.listPost.apply {
             layoutManager = LinearLayoutManager(requireContext())
             addOnScrollListener(HideNavigationOnScrollListener(uiViewModel))
             adapter = postListAdapter.withLoadStateHeaderAndFooter(
-                header = NetworkLoadStateAdapter { postListAdapter.retry() },
-                footer = NetworkLoadStateAdapter { postListAdapter.retry() }
+                header = NetworkLoadStateAdapter(::openLogin) { postListAdapter.retry() },
+                footer = NetworkLoadStateAdapter(::openLogin) { postListAdapter.retry() }
             )
         }
 
@@ -354,7 +355,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         }
     }
 
-    private fun handleError(code: Int?) {
+    private fun handleError(code: Int?, error: Throwable?) {
         isSubscribeEnabled = true
         when (code) {
             403 -> {
@@ -365,7 +366,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
                 viewModel.isSubredditReachable = false
                 showNotFoundDialog()
             }
-            else -> showRetryBar()
+            else -> showRetryBar(error)
         }
     }
 
@@ -377,10 +378,13 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         postListAdapter.retry() // TODO: Don't retry if not necessary
     }
 
-    private fun showRetryBar() {
-        if (!bindingContent.loadingState.infoRetry.isVisible) {
-            bindingContent.loadingState.infoRetry.show()
-        }
+    private fun showRetryBar(error: Throwable?) {
+        showErrorBar(bindingContent.loadingState.infoRetry, error)
+    }
+
+    override fun onLoginCompleted() {
+        retry()
+        postListAdapter.refresh()
     }
 
     private fun scrollToTop() {

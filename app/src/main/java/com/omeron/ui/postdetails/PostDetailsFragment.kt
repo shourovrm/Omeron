@@ -167,7 +167,7 @@ class PostDetailsFragment : BaseFragment(),
             // Wait for data to restore adapter position
             stateRestorationPolicy = PREVENT_WHEN_EMPTY
         }
-        resourceStateAdapter = ResourceStateAdapter { retry() }
+        resourceStateAdapter = ResourceStateAdapter(::openLogin) { retry() }
 
         val concatAdapter = ConcatAdapter(postAdapter, resourceStateAdapter, commentAdapter)
         binding.listComments.apply {
@@ -311,6 +311,10 @@ class PostDetailsFragment : BaseFragment(),
 
     private fun retry() {
         viewModel.loadPost(true)
+    }
+
+    override fun onLoginCompleted() {
+        retry()
     }
 
     private fun showSortDialog() {

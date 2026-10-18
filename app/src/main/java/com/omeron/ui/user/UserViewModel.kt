@@ -189,7 +189,7 @@ class UserViewModel @Inject constructor(
                 _about.value = Resource.Loading()
             }.catch {
                 when (it) {
-                    is IOException -> _about.value = Resource.Error(message = it.message)
+                    is IOException -> _about.value = Resource.Error(message = it.message, throwable = it)
                     is HttpException -> _about.value = Resource.Error(it.code(), it.message())
                     else -> _about.value = Resource.Error()
                 }

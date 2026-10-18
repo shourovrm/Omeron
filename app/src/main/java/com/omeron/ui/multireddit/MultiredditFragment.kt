@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -88,7 +87,9 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
         initAppBar()
         initRecyclerView()
         bindViewModel()
-        binding.loadingState.infoRetry.setActionClickListener { postListAdapter.retry() }
+        binding.loadingState.infoRetry.setActionClickListener {
+            retryOrLogin { postListAdapter.retry() }
+        }
     }
 
     private fun bindViewModel() {
@@ -130,15 +131,15 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
         postListAdapter = PostListAdapter(repository, this, this).apply {
             stateRestorationPolicy = PREVENT_WHEN_EMPTY
             addLoadStateListener(binding.listPost, binding.loadingState) {
-                showRetryBar()
+                showRetryBar(it)
             }
         }
 
         binding.listPost.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = postListAdapter.withLoadStateHeaderAndFooter(
-                header = NetworkLoadStateAdapter { postListAdapter.retry() },
-                footer = NetworkLoadStateAdapter { postListAdapter.retry() }
+                header = NetworkLoadStateAdapter(::openLogin) { postListAdapter.retry() },
+                footer = NetworkLoadStateAdapter(::openLogin) { postListAdapter.retry() }
             )
         }
 
@@ -200,10 +201,12 @@ class MultiredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener {
         SortFragment.show(childFragmentManager, viewModel.sorting.value)
     }
 
-    private fun showRetryBar() {
-        if (!binding.loadingState.infoRetry.isVisible) {
-            binding.loadingState.infoRetry.show()
-        }
+    private fun showRetryBar(error: Throwable) {
+        showErrorBar(binding.loadingState.infoRetry, error)
+    }
+
+    override fun onLoginCompleted() {
+        postListAdapter.refresh()
     }
 
     private fun showMenu() {

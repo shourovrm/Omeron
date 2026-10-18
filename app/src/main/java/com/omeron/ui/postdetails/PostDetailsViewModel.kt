@@ -125,8 +125,8 @@ class PostDetailsViewModel @Inject constructor(
                 .catch { e ->
                     when (e) {
                         is IOException -> {
-                            _post.value = Resource.Error(message = e.message)
-                            _comments.value = Resource.Error(message = e.message)
+                            _post.value = Resource.Error(message = e.message, throwable = e)
+                            _comments.value = Resource.Error(message = e.message, throwable = e)
                         }
                         is HttpException -> {
                             _post.value = Resource.Error(e.code(), e.message())

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -102,7 +101,9 @@ class UserFragment : BaseFragment() {
         initViewPager()
         keepClearOfBottomNavigation(binding.viewPager, uiViewModel.bottomNavigationHeight)
         bindViewModel()
-        binding.infoRetry.setActionClickListener { retry() }
+        binding.infoRetry.setActionClickListener {
+            retryOrLogin { retry() }
+        }
 
         viewModel.layoutState?.let { binding.layoutRoot.jumpToState(it) }
     }
@@ -143,7 +144,7 @@ class UserFragment : BaseFragment() {
                 viewModel.about.collect {
                     when (it) {
                         is Resource.Success -> bindInfo(it.data)
-                        is Resource.Error -> handleError(it.code)
+                        is Resource.Error -> handleError(it.code, it.throwable)
                         is Resource.Loading -> {
                             // ignore
                         }
@@ -250,11 +251,11 @@ class UserFragment : BaseFragment() {
         }
     }
 
-    private fun handleError(code: Int?) {
+    private fun handleError(code: Int?, error: Throwable?) {
         when (code) {
             403 -> showUnauthorizedDialog()
             404 -> showNotFoundDialog()
-            else -> showRetryBar()
+            else -> showRetryBar(error)
         }
     }
 
@@ -264,10 +265,12 @@ class UserFragment : BaseFragment() {
         }
     }
 
-    private fun showRetryBar() {
-        if (!binding.infoRetry.isVisible) {
-            binding.infoRetry.show()
-        }
+    private fun showRetryBar(error: Throwable?) {
+        showErrorBar(binding.infoRetry, error)
+    }
+
+    override fun onLoginCompleted() {
+        viewModel.loadUserInfo(true)
     }
 
     private fun showSortDialog() {
