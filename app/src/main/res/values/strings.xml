@@ -158,7 +158,7 @@
 
     <string name="network_retry_message">Could not load this page. Check your connection.</string>
     <string name="network_retry_action">Retry</string>
-    <string name="login_required_message">Reddit requires a login to show posts. Log in once with a throwaway account; Omeron keeps only what it needs to read Reddit as that account.</string>
+    <string name="login_required_message">Reddit requires a login to show posts. Log in once with a throwaway account.</string>
     <string name="login_required_action">Log in</string>
 
     <string name="dialog_subreddit_not_found_title">Community not found</string>
