@@ -463,4 +463,7 @@
     <string name="search_scope_remove_description">Stop limiting the search to r/%1$s</string>
     <string name="post_preview_image_description">Post preview image</string>
     <string name="link_preview_image_description">Link preview image</string>
+    <string name="post_pinned_description">Pinned</string>
+    <string name="post_archived_description">Archived</string>
+    <string name="post_locked_description">Locked</string>
 </resources>

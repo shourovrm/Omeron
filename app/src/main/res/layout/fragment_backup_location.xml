@@ -20,6 +20,7 @@
 
     <ImageView
         android:id="@+id/image_pick_file"
+        android:importantForAccessibility="no"
         android:layout_width="@dimen/backup_pick_image_size"
         android:layout_height="@dimen/backup_pick_image_size"
         app:layout_constraintStart_toStartOf="parent"

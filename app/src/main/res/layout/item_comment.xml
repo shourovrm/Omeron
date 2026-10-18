@@ -18,6 +18,7 @@
 
         <ImageView
             android:id="@+id/comment_color_indicator"
+            android:importantForAccessibility="no"
             android:layout_width="2dp"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,6 +121,7 @@
 
         <ImageView
             android:id="@+id/comment_pinned_icon"
+            android:contentDescription="@string/post_pinned_description"
             android:layout_width="@dimen/comment_icon_size"
             android:layout_height="@dimen/comment_icon_size"
             app:layout_constraintStart_toEndOf="@id/comment_flair"

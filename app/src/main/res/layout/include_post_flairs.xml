@@ -78,6 +78,7 @@
 
         <ImageView
             android:id="@+id/pinned_icon"
+            android:contentDescription="@string/post_pinned_description"
             android:layout_width="@dimen/post_icon_size"
             android:layout_height="@dimen/post_icon_size"
             android:visibility="@{post.isStickied ? View.VISIBLE : View.GONE}"
@@ -85,6 +86,7 @@
 
         <ImageView
             android:id="@+id/archived_icon"
+            android:contentDescription="@string/post_archived_description"
             android:layout_width="@dimen/post_icon_size"
             android:layout_height="@dimen/post_icon_size"
             android:visibility="@{post.isArchived ? View.VISIBLE : View.GONE}"
@@ -92,6 +94,7 @@
 
         <ImageView
             android:id="@+id/locked_icon"
+            android:contentDescription="@string/post_locked_description"
             android:layout_width="@dimen/post_icon_size"
             android:layout_height="@dimen/post_icon_size"
             android:visibility="@{post.isLocked ? View.VISIBLE : View.GONE}"

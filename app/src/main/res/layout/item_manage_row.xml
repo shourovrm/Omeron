@@ -59,6 +59,7 @@
 
     <ImageButton
         android:id="@+id/button_toggle_hidden"
+        tools:ignore="ContentDescription"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
