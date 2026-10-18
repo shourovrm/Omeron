@@ -63,7 +63,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="@color/icon_tint"
+            app:tint="@color/icon_tint"
             android:src="@drawable/ic_edit"
             android:contentDescription="@string/profile_edit_description"/>
 
