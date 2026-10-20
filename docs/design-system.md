@@ -60,17 +60,18 @@ delete profile, clear history) use an outlined button in `error` colour and a co
 ## Colour
 
 The theme follows the system setting (light, dark, or the AMOLED choice in Settings).
-Light scheme (paper): primary `#A8321A`, onPrimary `#FFFFFF`, primaryContainer `#FFDBCF`,
-onPrimaryContainer `#3A0A00`, secondaryContainer `#F2DED5`, onSecondaryContainer `#2C160E`,
-surface `#F7F3EE`, onSurface `#1F1B17`, onSurfaceVariant `#5E554C`, surfaceContainerLow `#F2EDE7`,
-surfaceContainer `#EDE7E0`, surfaceContainerHigh `#E4DDD4`, outline `#857A70`, outlineVariant
-`#D6CCC2`, error `#BA1A1A`, errorContainer `#FFDAD6`, marker `#E2451B`.
-Dark scheme (warm black): primary `#FF8A65`, onPrimary `#3A0E00`, primaryContainer `#5A1E0B`,
-onPrimaryContainer `#FFDBCF`, secondaryContainer `#4A3A33`, onSecondaryContainer `#F2DED5`,
-surface `#141210`, onSurface `#EEE8E0`, onSurfaceVariant `#B7AEA3`, surfaceContainerLow `#1A1714`,
-surfaceContainer `#1E1B18`, surfaceContainerHigh `#29251F`, outline `#9C9188`, outlineVariant
-`#4A433C`, error `#FFB4AB`, marker `#FF6B3D`. AMOLED keeps the dark roles with surface `#000000`,
-surfaceContainerLow `#0D0C0B`, surfaceContainer `#121110`, surfaceContainerHigh `#1E1B18`.
+Light scheme (cobalt, chosen 2026-10-20 over the warm contact-sheet palette): primary `#1D3FBF`,
+onPrimary `#FFFFFF`, primaryContainer `#DEE1FF`, onPrimaryContainer `#00105C`, secondaryContainer
+`#DDE1F9`, onSecondaryContainer `#161B2C`, surface `#F7F7F9`, onSurface `#1A1B21`, onSurfaceVariant
+`#4A4C55`, surfaceContainerLow `#F1F1F4`, surfaceContainer `#ECECF1`, surfaceContainerHigh `#E2E2E9`,
+outline `#767680`, outlineVariant `#C6C5D0`, error `#BA1A1A`, errorContainer `#FFDAD6`, marker
+`#2F55E0`.
+Dark scheme: primary `#B9C3FF`, onPrimary `#002386`, primaryContainer `#0A2EA8`, onPrimaryContainer
+`#DEE1FF`, secondaryContainer `#414659`, onSecondaryContainer `#DDE1F9`, surface `#121316`, onSurface
+`#E4E4EA`, onSurfaceVariant `#A9ABB5`, surfaceContainerLow `#17181B`, surfaceContainer `#1C1D21`,
+surfaceContainerHigh `#26272C`, outline `#90909A`, outlineVariant `#45464F`, error `#FFB4AB`, marker
+`#7C97FF`. AMOLED keeps the dark roles with surface `#000000`, surfaceContainerLow `#0B0B0D`,
+surfaceContainer `#121316`, surfaceContainerHigh `#1C1D21`.
 The marker colour (`?attr/omeronMarker`) appears only on the marker tick, the marker loop in the
 filmstrip, a selected row's outline and box, and the active bottom-bar icon.
 Rules: `#` literals live only in `colors.xml`; layouts and styles use `?attr/` or `@color/` roles.
