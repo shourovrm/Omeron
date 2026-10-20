@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/section_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:paddingStart="@dimen/space_16"
-    android:paddingEnd="@dimen/space_16"
-    android:paddingTop="@dimen/space_16"
-    android:paddingBottom="6dp"
-    android:textAppearance="@style/TextAppearance.App.LabelLarge"
-    android:accessibilityHeading="true"
-    tools:text="Recent"/>
+    android:paddingEnd="@dimen/space_4"
+    android:paddingTop="@dimen/space_8"
+    android:paddingBottom="2dp">
+
+    <TextView
+        android:id="@+id/section_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+        android:accessibilityHeading="true"
+        tools:text="Recent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_clear"
+        style="@style/ButtonStyle.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_clear_recent"
+        android:visibility="gone"/>
+</LinearLayout>

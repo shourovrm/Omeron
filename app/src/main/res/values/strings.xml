@@ -439,4 +439,8 @@
     <string name="post_pinned_description">Pinned</string>
     <string name="post_archived_description">Archived</string>
     <string name="post_locked_description">Locked</string>
+    <string name="search_clear_recent">Clear</string>
+    <string name="dialog_clear_recent_searches_title">Clear search history</string>
+    <string name="dialog_clear_recent_searches_message">Removes all recent searches.</string>
+    <string name="dialog_clear_recent_searches_button">Clear history</string>
 </resources>

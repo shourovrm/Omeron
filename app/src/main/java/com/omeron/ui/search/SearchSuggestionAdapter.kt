@@ -2,6 +2,7 @@ package com.omeron.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.omeron.databinding.ItemSearchSuggestionSectionBinding
 class SearchSuggestionAdapter(
     private val onRecentQueryClick: (String) -> Unit,
     private val onRecentQueryRemove: (String) -> Unit,
+    private val onRecentQueriesClear: () -> Unit,
     private val onCommunityClick: (String) -> Unit
 ) : ListAdapter<SearchSuggestionItem, RecyclerView.ViewHolder>(SUGGESTION_COMPARATOR) {
 
@@ -42,12 +44,14 @@ class SearchSuggestionAdapter(
         }
     }
 
-    private class SectionHeaderViewHolder(
+    private inner class SectionHeaderViewHolder(
         private val binding: ItemSearchSuggestionSectionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SearchSuggestionItem.SectionHeader) {
             binding.sectionTitle.setText(item.titleRes)
+            binding.buttonClear.isVisible = item.hasClearAction
+            binding.buttonClear.setOnClickListener { onRecentQueriesClear() }
         }
     }
 

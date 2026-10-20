@@ -262,6 +262,10 @@ class PreferencesRepository @Inject constructor(
         updateRecentSearchQueries { recentQueries -> recentQueries - query }
     }
 
+    suspend fun clearRecentSearchQueries() {
+        updateRecentSearchQueries { emptyList() }
+    }
+
     // One edit block, so two quick searches cannot overwrite each other's change.
     private suspend fun updateRecentSearchQueries(change: (List<String>) -> List<String>) {
         preferencesDatastore.edit { preferences ->

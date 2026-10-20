@@ -33,6 +33,7 @@ import com.omeron.util.extension.setNavigationListener
 import com.omeron.util.extension.setSortingListener
 import com.omeron.util.extension.showSoftKeyboard
 import com.omeron.util.extension.toggleDescriptionRes
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -132,6 +133,17 @@ class SearchFragment : BaseFragment() {
         if (typedText.isBlank()) viewModel.setQuery("")
     }
 
+    private fun confirmClearRecentQueries() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_clear_recent_searches_title)
+            .setMessage(R.string.dialog_clear_recent_searches_message)
+            .setPositiveButton(R.string.dialog_clear_recent_searches_button) { _, _ ->
+                viewModel.clearRecentQueries()
+            }
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
     private fun runSearch(rawQuery: String) {
         val query = rawQuery.trim()
         if (!SearchUtil.isQueryValid(query)) {
@@ -153,6 +165,7 @@ class SearchFragment : BaseFragment() {
                 runSearch(query)
             },
             onRecentQueryRemove = viewModel::removeRecentQuery,
+            onRecentQueriesClear = ::confirmClearRecentQueries,
             onCommunityClick = ::openSubreddit
         )
 

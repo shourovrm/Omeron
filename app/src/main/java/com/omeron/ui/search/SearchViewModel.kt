@@ -257,6 +257,10 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch { preferencesRepository.removeRecentSearchQuery(query) }
     }
 
+    fun clearRecentQueries() {
+        viewModelScope.launch { preferencesRepository.clearRecentSearchQueries() }
+    }
+
     fun toggleSubscription(subredditName: String, icon: String?) {
         viewModelScope.launch {
             val profileId = currentProfile.latest?.id ?: return@launch

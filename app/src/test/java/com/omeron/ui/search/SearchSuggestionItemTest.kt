@@ -13,7 +13,7 @@ class SearchSuggestionItemTest {
 
         assertEquals(
             listOf(
-                SearchSuggestionItem.SectionHeader(R.string.search_recent_section),
+                SearchSuggestionItem.SectionHeader(R.string.search_recent_section, hasClearAction = true),
                 SearchSuggestionItem.RecentQuery("kotlin"),
                 SearchSuggestionItem.RecentQuery("rust"),
                 SearchSuggestionItem.SectionHeader(R.string.search_communities_section),
@@ -31,7 +31,15 @@ class SearchSuggestionItemTest {
         assertEquals(2, onlyCommunities.size)
         assertEquals(SearchSuggestionItem.SectionHeader(R.string.search_communities_section), onlyCommunities.first())
         assertEquals(2, onlyRecent.size)
-        assertEquals(SearchSuggestionItem.SectionHeader(R.string.search_recent_section), onlyRecent.first())
+        assertEquals(SearchSuggestionItem.SectionHeader(R.string.search_recent_section, hasClearAction = true), onlyRecent.first())
+    }
+
+    @Test
+    fun `only the recent header offers a clear action`() {
+        val headers = buildSearchSuggestions(listOf("kotlin"), listOf("android"))
+            .filterIsInstance<SearchSuggestionItem.SectionHeader>()
+
+        assertEquals(listOf(true, false), headers.map { it.hasClearAction })
     }
 
     @Test

@@ -6,7 +6,11 @@ import com.omeron.R
 /** One row of the list shown on the search screen before a query is searched. */
 sealed interface SearchSuggestionItem {
 
-    data class SectionHeader(@StringRes val titleRes: Int) : SearchSuggestionItem
+    data class SectionHeader(
+        @StringRes val titleRes: Int,
+        /** Shows a "Clear" button at the end of the header row. */
+        val hasClearAction: Boolean = false
+    ) : SearchSuggestionItem
 
     data class RecentQuery(val query: String) : SearchSuggestionItem
 
@@ -21,7 +25,7 @@ fun buildSearchSuggestions(
     val items = mutableListOf<SearchSuggestionItem>()
 
     if (recentQueries.isNotEmpty()) {
-        items.add(SearchSuggestionItem.SectionHeader(R.string.search_recent_section))
+        items.add(SearchSuggestionItem.SectionHeader(R.string.search_recent_section, hasClearAction = true))
         recentQueries.mapTo(items) { SearchSuggestionItem.RecentQuery(it) }
     }
 
