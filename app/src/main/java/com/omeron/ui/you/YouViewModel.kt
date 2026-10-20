@@ -30,15 +30,27 @@ class YouViewModel @Inject constructor(
         profiles.find { it.id == currentProfile.id } ?: currentProfile
     }
 
-    val savedPostsCount: Flow<Int> = currentProfile.flatMapLatest { profile ->
-        repository.getSavedPosts(profile.id)
-    }.map { it.size }
+    // The profile lists hide NSFW posts when that setting is off, so the counts do too; otherwise
+    // a row could promise more posts than its list shows.
+    private val showNsfw: Flow<Boolean> = preferencesRepository
+        .getContentPreferences()
+        .map { it.showNsfw }
+
+    val savedPostsCount: Flow<Int> = combine(
+        currentProfile.flatMapLatest { profile -> repository.getSavedPosts(profile.id) },
+        showNsfw
+    ) { posts, showNsfw ->
+        posts.count { showNsfw || !it.isOver18 }
+    }
 
     val savedCommentsCount: Flow<Int> = currentProfile.flatMapLatest { profile ->
         repository.getSavedComments(profile.id)
     }.map { it.size }
 
-    val historyCount: Flow<Int> = currentProfile.flatMapLatest { profile ->
-        repository.getHistory(profile.id)
-    }.map { it.size }
+    val historyCount: Flow<Int> = combine(
+        currentProfile.flatMapLatest { profile -> repository.getHistory(profile.id) },
+        showNsfw
+    ) { history, showNsfw ->
+        history.count { showNsfw || !it.isOver18 }
+    }
 }
