@@ -79,8 +79,9 @@ class ProfileRowSelection(private val onToggleRow: (rowId: String) -> Unit) {
 
 /**
  * Drawn over a row while selecting: a ticked or empty box at the start edge and, on a selected
- * row, a wash of the primary container colour. It is a foreground so the row layouts stay as
- * they are.
+ * row, a light wash of the primary container colour with a primary outline. It is a foreground so
+ * the row layouts stay as they are; because it covers the content, the wash stays faint and the
+ * outline carries the "selected" signal instead.
  */
 private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Drawable() {
 
@@ -103,6 +104,14 @@ private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Dra
         }
     }
 
+    private val outlineWidth = resources.getDimension(R.dimen.divider_thickness) * 2
+
+    private val outlinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = outlineWidth
+        color = if (isSelected) MaterialColors.getColor(context, R.attr.colorPrimary, 0) else 0
+    }
+
     private val box: Drawable = checkNotNull(
         AppCompatResources.getDrawable(
             context,
@@ -117,6 +126,11 @@ private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Dra
         val area = bounds
         if (washPaint.color != 0) {
             canvas.drawRoundRect(RectF(area), cornerRadius, cornerRadius, washPaint)
+        }
+        if (outlinePaint.color != 0) {
+            // Inset by half the stroke so the whole line falls inside the row.
+            val outlineArea = RectF(area).apply { inset(outlineWidth / 2, outlineWidth / 2) }
+            canvas.drawRoundRect(outlineArea, cornerRadius, cornerRadius, outlinePaint)
         }
 
         val boxTop = area.centerY() - boxSize / 2
@@ -141,7 +155,7 @@ private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Dra
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     private companion object {
-        // Strong enough to tell a selected row at a glance, light enough to keep its text legible.
-        const val WASH_ALPHA = 140
+        // About 25%: the wash sits on top of the text and images, so anything stronger fades them.
+        const val WASH_ALPHA = 64
     }
 }
