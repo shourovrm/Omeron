@@ -464,4 +464,9 @@
         <item quantity="one">%1$d post removed from history</item>
         <item quantity="other">%1$d posts removed from history</item>
     </plurals>
+
+    <!-- You page -->
+    <string name="navigation_label_you">You</string>
+    <string name="you_communities_manage">Manage communities</string>
+    <string name="you_multis_manage">Manage multis</string>
 </resources>
