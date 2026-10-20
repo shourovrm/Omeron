@@ -36,12 +36,6 @@
         android:background="?attr/colorSurface"
         android:fitsSystemWindows="true">
 
-        <include
-            android:id="@+id/drawer_header"
-            layout="@layout/layout_drawer_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
         <EditText
             android:id="@+id/drawer_filter"
             android:layout_width="match_parent"
@@ -69,12 +63,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:overScrollMode="never"/>
-
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/drawer_pinned_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:menu="@menu/drawer_menu"/>
 
     </LinearLayout>
 

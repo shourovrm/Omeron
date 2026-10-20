@@ -27,18 +27,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import com.omeron.MainActivity.BottomNavigationState.LEFT_HANDED
 import com.omeron.MainActivity.BottomNavigationState.NOT_INITIALIZED
 import com.omeron.MainActivity.BottomNavigationState.RIGHT_HANDED
-import com.omeron.data.model.db.Profile
 import com.omeron.databinding.ActivityMainBinding
-import com.omeron.databinding.LayoutDrawerHeaderBinding
 import com.omeron.ui.drawer.DrawerAdapter
 import com.omeron.ui.drawer.DrawerItem
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
-import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
 import com.omeron.ui.search.SearchFragmentArgs
 import com.omeron.ui.subreddit.SubredditFragment
 import com.omeron.ui.subscriptions.SubscriptionMenus
@@ -86,8 +82,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private var bottomNavigationState: BottomNavigationState = NOT_INITIALIZED
 
     private var policyDisclaimerSnackbar: Snackbar? = null
-
-    private var currentProfile: Profile? = null
 
     @Inject
     lateinit var updateChecker: UpdateChecker
@@ -208,6 +202,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                         true
                     }
 
+                    R.id.you -> NavigationUI.onNavDestinationSelected(item, navController)
+
                     else -> openSearch(item)
                 }
             }
@@ -227,6 +223,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     R.id.search -> {
                         if (navController.currentDestination?.id != R.id.searchFragment) {
                             openSearch(item)
+                        }
+                    }
+
+                    R.id.you -> {
+                        // Nothing to scroll to or reload; only leave a page opened from You.
+                        if (navController.currentDestination?.id != R.id.youFragment) {
+                            NavigationUI.onNavDestinationSelected(item, navController)
                         }
                     }
                 }
@@ -266,25 +269,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     private fun initDrawer() {
-        binding.drawerPinnedMenu.setupWithNavController(navController)
-
-        val header = LayoutDrawerHeaderBinding.bind(binding.drawerHeader.root)
-        header.root.setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-            currentProfile?.let { profile ->
-                ProfileManagerDialogFragment.show(supportFragmentManager, profile)
-            }
-        }
-
         initCommunityList()
-
-        launchRepeat(Lifecycle.State.STARTED) {
-            viewModel.currentProfile.collect { profile ->
-                currentProfile = profile
-                header.profileName.text = profile.name
-                header.profileAvatar.setText(profile.name)
-            }
-        }
     }
 
     private fun initCommunityList() {
@@ -429,7 +414,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         viewModel.setNavigationVisibility(destination.id in BOTTOM_NAVIGATION_DESTINATIONS)
 
-        // Every drawer row and pinned entry navigates, so the drawer is done once we arrive
+        // Every drawer row navigates, so the drawer is done once we arrive
         binding.drawerLayout.closeDrawer(GravityCompat.START)
 
         // The navigation drawer is only reachable from the home screen
@@ -445,6 +430,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         when (destination.id) {
             R.id.postListFragment -> HOME_TAB_ITEMS[viewModel.homeTab.value]
             R.id.searchFragment -> R.id.search
+            R.id.youFragment -> R.id.you
             else -> null
         }?.let { binding.bottomNavigation.menu.findItem(it)?.isChecked = true }
     }
@@ -475,6 +461,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         private val BOTTOM_NAVIGATION_DESTINATIONS = setOf(
             R.id.postListFragment,
             R.id.searchFragment,
+            R.id.youFragment,
             R.id.subredditFragment,
             R.id.multiredditFragment,
             R.id.userFragment,
