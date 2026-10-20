@@ -256,6 +256,8 @@ class PostListAdapter(
             val item = getItem(position) ?: return
             (holder as? PostViewHolder)?.update(item)
             (holder as? PostViewHolder.FilmstripPostViewHolder)?.update(item)
+            (holder as? PostViewHolder.GalleryPostViewHolder)?.update(item)
+            (holder as? PostViewHolder.CompactPostViewHolder)?.update(item)
         }
     }
 

@@ -130,11 +130,18 @@ abstract class PostViewHolder(
         }
 
         postMetricsBinding.setSaved(postEntity.saved)
+        showSavedMarker(postEntity.saved)
     }
 
     open fun update(post: PostEntity) {
         title.setTextColor(ContextCompat.getColor(title.context, post.textColor))
         postMetricsBinding.setSaved(post.saved)
+        showSavedMarker(post.saved)
+    }
+
+    // Only the row types with a picture have a marker to show.
+    protected open fun showSavedMarker(saved: Boolean) {
+        // Text posts have no picture.
     }
 
     class ImagePostViewHolder(
@@ -152,6 +159,10 @@ abstract class PostViewHolder(
             binding.imagePostPreview.setOnClickListener {
                 listener.onMediaClick(bindingAdapterPosition)
             }
+        }
+
+        override fun showSavedMarker(saved: Boolean) {
+            binding.imagePostMarker.isVisible = saved
         }
 
         override fun bind(
@@ -198,6 +209,10 @@ abstract class PostViewHolder(
             binding.imagePostPreview.setOnClickListener {
                 listener.onMediaClick(bindingAdapterPosition)
             }
+        }
+
+        override fun showSavedMarker(saved: Boolean) {
+            binding.imagePostMarker.isVisible = saved
         }
 
         override fun bind(
@@ -277,6 +292,10 @@ abstract class PostViewHolder(
             }
         }
 
+        override fun showSavedMarker(saved: Boolean) {
+            binding.imagePostMarker.isVisible = saved
+        }
+
         override fun bind(
             postEntity: PostEntity,
             contentPreferences: ContentPreferences
@@ -318,6 +337,7 @@ abstract class PostViewHolder(
                 setTextColor(ContextCompat.getColor(context, postEntity.textColor))
             }
             binding.textGalleryScore.text = postEntity.score
+            update(postEntity)
 
             binding.imageGalleryPreview.load(
                 postEntity.preview,
@@ -347,6 +367,11 @@ abstract class PostViewHolder(
                     else -> visibility = View.GONE
                 }
             }
+        }
+
+        // Also called alone when the post is saved or unsaved from its menu.
+        fun update(postEntity: PostEntity) {
+            binding.imageGalleryMarker.isVisible = postEntity.saved
         }
     }
 
@@ -384,6 +409,7 @@ abstract class PostViewHolder(
         // Also called alone when a tap marks the post as seen, so the tile dims without a rebind.
         fun update(postEntity: PostEntity) {
             itemView.alpha = if (postEntity.seen) SEEN_TILE_ALPHA else 1F
+            binding.imageFilmstripMarker.isVisible = postEntity.saved
         }
 
         private fun bindBadge(postEntity: PostEntity) {
@@ -521,6 +547,14 @@ abstract class PostViewHolder(
                     else -> visibility = View.GONE
                 }
             }
+
+            update(postEntity)
+        }
+
+        // Also called alone when the post is saved or unsaved from its menu.
+        fun update(postEntity: PostEntity) {
+            binding.imageCompactMarker.isVisible =
+                postEntity.saved && binding.imageCompactPreview.isVisible
         }
     }
 
