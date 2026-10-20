@@ -5,10 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/post_card_margin_horizontal"
-    android:layout_marginVertical="@dimen/post_card_margin_vertical"
-    android:padding="@dimen/space_16"
-    android:background="@drawable/post_card_background">
+    android:padding="@dimen/space_16">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_compact_preview"
@@ -17,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"
+        app:shapeAppearanceOverlay="@style/ThumbnailImageViewStyle"
         android:contentDescription="@null"
         tools:src="@tools:sample/backgrounds/scenic"/>
 
@@ -164,5 +161,19 @@
         android:visibility="gone"
         app:srcCompat="@drawable/ic_more"
         app:tint="@color/text_color_secondary"/>
+
+    <ImageView
+        android:id="@+id/image_compact_marker"
+        android:layout_width="@dimen/post_marker_size_small"
+        android:layout_height="@dimen/post_marker_size_small"
+        app:layout_constraintEnd_toEndOf="@id/image_compact_preview"
+        app:layout_constraintTop_toTopOf="@id/image_compact_preview"
+        android:layout_margin="@dimen/post_marker_inset_small"
+        android:padding="@dimen/post_marker_padding_small"
+        android:background="@drawable/marker_scrim"
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_marker_tick"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

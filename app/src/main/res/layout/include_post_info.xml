@@ -16,26 +16,15 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/post_padding_horizontal">
 
-        <com.omeron.ui.common.widget.AvatarView
-            android:id="@+id/avatar_community"
-            android:layout_width="@dimen/post_avatar_size"
-            android:layout_height="@dimen/post_avatar_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_subreddit"
-            app:layout_constraintBottom_toBottomOf="@id/text_post_author"
-            android:importantForAccessibility="no"
-            app:text="@{post.subredditName}"/>
-
         <TextView
             android:id="@+id/text_subreddit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/avatar_community"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="@dimen/space_12"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textAppearance="@style/TextAppearance.App.TitleMedium"
+            android:textAppearance="@style/TextAppearancePostEdgePrint"
             tools:text="r/reddit" />
 
         <TextView
@@ -49,7 +38,7 @@
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="0"
             android:layout_marginStart="@dimen/space_4"
-            android:textAppearance="@style/TextAppearancePostInfo"
+            android:textAppearance="@style/TextAppearancePostEdgePrint"
             android:text="@{@string/post_age_separated(DateUtil.getTimeDifference(context, post.created, false))}"
             tools:text="· 5h"/>
 
@@ -57,7 +46,7 @@
             android:id="@+id/text_post_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/text_subreddit"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_subreddit"
             android:textAppearance="@style/TextAppearancePostInfo"
             tools:text="author"/>

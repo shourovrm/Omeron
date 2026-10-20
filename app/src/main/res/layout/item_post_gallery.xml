@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"
+        app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
         android:contentDescription="@null"
         tools:src="@tools:sample/backgrounds/scenic"/>
 
@@ -57,5 +57,19 @@
         app:layout_constraintTop_toBottomOf="@id/text_gallery_title"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="14.3k"/>
+
+    <ImageView
+        android:id="@+id/image_gallery_marker"
+        android:layout_width="@dimen/post_marker_size_small"
+        android:layout_height="@dimen/post_marker_size_small"
+        app:layout_constraintEnd_toEndOf="@id/image_gallery_preview"
+        app:layout_constraintTop_toTopOf="@id/image_gallery_preview"
+        android:layout_margin="@dimen/post_marker_inset_small"
+        android:padding="@dimen/post_marker_padding_small"
+        android:background="@drawable/marker_scrim"
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_marker_tick"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

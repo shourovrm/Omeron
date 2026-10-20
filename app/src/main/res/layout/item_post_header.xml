@@ -4,11 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginHorizontal="@dimen/post_card_margin_horizontal"
-    android:layout_marginVertical="@dimen/space_8"
-    android:paddingTop="@dimen/space_12"
-    android:background="@drawable/post_card_background">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <include
         android:id="@+id/include_post_info"
@@ -37,17 +33,16 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_post"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/post_image_height"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_post_title"
         app:layout_constraintBottom_toTopOf="@id/text_post"
-        android:layout_marginHorizontal="@dimen/post_content_margin_horizontal"
         android:layout_marginTop="@dimen/post_margin_top_small"
         android:scaleType="centerCrop"
-        android:elevation="@dimen/post_elevation"
-        app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"
+        app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
         android:visibility="gone"
         tools:visibility="visible"
         tools:src="@tools:sample/backgrounds/scenic"/>
