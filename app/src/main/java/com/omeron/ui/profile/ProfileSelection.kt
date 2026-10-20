@@ -1,9 +1,30 @@
 package com.omeron.ui.profile
 
+import com.omeron.R
 import com.omeron.data.model.preferences.ProfileTab
 
 /** How the select-all box looks: empty, with a dash, or ticked. */
 enum class SelectionBoxState { NONE, SOME, ALL }
+
+/** The drawable for this box state, shared by the selection bar and the history day labels. */
+fun SelectionBoxState.iconRes(): Int = when (this) {
+    SelectionBoxState.NONE -> R.drawable.ic_check_box_outline_blank
+    SelectionBoxState.SOME -> R.drawable.ic_indeterminate_check_box
+    SelectionBoxState.ALL -> R.drawable.ic_check_box
+}
+
+/**
+ * The box for one group of rows (a whole tab, or one day of history): ticked when every row of
+ * [groupIds] is in [selectedIds], a dash when some are, empty when none are or the group is empty.
+ */
+fun selectionBoxState(selectedIds: Set<String>, groupIds: Collection<String>): SelectionBoxState {
+    val selectedCount = groupIds.count { it in selectedIds }
+    return when {
+        selectedCount == 0 -> SelectionBoxState.NONE
+        selectedCount == groupIds.size -> SelectionBoxState.ALL
+        else -> SelectionBoxState.SOME
+    }
+}
 
 /**
  * The rows picked on each profile tab. A tab is in selection mode when it has an entry in the
@@ -26,13 +47,7 @@ data class ProfileSelection(
     }
 
     fun boxState(tab: ProfileTab, visibleIds: Collection<String>): SelectionBoxState {
-        val selected = selectedIds(tab)
-        val selectedVisibleCount = visibleIds.count { it in selected }
-        return when {
-            selectedVisibleCount == 0 -> SelectionBoxState.NONE
-            selectedVisibleCount == visibleIds.size -> SelectionBoxState.ALL
-            else -> SelectionBoxState.SOME
-        }
+        return selectionBoxState(selectedIds(tab), visibleIds)
     }
 
     /**

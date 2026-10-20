@@ -1,6 +1,7 @@
 package com.omeron.ui.profile
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.omeron.R
 import com.omeron.data.model.PostType
 import com.omeron.data.model.db.PostEntity
@@ -22,7 +24,8 @@ import com.omeron.util.extension.load
 class ProfileHistoryAdapter(
     private val postClickListener: PostListAdapter.PostClickListener,
     private val onClearHistoryClick: () -> Unit,
-    onToggleRow: (rowId: String) -> Unit
+    onToggleRow: (rowId: String) -> Unit,
+    private val onToggleDay: (rowIds: List<String>) -> Unit
 ) : ListAdapter<HistoryListItem, RecyclerView.ViewHolder>(HISTORY_COMPARATOR) {
 
     private val rowSelection = ProfileRowSelection(onToggleRow)
@@ -85,8 +88,10 @@ class ProfileHistoryAdapter(
         payloads: MutableList<Any>
     ) {
         if (payloads.contains(SELECTION_PAYLOAD)) {
-            (getItem(position) as? HistoryListItem.Row)?.let {
-                rowSelection.style(holder.itemView, it.post.id)
+            when (val item = getItem(position)) {
+                is HistoryListItem.Row -> rowSelection.style(holder.itemView, item.post.id)
+                // A day's box follows its rows, so it is redrawn with them.
+                is HistoryListItem.DayLabel -> (holder as LabelViewHolder).bind(item)
             }
         } else {
             super.onBindViewHolder(holder, position, payloads)
@@ -125,11 +130,41 @@ class ProfileHistoryAdapter(
 
         init {
             binding.labelAction.setOnClickListener { onClearHistoryClick() }
+            binding.labelSelect.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) onToggleDay(currentList.rowIdsOfDay(position))
+            }
         }
 
         fun bind(label: HistoryListItem.DayLabel) {
             binding.labelTitle.text = dayText(binding.root.context, label.day)
-            binding.labelAction.isVisible = label.showsClearAction
+            // While selecting, the label's end holds the day's box instead of "Clear history".
+            binding.labelAction.isVisible = label.showsClearAction && !rowSelection.isActive
+            binding.labelSelect.isVisible = rowSelection.isActive
+            if (rowSelection.isActive) bindDayBox()
+        }
+
+        private fun bindDayBox() {
+            val position = bindingAdapterPosition
+            if (position == RecyclerView.NO_POSITION) return
+            val boxState = rowSelection.boxStateOf(currentList.rowIdsOfDay(position))
+            val context = binding.root.context
+            binding.labelSelect.setImageResource(boxState.iconRes())
+            binding.labelSelect.contentDescription = context.getString(
+                if (boxState == SelectionBoxState.ALL) {
+                    R.string.profile_history_deselect_day
+                } else {
+                    R.string.profile_history_select_day
+                }
+            )
+            val tintAttribute = if (boxState == SelectionBoxState.NONE) {
+                R.attr.colorOnSurfaceVariant
+            } else {
+                R.attr.omeronMarker
+            }
+            binding.labelSelect.imageTintList = ColorStateList.valueOf(
+                MaterialColors.getColor(binding.labelSelect, tintAttribute)
+            )
         }
 
         private fun dayText(context: Context, day: HistoryDay): String {

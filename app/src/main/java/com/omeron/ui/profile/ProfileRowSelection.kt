@@ -44,6 +44,11 @@ class ProfileRowSelection(private val onToggleRow: (rowId: String) -> Unit) {
         return true
     }
 
+    /** The select box for a group of rows, such as one day of history. */
+    fun boxStateOf(groupIds: Collection<String>): SelectionBoxState {
+        return selectionBoxState(selectedIds, groupIds)
+    }
+
     /** A tap toggles the row while selecting, and runs [normalAction] otherwise. */
     fun onTap(rowId: String, normalAction: () -> Unit) {
         if (isActive) onToggleRow(rowId) else normalAction()

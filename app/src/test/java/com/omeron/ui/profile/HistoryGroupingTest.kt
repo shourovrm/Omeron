@@ -111,4 +111,22 @@ class HistoryGroupingTest {
 
         assertEquals(HistoryDay.Yesterday, (items.first() as HistoryListItem.DayLabel).day)
     }
+
+    @Test
+    fun `the row ids of a day are the posts between its label and the next label`() {
+        val now = millisAt(2026, Calendar.OCTOBER, 20, 18)
+        val items = groupHistoryByDay(
+            listOf(
+                postViewedAt("today-1", millisAt(2026, Calendar.OCTOBER, 20, 15)),
+                postViewedAt("today-2", millisAt(2026, Calendar.OCTOBER, 20, 9)),
+                postViewedAt("older-1", millisAt(2026, Calendar.OCTOBER, 12, 9))
+            ),
+            now,
+            timeZone
+        )
+        val olderLabelIndex = items.indexOfLast { it is HistoryListItem.DayLabel }
+
+        assertEquals(listOf("today-1", "today-2"), items.rowIdsOfDay(0))
+        assertEquals(listOf("older-1"), items.rowIdsOfDay(olderLabelIndex))
+    }
 }

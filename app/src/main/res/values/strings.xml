@@ -469,4 +469,6 @@
     <string name="navigation_label_you">You</string>
     <string name="you_communities_manage">Manage communities</string>
     <string name="you_multis_manage">Manage multis</string>
+    <string name="profile_history_select_day">Select this day</string>
+    <string name="profile_history_deselect_day">Deselect this day</string>
 </resources>

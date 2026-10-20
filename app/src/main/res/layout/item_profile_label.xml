@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -33,6 +34,18 @@
         android:textAppearance="@style/TextAppearance.App.LabelLarge"
         android:textColor="@color/colorPrimary"
         android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <!-- Selects or clears every post of this day; shown only while selecting history. -->
+    <ImageButton
+        android:id="@+id/label_select"
+        android:layout_width="@dimen/touch_target"
+        android:layout_height="@dimen/touch_target"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/profile_history_select_day"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_check_box_outline_blank"
+        app:tint="?attr/colorOnSurfaceVariant"
         tools:visibility="visible"/>
 
 </LinearLayout>

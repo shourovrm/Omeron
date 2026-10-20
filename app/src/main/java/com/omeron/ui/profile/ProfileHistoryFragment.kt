@@ -30,7 +30,9 @@ class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
         return ProfileHistoryAdapter(
             postClickListener = this,
             onClearHistoryClick = ::confirmClearHistory,
-            onToggleRow = { rowId -> selectionViewModel.toggle(tab, rowId) }
+            onToggleRow = { rowId -> selectionViewModel.toggle(tab, rowId) },
+            // Same rule as the bar's select-all box, limited to one day's posts.
+            onToggleDay = { rowIds -> selectionViewModel.toggleSelectAll(tab, rowIds) }
         )
     }
 

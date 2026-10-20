@@ -148,4 +148,13 @@ class ProfileSelectionTest {
 
         assertEquals(ProfileSelection(), selection)
     }
+
+    @Test
+    fun `the box state of a group compares only that group's ids with the selection`() {
+        val selected = setOf("a", "x")
+
+        assertEquals(SelectionBoxState.NONE, selectionBoxState(selected, listOf("b", "c")))
+        assertEquals(SelectionBoxState.SOME, selectionBoxState(selected, listOf("a", "b")))
+        assertEquals(SelectionBoxState.ALL, selectionBoxState(selected, listOf("a")))
+    }
 }

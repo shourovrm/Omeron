@@ -52,6 +52,13 @@ fun groupHistoryByDay(
     return items
 }
 
+/** The ids of the posts listed under the day label at [labelIndex], up to the next label. */
+fun List<HistoryListItem>.rowIdsOfDay(labelIndex: Int): List<String> {
+    return drop(labelIndex + 1)
+        .takeWhile { it is HistoryListItem.Row }
+        .map { (it as HistoryListItem.Row).post.id }
+}
+
 // Calendar rather than dividing by 24 hours, because a day is 23 or 25 hours long when the
 // clocks change.
 private fun startOfDay(timeMillis: Long, timeZone: TimeZone): Long {
