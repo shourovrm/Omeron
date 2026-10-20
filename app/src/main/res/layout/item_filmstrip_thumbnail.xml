@@ -9,5 +9,5 @@
     android:scaleType="centerCrop"
     android:background="@color/black_25"
     android:foreground="?attr/selectableItemBackground"
-    app:shapeAppearanceOverlay="@style/ShapeAppearanceButton"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Thumbnail"
     app:strokeColor="@color/white"/>

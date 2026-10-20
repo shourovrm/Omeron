@@ -188,6 +188,12 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- Gallery viewer thumbnails: rounded squares, so they read as images and not as buttons. -->
+    <style name="ShapeAppearance.App.Thumbnail" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/chip_radius</item>
+    </style>
+
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="shapeAppearance">@style/ShapeAppearanceButton</item>
         <item name="android:textAppearance">@style/TextAppearance.App.LabelLarge</item>
