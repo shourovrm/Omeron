@@ -9,7 +9,6 @@ import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import com.google.android.material.color.MaterialColors
@@ -79,37 +78,23 @@ class ProfileRowSelection(private val onToggleRow: (rowId: String) -> Unit) {
 
 /**
  * Drawn over a row while selecting: a ticked or empty box at the start edge and, on a selected
- * row, a light wash of the primary container colour with a primary outline. It is a foreground so
- * the row layouts stay as they are; because it covers the content, the wash stays faint and the
- * outline carries the "selected" signal instead.
+ * row, a 2dp outline in the marker colour. Post rows are square, so the outline has square
+ * corners. It is a foreground so the row layouts stay as they are.
  */
 private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Drawable() {
 
     private val resources = context.resources
 
-    private val cornerRadius = resources.getDimension(R.dimen.card_radius)
-
     private val boxSize = resources.getDimensionPixelSize(R.dimen.space_24)
 
     private val boxInset = resources.getDimensionPixelSize(R.dimen.space_8)
-
-    private val washPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = if (isSelected) {
-            ColorUtils.setAlphaComponent(
-                MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0),
-                WASH_ALPHA
-            )
-        } else {
-            0
-        }
-    }
 
     private val outlineWidth = resources.getDimension(R.dimen.divider_thickness) * 2
 
     private val outlinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = outlineWidth
-        color = if (isSelected) MaterialColors.getColor(context, R.attr.colorPrimary, 0) else 0
+        color = if (isSelected) MaterialColors.getColor(context, R.attr.omeronMarker, 0) else 0
     }
 
     private val box: Drawable = checkNotNull(
@@ -118,19 +103,16 @@ private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Dra
             if (isSelected) R.drawable.ic_check_box else R.drawable.ic_check_box_outline_blank
         )
     ).mutate().also {
-        val tintAttribute = if (isSelected) R.attr.colorPrimary else R.attr.colorOnSurfaceVariant
+        val tintAttribute = if (isSelected) R.attr.omeronMarker else R.attr.colorOnSurfaceVariant
         DrawableCompat.setTint(it, MaterialColors.getColor(context, tintAttribute, 0))
     }
 
     override fun draw(canvas: Canvas) {
         val area = bounds
-        if (washPaint.color != 0) {
-            canvas.drawRoundRect(RectF(area), cornerRadius, cornerRadius, washPaint)
-        }
         if (outlinePaint.color != 0) {
             // Inset by half the stroke so the whole line falls inside the row.
             val outlineArea = RectF(area).apply { inset(outlineWidth / 2, outlineWidth / 2) }
-            canvas.drawRoundRect(outlineArea, cornerRadius, cornerRadius, outlinePaint)
+            canvas.drawRect(outlineArea, outlinePaint)
         }
 
         val boxTop = area.centerY() - boxSize / 2
@@ -153,9 +135,4 @@ private class SelectionMarkDrawable(context: Context, isSelected: Boolean) : Dra
 
     @Deprecated("Required by Drawable", ReplaceWith("PixelFormat.TRANSLUCENT"))
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-    private companion object {
-        // About 25%: the wash sits on top of the text and images, so anything stronger fades them.
-        const val WASH_ALPHA = 64
-    }
 }

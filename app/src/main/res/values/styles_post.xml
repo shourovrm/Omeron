@@ -23,4 +23,20 @@
         <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
     </style>
 
+    <!-- Post media runs edge to edge, so its corners are square. -->
+    <style name="SquareImageViewStyle" parent="">
+        <item name="cornerSize">0dp</item>
+    </style>
+
+    <!-- Compact rows keep a small thumbnail with 8dp corners. -->
+    <style name="ThumbnailImageViewStyle" parent="">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <!-- A text post title sits in a full-width frame in the headlineSmall role. -->
+    <style name="TextAppearancePostTextFrameTitle" parent="TextAppearance.App.HeadlineSmall"/>
+
+    <!-- Edge print: community and age above the picture. -->
+    <style name="TextAppearancePostEdgePrint" parent="TextAppearance.App.BodySmall.Variant"/>
+
 </resources>

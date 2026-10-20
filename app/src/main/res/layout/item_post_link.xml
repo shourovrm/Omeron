@@ -4,11 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/post_card_margin_horizontal"
-    android:layout_marginVertical="@dimen/post_card_margin_vertical"
-    android:paddingTop="@dimen/space_12"
-    android:background="@drawable/post_card_background">
+    android:layout_height="wrap_content">
 
     <include
         android:id="@id/include_post_info"
@@ -37,10 +33,9 @@
         app:layout_constraintTop_toBottomOf="@id/barrier_top"
         app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
         android:layout_marginStart="@dimen/post_link_image_margin_horizontal"
-        android:elevation="@dimen/post_elevation"
         android:contentDescription="@string/link_preview_image_description"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/RoundedImageViewStyle"
+        app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
         tools:src="@tools:sample/backgrounds/scenic" />
 
     <TextView
@@ -97,5 +92,19 @@
         app:layout_constraintTop_toBottomOf="@+id/awards"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/post_margin_top_small"/>
+
+    <ImageView
+        android:id="@+id/image_post_marker"
+        android:layout_width="@dimen/post_marker_size_small"
+        android:layout_height="@dimen/post_marker_size_small"
+        app:layout_constraintEnd_toEndOf="@id/image_post_link_preview"
+        app:layout_constraintTop_toTopOf="@id/image_post_link_preview"
+        android:layout_margin="@dimen/post_marker_inset_small"
+        android:padding="@dimen/post_marker_padding_small"
+        android:background="@drawable/marker_scrim"
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_marker_tick"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

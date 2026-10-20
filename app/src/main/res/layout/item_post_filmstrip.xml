@@ -51,4 +51,18 @@
             tools:visibility="visible"/>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/image_filmstrip_marker"
+        android:layout_width="@dimen/post_marker_size_small"
+        android:layout_height="@dimen/post_marker_size_small"
+        app:layout_constraintStart_toStartOf="@id/image_filmstrip_preview"
+        app:layout_constraintTop_toTopOf="@id/image_filmstrip_preview"
+        android:layout_margin="@dimen/post_marker_inset_small"
+        android:padding="@dimen/post_marker_padding_small"
+        android:background="@drawable/marker_scrim"
+        android:importantForAccessibility="no"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_marker_loop"
+        tools:visibility="visible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
