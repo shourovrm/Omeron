@@ -83,7 +83,6 @@
      <string name="preference_night_mode_light">Tema Claro</string>
      <string name="preference_night_mode_dark">Tema Oscuro</string>
      <string name="preference_night_mode_system">Seguir el del sistema</string>
-     <string name="preference_about">Acerca de</string>
      <string name="fragment_about_label">Acerca de</string>
      <string name="navigation_label_settings">Ajustes</string>
 </resources>

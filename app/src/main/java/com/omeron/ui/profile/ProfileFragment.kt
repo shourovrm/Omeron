@@ -11,14 +11,15 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.omeron.R
+import com.omeron.UiViewModel
 import com.omeron.databinding.FragmentProfileBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
 import com.omeron.ui.profilemanager.ProfileSwitcherDialogFragment
-import com.omeron.ui.you.initialProfileTabPosition
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.util.extension.clearCommentListener
@@ -27,6 +28,7 @@ import com.omeron.util.extension.clearSavedRemoveListener
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.hideSoftKeyboard
 import com.omeron.util.extension.iconRes
+import com.omeron.util.extension.keepClearOfBottomNavigation
 import com.omeron.util.extension.latest
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
@@ -49,9 +51,10 @@ class ProfileFragment : BaseFragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.profile)
+    override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.you)
 
     private val selectionViewModel: ProfileSelectionViewModel by activityViewModels()
+    private val uiViewModel: UiViewModel by activityViewModels()
 
     // What the selection bar shows for the tab on screen; the bar's buttons read it when tapped.
     private var selectionBar: SelectionBarState? = null
@@ -71,7 +74,7 @@ class ProfileFragment : BaseFragment() {
         initAppBar()
         initProfileRow()
         initViewPager()
-        if (savedInstanceState == null) showInitialTab()
+        keepClearOfBottomNavigation(binding.viewPager, uiViewModel.bottomNavigationHeight)
         initSelectionBar()
         bindViewModel()
     }
@@ -97,7 +100,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun initAppBar() {
-        binding.backCard.setOnClickListener { leaveProfile() }
+        binding.settingsCard.setOnClickListener { findNavController().navigate(R.id.settings) }
         binding.layoutToggleCard.setOnClickListener { viewModel.toggleSelectedTabLayout() }
         binding.searchCard.setOnClickListener { showSearchInput(true) }
         binding.cancelCard.setOnClickListener {
@@ -128,6 +131,7 @@ class ProfileFragment : BaseFragment() {
         binding.title.isVisible = !show
         binding.layoutToggleCard.isVisible = !show
         binding.searchCard.isVisible = !show
+        binding.settingsCard.isVisible = !show
         binding.cancelCard.isVisible = show
         binding.searchInput.isVisible = show
         if (show) {
@@ -182,12 +186,6 @@ class ProfileFragment : BaseFragment() {
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.setText(fragments[position].title)
         }.attach()
-    }
-
-    // Only on first creation: after a rotation the pager restores the tab the user moved to.
-    private fun showInitialTab() {
-        val requestedPosition = arguments?.getInt(ARGUMENT_INITIAL_TAB, 0) ?: 0
-        binding.viewPager.setCurrentItem(initialProfileTabPosition(requestedPosition), false)
     }
 
     private fun initSelectionBar() {
@@ -310,11 +308,9 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
-    // The app bar arrow always leaves in one tap, dropping every tab's selection on the way;
-    // system Back (below) steps out of selection or search first and stays on the screen.
-    private fun leaveProfile() {
-        selectionViewModel.leaveAll()
-        super.onBackPressed()
+    /** Bottom bar reselect: scrolls the tab on screen to its top. */
+    fun scrollCurrentTabToTop() {
+        _binding?.let { it.viewPager.scrollToTop(it.viewPager.currentItem) }
     }
 
     fun handleBackFromTab() {
@@ -348,9 +344,6 @@ class ProfileFragment : BaseFragment() {
 
     private companion object {
         const val DISABLED_ACTION_ALPHA = 0.38f
-
-        // Matches the argument name in navigation/profile.xml.
-        const val ARGUMENT_INITIAL_TAB = "initialTab"
     }
 }
 

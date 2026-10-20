@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/you"
-    app:startDestination="@id/youFragment">
+    app:startDestination="@id/profileFragment">
 
+    <!-- The saved library is the You page. The tabs share one ProfileViewModel scoped to this graph. -->
     <fragment
-        android:id="@+id/youFragment"
-        android:name="com.omeron.ui.you.YouFragment"
-        tools:layout="@layout/fragment_you"/>
+        android:id="@+id/profileFragment"
+        android:name="com.omeron.ui.profile.ProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
 
 </navigation>

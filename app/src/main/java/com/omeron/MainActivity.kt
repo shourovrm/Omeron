@@ -35,6 +35,7 @@ import com.omeron.ui.drawer.DrawerAdapter
 import com.omeron.ui.drawer.DrawerItem
 import com.omeron.ui.policydisclaimer.PolicyDisclaimerDialogFragment
 import com.omeron.ui.postlist.PostListFragment
+import com.omeron.ui.profile.ProfileFragment
 import com.omeron.ui.search.SearchFragmentArgs
 import com.omeron.ui.subreddit.SubredditFragment
 import com.omeron.ui.subscriptions.SubscriptionMenus
@@ -227,8 +228,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     }
 
                     R.id.you -> {
-                        // Nothing to scroll to or reload; only leave a page opened from You.
-                        if (navController.currentDestination?.id != R.id.youFragment) {
+                        val profileFragment = currentNavigationFragment as? ProfileFragment
+                        if (profileFragment != null) {
+                            profileFragment.scrollCurrentTabToTop()
+                        } else {
                             NavigationUI.onNavDestinationSelected(item, navController)
                         }
                     }
@@ -430,7 +433,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         when (destination.id) {
             R.id.postListFragment -> HOME_TAB_ITEMS[viewModel.homeTab.value]
             R.id.searchFragment -> R.id.search
-            R.id.youFragment -> R.id.you
+            R.id.profileFragment -> R.id.you
             else -> null
         }?.let { binding.bottomNavigation.menu.findItem(it)?.isChecked = true }
     }
@@ -461,7 +464,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         private val BOTTOM_NAVIGATION_DESTINATIONS = setOf(
             R.id.postListFragment,
             R.id.searchFragment,
-            R.id.youFragment,
+            R.id.profileFragment,
             R.id.subredditFragment,
             R.id.multiredditFragment,
             R.id.userFragment,
