@@ -14,6 +14,7 @@ import com.omeron.data.model.preferences.MediaPreferences
 import com.omeron.data.model.preferences.PolicyDisclaimerPreferences
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.ProfilePreferences
+import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.data.model.preferences.SearchPreferences
 import com.omeron.data.model.preferences.UiPreferences
 import com.omeron.util.SearchUtil
@@ -169,6 +170,25 @@ class PreferencesRepository @Inject constructor(
         val key = name?.let { subredditPostLayoutKey(it) }
             ?: DataPreferences.PreferencesKeys.POST_LAYOUT
         preferencesDatastore.setValue(key, layout.value)
+    }
+
+    private fun profileTabLayoutKey(tab: ProfileTab) =
+        intPreferencesKey("profile_layout_" + tab.storageName)
+
+    fun getProfileTabLayout(tab: ProfileTab): Flow<PostLayout> {
+        return preferencesDatastore.data.catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            tab.layoutFromStoredValue(preferences[profileTabLayoutKey(tab)])
+        }.distinctUntilChanged()
+    }
+
+    suspend fun setProfileTabLayout(tab: ProfileTab, layout: PostLayout) {
+        preferencesDatastore.setValue(profileTabLayoutKey(tab), layout.value)
     }
 
     fun getAllRedirects(): Flow<List<Redirect>> {

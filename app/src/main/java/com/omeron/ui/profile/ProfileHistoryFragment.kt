@@ -7,6 +7,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.omeron.R
 import com.omeron.data.model.db.PostEntity
+import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,9 +25,7 @@ class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
 
     override fun createAdapter(): ProfileHistoryAdapter {
         return ProfileHistoryAdapter(
-            onRowClick = ::onClick,
-            onRowLongClick = ::onLongClick,
-            onThumbnailClick = ::openMedia,
+            postClickListener = this,
             onClearHistoryClick = ::confirmClearHistory
         )
     }
@@ -34,6 +33,12 @@ class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
     override fun currentPosts(): List<PostEntity> = adapter.currentPosts()
 
     private fun bindViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.layoutOf(ProfileTab.HISTORY)
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { adapter.layout = it }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             combine(viewModel.historyItems, viewModel.contentPreferences) { items, preferences ->
                 adapter.contentPreferences = preferences

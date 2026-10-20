@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/comment_padding_horizontal"
+    android:paddingVertical="@dimen/space_12"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/text_comment_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.App.BodySmall.Variant"
+        tools:text="u/author · r/community · 5h"/>
+
+    <TextView
+        android:id="@+id/text_comment_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_4"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        tools:text="The body of a saved comment stops after two lines and ends with an ellipsis when it runs longer."/>
+
+</LinearLayout>

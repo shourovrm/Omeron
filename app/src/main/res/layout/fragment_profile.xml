@@ -38,13 +38,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/back_card"
-            app:layout_constraintEnd_toStartOf="@id/search_card"
+            app:layout_constraintEnd_toStartOf="@id/layout_toggle_card"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginStart="@dimen/app_bar_margin"
             android:singleLine="true"
             android:text="@string/navigation_label_profile"
             android:textAppearance="@style/TextAppearanceAppBarLabel"/>
+
+        <com.omeron.ui.common.widget.CardButton
+            android:id="@+id/layout_toggle_card"
+            android:layout_width="@dimen/app_bar_button_size"
+            android:layout_height="@dimen/app_bar_button_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/search_card"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:layout_marginEnd="@dimen/app_bar_margin"
+            app:icon="@drawable/ic_layout_card"
+            android:contentDescription="@string/layout_toggle_card"
+            style="@style/CardButtonStyle"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/search_card"

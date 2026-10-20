@@ -441,4 +441,5 @@
     <string name="profile_current_description">Current profile</string>
     <string name="profile_add">Add profile</string>
     <string name="profile_manage">Manage profiles</string>
+    <string name="profile_comment_compact_info" translatable="false">u/%1$s · %2$s · %3$s</string>
 </resources>
