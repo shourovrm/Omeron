@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.R
@@ -30,12 +31,12 @@ class PostDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        if (parent.layoutManager !is LinearLayoutManager) return
+        if (!isSingleColumn(parent)) return
         outRect.bottom = if (isPostRow(view, parent)) postGap else divider.intrinsicHeight
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        if (parent.layoutManager !is LinearLayoutManager) return
+        if (!isSingleColumn(parent)) return
 
         for (index in 0 until parent.childCount) {
             val child = parent.getChildAt(index)
@@ -56,5 +57,12 @@ class PostDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration(
     private fun isPostRow(view: View, parent: RecyclerView): Boolean {
         val holder = parent.getChildViewHolder(view)
         return holder is PostViewHolder || holder.javaClass.enclosingClass == PostViewHolder::class.java
+    }
+
+    // GridLayoutManager extends LinearLayoutManager, so the filmstrip grid has to be ruled out
+    // explicitly; its tiles get their own 2dp gaps from FilmstripGapItemDecoration.
+    private fun isSingleColumn(parent: RecyclerView): Boolean {
+        val layoutManager = parent.layoutManager
+        return layoutManager is LinearLayoutManager && layoutManager !is GridLayoutManager
     }
 }
