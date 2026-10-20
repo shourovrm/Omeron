@@ -8,10 +8,10 @@ import com.omeron.data.model.db.Profile
 import com.omeron.data.model.db.Subscription
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
-import com.omeron.util.extension.latest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
@@ -42,34 +42,39 @@ open class BaseViewModel(
         postListRepository.getSavedPostIds(it.id)
     }
 
+    // Awaits the profile for the same reason as toggleSavePost: an empty replay cache dropped the
+    // write on screens that never collect currentProfile.
     fun insertPostInHistory(post: PostEntity) {
         viewModelScope.launch {
-            currentProfile.latest?.let {
-                postListRepository.insertPostInHistory(post, it.id)
-            }
+            postListRepository.insertPostInHistory(post, currentProfile.first().id)
         }
     }
 
+    // Callers flip post.saved right after this call, so the state is read before anything suspends.
+    // The profile is awaited rather than read from the replay cache: currentProfile only shares
+    // while something collects it, and a screen like the filmstrip viewer never does, so the cache
+    // there is empty and the save used to be dropped silently.
     fun toggleSavePost(post: PostEntity) {
+        val wasSaved = post.saved
         viewModelScope.launch {
-            currentProfile.latest?.let {
-                if (post.saved) {
-                    postListRepository.unsavePost(post, it.id)
-                } else {
-                    postListRepository.savePost(post, it.id)
-                }
+            val profile = currentProfile.first()
+            if (wasSaved) {
+                postListRepository.unsavePost(post, profile.id)
+            } else {
+                postListRepository.savePost(post, profile.id)
             }
         }
     }
 
+    // Same ordering and profile rule as toggleSavePost.
     fun toggleSaveComment(comment: Comment.CommentEntity) {
+        val wasSaved = comment.saved
         viewModelScope.launch {
-            currentProfile.latest?.let {
-                if (comment.saved) {
-                    postListRepository.unsaveComment(comment, it.id)
-                } else {
-                    postListRepository.saveComment(comment, it.id)
-                }
+            val profile = currentProfile.first()
+            if (wasSaved) {
+                postListRepository.unsaveComment(comment, profile.id)
+            } else {
+                postListRepository.saveComment(comment, profile.id)
             }
         }
     }
