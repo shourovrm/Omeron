@@ -1,3 +1,32 @@
+# 0.8.0 - 2026/10/20
+
+### Added
+- New look: post pictures run full width with square corners instead of
+  sitting in cards, posts are separated by space, text posts are a solid
+  block with a large title, and the cobalt colours sit on neutral greys
+- Saved posts carry a tick on their picture; saved tiles in the filmstrip
+  grid get a circle
+- You tab in the bottom bar: your saved posts, saved comments and history
+  open straight away, with the profile switcher on top and Settings behind
+  the gear icon; the menu keeps only community search, multis and
+  communities
+- Select several saved posts, saved comments or history entries: hold a
+  row, then tick rows, a whole day of history, or everything, and unsave or
+  remove them with Undo
+- Card and compact layouts for saved posts, saved comments and history,
+  each tab remembering its own
+- "Clear" for recent searches
+- Switch profile by tapping the profile row; the sheet lists every profile
+  with Add profile and Manage profiles
+
+### Fixed
+- Saving a post from the filmstrip viewer did nothing, and posts opened
+  there never reached History
+- The filmstrip grid turned into full-width rows after going back from a
+  post in search and on user pages
+- Gallery thumbnails in the viewer are rounded squares instead of circles
+- The menu button on compact saved rows sits at the right edge
+
 # 0.7.0 - 2026/10/18
 
 ### Added
