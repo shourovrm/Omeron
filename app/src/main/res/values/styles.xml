@@ -15,6 +15,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
 
         <item name="android:colorBackground">@color/md_surface</item>
         <item name="colorSurface">@color/md_surface</item>
@@ -292,8 +293,8 @@
         <item name="backgroundTint">?attr/omeronSurfaceContainer</item>
         <item name="elevation">@dimen/bottom_navigation_elevation</item>
         <item name="labelVisibilityMode">labeled</item>
-        <item name="itemIconTint">@drawable/navigation_color_selector</item>
-        <item name="itemTextColor">@drawable/navigation_color_selector</item>
+        <item name="itemIconTint">@color/navigation_icon_color</item>
+        <item name="itemTextColor">@color/navigation_label_color</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.App.LabelMedium</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.App.LabelMedium</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNavigation.ActiveIndicator</item>
@@ -302,7 +303,7 @@
     <style name="Widget.App.BottomNavigation.ActiveIndicator" parent="">
         <item name="android:width">@dimen/bottom_bar_indicator_width</item>
         <item name="android:height">@dimen/bottom_bar_indicator_height</item>
-        <item name="android:color">?attr/colorSecondaryContainer</item>
+        <item name="android:color">?attr/colorPrimaryContainer</item>
         <item name="marginHorizontal">@dimen/space_4</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
     </style>

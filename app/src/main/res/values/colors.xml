@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Material 3 roles, light scheme. The dark scheme is in values-night. -->
-    <color name="md_primary">#1D3FBF</color>
+    <color name="md_primary">#A8321A</color>
     <color name="md_on_primary">#FFFFFF</color>
-    <color name="md_primary_container">#DEE1FF</color>
-    <color name="md_on_primary_container">#00105C</color>
-    <color name="md_secondary_container">#DDE1F9</color>
-    <color name="md_on_secondary_container">#161B2C</color>
-    <color name="md_surface">#FBF8FF</color>
-    <color name="md_on_surface">#1A1B21</color>
-    <color name="md_on_surface_variant">#45464F</color>
-    <color name="md_surface_container_low">#F5F3FA</color>
-    <color name="md_surface_container">#EFEDF4</color>
-    <color name="md_surface_container_high">#E9E7EF</color>
-    <color name="md_outline">#767680</color>
-    <color name="md_outline_variant">#C6C5D0</color>
+    <color name="md_primary_container">#FFDBCF</color>
+    <color name="md_on_primary_container">#3A0A00</color>
+    <color name="md_secondary_container">#F2DED5</color>
+    <color name="md_on_secondary_container">#2C160E</color>
+    <color name="md_surface">#F7F3EE</color>
+    <color name="md_on_surface">#1F1B17</color>
+    <color name="md_on_surface_variant">#5E554C</color>
+    <color name="md_surface_container_low">#F2EDE7</color>
+    <color name="md_surface_container">#EDE7E0</color>
+    <color name="md_surface_container_high">#E4DDD4</color>
+    <color name="md_outline">#857A70</color>
+    <color name="md_outline_variant">#D6CCC2</color>
     <color name="md_error">#BA1A1A</color>
     <color name="md_on_error">#FFFFFF</color>
     <color name="md_error_container">#FFDAD6</color>
     <color name="md_on_error_container">#410002</color>
     <color name="md_marker">#E2451B</color>
     <!-- AMOLED keeps pure black surfaces. -->
-    <color name="amoled_surface_container_low">#000000</color>
-    <color name="amoled_surface_container">#121318</color>
+    <color name="amoled_surface_container_low">#0D0C0B</color>
+    <color name="amoled_surface_container">#121110</color>
+    <color name="amoled_surface_container_high">#1E1B18</color>
 
     <color name="colorPrimary">@color/md_primary</color>
-    <color name="colorPrimaryLight">#5B74E8</color>
-    <color name="colorPrimaryDark">#142E8F</color>
+    <color name="colorPrimaryLight">@color/md_marker</color>
+    <color name="colorPrimaryDark">@color/md_primary</color>
     <color name="colorAccent">@color/colorSecondaryLight</color>
 
-    <color name="colorSecondaryLight">#5B74E8</color>
+    <color name="colorSecondaryLight">@color/md_primary</color>
 
 
 
@@ -48,19 +49,19 @@
     <color name="chip_background_color">@color/md_surface_container_high</color>
     <color name="chip_selected_text_color">@color/colorPrimary</color>
 
-    <color name="icon_navigation_color_unpressed">#D6D6D3</color>
+    <color name="icon_navigation_color_unpressed">@color/md_outline_variant</color>
 
     <color name="card_background_color">@color/md_surface_container</color>
 
     <color name="post_divider_color">@color/md_outline_variant</color>
 
-    <color name="switch_thumb_disabled_color">#D6D6D3</color>
-    <color name="switch_track_disabled_color">#EFEFEC</color>
-    <color name="switch_track_checked_color">#C3CDF3</color>
-    <color name="switch_track_unchecked_color">#D6D6D3</color>
+    <color name="switch_thumb_disabled_color">@color/md_outline_variant</color>
+    <color name="switch_track_disabled_color">@color/md_surface_container_high</color>
+    <color name="switch_track_checked_color">@color/md_primary_container</color>
+    <color name="switch_track_unchecked_color">@color/md_outline_variant</color>
 
-    <color name="regular_gradient_start">#1D3FBF</color>
-    <color name="regular_gradient_end">#93A5EE</color>
+    <color name="regular_gradient_start">#A8321A</color>
+    <color name="regular_gradient_end">#D9704F</color>
 
     <color name="admin_gradient_start">#D32F2F</color>
     <color name="admin_gradient_end">#EF6C00</color>
@@ -76,8 +77,8 @@
     <color name="oc_gradient_start">#2196F3</color>
     <color name="oc_gradient_end">#90CAF9</color>
 
-    <color name="flair_gradient_start">#3D5BD0</color>
-    <color name="flair_gradient_end">#A9B7F0</color>
+    <color name="flair_gradient_start">#9A5B43</color>
+    <color name="flair_gradient_end">#D9B8A8</color>
 
     <color name="spoiler_gradient_start">#90A4AE</color>
     <color name="spoiler_gradient_end">#CFD8DC</color>
@@ -93,12 +94,12 @@
     <color name="comment_indicator_7">#FFB74D</color>
     <color name="comment_indicator_8">#E0E0E0</color>
 
-    <color name="exoplayer_buffered_color">#805B74E8</color>
-    <color name="exoplayer_unplayed_color">#1A5B74E8</color>
+    <color name="exoplayer_buffered_color">#80FF6B3D</color>
+    <color name="exoplayer_unplayed_color">#1AFF6B3D</color>
 
 
     <color name="profile_background_1">#F44336</color>
-    <color name="profile_background_2">#1D3FBF</color>
+    <color name="profile_background_2">#A8321A</color>
     <color name="profile_background_3">#9C27B0</color>
     <color name="profile_background_4">#3F51B5</color>
     <color name="profile_background_5">#2196F3</color>
@@ -114,14 +115,14 @@
     <!-- Sits on photos in both themes, so it does not change with night mode. -->
     <color name="filmstrip_badge_background">#A8000000</color>
     <!-- The viewer is dark in both themes, so its details sheet does not follow night mode. -->
-    <color name="filmstrip_sheet_background">#131316</color>
-    <color name="filmstrip_sheet_text">#E9E7E3</color>
-    <color name="filmstrip_sheet_text_secondary">#A5A3A0</color>
-    <color name="filmstrip_sheet_action_background">#1D1D21</color>
-    <color name="filmstrip_sheet_divider">#2C2C31</color>
-    <color name="filmstrip_sheet_handle">#4A4A52</color>
-    <color name="filmstrip_primary_button_background">#9DAEF5</color>
-    <color name="filmstrip_primary_button_text">#0E1A4D</color>
+    <color name="filmstrip_sheet_background">#141210</color>
+    <color name="filmstrip_sheet_text">#EEE8E0</color>
+    <color name="filmstrip_sheet_text_secondary">#B7AEA3</color>
+    <color name="filmstrip_sheet_action_background">#1E1B18</color>
+    <color name="filmstrip_sheet_divider">#2C2823</color>
+    <color name="filmstrip_sheet_handle">#4A433C</color>
+    <color name="filmstrip_primary_button_background">#FF8A65</color>
+    <color name="filmstrip_primary_button_text">#3A0E00</color>
     <color name="filmstrip_scrim_bottom">#CC000000</color>
     <color name="filmstrip_details_dim">#99000000</color>
     <color name="filmstrip_play_pause_scrim">#73000000</color>
