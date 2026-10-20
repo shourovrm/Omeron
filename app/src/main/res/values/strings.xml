@@ -410,7 +410,6 @@
     <string name="profile_tab_saved_posts">Saved posts</string>
     <string name="profile_tab_saved_comments">Saved comments</string>
     <string name="profile_tab_history">History</string>
-    <string name="profile_switch">Switch</string>
     <string name="profile_reddit_logged_in">Reddit: logged in</string>
     <string name="profile_reddit_logged_out">Reddit: not logged in</string>
     <string name="profile_saved_count">%1$d saved</string>
@@ -439,4 +438,7 @@
     <string name="post_pinned_description">Pinned</string>
     <string name="post_archived_description">Archived</string>
     <string name="post_locked_description">Locked</string>
+    <string name="profile_current_description">Current profile</string>
+    <string name="profile_add">Add profile</string>
+    <string name="profile_manage">Manage profiles</string>
 </resources>

@@ -16,7 +16,7 @@ import com.omeron.R
 import com.omeron.databinding.FragmentProfileBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
-import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
+import com.omeron.ui.profilemanager.ProfileSwitcherDialogFragment
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearHistoryRemoveListener
 import com.omeron.util.extension.clearSavedRemoveListener
@@ -97,10 +97,10 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun initProfileRow() {
-        binding.switchButton.setOnClickListener {
+        binding.profileRow.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.currentProfile.latest?.let {
-                    ProfileManagerDialogFragment.show(parentFragmentManager, it)
+                    ProfileSwitcherDialogFragment.show(parentFragmentManager, it)
                 }
             }
         }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="profile"
+            type="com.omeron.data.model.db.Profile" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/space_56"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/space_16"
+        android:paddingEnd="@dimen/space_16"
+        android:background="?attr/selectableItemBackground">
+
+        <com.omeron.ui.common.widget.AvatarView
+            android:layout_width="@dimen/manage_row_image_size"
+            android:layout_height="@dimen/manage_row_image_size"
+            android:importantForAccessibility="no"
+            app:text="@{profile.name}"
+            tools:text="DE"/>
+
+        <TextView
+            android:id="@+id/profile_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/space_12"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{profile.name}"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
+            tools:text="Default profile"/>
+
+        <ImageView
+            android:id="@+id/current_check"
+            android:layout_width="@dimen/space_24"
+            android:layout_height="@dimen/space_24"
+            android:layout_marginStart="@dimen/space_12"
+            android:contentDescription="@string/profile_current_description"
+            android:src="@drawable/ic_check"
+            app:tint="?attr/colorPrimary"/>
+
+    </LinearLayout>
+
+</layout>
