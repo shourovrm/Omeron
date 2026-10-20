@@ -228,13 +228,7 @@ class ProfileFragment : BaseFragment() {
         selectionBar = state
         binding.selectionBar.isVisible = state.isActive
 
-        binding.selectionSelectAll.setImageResource(
-            when (state.boxState) {
-                SelectionBoxState.NONE -> R.drawable.ic_check_box_outline_blank
-                SelectionBoxState.SOME -> R.drawable.ic_indeterminate_check_box
-                SelectionBoxState.ALL -> R.drawable.ic_check_box
-            }
-        )
+        binding.selectionSelectAll.setImageResource(state.boxState.iconRes())
         binding.selectionSelectAll.contentDescription = getString(
             if (state.boxState == SelectionBoxState.ALL) R.string.profile_selection_deselect_all
             else R.string.profile_selection_select_all
