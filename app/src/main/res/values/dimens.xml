@@ -189,4 +189,8 @@
 
     <dimen name="manage_row_image_size">36dp</dimen>
     <dimen name="profile_history_thumbnail_size">48dp</dimen>
+
+    <!-- You page -->
+    <dimen name="you_row_icon_size">24dp</dimen>
+    <dimen name="you_group_gap">24dp</dimen>
 </resources>

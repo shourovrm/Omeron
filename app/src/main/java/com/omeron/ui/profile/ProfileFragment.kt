@@ -18,6 +18,7 @@ import com.omeron.databinding.FragmentProfileBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
 import com.omeron.ui.profilemanager.ProfileSwitcherDialogFragment
+import com.omeron.ui.you.initialProfileTabPosition
 import com.omeron.data.model.preferences.PostLayout
 import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.util.extension.clearCommentListener
@@ -70,6 +71,7 @@ class ProfileFragment : BaseFragment() {
         initAppBar()
         initProfileRow()
         initViewPager()
+        if (savedInstanceState == null) showInitialTab()
         initSelectionBar()
         bindViewModel()
     }
@@ -180,6 +182,12 @@ class ProfileFragment : BaseFragment() {
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.setText(fragments[position].title)
         }.attach()
+    }
+
+    // Only on first creation: after a rotation the pager restores the tab the user moved to.
+    private fun showInitialTab() {
+        val requestedPosition = arguments?.getInt(ARGUMENT_INITIAL_TAB, 0) ?: 0
+        binding.viewPager.setCurrentItem(initialProfileTabPosition(requestedPosition), false)
     }
 
     private fun initSelectionBar() {
@@ -340,6 +348,9 @@ class ProfileFragment : BaseFragment() {
 
     private companion object {
         const val DISABLED_ACTION_ALPHA = 0.38f
+
+        // Matches the argument name in navigation/profile.xml.
+        const val ARGUMENT_INITIAL_TAB = "initialTab"
     }
 }
 

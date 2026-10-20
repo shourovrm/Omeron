@@ -8,6 +8,12 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.omeron.ui.profile.ProfileFragment"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+        <!-- Position of the tab to show first: 0 saved posts, 1 saved comments, 2 history. -->
+        <argument
+            android:name="initialTab"
+            app:argType="integer"
+            android:defaultValue="0"/>
+    </fragment>
 
 </navigation>

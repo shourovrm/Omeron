@@ -19,4 +19,9 @@
         android:id="@+id/multis"
         android:icon="@drawable/ic_gallery"
         android:title="@string/tab_home_multis" />
+
+    <item
+        android:id="@+id/you"
+        android:icon="@drawable/ic_outline_profile"
+        android:title="@string/navigation_label_you" />
 </menu>
