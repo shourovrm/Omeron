@@ -21,11 +21,15 @@ import com.omeron.util.extension.load
 
 class ProfileHistoryAdapter(
     private val postClickListener: PostListAdapter.PostClickListener,
-    private val onClearHistoryClick: () -> Unit
+    private val onClearHistoryClick: () -> Unit,
+    onToggleRow: (rowId: String) -> Unit
 ) : ListAdapter<HistoryListItem, RecyclerView.ViewHolder>(HISTORY_COMPARATOR) {
+
+    private val rowSelection = ProfileRowSelection(onToggleRow)
 
     private val postCards = ProfilePostCards(
         postClickListener,
+        rowSelection,
         onLinkClickListener = null,
         postAt = { position -> (getItem(position) as? HistoryListItem.Row)?.post },
         onPostChanged = { position, post -> notifyItemChanged(position, post) }
@@ -68,12 +72,36 @@ class ProfileHistoryAdapter(
         }
     }
 
+    /** Mirrors the tab's selection onto the rows; only their selection look is redrawn. */
+    fun setSelection(isActive: Boolean, selectedIds: Set<String>) {
+        if (rowSelection.update(isActive, selectedIds)) {
+            notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)
+        }
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.contains(SELECTION_PAYLOAD)) {
+            (getItem(position) as? HistoryListItem.Row)?.let {
+                rowSelection.style(holder.itemView, it.post.id)
+            }
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is HistoryListItem.DayLabel -> (holder as LabelViewHolder).bind(item)
-            is HistoryListItem.Row -> when (holder) {
-                is RowViewHolder -> holder.bind(item.post)
-                else -> postCards.bind(holder, item.post, contentPreferences)
+            is HistoryListItem.Row -> {
+                rowSelection.style(holder.itemView, item.post.id)
+                when (holder) {
+                    is RowViewHolder -> holder.bind(item.post)
+                    else -> postCards.bind(holder, item.post, contentPreferences)
+                }
             }
         }
     }
@@ -132,9 +160,11 @@ class ProfileHistoryAdapter(
             )
             bindThumbnail(post)
 
-            binding.root.setOnClickListener { postClickListener.onClick(post) }
+            binding.root.setOnClickListener {
+                rowSelection.onTap(post.id) { postClickListener.onClick(post) }
+            }
             binding.root.setOnLongClickListener {
-                postClickListener.onLongClick(post)
+                rowSelection.onLongPress(post.id)
                 true
             }
         }
@@ -151,9 +181,17 @@ class ProfileHistoryAdapter(
 
             val opensViewer = post.type == PostType.IMAGE || post.type == PostType.VIDEO
             if (hasPreview && opensViewer) {
-                thumbnail.setOnClickListener { openInViewer(post) }
+                thumbnail.setOnClickListener {
+                    rowSelection.onTap(post.id) { openInViewer(post) }
+                }
+                // A clickable child would otherwise swallow the long press meant for the row.
+                thumbnail.setOnLongClickListener {
+                    rowSelection.onLongPress(post.id)
+                    true
+                }
             } else {
                 thumbnail.setOnClickListener(null)
+                thumbnail.setOnLongClickListener(null)
                 thumbnail.isClickable = false
             }
         }
@@ -171,6 +209,7 @@ class ProfileHistoryAdapter(
         // Negative so they never collide with the post view types the shared post cards use.
         private const val VIEW_TYPE_LABEL = -2
         private const val VIEW_TYPE_ROW = -3
+        private const val SELECTION_PAYLOAD = "selection"
 
         private val HISTORY_COMPARATOR = object : DiffUtil.ItemCallback<HistoryListItem>() {
             override fun areItemsTheSame(oldItem: HistoryListItem, newItem: HistoryListItem): Boolean {

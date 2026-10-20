@@ -24,6 +24,7 @@ import com.omeron.util.ClickableMovementMethod
  */
 class ProfilePostCards(
     private val postClickListener: PostListAdapter.PostClickListener,
+    private val rowSelection: ProfileRowSelection,
     onLinkClickListener: RedditView.OnLinkClickListener?,
     private val postAt: (position: Int) -> PostEntity?,
     private val onPostChanged: (position: Int, post: PostEntity) -> Unit
@@ -31,12 +32,13 @@ class ProfilePostCards(
 
     private val clickableMovementMethod = ClickableMovementMethod(
         object : ClickableMovementMethod.OnClickListener {
+            // A link inside a card does nothing while rows are being selected.
             override fun onLinkClick(link: String) {
-                onLinkClickListener?.onLinkClick(link)
+                if (!rowSelection.isActive) onLinkClickListener?.onLinkClick(link)
             }
 
             override fun onLinkLongClick(link: String) {
-                onLinkClickListener?.onLinkLongClick(link)
+                if (!rowSelection.isActive) onLinkClickListener?.onLinkLongClick(link)
             }
 
             override fun onClick() {
@@ -53,21 +55,23 @@ class ProfilePostCards(
         override fun onClick(position: Int, isLong: Boolean) {
             postAt(position)?.let {
                 if (isLong) {
-                    postClickListener.onLongClick(it)
+                    rowSelection.onLongPress(it.id)
                 } else {
-                    postClickListener.onClick(it)
+                    rowSelection.onTap(it.id) { postClickListener.onClick(it) }
                 }
             }
         }
 
         override fun onMediaClick(position: Int) {
             postAt(position)?.let {
-                when (it.type) {
-                    PostType.IMAGE -> postClickListener.onImageClick(it)
-                    PostType.LINK -> postClickListener.onLinkClick(it)
-                    PostType.VIDEO -> postClickListener.onVideoClick(it)
-                    else -> {
-                        // ignore
+                rowSelection.onTap(it.id) {
+                    when (it.type) {
+                        PostType.IMAGE -> postClickListener.onImageClick(it)
+                        PostType.LINK -> postClickListener.onLinkClick(it)
+                        PostType.VIDEO -> postClickListener.onVideoClick(it)
+                        else -> {
+                            // ignore
+                        }
                     }
                 }
             }
@@ -75,15 +79,17 @@ class ProfilePostCards(
 
         override fun onMenuClick(position: Int) {
             postAt(position)?.let {
-                postClickListener.onMenuClick(it)
+                rowSelection.onTap(it.id) { postClickListener.onMenuClick(it) }
             }
         }
 
         override fun onSaveClick(position: Int) {
             postAt(position)?.let {
-                postClickListener.onSaveClick(it)
-                it.saved = !it.saved
-                onPostChanged(position, it)
+                rowSelection.onTap(it.id) {
+                    postClickListener.onSaveClick(it)
+                    it.saved = !it.saved
+                    onPostChanged(position, it)
+                }
             }
         }
     }

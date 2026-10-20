@@ -33,14 +33,29 @@ class ProfileSavedAdapter(
     postClickListener: PostListAdapter.PostClickListener,
     private val commentClickListener: UserCommentsAdapter.CommentClickListener,
     private val onLinkClickListener: RedditView.OnLinkClickListener? = null,
+    onToggleRow: (rowId: String) -> Unit,
 ) : ListAdapter<SavedItem, RecyclerView.ViewHolder>(SAVED_COMPARATOR) {
 
     private val colorPrimary by lazy {
         ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorPrimary))
     }
 
+    private val rowSelection = ProfileRowSelection(onToggleRow)
+
+    // A link in a comment does nothing while rows are being selected.
+    private val linkListenerWhenNotSelecting = object : RedditView.OnLinkClickListener {
+        override fun onLinkClick(link: String) {
+            if (!rowSelection.isActive) onLinkClickListener?.onLinkClick(link)
+        }
+
+        override fun onLinkLongClick(link: String) {
+            if (!rowSelection.isActive) onLinkClickListener?.onLinkLongClick(link)
+        }
+    }
+
     private val postCards = ProfilePostCards(
         postClickListener,
+        rowSelection,
         onLinkClickListener,
         postAt = ::getPost,
         onPostChanged = { position, post -> notifyItemChanged(position, post) }
@@ -84,7 +99,27 @@ class ProfileSavedAdapter(
         }
     }
 
+    /** Mirrors the tab's selection onto the rows; only their selection look is redrawn. */
+    fun setSelection(isActive: Boolean, selectedIds: Set<String>) {
+        if (rowSelection.update(isActive, selectedIds)) {
+            notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)
+        }
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.contains(SELECTION_PAYLOAD)) {
+            rowSelection.style(holder.itemView, getItem(position).rowId)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        rowSelection.style(holder.itemView, getItem(position).rowId)
         when (holder) {
             is CommentViewHolder -> holder.bind(getComment(position))
             is CompactCommentViewHolder -> holder.bind(getComment(position))
@@ -134,6 +169,10 @@ class ProfileSavedAdapter(
 
     fun currentPosts(): List<PostEntity> {
         return currentList.filterIsInstance<SavedItem.Post>().map { it.post }
+    }
+
+    private fun openOrToggle(comment: Comment.CommentEntity) {
+        rowSelection.onTap(comment.name) { commentClickListener.onClick(comment) }
     }
 
     private inner class CommentViewHolder(
@@ -194,18 +233,18 @@ class ProfileSavedAdapter(
 
             binding.includeItemComment.commentBody.run {
                 setText(comment.body)
-                setOnLinkClickListener(onLinkClickListener)
-                setOnClickListener { commentClickListener.onClick(comment) }
+                setOnLinkClickListener(linkListenerWhenNotSelecting)
+                setOnClickListener { openOrToggle(comment) }
                 setOnLongClickListener {
-                    commentClickListener.onLongClick(comment)
+                    rowSelection.onLongPress(comment.name)
                     true
                 }
             }
 
             itemView.run {
-                setOnClickListener { commentClickListener.onClick(comment) }
+                setOnClickListener { openOrToggle(comment) }
                 setOnLongClickListener {
-                    commentClickListener.onLongClick(comment)
+                    rowSelection.onLongPress(comment.name)
                     true
                 }
             }
@@ -228,9 +267,9 @@ class ProfileSavedAdapter(
             )
             binding.textCommentBody.text = firstParagraph(comment)
 
-            itemView.setOnClickListener { commentClickListener.onClick(comment) }
+            itemView.setOnClickListener { openOrToggle(comment) }
             itemView.setOnLongClickListener {
-                commentClickListener.onLongClick(comment)
+                rowSelection.onLongPress(comment.name)
                 true
             }
         }
@@ -244,6 +283,7 @@ class ProfileSavedAdapter(
     companion object {
         private const val COMMENT_TYPE = 99
         private const val COMPACT_COMMENT_TYPE = 98
+        private const val SELECTION_PAYLOAD = "selection"
 
         private val SAVED_COMPARATOR = object : DiffUtil.ItemCallback<SavedItem>() {
             override fun areItemsTheSame(oldItem: SavedItem, newItem: SavedItem): Boolean {

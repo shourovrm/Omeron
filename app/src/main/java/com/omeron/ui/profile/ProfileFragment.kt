@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -18,6 +19,7 @@ import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
 import com.omeron.ui.profilemanager.ProfileSwitcherDialogFragment
 import com.omeron.data.model.preferences.PostLayout
+import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearHistoryRemoveListener
 import com.omeron.util.extension.clearSavedRemoveListener
@@ -31,9 +33,13 @@ import com.omeron.util.extension.setHistoryRemoveListener
 import com.omeron.util.extension.setSavedRemoveListener
 import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.showSoftKeyboard
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -43,6 +49,11 @@ class ProfileFragment : BaseFragment() {
     private val binding get() = _binding!!
 
     override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.profile)
+
+    private val selectionViewModel: ProfileSelectionViewModel by activityViewModels()
+
+    // What the selection bar shows for the tab on screen; the bar's buttons read it when tapped.
+    private var selectionBar: SelectionBarState? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +70,7 @@ class ProfileFragment : BaseFragment() {
         initAppBar()
         initProfileRow()
         initViewPager()
+        initSelectionBar()
         bindViewModel()
     }
 
@@ -170,6 +182,99 @@ class ProfileFragment : BaseFragment() {
         }.attach()
     }
 
+    private fun initSelectionBar() {
+        binding.selectionLeave.setOnClickListener {
+            selectionBar?.let { selectionViewModel.leave(it.tab) }
+        }
+        binding.selectionSelectAll.setOnClickListener {
+            selectionBar?.let { selectionViewModel.toggleSelectAll(it.tab, it.visibleIds) }
+        }
+        binding.selectionAction.setOnClickListener { removeSelectedRows() }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val tabAndVisibleIds = viewModel.page.flatMapLatest { position ->
+                val tab = ProfileTab.fromPagerPosition(position)
+                viewModel.visibleIds(tab).map { visibleIds -> tab to visibleIds }
+            }
+            combine(selectionViewModel.selection, tabAndVisibleIds) { selection, (tab, visibleIds) ->
+                SelectionBarState(
+                    tab = tab,
+                    isActive = selection.isActive(tab),
+                    boxState = selection.boxState(tab, visibleIds),
+                    visibleIds = visibleIds,
+                    selectedVisibleIds = selection.selectedIds(tab).intersect(visibleIds.toSet())
+                )
+            }.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { showSelectionBar(it) }
+        }
+
+        // Rows that vanish elsewhere (unsaved from a post page, say) leave the selection.
+        ProfileTab.values().forEach { tab ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.existingIds(tab)
+                    .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                    .collect { selectionViewModel.retainExisting(tab, it) }
+            }
+        }
+    }
+
+    private fun showSelectionBar(state: SelectionBarState) {
+        selectionBar = state
+        binding.selectionBar.isVisible = state.isActive
+
+        binding.selectionSelectAll.setImageResource(
+            when (state.boxState) {
+                SelectionBoxState.NONE -> R.drawable.ic_check_box_outline_blank
+                SelectionBoxState.SOME -> R.drawable.ic_indeterminate_check_box
+                SelectionBoxState.ALL -> R.drawable.ic_check_box
+            }
+        )
+        binding.selectionSelectAll.contentDescription = getString(
+            if (state.boxState == SelectionBoxState.ALL) R.string.profile_selection_deselect_all
+            else R.string.profile_selection_select_all
+        )
+
+        val isHistory = state.tab == ProfileTab.HISTORY
+        binding.selectionAction.setImageResource(
+            if (isHistory) R.drawable.ic_delete else R.drawable.ic_bookmark_remove
+        )
+        binding.selectionAction.contentDescription = getString(
+            if (isHistory) R.string.profile_selection_remove_history
+            else R.string.profile_selection_unsave
+        )
+        val hasSelection = state.selectedVisibleIds.isNotEmpty()
+        binding.selectionAction.isEnabled = hasSelection
+        binding.selectionAction.alpha = if (hasSelection) 1f else DISABLED_ACTION_ALPHA
+    }
+
+    // Only rows the list shows are removed, so what the user sees ticked is what goes.
+    private fun removeSelectedRows() {
+        val state = selectionBar ?: return
+        if (state.selectedVisibleIds.isEmpty()) return
+
+        selectionViewModel.leave(state.tab)
+        viewModel.removeRows(state.tab, state.selectedVisibleIds, ::showUndo)
+    }
+
+    private fun showUndo(removed: RemovedRows) {
+        // The screen can be gone by the time the rows are removed; there is nothing to anchor to.
+        val root = _binding?.root ?: return
+        val message = when (removed) {
+            is RemovedRows.SavedPosts ->
+                resources.getQuantityString(R.plurals.profile_posts_unsaved, removed.count, removed.count)
+            is RemovedRows.SavedComments ->
+                resources.getQuantityString(R.plurals.profile_comments_unsaved, removed.count, removed.count)
+            is RemovedRows.HistoryEntries -> resources.getQuantityString(
+                R.plurals.profile_posts_removed_from_history,
+                removed.count,
+                removed.count
+            )
+        }
+        Snackbar.make(root, message, Snackbar.LENGTH_LONG)
+            .setAction(R.string.profile_selection_undo) { viewModel.restore(removed) }
+            .show()
+    }
+
     private fun bindViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.selectedProfile
@@ -198,7 +303,10 @@ class ProfileFragment : BaseFragment() {
     }
 
     override fun onBackPressed() {
-        if (binding.searchInput.isVisible) {
+        val tabInSelection = selectionBar?.takeIf { it.isActive }?.tab
+        if (tabInSelection != null) {
+            selectionViewModel.leave(tabInSelection)
+        } else if (binding.searchInput.isVisible) {
             showSearchInput(false)
             binding.searchInput.clear()
         } else {
@@ -215,6 +323,20 @@ class ProfileFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        selectionBar = null
         _binding = null
     }
+
+    private companion object {
+        const val DISABLED_ACTION_ALPHA = 0.38f
+    }
 }
+
+/** The selection bar's content: the tab on screen, its mode, and which of its rows are ticked. */
+private data class SelectionBarState(
+    val tab: ProfileTab,
+    val isActive: Boolean,
+    val boxState: SelectionBoxState,
+    val visibleIds: List<String>,
+    val selectedVisibleIds: Set<String>
+)

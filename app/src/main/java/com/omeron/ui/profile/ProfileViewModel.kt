@@ -150,6 +150,64 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    /** The ids of everything the tab holds, whatever the search filter hides. */
+    fun existingIds(tab: ProfileTab): Flow<Set<String>> = when (tab) {
+        ProfileTab.SAVED_POSTS -> _savedPosts.map { posts -> posts.mapTo(mutableSetOf()) { it.id } }
+        ProfileTab.SAVED_COMMENTS -> _savedComments.map { comments ->
+            comments.mapTo(mutableSetOf()) { it.name }
+        }
+        ProfileTab.HISTORY -> _history.map { entries -> entries.mapTo(mutableSetOf()) { it.postId } }
+    }
+
+    /** The ids of the rows the tab lists now, which is what "select all" covers. */
+    fun visibleIds(tab: ProfileTab): Flow<List<String>> = when (tab) {
+        ProfileTab.SAVED_POSTS -> savedPosts.map { items -> items.map { it.rowId } }
+        ProfileTab.SAVED_COMMENTS -> savedComments.map { items -> items.map { it.rowId } }
+        ProfileTab.HISTORY -> historyItems.map { items ->
+            items.filterIsInstance<HistoryListItem.Row>().map { it.post.id }
+        }
+    }
+
+    /**
+     * Removes the saved items or history rows with [rowIds] from [tab] and hands what was removed
+     * to [onRemoved], so the caller can offer to put it back. The rows are read from the database
+     * rather than from the list on screen, because that is what [restore] has to write back.
+     */
+    fun removeRows(tab: ProfileTab, rowIds: Set<String>, onRemoved: (RemovedRows) -> Unit) {
+        viewModelScope.launch {
+            val profileId = currentProfile.first().id
+            val removed = when (tab) {
+                ProfileTab.SAVED_POSTS -> {
+                    val posts = _savedPosts.first().filter { it.id in rowIds }
+                    posts.forEach { repository.unsavePost(it, profileId) }
+                    RemovedRows.SavedPosts(posts)
+                }
+                ProfileTab.SAVED_COMMENTS -> {
+                    val comments = _savedComments.first().filter { it.name in rowIds }
+                    comments.forEach { repository.unsaveComment(it, profileId) }
+                    RemovedRows.SavedComments(comments)
+                }
+                ProfileTab.HISTORY -> {
+                    val entries = _history.first().filter { it.postId in rowIds }
+                    entries.forEach { repository.deletePostFromHistory(it.postId, profileId) }
+                    RemovedRows.HistoryEntries(entries)
+                }
+            }
+            if (removed.count > 0) onRemoved(removed)
+        }
+    }
+
+    /** Writes [removed] back exactly as it was, with its saved or viewed times. */
+    fun restore(removed: RemovedRows) {
+        viewModelScope.launch {
+            when (removed) {
+                is RemovedRows.SavedPosts -> repository.restoreSavedPosts(removed.posts)
+                is RemovedRows.SavedComments -> repository.restoreSavedComments(removed.comments)
+                is RemovedRows.HistoryEntries -> repository.restoreHistoryEntries(removed.entries)
+            }
+        }
+    }
+
     fun removeFromHistory(postId: String) {
         viewModelScope.launch {
             currentProfile.latest?.let {
@@ -164,5 +222,22 @@ class ProfileViewModel @Inject constructor(
                 repository.clearHistory(it.id)
             }
         }
+    }
+}
+
+/** What a selection action took out of a tab, kept whole so Undo can put it back. */
+sealed class RemovedRows {
+    abstract val count: Int
+
+    data class SavedPosts(val posts: List<PostEntity>) : RemovedRows() {
+        override val count: Int get() = posts.size
+    }
+
+    data class SavedComments(val comments: List<Comment.CommentEntity>) : RemovedRows() {
+        override val count: Int get() = comments.size
+    }
+
+    data class HistoryEntries(val entries: List<History>) : RemovedRows() {
+        override val count: Int get() = entries.size
     }
 }

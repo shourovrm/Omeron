@@ -194,6 +194,53 @@
             app:tabGravity="start"
             style="@style/TabLayoutStyle"/>
 
+        <LinearLayout
+            android:id="@+id/selection_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tabs"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/space_4"
+            android:background="?attr/omeronSurfaceContainer">
+
+            <ImageButton
+                android:id="@+id/selection_leave"
+                android:layout_width="@dimen/space_48"
+                android:layout_height="@dimen/space_48"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/profile_selection_leave"
+                android:src="@drawable/ic_close"
+                app:tint="@color/icon_tint"/>
+
+            <ImageButton
+                android:id="@+id/selection_select_all"
+                android:layout_width="@dimen/space_48"
+                android:layout_height="@dimen/space_48"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/profile_selection_select_all"
+                android:src="@drawable/ic_check_box_outline_blank"
+                app:tint="@color/icon_tint"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/selection_action"
+                android:layout_width="@dimen/space_48"
+                android:layout_height="@dimen/space_48"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/profile_selection_unsave"
+                android:src="@drawable/ic_bookmark_remove"
+                app:tint="@color/icon_tint"/>
+
+        </LinearLayout>
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
@@ -201,7 +248,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabs" />
+            app:layout_constraintTop_toBottomOf="@id/selection_bar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

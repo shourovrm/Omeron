@@ -446,4 +446,22 @@
     <string name="profile_add">Add profile</string>
     <string name="profile_manage">Manage profiles</string>
     <string name="profile_comment_compact_info" translatable="false">u/%1$s · %2$s · %3$s</string>
+    <string name="profile_selection_leave">Leave selection</string>
+    <string name="profile_selection_select_all">Select all</string>
+    <string name="profile_selection_deselect_all">Deselect all</string>
+    <string name="profile_selection_unsave">Unsave selected</string>
+    <string name="profile_selection_remove_history">Remove selected from history</string>
+    <string name="profile_selection_undo">Undo</string>
+    <plurals name="profile_posts_unsaved">
+        <item quantity="one">%1$d post unsaved</item>
+        <item quantity="other">%1$d posts unsaved</item>
+    </plurals>
+    <plurals name="profile_comments_unsaved">
+        <item quantity="one">%1$d comment unsaved</item>
+        <item quantity="other">%1$d comments unsaved</item>
+    </plurals>
+    <plurals name="profile_posts_removed_from_history">
+        <item quantity="one">%1$d post removed from history</item>
+        <item quantity="other">%1$d posts removed from history</item>
+    </plurals>
 </resources>

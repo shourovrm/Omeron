@@ -314,6 +314,11 @@ class PostListRepository @Inject constructor(
         redditDatabase.historyDao().deleteFromProfile(profileId)
     }
 
+    // Puts back rows exactly as they were read, so the viewed time (and the order) is kept.
+    suspend fun restoreHistoryEntries(entries: List<History>) {
+        entries.forEach { redditDatabase.historyDao().upsert(it) }
+    }
+
     //endregion
 
     //region Profile
@@ -359,6 +364,11 @@ class PostListRepository @Inject constructor(
         redditDatabase.postDao().deleteFromIdAndProfile(post.id, profileId)
     }
 
+    // Unlike savePost this keeps the saved time the post already had.
+    suspend fun restoreSavedPosts(posts: List<PostEntity>) {
+        posts.forEach { redditDatabase.postDao().upsert(it) }
+    }
+
     fun getSavedPosts(profileId: Int): Flow<List<PostEntity>> {
         return redditDatabase.postDao().getSavedPostsFromProfile(profileId)
     }
@@ -377,6 +387,11 @@ class PostListRepository @Inject constructor(
 
     suspend fun unsaveComment(comment: Comment.CommentEntity, profileId: Int) {
         redditDatabase.commentDao().deleteFromIdAndProfile(comment.name, profileId)
+    }
+
+    // Unlike saveComment this keeps the saved time the comment already had.
+    suspend fun restoreSavedComments(comments: List<Comment.CommentEntity>) {
+        comments.forEach { redditDatabase.commentDao().upsert(it) }
     }
 
     fun getSavedComments(profileId: Int): Flow<List<Comment.CommentEntity>> {

@@ -32,11 +32,10 @@ abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
 
     protected abstract val savedFlow: Flow<List<SavedItem>>
 
-    protected abstract val tab: ProfileTab
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
+        showSelection(adapter::setSelection)
     }
 
     override fun currentPosts(): List<PostEntity> = adapter.currentPosts()
@@ -86,7 +85,13 @@ abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
     }
 
     override fun createAdapter(): ProfileSavedAdapter {
-        return ProfileSavedAdapter(requireContext(), this, this, this)
+        return ProfileSavedAdapter(
+            requireContext(),
+            postClickListener = this,
+            commentClickListener = this,
+            onLinkClickListener = this,
+            onToggleRow = { rowId -> selectionViewModel.toggle(tab, rowId) }
+        )
     }
 }
 
@@ -105,7 +110,8 @@ class ProfileSavedPostsFragment : ProfileSavedFragment() {
         savedCountAdapter.savedCount = items.size
     }
 
-    override fun onLongClick(post: PostEntity) {
+    // The long-press menu is gone (a long press selects), so the card's more button opens it.
+    override fun onMenuClick(post: PostEntity) {
         PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.SAVED)
     }
 }

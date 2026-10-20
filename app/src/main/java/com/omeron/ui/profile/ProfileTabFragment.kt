@@ -6,11 +6,20 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.omeron.R
 import com.omeron.data.model.db.PostEntity
+import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.ui.common.fragment.ListFragment
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /**
  * A tab of the profile screen: a list kept on this device (saved posts, saved comments or
@@ -24,12 +33,29 @@ abstract class ProfileTabFragment<T : RecyclerView.Adapter<out RecyclerView.View
     override val enablePullToRefresh: Boolean
         get() = false
 
+    protected abstract val tab: ProfileTab
+
+    protected val selectionViewModel: ProfileSelectionViewModel by activityViewModels()
+
     /** The posts the tab shows now, in the order the viewer pages through them. */
     protected abstract fun currentPosts(): List<PostEntity>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateContentView()
+        // Ticking a row only changes its look; a fade between the two looks would flicker.
+        (binding.listContent.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
+    /** Passes this tab's selection mode and selected ids to [show] each time they change. */
+    protected fun showSelection(show: (isActive: Boolean, selectedIds: Set<String>) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            selectionViewModel.selection
+                .map { selection -> selection.isActive(tab) to selection.selectedIds(tab) }
+                .distinctUntilChanged()
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { (isActive, selectedIds) -> show(isActive, selectedIds) }
+        }
     }
 
     private fun updateContentView() {

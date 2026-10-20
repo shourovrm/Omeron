@@ -18,15 +18,19 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
 
+    override val tab = ProfileTab.HISTORY
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
+        showSelection(adapter::setSelection)
     }
 
     override fun createAdapter(): ProfileHistoryAdapter {
         return ProfileHistoryAdapter(
             postClickListener = this,
-            onClearHistoryClick = ::confirmClearHistory
+            onClearHistoryClick = ::confirmClearHistory,
+            onToggleRow = { rowId -> selectionViewModel.toggle(tab, rowId) }
         )
     }
 
@@ -34,7 +38,7 @@ class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
 
     private fun bindViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.layoutOf(ProfileTab.HISTORY)
+            viewModel.layoutOf(tab)
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { adapter.layout = it }
         }
@@ -57,7 +61,8 @@ class ProfileHistoryFragment : ProfileTabFragment<ProfileHistoryAdapter>() {
             .show()
     }
 
-    override fun onLongClick(post: PostEntity) {
+    // The long-press menu is gone (a long press selects), so the card's more button opens it.
+    override fun onMenuClick(post: PostEntity) {
         PostMenuFragment.show(parentFragmentManager, post, PostMenuFragment.MenuType.HISTORY)
     }
 }
