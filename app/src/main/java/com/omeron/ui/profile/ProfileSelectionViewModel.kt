@@ -33,6 +33,10 @@ class ProfileSelectionViewModel @Inject constructor() : ViewModel() {
         _selection.update { it.leave(tab) }
     }
 
+    fun leaveAll() {
+        _selection.value = ProfileSelection()
+    }
+
     fun retainExisting(tab: ProfileTab, existingIds: Set<String>) {
         _selection.update { it.retainExisting(tab, existingIds) }
     }

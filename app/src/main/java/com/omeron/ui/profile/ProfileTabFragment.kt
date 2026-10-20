@@ -85,6 +85,16 @@ abstract class ProfileTabFragment<T : RecyclerView.Adapter<out RecyclerView.View
     }
 
     // Image, gallery and video posts all open the viewer on this tab's media posts.
+    // Each tab registers its own back callback after the profile screen does, so Back reaches the
+    // tab first. The profile screen decides what Back means (leave selection, close search, or go
+    // up), so the tab hands it over instead of navigating up itself.
+    override fun onBackPressed() {
+        val profileFragment = checkNotNull(parentFragment as? ProfileFragment) {
+            "A profile tab must be hosted by ProfileFragment, was $parentFragment"
+        }
+        profileFragment.handleBackFromTab()
+    }
+
     override fun onImageClick(post: PostEntity) {
         openMedia(post)
     }

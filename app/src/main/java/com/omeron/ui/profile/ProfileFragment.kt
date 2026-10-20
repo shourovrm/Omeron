@@ -95,7 +95,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun initAppBar() {
-        binding.backCard.setOnClickListener { onBackPressed() }
+        binding.backCard.setOnClickListener { leaveProfile() }
         binding.layoutToggleCard.setOnClickListener { viewModel.toggleSelectedTabLayout() }
         binding.searchCard.setOnClickListener { showSearchInput(true) }
         binding.cancelCard.setOnClickListener {
@@ -300,6 +300,17 @@ class ProfileFragment : BaseFragment() {
                     )
                 }
         }
+    }
+
+    // The app bar arrow always leaves in one tap, dropping every tab's selection on the way;
+    // system Back (below) steps out of selection or search first and stays on the screen.
+    private fun leaveProfile() {
+        selectionViewModel.leaveAll()
+        super.onBackPressed()
+    }
+
+    fun handleBackFromTab() {
+        onBackPressed()
     }
 
     override fun onBackPressed() {
