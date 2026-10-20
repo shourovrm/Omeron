@@ -12,17 +12,33 @@ import com.omeron.R
 import com.omeron.data.model.PostType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.databinding.ItemProfileHistoryBinding
 import com.omeron.databinding.ItemProfileLabelBinding
+import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.load
 
 class ProfileHistoryAdapter(
-    private val onRowClick: (PostEntity) -> Unit,
-    private val onRowLongClick: (PostEntity) -> Unit,
-    private val onThumbnailClick: (PostEntity) -> Unit,
+    private val postClickListener: PostListAdapter.PostClickListener,
     private val onClearHistoryClick: () -> Unit
 ) : ListAdapter<HistoryListItem, RecyclerView.ViewHolder>(HISTORY_COMPARATOR) {
+
+    private val postCards = ProfilePostCards(
+        postClickListener,
+        onLinkClickListener = null,
+        postAt = { position -> (getItem(position) as? HistoryListItem.Row)?.post },
+        onPostChanged = { position, post -> notifyItemChanged(position, post) }
+    )
+
+    // Compact keeps the dense history rows; card shows each post as in the feed.
+    var layout: PostLayout = PostLayout.COMPACT
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
 
     var contentPreferences: ContentPreferences = ContentPreferences(
         showNsfw = false,
@@ -40,9 +56,14 @@ class ProfileHistoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            VIEW_TYPE_LABEL -> LabelViewHolder(ItemProfileLabelBinding.inflate(inflater, parent, false))
-            VIEW_TYPE_ROW -> RowViewHolder(ItemProfileHistoryBinding.inflate(inflater, parent, false))
+        return when {
+            viewType == VIEW_TYPE_LABEL -> {
+                LabelViewHolder(ItemProfileLabelBinding.inflate(inflater, parent, false))
+            }
+            viewType == VIEW_TYPE_ROW -> {
+                RowViewHolder(ItemProfileHistoryBinding.inflate(inflater, parent, false))
+            }
+            postCards.isPostViewType(viewType) -> postCards.createViewHolder(parent, viewType)
             else -> throw IllegalArgumentException("Unknown type $viewType")
         }
     }
@@ -50,14 +71,19 @@ class ProfileHistoryAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is HistoryListItem.DayLabel -> (holder as LabelViewHolder).bind(item)
-            is HistoryListItem.Row -> (holder as RowViewHolder).bind(item.post)
+            is HistoryListItem.Row -> when (holder) {
+                is RowViewHolder -> holder.bind(item.post)
+                else -> postCards.bind(holder, item.post, contentPreferences)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
+        return when (val item = getItem(position)) {
             is HistoryListItem.DayLabel -> VIEW_TYPE_LABEL
-            is HistoryListItem.Row -> VIEW_TYPE_ROW
+            is HistoryListItem.Row -> {
+                if (layout == PostLayout.COMPACT) VIEW_TYPE_ROW else postCards.viewType(item.post, layout)
+            }
         }
     }
 
@@ -106,9 +132,9 @@ class ProfileHistoryAdapter(
             )
             bindThumbnail(post)
 
-            binding.root.setOnClickListener { onRowClick(post) }
+            binding.root.setOnClickListener { postClickListener.onClick(post) }
             binding.root.setOnLongClickListener {
-                onRowLongClick(post)
+                postClickListener.onLongClick(post)
                 true
             }
         }
@@ -125,17 +151,26 @@ class ProfileHistoryAdapter(
 
             val opensViewer = post.type == PostType.IMAGE || post.type == PostType.VIDEO
             if (hasPreview && opensViewer) {
-                thumbnail.setOnClickListener { onThumbnailClick(post) }
+                thumbnail.setOnClickListener { openInViewer(post) }
             } else {
                 thumbnail.setOnClickListener(null)
                 thumbnail.isClickable = false
             }
         }
+
+        private fun openInViewer(post: PostEntity) {
+            if (post.type == PostType.VIDEO) {
+                postClickListener.onVideoClick(post)
+            } else {
+                postClickListener.onImageClick(post)
+            }
+        }
     }
 
     companion object {
-        private const val VIEW_TYPE_LABEL = 0
-        private const val VIEW_TYPE_ROW = 1
+        // Negative so they never collide with the post view types the shared post cards use.
+        private const val VIEW_TYPE_LABEL = -2
+        private const val VIEW_TYPE_ROW = -3
 
         private val HISTORY_COMPARATOR = object : DiffUtil.ItemCallback<HistoryListItem>() {
             override fun areItemsTheSame(oldItem: HistoryListItem, newItem: HistoryListItem): Boolean {

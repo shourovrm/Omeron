@@ -16,17 +16,20 @@ import com.omeron.R
 import com.omeron.databinding.FragmentProfileBinding
 import com.omeron.ui.base.BaseFragment
 import com.omeron.ui.common.adapter.FragmentAdapter
-import com.omeron.ui.profilemanager.ProfileManagerDialogFragment
+import com.omeron.ui.profilemanager.ProfileSwitcherDialogFragment
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearHistoryRemoveListener
 import com.omeron.util.extension.clearSavedRemoveListener
 import com.omeron.util.extension.getRecyclerView
 import com.omeron.util.extension.hideSoftKeyboard
+import com.omeron.util.extension.iconRes
 import com.omeron.util.extension.latest
 import com.omeron.util.extension.scrollToTop
 import com.omeron.util.extension.setCommentListener
 import com.omeron.util.extension.setHistoryRemoveListener
 import com.omeron.util.extension.setSavedRemoveListener
+import com.omeron.util.extension.toggleDescriptionRes
 import com.omeron.util.extension.showSoftKeyboard
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -81,6 +84,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun initAppBar() {
         binding.backCard.setOnClickListener { onBackPressed() }
+        binding.layoutToggleCard.setOnClickListener { viewModel.toggleSelectedTabLayout() }
         binding.searchCard.setOnClickListener { showSearchInput(true) }
         binding.cancelCard.setOnClickListener {
             showSearchInput(false)
@@ -97,10 +101,10 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun initProfileRow() {
-        binding.switchButton.setOnClickListener {
+        binding.profileRow.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.currentProfile.latest?.let {
-                    ProfileManagerDialogFragment.show(parentFragmentManager, it)
+                    ProfileSwitcherDialogFragment.show(parentFragmentManager, it)
                 }
             }
         }
@@ -108,6 +112,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun showSearchInput(show: Boolean) {
         binding.title.isVisible = !show
+        binding.layoutToggleCard.isVisible = !show
         binding.searchCard.isVisible = !show
         binding.cancelCard.isVisible = show
         binding.searchInput.isVisible = show
@@ -118,6 +123,12 @@ class ProfileFragment : BaseFragment() {
         } else {
             binding.searchInput.hideSoftKeyboard()
         }
+    }
+
+    // The icon shows the layout the current tab has now, like the feed's layout button.
+    private fun showLayoutToggle(layout: PostLayout) {
+        binding.layoutToggleCard.setIcon(layout.iconRes())
+        binding.layoutToggleCard.contentDescription = getString(layout.toggleDescriptionRes())
     }
 
     private fun initViewPager() {
@@ -166,6 +177,12 @@ class ProfileFragment : BaseFragment() {
                 .collect {
                     binding.profile = it
                 }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.selectedTabLayout
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { showLayoutToggle(it) }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

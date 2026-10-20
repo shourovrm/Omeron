@@ -11,27 +11,26 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.omeron.R
+import com.omeron.data.model.Block
 import com.omeron.data.model.Comment
-import com.omeron.data.model.PostType
+import com.omeron.data.model.HtmlBlock
 import com.omeron.data.model.SavedItem
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
 import com.omeron.databinding.IncludePostInfoBinding
-import com.omeron.databinding.ItemPostImageBinding
-import com.omeron.databinding.ItemPostLinkBinding
-import com.omeron.databinding.ItemPostTextBinding
 import com.omeron.databinding.ItemUserCommentBinding
+import com.omeron.databinding.ItemUserCommentCompactBinding
 import com.omeron.ui.common.widget.RedditView
 import com.omeron.ui.postlist.PostListAdapter
 import com.omeron.ui.postlist.PostViewHolder
 import com.omeron.ui.user.UserCommentsAdapter
-import com.omeron.util.ClickableMovementMethod
 import com.omeron.util.DateUtil
 import com.omeron.util.extension.blurText
 
 class ProfileSavedAdapter(
     context: Context,
-    private val postClickListener: PostListAdapter.PostClickListener,
+    postClickListener: PostListAdapter.PostClickListener,
     private val commentClickListener: UserCommentsAdapter.CommentClickListener,
     private val onLinkClickListener: RedditView.OnLinkClickListener? = null,
 ) : ListAdapter<SavedItem, RecyclerView.ViewHolder>(SAVED_COMPARATOR) {
@@ -40,24 +39,11 @@ class ProfileSavedAdapter(
         ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorPrimary))
     }
 
-    private val clickableMovementMethod = ClickableMovementMethod(
-        object : ClickableMovementMethod.OnClickListener {
-            override fun onLinkClick(link: String) {
-                onLinkClickListener?.onLinkClick(link)
-            }
-
-            override fun onLinkLongClick(link: String) {
-                onLinkClickListener?.onLinkLongClick(link)
-            }
-
-            override fun onClick() {
-                // ignore
-            }
-
-            override fun onLongClick() {
-                // ignore
-            }
-        }
+    private val postCards = ProfilePostCards(
+        postClickListener,
+        onLinkClickListener,
+        postAt = ::getPost,
+        onPostChanged = { position, post -> notifyItemChanged(position, post) }
     )
 
     var contentPreferences: ContentPreferences = ContentPreferences(
@@ -74,110 +60,47 @@ class ProfileSavedAdapter(
             }
         }
 
-    private val listener = object : PostListAdapter.Listener {
-        override fun onClick(position: Int, isLong: Boolean) {
-            getPost(position)?.let {
-                if (isLong) {
-                    postClickListener.onLongClick(it)
-                } else {
-                    postClickListener.onClick(it)
-                }
+    // Every view type changes with the layout, so a full rebind is the right amount of work.
+    var layout: PostLayout = PostLayout.CARD
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
             }
         }
-
-        override fun onMediaClick(position: Int) {
-            getPost(position)?.let {
-                when (it.type) {
-                    PostType.IMAGE -> postClickListener.onImageClick(it)
-                    PostType.LINK -> postClickListener.onLinkClick(it)
-                    PostType.VIDEO -> postClickListener.onVideoClick(it)
-                    else -> {
-                        // ignore
-                    }
-                }
-            }
-        }
-
-        override fun onMenuClick(position: Int) {
-            getPost(position)?.let {
-                postClickListener.onMenuClick(it)
-            }
-        }
-
-        override fun onSaveClick(position: Int) {
-            getPost(position)?.let {
-                postClickListener.onSaveClick(it)
-                it.saved = !it.saved
-                notifyItemChanged(position, it)
-            }
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        return when (viewType) {
-            // Text post
-            PostType.TEXT.value -> PostViewHolder.TextPostViewHolder(
-                ItemPostTextBinding.inflate(inflater, parent, false),
-                listener,
-                clickableMovementMethod
+        return when {
+            postCards.isPostViewType(viewType) -> postCards.createViewHolder(parent, viewType)
+            viewType == COMMENT_TYPE -> CommentViewHolder(
+                ItemUserCommentBinding.inflate(inflater, parent, false)
             )
-            // Image post
-            PostType.IMAGE.value -> PostViewHolder.ImagePostViewHolder(
-                ItemPostImageBinding.inflate(inflater, parent, false),
-                listener
+            viewType == COMPACT_COMMENT_TYPE -> CompactCommentViewHolder(
+                ItemUserCommentCompactBinding.inflate(inflater, parent, false)
             )
-            // Video post
-            PostType.VIDEO.value -> PostViewHolder.VideoPostViewHolder(
-                ItemPostImageBinding.inflate(inflater, parent, false),
-                listener
-            )
-            // Link post
-            PostType.LINK.value -> PostViewHolder.LinkPostViewHolder(
-                ItemPostLinkBinding.inflate(inflater, parent, false),
-                listener
-            )
-            COMMENT_TYPE -> CommentViewHolder(ItemUserCommentBinding.inflate(inflater, parent, false))
             else -> throw IllegalArgumentException("Unknown type $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (getItemViewType(position)) {
-            // Text post
-            PostType.TEXT.value -> (holder as PostViewHolder.TextPostViewHolder).bind(
-                getPost(position)!!,
-                contentPreferences
-            )
-            // Image post
-            PostType.IMAGE.value -> (holder as PostViewHolder.ImagePostViewHolder).bind(
-                getPost(position)!!,
-                contentPreferences
-            )
-            // Video post
-            PostType.VIDEO.value -> (holder as PostViewHolder.VideoPostViewHolder).bind(
-                getPost(position)!!,
-                contentPreferences
-            )
-            // Link post
-            PostType.LINK.value -> (holder as PostViewHolder.LinkPostViewHolder).bind(
-                getPost(position)!!,
-                contentPreferences
-            )
-            COMMENT_TYPE -> (holder as CommentViewHolder).bind(
-                (getItem(position) as SavedItem.Comment).comment
-            )
-            else -> throw IllegalArgumentException("Unknown type")
+        when (holder) {
+            is CommentViewHolder -> holder.bind(getComment(position))
+            is CompactCommentViewHolder -> holder.bind(getComment(position))
+            else -> {
+                val post = getPost(position)!!
+                postCards.bind(holder, post, contentPreferences)
+                showSavedAge(holder, post)
+            }
         }
-
-        getPost(position)?.let { showSavedAge(holder, it) }
     }
 
     // The card shows the post age; on this tab the date it was saved is the useful one. A post
-    // saved before the time was stored has none, and keeps the post age.
+    // saved before the time was stored has none, and keeps the post age. The compact row has no
+    // age line to replace.
     private fun showSavedAge(holder: RecyclerView.ViewHolder, post: PostEntity) {
-        if (post.time <= 0) return
+        if (post.time <= 0 || holder is PostViewHolder.CompactPostViewHolder) return
         val postInfoView = holder.itemView.findViewById<View>(R.id.include_post_info)
         val postInfoBinding = DataBindingUtil.getBinding<IncludePostInfoBinding>(postInfoView)
             ?: return
@@ -193,14 +116,20 @@ class ProfileSavedAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (val item = getItem(position)) {
-            is SavedItem.Post -> item.post.type.value
-            is SavedItem.Comment -> COMMENT_TYPE
+            is SavedItem.Post -> postCards.viewType(item.post, layout)
+            is SavedItem.Comment -> {
+                if (layout == PostLayout.COMPACT) COMPACT_COMMENT_TYPE else COMMENT_TYPE
+            }
             else -> -1
         }
     }
 
     private fun getPost(position: Int): PostEntity? {
         return (getItem(position) as? SavedItem.Post)?.post
+    }
+
+    private fun getComment(position: Int): Comment.CommentEntity {
+        return (getItem(position) as SavedItem.Comment).comment
     }
 
     fun currentPosts(): List<PostEntity> {
@@ -283,8 +212,38 @@ class ProfileSavedAdapter(
         }
     }
 
+    // The full comment body is rich content (code blocks, tables) that cannot be cut to two lines,
+    // so the compact row shows only the first paragraph of text, which a TextView can ellipsize.
+    private inner class CompactCommentViewHolder(
+        private val binding: ItemUserCommentCompactBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(comment: Comment.CommentEntity) {
+            val context = itemView.context
+            binding.textCommentInfo.text = context.getString(
+                R.string.profile_comment_compact_info,
+                comment.author,
+                comment.subreddit,
+                comment.getTimeDifference(context)
+            )
+            binding.textCommentBody.text = firstParagraph(comment)
+
+            itemView.setOnClickListener { commentClickListener.onClick(comment) }
+            itemView.setOnLongClickListener {
+                commentClickListener.onLongClick(comment)
+                true
+            }
+        }
+
+        private fun firstParagraph(comment: Comment.CommentEntity): CharSequence {
+            val firstText = comment.body.blocks.firstOrNull { it.type == HtmlBlock.BlockType.TEXT }
+            return (firstText?.block as? Block.TextBlock)?.text ?: ""
+        }
+    }
+
     companion object {
         private const val COMMENT_TYPE = 99
+        private const val COMPACT_COMMENT_TYPE = 98
 
         private val SAVED_COMPARATOR = object : DiffUtil.ItemCallback<SavedItem>() {
             override fun areItemsTheSame(oldItem: SavedItem, newItem: SavedItem): Boolean {

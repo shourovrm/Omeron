@@ -12,6 +12,7 @@ import com.omeron.R
 import com.omeron.data.model.Comment
 import com.omeron.data.model.SavedItem
 import com.omeron.data.model.db.PostEntity
+import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.ui.commentmenu.CommentMenuFragment
 import com.omeron.ui.postdetails.PostDetailsFragment
 import com.omeron.ui.postmenu.PostMenuFragment
@@ -31,6 +32,8 @@ abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
 
     protected abstract val savedFlow: Flow<List<SavedItem>>
 
+    protected abstract val tab: ProfileTab
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
@@ -44,6 +47,12 @@ abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
     }
 
     private fun bindViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.layoutOf(tab)
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { adapter.layout = it }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             combine(savedFlow, viewModel.contentPreferences) { items, preferences ->
                 adapter.contentPreferences = preferences
@@ -84,6 +93,7 @@ abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
 @AndroidEntryPoint
 class ProfileSavedPostsFragment : ProfileSavedFragment() {
     override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedPosts
+    override val tab = ProfileTab.SAVED_POSTS
 
     private val savedCountAdapter = ProfileSavedCountAdapter()
 
@@ -103,4 +113,5 @@ class ProfileSavedPostsFragment : ProfileSavedFragment() {
 @AndroidEntryPoint
 class ProfileSavedCommentsFragment : ProfileSavedFragment() {
     override val savedFlow: Flow<List<SavedItem>> get() = viewModel.savedComments
+    override val tab = ProfileTab.SAVED_COMMENTS
 }

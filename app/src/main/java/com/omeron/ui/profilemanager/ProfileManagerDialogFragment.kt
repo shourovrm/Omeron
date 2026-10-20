@@ -76,32 +76,7 @@ class ProfileManagerDialogFragment : BottomSheetDialogFragment(),
     }
 
     private fun showAddProfileDialog() {
-        val profileBinding = DialogAddProfileBinding.inflate(
-            requireActivity().layoutInflater
-        )
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(profileBinding.root)
-            .setTitle(R.string.dialog_create_profile_title)
-            .setPositiveButton(R.string.dialog_create_profile_button) { _, _ ->
-                // Ignore
-            }
-            .setNeutralButton(R.string.dialog_cancel) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setCancelable(false)
-            .show()
-            .apply {
-                getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                    val name = profileBinding.inputName.text().toString()
-                    val errorMessage = validateProfile(name)
-                    if (errorMessage == null) {
-                        name.let { viewModel.addProfile(it) }
-                        this.dismiss()
-                    } else {
-                        profileBinding.inputName.error = errorMessage
-                    }
-                }
-            }
+        showAddProfileDialog(requireActivity(), ::existingProfileNames, viewModel::addProfile)
     }
 
     private fun showRenameProfileDialog(profile: Profile) {
@@ -136,22 +111,13 @@ class ProfileManagerDialogFragment : BottomSheetDialogFragment(),
     }
 
     private fun validateProfile(text: String): String? {
-        return when {
-            text.length !in PROFILE_NAME_MIN..PROFILE_NAME_MAX -> {
-                getString(R.string.profile_name_length_error)
-            }
-            profileAdapter.currentList.any {
-                it is ProfileItem.UserProfile && it.profile.name.equals(text, true)
-            } -> {
-                getString(R.string.profile_already_exists_error)
-            }
-            text.isBlank() -> {
-                getString(R.string.profile_blank_error)
-            }
-            else -> {
-                null
-            }
-        }
+        return profileNameErrorRes(text, existingProfileNames())?.let { getString(it) }
+    }
+
+    private fun existingProfileNames(): List<String> {
+        return profileAdapter.currentList
+            .filterIsInstance<ProfileItem.UserProfile>()
+            .map { it.profile.name }
     }
 
     private fun showDeleteProfileDialog(profile: Profile) {
@@ -208,9 +174,6 @@ class ProfileManagerDialogFragment : BottomSheetDialogFragment(),
 
     companion object {
         private const val TAG = "ProfileManagerDialogFragment"
-
-        private const val PROFILE_NAME_MIN = 3
-        private const val PROFILE_NAME_MAX = 20
 
         private const val OPTION_RENAME = 0
         private const val OPTION_DELETE = 1

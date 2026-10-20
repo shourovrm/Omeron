@@ -8,6 +8,8 @@ import com.omeron.data.model.db.History
 import com.omeron.data.model.db.PostEntity
 import com.omeron.data.model.db.Profile
 import com.omeron.data.model.preferences.ContentPreferences
+import com.omeron.data.model.preferences.PostLayout
+import com.omeron.data.model.preferences.ProfileTab
 import com.omeron.data.repository.PostListRepository
 import com.omeron.data.repository.PreferencesRepository
 import com.omeron.di.DispatchersModule.DefaultDispatcher
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -28,7 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    preferencesRepository: PreferencesRepository,
+    private val preferencesRepository: PreferencesRepository,
     private val repository: PostListRepository,
     private val savedMapper: SavedMapper2,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
@@ -98,6 +101,21 @@ class ProfileViewModel @Inject constructor(
             .filter { it.matches(query) }
         groupHistoryByDay(posts, System.currentTimeMillis())
     }.flowOn(defaultDispatcher)
+
+    fun layoutOf(tab: ProfileTab): Flow<PostLayout> = preferencesRepository.getProfileTabLayout(tab)
+
+    // The app bar icon follows whichever tab the pager shows.
+    val selectedTabLayout: Flow<PostLayout> = page.flatMapLatest { position ->
+        layoutOf(ProfileTab.fromPagerPosition(position))
+    }
+
+    fun toggleSelectedTabLayout() {
+        val tab = ProfileTab.fromPagerPosition(page.value)
+        viewModelScope.launch {
+            val currentLayout = layoutOf(tab).first()
+            preferencesRepository.setProfileTabLayout(tab, tab.toggled(currentLayout))
+        }
+    }
 
     fun setPage(position: Int) {
         _page.updateValue(position)

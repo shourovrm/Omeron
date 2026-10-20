@@ -410,7 +410,6 @@
     <string name="profile_tab_saved_posts">Saved posts</string>
     <string name="profile_tab_saved_comments">Saved comments</string>
     <string name="profile_tab_history">History</string>
-    <string name="profile_switch">Switch</string>
     <string name="profile_reddit_logged_in">Reddit: logged in</string>
     <string name="profile_reddit_logged_out">Reddit: not logged in</string>
     <string name="profile_saved_count">%1$d saved</string>
@@ -443,4 +442,8 @@
     <string name="dialog_clear_recent_searches_title">Clear search history</string>
     <string name="dialog_clear_recent_searches_message">Removes all recent searches.</string>
     <string name="dialog_clear_recent_searches_button">Clear history</string>
+    <string name="profile_current_description">Current profile</string>
+    <string name="profile_add">Add profile</string>
+    <string name="profile_manage">Manage profiles</string>
+    <string name="profile_comment_compact_info" translatable="false">u/%1$s · %2$s · %3$s</string>
 </resources>
