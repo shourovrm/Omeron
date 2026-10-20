@@ -78,6 +78,13 @@ class UserPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
         resumeFilmstripFeed(adapter, binding.listContent)
     }
 
+    override fun onDestroyView() {
+        // The next view starts with the default layout manager, so the saved layout has to be
+        // applied to it again; the fragment survives on the back stack with this field set.
+        appliedPostLayout = null
+        super.onDestroyView()
+    }
+
     override fun onFilmstripClick(post: PostEntity) {
         activity?.currentNavigationFragment?.let { currentFragment ->
             openFilmstripViewer(

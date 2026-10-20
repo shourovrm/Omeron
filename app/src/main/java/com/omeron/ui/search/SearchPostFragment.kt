@@ -85,6 +85,13 @@ class SearchPostFragment : PagingListFragment<PostListAdapter, PostEntity>() {
 
     // Same nested-pager rule as onClick: the viewer goes on the NavHost's FragmentManager. The
     // viewer fetches each result's full post itself, since the result has no media of its own.
+    override fun onDestroyView() {
+        // The next view starts with the default layout manager, so the saved layout has to be
+        // applied to it again; the fragment survives on the back stack with this field set.
+        appliedPostLayout = null
+        super.onDestroyView()
+    }
+
     override fun onFilmstripClick(post: PostEntity) {
         activity?.currentNavigationFragment?.let { currentFragment ->
             openFilmstripViewer(
