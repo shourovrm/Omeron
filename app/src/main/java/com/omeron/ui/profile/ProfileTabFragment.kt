@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 abstract class ProfileTabFragment<T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> :
     ListFragment<T>() {
 
-    override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.profile)
+    override val viewModel: ProfileViewModel by hiltNavGraphViewModels(R.id.you)
 
     override val enablePullToRefresh: Boolean
         get() = false

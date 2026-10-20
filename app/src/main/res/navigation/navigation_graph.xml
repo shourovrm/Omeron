@@ -9,7 +9,6 @@
     <include app:graph="@navigation/home" />
     <include app:graph="@navigation/search" />
     <include app:graph="@navigation/you" />
-    <include app:graph="@navigation/profile" />
     <include app:graph="@navigation/settings" />
 
     <!-- Global Destinations -->
@@ -18,7 +17,7 @@
     <include app:graph="@navigation/multireddit" />
     <include app:graph="@navigation/user" />
 
-    <!-- Reached from the drawer and the You page. A destination inside a nested graph cannot
+    <!-- Reached from the drawer. A destination inside a nested graph cannot
          be navigated to from outside that graph, so these sit at the top level. -->
     <fragment
         android:id="@+id/manageCommunitiesFragment"

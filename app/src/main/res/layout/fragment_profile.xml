@@ -22,28 +22,17 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="?attr/actionBarSize" />
 
-        <com.omeron.ui.common.widget.CardButton
-            android:id="@+id/back_card"
-            android:layout_width="@dimen/app_bar_button_size"
-            android:layout_height="@dimen/app_bar_button_size"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
-            android:layout_marginStart="@dimen/app_bar_margin"
-            app:icon="@drawable/ic_arrow_back"
-            style="@style/CardButtonStyle"/>
-
         <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/back_card"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/layout_toggle_card"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
-            android:layout_marginStart="@dimen/app_bar_margin"
+            android:layout_marginStart="@dimen/space_16"
             android:singleLine="true"
-            android:text="@string/navigation_label_profile"
+            android:text="@string/navigation_label_you"
             android:textAppearance="@style/TextAppearanceAppBarLabel"/>
 
         <com.omeron.ui.common.widget.CardButton
@@ -63,11 +52,23 @@
             android:layout_width="@dimen/app_bar_button_size"
             android:layout_height="@dimen/app_bar_button_size"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/settings_card"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginEnd="@dimen/app_bar_margin"
             app:icon="@drawable/ic_search"
             android:contentDescription="@string/profile_search_hint"
+            style="@style/CardButtonStyle"/>
+
+        <com.omeron.ui.common.widget.CardButton
+            android:id="@+id/settings_card"
+            android:layout_width="@dimen/app_bar_button_size"
+            android:layout_height="@dimen/app_bar_button_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
+            android:layout_marginEnd="@dimen/app_bar_margin"
+            app:icon="@drawable/ic_outline_settings"
+            android:contentDescription="@string/navigation_label_settings"
             style="@style/CardButtonStyle"/>
 
         <com.omeron.ui.common.widget.CardButton
@@ -87,7 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/back_card"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cancel_card"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
