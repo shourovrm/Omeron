@@ -19,8 +19,6 @@ class HtmlParser(private val defaultDispatcher: CoroutineDispatcher) {
     private val CODE_REGEX = Regex("<pre><code>(.*?)</code></pre>", RegexOption.DOT_MATCHES_ALL)
     private val PLACEHOLDER_REGEX = Regex("<(table|code)_placeholder/>")
 
-    private val tagHandler = RedditTagHandler()
-
     // Without an ImageGetter every <img> (comment gifs/emotes) renders as the framework's
     // broken-image box. Hand back a UrlDrawable; RedditTextView Coil-loads it at display time.
     private val imageGetter = Html.ImageGetter { source ->
@@ -127,6 +125,9 @@ class HtmlParser(private val defaultDispatcher: CoroutineDispatcher) {
     }
 
     private fun fromHtml(html: String): CharSequence {
+        // One handler per parse: it keeps list nesting on stacks, and parses run in parallel on
+        // the default dispatcher. A shared handler let one parse pop another's stack and crash.
+        val tagHandler = RedditTagHandler()
         val overriddenHtml = tagHandler.overrideTags(html)
         return HtmlCompat.fromHtml(
             overriddenHtml,
