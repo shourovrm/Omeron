@@ -118,7 +118,7 @@
         android:layout_marginTop="@dimen/post_margin_top_small"
         android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
         app:layout_constraintStart_toEndOf="@id/image_compact_score_icon"
-        app:layout_constraintTop_toBottomOf="@id/text_compact_excerpt"
+        app:layout_constraintTop_toBottomOf="@id/barrier_compact_content"
         tools:text="14.3k"/>
 
     <ImageView
@@ -152,8 +152,7 @@
         android:layout_height="@dimen/post_action_button_size"
         app:layout_constraintTop_toTopOf="@id/text_compact_score"
         app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
-        app:layout_constraintEnd_toStartOf="@id/image_compact_preview"
-        app:layout_goneMarginEnd="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
         android:padding="@dimen/post_action_button_padding"
         android:scaleType="fitCenter"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -175,5 +174,14 @@
         android:visibility="gone"
         app:srcCompat="@drawable/ic_marker_tick"
         tools:visibility="visible"/>
+
+    <!-- The counts row sits under whichever is taller, the text or the thumbnail, so the menu
+         button can take the right edge without landing on the picture. -->
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_compact_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="text_compact_title,text_compact_excerpt,image_compact_preview"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
