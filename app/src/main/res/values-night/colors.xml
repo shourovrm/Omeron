@@ -18,6 +18,7 @@
     <color name="md_on_error">#690005</color>
     <color name="md_error_container">#93000A</color>
     <color name="md_on_error_container">#FFDAD6</color>
+    <color name="md_marker">#FF6B3D</color>
 
     <color name="admin_color">#EF5350</color>
     <color name="moderator_color">#66BB6A</color>

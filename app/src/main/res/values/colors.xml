@@ -19,6 +19,7 @@
     <color name="md_on_error">#FFFFFF</color>
     <color name="md_error_container">#FFDAD6</color>
     <color name="md_on_error_container">#410002</color>
+    <color name="md_marker">#E2451B</color>
     <!-- AMOLED keeps pure black surfaces. -->
     <color name="amoled_surface_container_low">#000000</color>
     <color name="amoled_surface_container">#121318</color>

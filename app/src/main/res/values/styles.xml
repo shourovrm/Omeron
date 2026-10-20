@@ -32,6 +32,7 @@
         <item name="omeronSurfaceContainerLow">@color/md_surface_container_low</item>
         <item name="omeronSurfaceContainer">@color/md_surface_container</item>
         <item name="omeronSurfaceContainerHigh">@color/md_surface_container_high</item>
+        <item name="omeronMarker">@color/md_marker</item>
 
         <item name="android:textColor">@color/text_color</item>
         <item name="actionBarSize">@dimen/app_bar_height</item>

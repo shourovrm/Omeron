@@ -4,6 +4,8 @@
     <attr name="omeronSurfaceContainerLow" format="color"/>
     <attr name="omeronSurfaceContainer" format="color"/>
     <attr name="omeronSurfaceContainerHigh" format="color"/>
+    <!-- The contact-sheet marker: saved ticks, filmstrip loops, selected rows, active nav icon. -->
+    <attr name="omeronMarker" format="color"/>
     <attr name="omeronOutlineVariant" format="color"/>
     <attr name="redditTextViewStyle" format="reference"/>
 

@@ -1,7 +1,17 @@
 System: material3
+World: contact sheet (variation 4, chosen 2026-10-20)
 
 Every number below is copied from Material Design 3 (androidx material3 1.4.0 tokens,
-m3.material.io). This file wins over any layout; change it in the same commit as the UI.
+m3.material.io) unless it is listed under Departures. This file wins over any layout; change it in
+the same commit as the UI.
+
+## Departures
+
+Deliberate changes to Material 3, applied everywhere: post media is full width with square
+corners, never inside a card; posts are separated by space, not cards or dividers; a saved post
+carries the marker tick on its picture; text posts are a full-width surfaceContainerHigh frame with
+the title in headlineSmall. Kept from Material without exception: 48dp targets, contrast, sp text
+that follows font scale, system Back, window insets, standard controls.
 
 ## Type
 
@@ -38,9 +48,10 @@ inside a component. Page margin 16dp under 600dp, 24dp above. Card gap 8dp, labe
 | Icon button | 40dp visual, 48dp target |
 | Text field (outlined) | 56dp high, 1dp outline, 2dp when focused, label never truncated |
 | Chip | 32dp high, radius 8dp, 1dp outline or tonal fill, labelLarge |
-| Card (filled) | radius 12dp, elevation 0dp, background surfaceContainer |
+| Card (filled) | radius 12dp, elevation 0dp, background surfaceContainer; not used for posts |
 | List item | 56dp one line, 72dp two lines, 88dp three lines, 16dp side padding |
-| Bottom navigation bar | 80dp high, 4 destinations, active pill 64dp by 32dp secondaryContainer |
+| Bottom navigation bar | 80dp high, 5 destinations, active pill 64dp by 32dp primaryContainer, active icon in marker |
+| Marker tick | 24dp vector, 3dp round-capped stroke in marker, on a 36dp circle of black at 62%, 8dp inset from the picture's top end |
 | Top app bar (small) | 64dp high, titleLarge, icons in 48dp targets |
 
 One primary action per screen, filled button, always on screen. Destructive actions (log out,
@@ -48,17 +59,20 @@ delete profile, clear history) use an outlined button in `error` colour and a co
 
 ## Colour
 
-Light scheme, seeded from the Omeron cobalt `#1D3FBF` with the Material tonal palette:
-primary `#1D3FBF`, onPrimary `#FFFFFF`, primaryContainer `#DEE1FF`, onPrimaryContainer `#00105C`,
-secondaryContainer `#DDE1F9`, onSecondaryContainer `#161B2C`, surface `#FBF8FF`, onSurface
-`#1A1B21`, onSurfaceVariant `#45464F`, surfaceContainerLow `#F5F3FA`, surfaceContainer `#EFEDF4`,
-surfaceContainerHigh `#E9E7EF`, outline `#767680`, outlineVariant `#C6C5D0`, error `#BA1A1A`,
-errorContainer `#FFDAD6`.
-Dark scheme: primary `#B9C3FF`, onPrimary `#002386`, primaryContainer `#0A2EA8`,
-onPrimaryContainer `#DEE1FF`, secondaryContainer `#414659`, onSecondaryContainer `#DDE1F9`,
-surface `#121318`, onSurface `#E3E1E9`, onSurfaceVariant `#C6C5D0`, surfaceContainerLow `#1A1B21`,
-surfaceContainer `#1E1F25`, surfaceContainerHigh `#292A2F`, outline `#90909A`, outlineVariant
-`#45464F`, error `#FFB4AB`. AMOLED theme keeps surface `#000000` and surfaceContainer `#121318`.
+The theme follows the system setting (light, dark, or the AMOLED choice in Settings).
+Light scheme (paper): primary `#A8321A`, onPrimary `#FFFFFF`, primaryContainer `#FFDBCF`,
+onPrimaryContainer `#3A0A00`, secondaryContainer `#F2DED5`, onSecondaryContainer `#2C160E`,
+surface `#F7F3EE`, onSurface `#1F1B17`, onSurfaceVariant `#5E554C`, surfaceContainerLow `#F2EDE7`,
+surfaceContainer `#EDE7E0`, surfaceContainerHigh `#E4DDD4`, outline `#857A70`, outlineVariant
+`#D6CCC2`, error `#BA1A1A`, errorContainer `#FFDAD6`, marker `#E2451B`.
+Dark scheme (warm black): primary `#FF8A65`, onPrimary `#3A0E00`, primaryContainer `#5A1E0B`,
+onPrimaryContainer `#FFDBCF`, secondaryContainer `#4A3A33`, onSecondaryContainer `#F2DED5`,
+surface `#141210`, onSurface `#EEE8E0`, onSurfaceVariant `#B7AEA3`, surfaceContainerLow `#1A1714`,
+surfaceContainer `#1E1B18`, surfaceContainerHigh `#29251F`, outline `#9C9188`, outlineVariant
+`#4A433C`, error `#FFB4AB`, marker `#FF6B3D`. AMOLED keeps the dark roles with surface `#000000`,
+surfaceContainerLow `#0D0C0B`, surfaceContainer `#121110`, surfaceContainerHigh `#1E1B18`.
+The marker colour (`?attr/omeronMarker`) appears only on the marker tick, the marker loop in the
+filmstrip, a selected row's outline and box, and the active bottom-bar icon.
 Rules: `#` literals live only in `colors.xml`; layouts and styles use `?attr/` or `@color/` roles.
 Status colour (NSFW, spoiler, stickied, OP, locked) lives on pills and swatches, never on body
 text. Identities (subreddit, user) carry a filled block in the raw colour. Contrast 4.5:1 for text
@@ -66,13 +80,23 @@ under 18sp, 3:1 for larger text and icons.
 
 ## Layout of the Feed page
 
-Small top app bar (64dp): menu icon, OMERON wordmark, sort icon, layout icon. Below it a vertical
-list of filled cards with 16dp side margin and 8dp gap. Card content, top to bottom: header row
-(40dp avatar, subreddit as titleMedium, author and age as bodyMedium), media at 12dp side inset
-with radius 12dp and height 200dp (card layout) or edge-to-edge (feed layout), title as
-titleMedium at 16dp padding, flair chips, action row of 48dp targets (vote with score, comments
-with count, save, more) and the domain as bodySmall. Bottom navigation bar 80dp with Feed, Popular,
-Multis, Subs. Error and login states use the info bar: text wraps beside a 40dp text button.
+Small top app bar (64dp): menu icon, OMERON wordmark, sort icon, layout icon. Below it the posts,
+16dp of space between them, no cards and no dividers. Card layout, top to bottom: edge print
+(community and age as bodySmall in onSurfaceVariant, 16dp side padding), media full width with
+square corners at 4:3 (portrait pictures up to 4:5), title as titleMedium at 16dp padding, author
+as bodyMedium, flair chips, action row of 48dp targets (vote with score, comments with count, save,
+more) and the domain as bodySmall. A saved post shows the marker tick on its picture. A text post is
+a full-width surfaceContainerHigh frame with the title in headlineSmall. Compact rows keep their
+thumbnail (8dp corners) and show the tick on it; the filmstrip grid marks saved tiles with the
+marker loop. Bottom navigation bar 80dp with Feed, Popular, Search, Multis, You. Error and login
+states use the info bar: text wraps beside a 40dp text button.
+
+## Layout of the You page
+
+Small top app bar titled You. The profile row (40dp avatar, profile name with a down chevron,
+Reddit status) opens the switch-profile sheet. Then list items: Saved posts, Saved comments and
+History with their counts, Communities and Multis with a "Manage" supporting line, and after 24dp
+of space Settings and About. The drawer keeps only the community filter, multis and communities.
 
 ## Layout of the Post page
 
