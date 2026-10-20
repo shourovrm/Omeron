@@ -452,6 +452,15 @@ abstract class PostViewHolder(
                 listener.onClick(bindingAdapterPosition, true)
                 true
             }
+            binding.buttonCompactMore.setOnClickListener {
+                listener.onMenuClick(bindingAdapterPosition)
+            }
+        }
+
+        // The feed opens the menu with a long press; lists that use long press for something
+        // else show this button instead.
+        fun showMenuButton(show: Boolean) {
+            binding.buttonCompactMore.isVisible = show
         }
 
         fun bind(postEntity: PostEntity, contentPreferences: ContentPreferences) {

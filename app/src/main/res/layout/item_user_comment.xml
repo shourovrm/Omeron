@@ -17,9 +17,11 @@
 
         <TextView
             android:id="@+id/comment_link_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_comment_more"
             app:layout_constraintTop_toTopOf="parent"
             android:textAppearance="@style/TextAppearanceUserCommentTitle"
             android:text="@{comment.linkTitle}"
@@ -35,12 +37,36 @@
             android:text="@{@string/comment_link_info(comment.subreddit, comment.linkAuthor)}"
             tools:text="r/subreddit - u/author"/>
 
+        <!-- Hidden on user pages, where long press opens the menu; the profile's saved comments use
+             long press to select rows, so they show this button to keep the menu reachable. -->
+        <ImageButton
+            android:id="@+id/button_comment_more"
+            android:layout_width="@dimen/post_action_button_size"
+            android:layout_height="@dimen/post_action_button_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/post_action_button_padding"
+            android:scaleType="fitCenter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/post_more_description"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_more"
+            app:tint="@color/text_color_secondary"/>
+
+        <!-- Keeps the comment below the menu button when the post title is a single line. -->
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_comment_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="comment_link_info,button_comment_more"/>
+
         <include
             android:id="@+id/include_item_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comment_link_info"
+            app:layout_constraintTop_toBottomOf="@id/barrier_comment_header"
             layout="@layout/item_comment"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

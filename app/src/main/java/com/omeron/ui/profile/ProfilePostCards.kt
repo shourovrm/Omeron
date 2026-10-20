@@ -138,7 +138,11 @@ class ProfilePostCards(
 
     fun bind(holder: RecyclerView.ViewHolder, post: PostEntity, contentPreferences: ContentPreferences) {
         when (holder) {
-            is PostViewHolder.CompactPostViewHolder -> holder.bind(post, contentPreferences)
+            is PostViewHolder.CompactPostViewHolder -> {
+                holder.bind(post, contentPreferences)
+                // Long press selects rows here, so the menu needs its own button.
+                holder.showMenuButton(true)
+            }
             is PostViewHolder.TextPostViewHolder -> holder.bind(post, contentPreferences)
             is PostViewHolder.ImagePostViewHolder -> holder.bind(post, contentPreferences)
             is PostViewHolder.VideoPostViewHolder -> holder.bind(post, contentPreferences)

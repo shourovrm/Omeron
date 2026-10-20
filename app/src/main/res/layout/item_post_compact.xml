@@ -147,4 +147,22 @@
         app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
         tools:text="1.2k"/>
 
+    <!-- Hidden in the feed, where long press opens the menu; the profile lists use long press to
+         select rows, so they show this button to keep the menu reachable. -->
+    <ImageButton
+        android:id="@+id/button_compact_more"
+        android:layout_width="@dimen/post_action_button_size"
+        android:layout_height="@dimen/post_action_button_size"
+        app:layout_constraintTop_toTopOf="@id/text_compact_score"
+        app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
+        app:layout_constraintEnd_toStartOf="@id/image_compact_preview"
+        app:layout_goneMarginEnd="0dp"
+        android:padding="@dimen/post_action_button_padding"
+        android:scaleType="fitCenter"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/post_more_description"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_more"
+        app:tint="@color/text_color_secondary"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,4 +49,16 @@
 
     </LinearLayout>
 
+    <ImageButton
+        android:id="@+id/history_more"
+        android:layout_width="@dimen/post_action_button_size"
+        android:layout_height="@dimen/post_action_button_size"
+        android:layout_marginStart="@dimen/space_4"
+        android:padding="@dimen/post_action_button_padding"
+        android:scaleType="fitCenter"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/post_more_description"
+        app:srcCompat="@drawable/ic_more"
+        app:tint="@color/text_color_secondary"/>
+
 </LinearLayout>

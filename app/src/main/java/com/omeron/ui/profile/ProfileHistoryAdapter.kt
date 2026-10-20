@@ -167,6 +167,9 @@ class ProfileHistoryAdapter(
                 rowSelection.onLongPress(post.id)
                 true
             }
+            binding.historyMore.setOnClickListener {
+                rowSelection.onTap(post.id) { postClickListener.onMenuClick(post) }
+            }
         }
 
         private fun bindThumbnail(post: PostEntity) {

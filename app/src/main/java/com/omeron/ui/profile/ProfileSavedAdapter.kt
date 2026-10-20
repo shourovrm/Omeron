@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.isVisible
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -175,6 +176,14 @@ class ProfileSavedAdapter(
         rowSelection.onTap(comment.name) { commentClickListener.onClick(comment) }
     }
 
+    // Long press selects rows here, so the comment menu it used to open moves to a button.
+    private fun bindMenuButton(button: View, comment: Comment.CommentEntity) {
+        button.isVisible = true
+        button.setOnClickListener {
+            rowSelection.onTap(comment.name) { commentClickListener.onLongClick(comment) }
+        }
+    }
+
     private inner class CommentViewHolder(
         private val binding: ItemUserCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -241,6 +250,8 @@ class ProfileSavedAdapter(
                 }
             }
 
+            bindMenuButton(binding.buttonCommentMore, comment)
+
             itemView.run {
                 setOnClickListener { openOrToggle(comment) }
                 setOnLongClickListener {
@@ -266,6 +277,7 @@ class ProfileSavedAdapter(
                 comment.getTimeDifference(context)
             )
             binding.textCommentBody.text = firstParagraph(comment)
+            bindMenuButton(binding.buttonCommentMore, comment)
 
             itemView.setOnClickListener { openOrToggle(comment) }
             itemView.setOnLongClickListener {
