@@ -36,3 +36,12 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+# Moshi reflects on @FromJson/@ToJson adapter signatures; R8 full mode (AGP 8) otherwise rewrites them.
+-keepattributes Signature, RuntimeVisibleAnnotations, InnerClasses, EnclosingMethod
+-keepclassmembers class * {
+    @com.squareup.moshi.FromJson <methods>;
+    @com.squareup.moshi.ToJson <methods>;
+}
+-keep,allowobfuscation,allowshrinking class com.squareup.moshi.JsonAdapter
+-keep,allowobfuscation,allowshrinking class com.squareup.moshi.JsonReader
+-keep,allowobfuscation,allowshrinking class com.squareup.moshi.JsonWriter
