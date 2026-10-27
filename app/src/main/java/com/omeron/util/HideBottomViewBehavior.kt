@@ -102,6 +102,10 @@ class HideBottomViewBehavior<V: View> @JvmOverloads constructor(
     fun slideOut(child: V, animate: Boolean) {
         if (isScrolledDown) return
 
+        // Before the first layout the width is 0, so the bar would "slide" by 0 px yet be marked
+        // hidden, and the retry after layout would then return early. Leave the state untouched.
+        if (width == 0) return
+
         currentAnimator?.let { animator ->
             animator.cancel()
             child.clearAnimation()

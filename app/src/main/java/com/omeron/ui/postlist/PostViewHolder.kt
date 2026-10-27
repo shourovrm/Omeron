@@ -314,8 +314,8 @@ abstract class PostViewHolder(
 
     // ponytail: gallery mode collapses every post type into one compact tile, so this holder
     // does NOT extend PostViewHolder - it skips the metrics/flairs/awards rows entirely rather
-    // than inflating and hiding them. Tap always opens the post (no separate media-click), which
-    // keeps this to one Listener call instead of a per-type dispatch like ImagePostViewHolder.
+    // than inflating and hiding them. Tap goes through one Listener call that picks Filmstrip or
+    // the post page, instead of a per-type dispatch like ImagePostViewHolder.
     class GalleryPostViewHolder(
         private val binding: ItemPostGalleryBinding,
         listener: PostListAdapter.Listener
@@ -323,7 +323,7 @@ abstract class PostViewHolder(
 
         init {
             itemView.setOnClickListener {
-                listener.onClick(bindingAdapterPosition)
+                listener.onGalleryClick(bindingAdapterPosition)
             }
             itemView.setOnLongClickListener {
                 listener.onClick(bindingAdapterPosition, true)

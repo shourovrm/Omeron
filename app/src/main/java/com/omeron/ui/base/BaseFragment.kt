@@ -366,6 +366,10 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
         onClick(post)
     }
 
+    override fun onGalleryClick(post: PostEntity) {
+        if (!openInFilmstripIfMedia(post)) onClick(post)
+    }
+
     override fun onLongClick(post: PostEntity) {
         PostMenuFragment.show(parentFragmentManager, post)
     }

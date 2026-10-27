@@ -42,6 +42,9 @@ class PostListAdapter(
 
         fun onFilmstripClick(post: PostEntity)
 
+        // Gallery tile tap: media opens in the Filmstrip viewer, anything else opens the post.
+        fun onGalleryClick(post: PostEntity) = onClick(post)
+
         fun onUserClick(user: String)
 
         fun onSubredditClick(subreddit: String)
@@ -52,6 +55,8 @@ class PostListAdapter(
 
         // Only the Filmstrip tile calls this; other holders never do, so they need no override.
         fun onFilmstripClick(position: Int) = onClick(position)
+
+        fun onGalleryClick(position: Int) = onClick(position)
 
         fun onMediaClick(position: Int)
 
@@ -119,6 +124,13 @@ class PostListAdapter(
             getItem(position)?.let {
                 setPostSeen(position, it)
                 postClickListener.onFilmstripClick(it)
+            }
+        }
+
+        override fun onGalleryClick(position: Int) {
+            getItem(position)?.let {
+                setPostSeen(position, it)
+                postClickListener.onGalleryClick(it)
             }
         }
 
