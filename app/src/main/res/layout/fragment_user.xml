@@ -74,7 +74,7 @@
             app:layout_constraintEnd_toStartOf="@id/layout_toggle_card"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:contentDescription="@string/follow"
-            app:icon="@drawable/ic_person_add"
+            app:icon="@drawable/ic_follow"
             style="@style/CardButtonStyle"/>
 
         <com.omeron.ui.common.widget.CardButton
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/layout_toggle_card"
+            app:layout_constraintEnd_toStartOf="@id/add_to_multi_card"
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:paddingHorizontal="@dimen/app_bar_margin"
             app:sortType="user"/>
