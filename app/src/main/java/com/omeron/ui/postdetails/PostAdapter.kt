@@ -26,6 +26,14 @@ class PostAdapter(
 ) : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
     private var post: PostEntity? = null
+
+    // Text to mark in the post body while the find bar is open; blank means no marks.
+    var findQuery: String = ""
+        set(value) {
+            if (field == value) return
+            field = value
+            notifyItemChanged(0)
+        }
     private var preview: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -222,6 +230,7 @@ class PostAdapter(
                 if (post.selfRedditText.isNotEmpty()) {
                     visibility = View.VISIBLE
                     setText(post.selfRedditText)
+                    highlight(findQuery)
                     setOnLinkClickListener(onLinkClickListener)
                 } else {
                     visibility = View.GONE

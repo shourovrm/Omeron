@@ -47,6 +47,14 @@ class CommentAdapter(
 
     var postEntity: PostEntity? = null
 
+    // Text to mark in comment bodies while the find bar is open; blank means no marks.
+    var findQuery: String = ""
+        set(value) {
+            if (field == value) return
+            field = value
+            notifyItemRangeChanged(0, itemCount)
+        }
+
     var savedIds: List<String> = emptyList()
 
     private val scope = CoroutineScope(Job() + mainImmediateDispatcher)
@@ -357,6 +365,7 @@ class CommentAdapter(
 
             binding.commentBody.apply {
                 setText(comment.body)
+                highlight(findQuery)
                 setOnLinkClickListener(onLinkClickListener)
                 setOnClickListener {
                     onCommentClick(bindingAdapterPosition)

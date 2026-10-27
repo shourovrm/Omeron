@@ -1,12 +1,17 @@
 package com.omeron.ui.common.widget
 
 import android.content.Context
+import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.BackgroundColorSpan
 import android.util.AttributeSet
 import android.view.View
 import android.widget.HorizontalScrollView
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.children
+import com.google.android.material.color.MaterialColors
 import com.omeron.data.model.Block.*
 import com.omeron.data.model.HtmlBlock
 import com.omeron.data.model.RedditText
@@ -65,6 +70,50 @@ class RedditView @JvmOverloads constructor(
             }
         }
     }
+
+    /**
+     * Marks every case-insensitive occurrence of [query] in the text and code blocks. Tables are
+     * left alone because their cells are separate views. A blank [query] clears the marks.
+     */
+    fun highlight(query: String) {
+        val highlightColor = MaterialColors.getColor(
+            this,
+            com.google.android.material.R.attr.colorTertiaryContainer,
+            Color.YELLOW
+        )
+        for (textView in textViewsIncludingCode()) {
+            val marked = SpannableString(textView.text)
+            marked.getSpans(0, marked.length, FindHighlightSpan::class.java).forEach {
+                marked.removeSpan(it)
+            }
+            if (query.isNotBlank()) {
+                var matchStart = marked.indexOf(query, ignoreCase = true)
+                while (matchStart >= 0) {
+                    val matchEnd = matchStart + query.length
+                    marked.setSpan(
+                        FindHighlightSpan(highlightColor),
+                        matchStart,
+                        matchEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    matchStart = marked.indexOf(query, matchEnd, ignoreCase = true)
+                }
+            }
+            textView.text = marked
+        }
+    }
+
+    private fun textViewsIncludingCode(): List<RedditTextView> {
+        return children.mapNotNull { child ->
+            when (child) {
+                is RedditTextView -> child
+                is HorizontalScrollView -> child.getChildAt(0) as? RedditTextView
+                else -> null
+            }
+        }.toList()
+    }
+
+    private class FindHighlightSpan(color: Int) : BackgroundColorSpan(color)
 
     private fun addText(textBlock: TextBlock) {
         val redditTextView = RedditTextView(context).apply {

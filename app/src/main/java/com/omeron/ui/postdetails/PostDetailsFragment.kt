@@ -5,6 +5,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.getSystemService
+import androidx.core.widget.doOnTextChanged
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
@@ -27,7 +30,9 @@ import com.omeron.databinding.FragmentPostDetailsBinding
 import com.omeron.di.DispatchersModule.DefaultDispatcher
 import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import com.omeron.ui.base.BaseFragment
+import com.omeron.data.model.Comment
 import com.omeron.ui.commentmenu.CommentMenuFragment
+import com.omeron.util.containsIgnoreCase
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.common.ElasticDragDismissFrameLayout
 import com.omeron.ui.loadstate.ResourceStateAdapter
@@ -55,6 +60,8 @@ class PostDetailsFragment : BaseFragment(),
 
     private var _binding: FragmentPostDetailsBinding? = null
     private var currentPost: PostEntity? = null
+    private var findMatchPositions: List<Int> = emptyList()
+    private var findMatchIndex = -1
     private val binding get() = _binding!!
 
     override val viewModel: PostDetailsViewModel by viewModels()
@@ -137,6 +144,7 @@ class PostDetailsFragment : BaseFragment(),
         initResultListener()
         initAppBar()
         initRecyclerView()
+        initFindBar()
 
         val post = arguments?.parcelable<PostEntity>(KEY_POST_ENTITY)
         post?.let {
@@ -243,6 +251,86 @@ class PostDetailsFragment : BaseFragment(),
         }
     }
 
+    private fun initFindBar() {
+        parentFragmentManager.setFragmentResultListener(
+            PostMenuFragment.REQUEST_KEY_FIND,
+            viewLifecycleOwner
+        ) { _, _ -> openFindBar() }
+
+        with(binding) {
+            inputFind.doOnTextChanged { text, _, _, _ -> runFind(text?.toString().orEmpty()) }
+            inputFind.setOnEditorActionListener { _, _, _ ->
+                goToFindMatch(step = 1)
+                true
+            }
+            buttonFindNext.setOnClickListener { goToFindMatch(step = 1) }
+            buttonFindPrevious.setOnClickListener { goToFindMatch(step = -1) }
+            buttonFindClose.setOnClickListener { closeFindBar() }
+        }
+    }
+
+    private fun openFindBar() {
+        binding.findBar.isVisible = true
+        binding.inputFind.requestFocus()
+        binding.inputFind.post {
+            requireContext().getSystemService<InputMethodManager>()
+                ?.showSoftInput(binding.inputFind, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
+    private fun closeFindBar() {
+        requireContext().getSystemService<InputMethodManager>()
+            ?.hideSoftInputFromWindow(binding.inputFind.windowToken, 0)
+        binding.inputFind.setText("")
+        binding.findBar.isVisible = false
+    }
+
+    private fun runFind(query: String) {
+        postAdapter.findQuery = query
+        commentAdapter.findQuery = query
+
+        findMatchPositions = if (query.isBlank()) emptyList() else collectFindMatchPositions(query)
+        findMatchIndex = -1
+
+        when {
+            query.isBlank() -> binding.textFindCount.text = ""
+            findMatchPositions.isEmpty() ->
+                binding.textFindCount.setText(R.string.find_no_matches)
+            else -> goToFindMatch(step = 1)
+        }
+    }
+
+    // Adapter positions of the rows that contain the query, in reading order.
+    private fun collectFindMatchPositions(query: String): List<Int> {
+        val positions = mutableListOf<Int>()
+
+        val post = currentPost
+        val isPostMatch = post != null &&
+            (post.title.contains(query, ignoreCase = true) ||
+                post.selfRedditText.containsIgnoreCase(query))
+        if (isPostMatch) positions.add(0)
+
+        val firstCommentPosition = postAdapter.itemCount + resourceStateAdapter.itemCount
+        commentAdapter.currentList.forEachIndexed { index, comment ->
+            val isCommentMatch = comment is Comment.CommentEntity &&
+                comment.body.containsIgnoreCase(query)
+            if (isCommentMatch) positions.add(firstCommentPosition + index)
+        }
+        return positions
+    }
+
+    private fun goToFindMatch(step: Int) {
+        if (findMatchPositions.isEmpty()) return
+
+        val matchCount = findMatchPositions.size
+        findMatchIndex = Math.floorMod(findMatchIndex + step, matchCount)
+        binding.textFindCount.text =
+            getString(R.string.find_count, findMatchIndex + 1, matchCount)
+
+        val layoutManager = binding.listComments.layoutManager as LinearLayoutManager
+        layoutManager.scrollToPositionWithOffset(findMatchPositions[findMatchIndex], 0)
+    }
+
     private fun initResultListener() {
         setSortingListener { sorting ->
             sorting?.let {
@@ -341,6 +429,11 @@ class PostDetailsFragment : BaseFragment(),
     }
 
     override fun onBackPressed() {
+        if (_binding != null && binding.findBar.isVisible) {
+            closeFindBar()
+            return
+        }
+
         if (isOnlyPostOpen) {
             showNavigation(true)
         }
