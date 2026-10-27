@@ -1,3 +1,27 @@
+# 0.8.4 - 2026/10/27
+
+### Added
+- Search a post: the search button in the post page bar finds text in the
+  post and its comments, marks every match and steps between them
+- The post title stays pinned under the bar, up to two lines, once you scroll
+  past it; tap it to jump back to the top. The bar names the community
+- People in the menu: the users you follow, with Manage and a long-press to
+  unfollow
+- The follow button on user pages is a star, filled while you follow, and its
+  label switches to Unfollow
+
+### Fixed
+- Tapping a tile in gallery mode opened the post page before the filmstrip;
+  it now opens the filmstrip
+- Rotating in the filmstrip sometimes left the bottom tabs showing in
+  landscape
+- The sort badge on user pages drew on top of the follow button
+- A wide gap between the sort and menu buttons on the post page
+
+### Changed
+- The app now builds with JDK 21 (Gradle 8.5, Android Gradle plugin 8.2)
+
+
 # 0.8.0 - 2026/10/20
 
 ### Added
