@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 sealed interface DrawerItem {
 
     /** The manage page a section's Manage link opens. */
-    enum class ManageTarget { MULTIREDDITS, COMMUNITIES }
+    enum class ManageTarget { MULTIREDDITS, COMMUNITIES, PEOPLE }
 
     data class SectionHeader(
         @StringRes val titleRes: Int,
@@ -20,6 +20,8 @@ sealed interface DrawerItem {
     ) : DrawerItem
 
     data class CommunityRow(val subredditName: String) : DrawerItem
+
+    data class UserRow(val userName: String) : DrawerItem
 
     data class Message(@StringRes val textRes: Int) : DrawerItem
 }

@@ -44,7 +44,9 @@ class DrawerItemsTest {
             listOf(
                 DrawerItem.SectionHeader(R.string.drawer_section_multireddits, DrawerItem.ManageTarget.MULTIREDDITS),
                 DrawerItem.SectionHeader(R.string.drawer_section_communities, DrawerItem.ManageTarget.COMMUNITIES),
-                DrawerItem.Message(R.string.drawer_no_subscriptions)
+                DrawerItem.Message(R.string.drawer_no_subscriptions),
+                DrawerItem.SectionHeader(R.string.drawer_section_people, DrawerItem.ManageTarget.PEOPLE),
+                DrawerItem.Message(R.string.drawer_no_people)
             ),
             items
         )
@@ -56,7 +58,11 @@ class DrawerItemsTest {
 
         val headers = items.filterIsInstance<DrawerItem.SectionHeader>()
         assertEquals(
-            listOf(DrawerItem.ManageTarget.MULTIREDDITS, DrawerItem.ManageTarget.COMMUNITIES),
+            listOf(
+                DrawerItem.ManageTarget.MULTIREDDITS,
+                DrawerItem.ManageTarget.COMMUNITIES,
+                DrawerItem.ManageTarget.PEOPLE
+            ),
             headers.map { it.manageTarget }
         )
     }
@@ -68,6 +74,23 @@ class DrawerItemsTest {
         assertEquals(
             listOf("Kotlin"),
             items.filterIsInstance<DrawerItem.CommunityRow>().map { it.subredditName }
+        )
+    }
+
+    @Test
+    fun `followed users get rows sorted by name and the filter applies to them`() {
+        val followed = listOf("zed", "Alice", "bob")
+
+        val allRows = buildDrawerItems(emptyList(), emptyList(), "", followed)
+        val filteredRows = buildDrawerItems(emptyList(), emptyList(), "AL", followed)
+
+        assertEquals(
+            listOf("Alice", "bob", "zed"),
+            allRows.filterIsInstance<DrawerItem.UserRow>().map { it.userName }
+        )
+        assertEquals(
+            listOf("Alice"),
+            filteredRows.filterIsInstance<DrawerItem.UserRow>().map { it.userName }
         )
     }
 

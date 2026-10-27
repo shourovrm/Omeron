@@ -14,15 +14,18 @@ import com.omeron.databinding.ItemDrawerSectionBinding
 class DrawerAdapter(
     private val onMultiredditClick: (multiredditId: Long) -> Unit,
     private val onCommunityClick: (subredditName: String) -> Unit,
+    private val onUserClick: (userName: String) -> Unit,
     private val onMultiredditLongClick: (DrawerItem.MultiredditRow) -> Unit,
     private val onCommunityLongClick: (DrawerItem.CommunityRow) -> Unit,
+    private val onUserLongClick: (DrawerItem.UserRow) -> Unit,
     private val onManageClick: (DrawerItem.ManageTarget) -> Unit
 ) : ListAdapter<DrawerItem, RecyclerView.ViewHolder>(DRAWER_ITEM_COMPARATOR) {
 
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is DrawerItem.SectionHeader -> VIEW_TYPE_SECTION_HEADER
         is DrawerItem.Message -> VIEW_TYPE_MESSAGE
-        is DrawerItem.MultiredditRow, is DrawerItem.CommunityRow -> VIEW_TYPE_ROW
+        is DrawerItem.MultiredditRow, is DrawerItem.CommunityRow, is DrawerItem.UserRow ->
+            VIEW_TYPE_ROW
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -42,6 +45,7 @@ class DrawerAdapter(
             is DrawerItem.Message -> (holder as MessageViewHolder).bind(item)
             is DrawerItem.MultiredditRow -> (holder as RowViewHolder).bind(item)
             is DrawerItem.CommunityRow -> (holder as RowViewHolder).bind(item)
+            is DrawerItem.UserRow -> (holder as RowViewHolder).bind(item)
         }
     }
 
@@ -97,6 +101,20 @@ class DrawerAdapter(
                 true
             }
         }
+
+        fun bind(item: DrawerItem.UserRow) {
+            binding.rowIcon.visibility = View.GONE
+            binding.rowAvatar.visibility = View.VISIBLE
+            binding.rowAvatar.setText(item.userName)
+            binding.rowName.text =
+                binding.root.context.getString(R.string.drawer_user_name, item.userName)
+            binding.rowEndText.visibility = View.GONE
+            binding.root.setOnClickListener { onUserClick(item.userName) }
+            binding.root.setOnLongClickListener {
+                onUserLongClick(item)
+                true
+            }
+        }
     }
 
     companion object {
@@ -112,6 +130,8 @@ class DrawerAdapter(
                         oldItem.multiredditId == newItem.multiredditId
                     oldItem is DrawerItem.CommunityRow && newItem is DrawerItem.CommunityRow ->
                         oldItem.subredditName == newItem.subredditName
+                    oldItem is DrawerItem.UserRow && newItem is DrawerItem.UserRow ->
+                        oldItem.userName == newItem.userName
                     else -> oldItem == newItem
                 }
             }

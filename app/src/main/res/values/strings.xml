@@ -231,6 +231,9 @@
     <string name="drawer_section_multireddits">Multis</string>
     <string name="drawer_section_communities">Communities</string>
     <string name="drawer_community_name">r/%s</string>
+    <string name="drawer_section_people">People</string>
+    <string name="drawer_user_name">u/%s</string>
+    <string name="drawer_no_people">Follow someone and they will show up here.</string>
     <string name="drawer_no_subscriptions">Join a community and it will show up here.</string>
     <string name="drawer_no_match">No match</string>
 

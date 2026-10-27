@@ -5,15 +5,17 @@ import com.omeron.data.model.db.MultiredditWithMembers
 import com.omeron.data.model.db.Subscription
 
 /**
- * Builds the drawer list from the shown multireddits and subscriptions that match [query].
+ * Builds the drawer list from the shown multireddits, subscriptions and followed users that match
+ * [query].
  *
  * Hidden items are left out and never counted or mentioned; they only appear on the manage
- * pages. Both section headers are always present so their Manage links stay reachable.
+ * pages. All section headers are always present so their Manage links stay reachable.
  */
 fun buildDrawerItems(
     multireddits: List<MultiredditWithMembers>,
     subscriptions: List<Subscription>,
-    query: String
+    query: String,
+    followedUserNames: List<String> = emptyList()
 ): List<DrawerItem> {
     val multiredditRows = multireddits
         .filter { !it.multireddit.hidden }
@@ -30,6 +32,12 @@ fun buildDrawerItems(
         .sortedBy { it.lowercase() }
         .map { DrawerItem.CommunityRow(it) }
 
+    val shownUserNames = followedUserNames.filter { it.isNotBlank() }
+    val userRows = shownUserNames
+        .filter { it.contains(query, ignoreCase = true) }
+        .sortedBy { it.lowercase() }
+        .map { DrawerItem.UserRow(it) }
+
     val items = mutableListOf<DrawerItem>()
     items += DrawerItem.SectionHeader(
         R.string.drawer_section_multireddits,
@@ -44,6 +52,15 @@ fun buildDrawerItems(
         shownNames.isEmpty() -> items += DrawerItem.Message(R.string.drawer_no_subscriptions)
         communityRows.isEmpty() -> items += DrawerItem.Message(R.string.drawer_no_match)
         else -> items += communityRows
+    }
+    items += DrawerItem.SectionHeader(
+        R.string.drawer_section_people,
+        DrawerItem.ManageTarget.PEOPLE
+    )
+    when {
+        shownUserNames.isEmpty() -> items += DrawerItem.Message(R.string.drawer_no_people)
+        userRows.isEmpty() -> items += DrawerItem.Message(R.string.drawer_no_match)
+        else -> items += userRows
     }
     return items
 }

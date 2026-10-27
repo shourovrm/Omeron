@@ -54,12 +54,16 @@ class UiViewModel @Inject constructor(
     private val multireddits: Flow<List<MultiredditWithMembers>> =
         currentProfile.flatMapLatest { postListRepository.getMultireddits(it.id) }
 
+    private val followedUserNames: Flow<List<String>> =
+        currentProfile.flatMapLatest { postListRepository.getVisibleFollowedUserNames(it.id) }
+
     val drawerItems: Flow<List<DrawerItem>> = combine(
         multireddits,
         subscriptions,
-        drawerFilterQuery
-    ) { multireddits, subscriptions, query ->
-        buildDrawerItems(multireddits, subscriptions, query.trim())
+        drawerFilterQuery,
+        followedUserNames
+    ) { multireddits, subscriptions, query, followedUserNames ->
+        buildDrawerItems(multireddits, subscriptions, query.trim(), followedUserNames)
     }
 
     fun setDrawerFilterQuery(query: String) {

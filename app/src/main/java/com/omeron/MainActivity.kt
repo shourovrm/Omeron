@@ -283,11 +283,17 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             onCommunityClick = { subredditName ->
                 navController.navigate(NavigationGraphDirections.openSubreddit(subredditName))
             },
+            onUserClick = { userName ->
+                navController.navigate(NavigationGraphDirections.openUser(userName))
+            },
             onMultiredditLongClick = { row ->
                 subscriptionMenus.showMultiredditMenu(row.multiredditId, row.name, offerHide = true)
             },
             onCommunityLongClick = { row ->
                 subscriptionMenus.showCommunityMenu(row.subredditName, offerHide = true)
+            },
+            onUserLongClick = { row ->
+                subscriptionMenus.showUserMenu(row.userName)
             },
             onManageClick = ::openManagePage
         )
@@ -332,6 +338,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         val directions = when (target) {
             DrawerItem.ManageTarget.MULTIREDDITS -> NavigationGraphDirections.openManageMultireddits()
             DrawerItem.ManageTarget.COMMUNITIES -> NavigationGraphDirections.openManageCommunities()
+            DrawerItem.ManageTarget.PEOPLE -> NavigationGraphDirections.openManageCommunities()
         }
         navController.navigate(directions)
     }
