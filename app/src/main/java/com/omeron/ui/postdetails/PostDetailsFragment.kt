@@ -247,16 +247,12 @@ class PostDetailsFragment : BaseFragment(),
         with(binding.appBar) {
             backCard.setOnClickListener { onBackPressed() }
             sortCard.setOnClickListener { showSortDialog() }
+            findCard.setOnClickListener { openFindBar() }
             moreCard.setOnClickListener { showMenu() }
         }
     }
 
     private fun initFindBar() {
-        parentFragmentManager.setFragmentResultListener(
-            PostMenuFragment.REQUEST_KEY_FIND,
-            viewLifecycleOwner
-        ) { _, _ -> openFindBar() }
-
         with(binding) {
             inputFind.doOnTextChanged { text, _, _, _ -> runFind(text?.toString().orEmpty()) }
             inputFind.setOnEditorActionListener { _, _, _ ->

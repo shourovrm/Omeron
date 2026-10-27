@@ -318,7 +318,6 @@
 
     <string name="menu_sidebar">Sidebar</string>
     <string name="menu_refresh">Refresh</string>
-    <string name="menu_find">Find in post</string>
     <string name="find_hint">Find in post</string>
     <string name="find_no_matches">No matches</string>
     <string name="find_count">%1$d of %2$d</string>

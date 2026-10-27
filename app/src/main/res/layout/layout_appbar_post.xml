@@ -50,9 +50,18 @@
         android:layout_height="@dimen/app_bar_button_size"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/more_card"
-        android:layout_marginEnd="@dimen/app_bar_margin"
+        app:layout_constraintEnd_toStartOf="@id/find_card"
         app:icon="@drawable/ic_sort"
+        style="@style/CardButtonStyle"/>
+
+    <com.omeron.ui.common.widget.CardButton
+        android:id="@+id/find_card"
+        android:layout_width="@dimen/app_bar_button_size"
+        android:layout_height="@dimen/app_bar_button_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/more_card"
+        app:icon="@drawable/ic_search"
         style="@style/CardButtonStyle"/>
 
     <com.omeron.ui.common.widget.SortIconView
