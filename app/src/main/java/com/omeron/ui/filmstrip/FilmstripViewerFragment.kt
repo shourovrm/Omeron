@@ -651,7 +651,16 @@ class FilmstripViewerFragment : BaseFragment() {
                 selectFrame(frames[initialIndex])
             } else {
                 // Same page, but its frame may have changed (resolved, or gained gallery frames).
-                frames.firstOrNull { it.id == viewModel.currentFrameId }?.let(::bindOverlay)
+                val currentIndex = frames.indexOfFirst { it.id == viewModel.currentFrameId }
+                if (currentIndex == -1) return@submitList
+
+                // ViewPager2 keeps an integer position, so frames inserted before the current one
+                // would otherwise slide the pager back onto an earlier post.
+                val isPagerIdle = binding.viewPager.scrollState == ViewPager2.SCROLL_STATE_IDLE
+                if (isPagerIdle && binding.viewPager.currentItem != currentIndex) {
+                    binding.viewPager.setCurrentItem(currentIndex, false)
+                }
+                bindOverlay(frames[currentIndex])
             }
         }
     }
