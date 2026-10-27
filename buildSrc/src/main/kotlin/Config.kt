@@ -4,7 +4,7 @@ object Config {
     const val applicationId = "com.omeron"
 
     const val minSdk = 23
-    const val compileSdk = 33
+    const val compileSdk = 34
     const val targetSdk = 33
 
     const val versionCode = 27

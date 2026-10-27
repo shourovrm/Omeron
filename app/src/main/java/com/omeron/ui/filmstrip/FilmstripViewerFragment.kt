@@ -518,11 +518,12 @@ class FilmstripViewerFragment : BaseFragment() {
                 override fun onDown(event: MotionEvent) = true
 
                 override fun onScroll(
-                    firstEvent: MotionEvent,
+                    firstEvent: MotionEvent?,
                     currentEvent: MotionEvent,
                     distanceX: Float,
                     distanceY: Float
                 ): Boolean {
+                    if (firstEvent == null) return false
                     val upwardTravel = firstEvent.y - currentEvent.y
                     val isVertical = abs(distanceY) > abs(distanceX)
                     if (!hasExpandedBySwipe && isVertical && upwardTravel > swipeThreshold) {
