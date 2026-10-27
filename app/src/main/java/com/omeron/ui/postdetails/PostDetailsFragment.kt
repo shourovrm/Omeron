@@ -1,5 +1,6 @@
 package com.omeron.ui.postdetails
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -182,6 +184,15 @@ class PostDetailsFragment : BaseFragment(),
             applyWindowInsets(left = false, top = false, right = false)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = concatAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    updatePinnedTitle()
+                }
+            })
+        }
+
+        binding.textPinnedTitle.setOnClickListener {
+            binding.listComments.betterSmoothScrollToPosition(0)
         }
     }
 
@@ -250,6 +261,24 @@ class PostDetailsFragment : BaseFragment(),
             findCard.setOnClickListener { openFindBar() }
             moreCard.setOnClickListener { showMenu() }
         }
+    }
+
+    // Shows the title strip once the title in the post header has scrolled out of view.
+    private fun updatePinnedTitle() {
+        val list = binding.listComments
+        val layoutManager = list.layoutManager as LinearLayoutManager
+        val header = layoutManager.findViewByPosition(0)
+        val titleView = header?.findViewById<View>(R.id.text_post_title)
+
+        val isTitleScrolledOff = if (titleView == null) {
+            true
+        } else {
+            val titleBounds = Rect()
+            titleView.getDrawingRect(titleBounds)
+            list.offsetDescendantRectToMyCoords(titleView, titleBounds)
+            titleBounds.bottom <= 0
+        }
+        binding.textPinnedTitle.isVisible = isTitleScrolledOff && currentPost != null
     }
 
     private fun initFindBar() {
@@ -339,7 +368,9 @@ class PostDetailsFragment : BaseFragment(),
 
     private fun bindPost(post: PostEntity, fromCache: Boolean) {
         currentPost = post
-        binding.appBar.label.text = post.title
+        // The title lives in the pinned strip and the post header; the bar names the subreddit.
+        binding.appBar.label.text = post.subreddit
+        binding.textPinnedTitle.text = post.title
         postAdapter.setPost(post, fromCache)
         commentAdapter.postEntity = post
         viewModel.insertPostInHistory(post)

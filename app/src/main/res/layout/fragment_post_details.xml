@@ -117,5 +117,24 @@
             android:overScrollMode="never"
             android:scrollbars="none"/>
 
+        <!-- Overlays the top of the list so showing it never shifts the comments. -->
+        <TextView
+            android:id="@+id/text_pinned_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/touch_target"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/list_comments"
+            android:background="?attr/colorSurface"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:paddingHorizontal="@dimen/space_16"
+            android:paddingVertical="@dimen/space_8"
+            android:textAppearance="@style/TextAppearance.App.LabelLarge"
+            android:textColor="?attr/colorOnSurface"
+            android:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.omeron.ui.common.ElasticDragDismissFrameLayout>
