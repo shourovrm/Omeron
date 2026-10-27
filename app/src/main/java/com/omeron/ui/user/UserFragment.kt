@@ -135,8 +135,11 @@ class UserFragment : BaseFragment() {
             launch {
                 viewModel.isFollowed.collect { followed ->
                     binding.followCard.setIcon(
-                        if (followed) R.drawable.ic_person_remove else R.drawable.ic_person_add
+                        if (followed) R.drawable.ic_following else R.drawable.ic_follow
                     )
+                    // The button does the opposite of the current state, so the label follows it.
+                    binding.followCard.contentDescription =
+                        getString(if (followed) R.string.unfollow else R.string.follow)
                 }
             }
 
