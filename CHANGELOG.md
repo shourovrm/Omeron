@@ -1,3 +1,9 @@
+# 0.8.6 - 2026/10/28
+
+### Fixed
+- In the filmstrip, a swiped-to page briefly showed the previous post's
+  picture under the new post's caption until its own picture loaded
+
 # 0.8.5 - 2026/10/28
 
 ### Fixed
