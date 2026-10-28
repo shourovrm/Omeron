@@ -147,11 +147,19 @@ class FilmstripFrameAdapter(
         val isZoomedIn: Boolean
             get() = binding.image.isZoomed
 
+        private var boundFrameId: String? = null
+
         override fun bind(frame: FilmstripFrame) {
             binding.image.contentDescription = frame.post?.title
 
             // A zoom left over from the previous frame this holder showed would carry over.
             binding.image.resetZoom()
+
+            // The image view keeps its bitmap until the new one loads, so a recycled page would
+            // show the previous post's picture under this post's caption. The same frame
+            // rebinding (it resolved, or gained frames) keeps its picture to avoid a blank flash.
+            if (boundFrameId != frame.id) binding.image.setImageDrawable(null)
+            boundFrameId = frame.id
 
             loadImage(frame, frame.media?.url ?: frame.post?.preview)
 
@@ -226,8 +234,13 @@ class FilmstripFrameAdapter(
             }
         }
 
+        private var boundFrameId: String? = null
+
         override fun bind(frame: FilmstripFrame) {
             binding.root.contentDescription = frame.post?.title
+            // Same reason as the image page: the poster of the previous frame would show first.
+            if (boundFrameId != frame.id) binding.imagePoster.setImageDrawable(null)
+            boundFrameId = frame.id
             binding.imagePoster.load(frame.post?.preview)
             binding.infoRetry.hide()
             hasPlaybackFailed = false
