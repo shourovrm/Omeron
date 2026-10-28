@@ -1,3 +1,11 @@
+# 0.8.5 - 2026/10/28
+
+### Fixed
+- The filmstrip could jump back to an earlier post while you swiped
+  down, when the feed list changed behind the current post
+- The app now checks the notification permission before posting a
+  notification
+
 # 0.8.4 - 2026/10/27
 
 ### Added
