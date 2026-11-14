@@ -18,12 +18,14 @@ import com.omeron.util.extension.latest
 import com.omeron.util.extension.updateValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -70,30 +72,40 @@ class ProfileViewModel @Inject constructor(
         profiles.find { it.id == currentProfile.id } ?: currentProfile
     }
 
-    val savedPosts: Flow<List<SavedItem>> = combine(
+    // The text field reads searchQuery and stays instant; the lists wait for a pause in typing.
+    // Clearing the field is not delayed.
+    @OptIn(FlowPreview::class)
+    private val listQuery: Flow<String> = searchQuery.debounce { query ->
+        if (query.isEmpty()) 0 else SEARCH_DEBOUNCE_MILLIS
+    }
+
+    // Mapping parses the HTML of every item, so it runs once per database change, not per keystroke.
+    private val savedPostItems: Flow<List<SavedItem>> = combine(
         _savedPosts,
-        contentPreferences,
-        searchQuery
-    ) { posts, preferences, query ->
-        savedMapper.postsToEntities(posts).filter {
-            preferences.showNsfw || !(it as SavedItem.Post).post.isOver18
-        }.filterPosts(query)
-    }.map { items ->
-        items.sortedByDescending { it.timestamp }
+        contentPreferences
+    ) { posts, preferences ->
+        savedMapper.postsToEntities(posts)
+            .filter { preferences.showNsfw || !(it as SavedItem.Post).post.isOver18 }
+            .sortedByDescending { it.timestamp }
     }.flowOn(defaultDispatcher)
 
-    val savedComments: Flow<List<SavedItem>> = combine(
-        _savedComments,
-        searchQuery
-    ) { comments, query ->
-        savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }.filterComments(query)
+    private val savedCommentItems: Flow<List<SavedItem>> = _savedComments.map { comments ->
+        savedMapper.commentsToEntities(comments).sortedByDescending { it.timestamp }
     }.flowOn(defaultDispatcher)
+
+    val savedPosts: Flow<List<SavedItem>> = combine(savedPostItems, listQuery) { items, query ->
+        items.filterPosts(query)
+    }
+
+    val savedComments: Flow<List<SavedItem>> = combine(savedCommentItems, listQuery) { items, query ->
+        items.filterComments(query)
+    }
 
     val historyItems: Flow<List<HistoryListItem>> = combine(
         _history,
         savedPostIds,
         contentPreferences,
-        searchQuery
+        listQuery
     ) { history, saved, preferences, query ->
         val posts = history
             .map { it.toPostEntity(saved = saved.contains(it.postId)) }
@@ -224,6 +236,8 @@ class ProfileViewModel @Inject constructor(
         }
     }
 }
+
+private const val SEARCH_DEBOUNCE_MILLIS = 200L
 
 /** What a selection action took out of a tab, kept whole so Undo can put it back. */
 sealed class RemovedRows {

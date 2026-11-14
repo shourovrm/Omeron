@@ -110,7 +110,7 @@ class PostListAdapter(
 
     private val listener = object : Listener {
         override fun onClick(position: Int, isLong: Boolean) {
-            getItem(position)?.let {
+            postAt(position)?.let {
                 if (isLong) {
                     postClickListener.onLongClick(it)
                 } else {
@@ -121,21 +121,21 @@ class PostListAdapter(
         }
 
         override fun onFilmstripClick(position: Int) {
-            getItem(position)?.let {
+            postAt(position)?.let {
                 setPostSeen(position, it)
                 postClickListener.onFilmstripClick(it)
             }
         }
 
         override fun onGalleryClick(position: Int) {
-            getItem(position)?.let {
+            postAt(position)?.let {
                 setPostSeen(position, it)
                 postClickListener.onGalleryClick(it)
             }
         }
 
         override fun onMediaClick(position: Int) {
-            getItem(position)?.let {
+            postAt(position)?.let {
                 setPostSeen(position, it)
                 when (it.type) {
                     PostType.IMAGE -> postClickListener.onImageClick(it)
@@ -149,13 +149,13 @@ class PostListAdapter(
         }
 
         override fun onMenuClick(position: Int) {
-            getItem(position)?.let {
+            postAt(position)?.let {
                 postClickListener.onMenuClick(it)
             }
         }
 
         override fun onSaveClick(position: Int) {
-            getItem(position)?.let {
+            postAt(position)?.let {
                 postClickListener.onSaveClick(it)
                 it.saved = !it.saved
                 notifyItemChanged(position, it)
@@ -271,6 +271,12 @@ class PostListAdapter(
             (holder as? PostViewHolder.GalleryPostViewHolder)?.update(item)
             (holder as? PostViewHolder.CompactPostViewHolder)?.update(item)
         }
+    }
+
+    // A tap on a row that is being removed arrives with NO_POSITION.
+    private fun postAt(position: Int): PostEntity? {
+        if (position == RecyclerView.NO_POSITION) return null
+        return getItem(position)
     }
 
     // PagingDataAdapter.getItem is what tells Paging which item is on screen, and so when to

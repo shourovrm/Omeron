@@ -160,7 +160,9 @@ class ProfileSavedAdapter(
         }
     }
 
+    // A tap on a row that is being removed arrives with NO_POSITION.
     private fun getPost(position: Int): PostEntity? {
+        if (position == RecyclerView.NO_POSITION) return null
         return (getItem(position) as? SavedItem.Post)?.post
     }
 

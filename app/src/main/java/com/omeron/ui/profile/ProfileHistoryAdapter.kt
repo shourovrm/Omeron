@@ -34,7 +34,7 @@ class ProfileHistoryAdapter(
         postClickListener,
         rowSelection,
         onLinkClickListener = null,
-        postAt = { position -> (getItem(position) as? HistoryListItem.Row)?.post },
+        postAt = ::getPost,
         onPostChanged = { position, post -> notifyItemChanged(position, post) }
     )
 
@@ -122,6 +122,12 @@ class ProfileHistoryAdapter(
 
     fun currentPosts(): List<PostEntity> {
         return currentList.filterIsInstance<HistoryListItem.Row>().map { it.post }
+    }
+
+    // A tap on a row that is being removed arrives with NO_POSITION.
+    private fun getPost(position: Int): PostEntity? {
+        if (position == RecyclerView.NO_POSITION) return null
+        return (getItem(position) as? HistoryListItem.Row)?.post
     }
 
     private inner class LabelViewHolder(
