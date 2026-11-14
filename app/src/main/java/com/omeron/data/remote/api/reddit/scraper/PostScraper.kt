@@ -7,8 +7,11 @@ import com.omeron.data.remote.api.reddit.model.GalleryImage
 import com.omeron.data.remote.api.reddit.model.GalleryItem
 import com.omeron.data.remote.api.reddit.model.Listing
 import com.omeron.data.remote.api.reddit.model.ListingData
+import com.omeron.data.remote.api.reddit.model.Image
+import com.omeron.data.remote.api.reddit.model.ImageSource
 import com.omeron.data.remote.api.reddit.model.Media
 import com.omeron.data.remote.api.reddit.model.MediaMetadata
+import com.omeron.data.remote.api.reddit.model.MediaPreview
 import com.omeron.data.remote.api.reddit.model.PostChild
 import com.omeron.data.remote.api.reddit.model.PostData
 import com.omeron.data.remote.api.reddit.model.RedditVideoPreview
@@ -206,7 +209,7 @@ class PostScraper(
             null,
             false,
             isOver18,
-            null,
+            expando?.toMediaPreview(),
             tagline.awardings,
             isSpoiler,
             isLocked,
@@ -251,6 +254,23 @@ class PostScraper(
 
             else -> null
         }
+    }
+
+    // The expando shows the picture as a signed rendition at most 1024px wide. Lists load that
+    // in place of the original file, which is several times larger.
+    private fun Element.toMediaPreview(): MediaPreview? {
+        // A gallery lists 108px tiles first; they share the class and are too small to show.
+        val image = selectFirst("div.media-preview-content:not(.gallery-tile-content) img.preview")
+            ?: return null
+        val url = image.attr(Scraper.Selector.Attr.SRC)
+        if (!url.startsWith("https://")) return null
+
+        val source = ImageSource(
+            url,
+            image.attr("width").toIntOrNull() ?: 0,
+            image.attr("height").toIntOrNull() ?: 0
+        )
+        return MediaPreview(listOf(Image(source, emptyList(), null)), null)
     }
 
     private fun Element.toGalleryData(): GalleryData {

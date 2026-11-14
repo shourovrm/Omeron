@@ -28,7 +28,6 @@ fun ImageView.loadViewerImage(
             scale(Scale.FILL)
             precision(Precision.AUTOMATIC)
             memoryCachePolicy(CachePolicy.READ_ONLY)
-            diskCachePolicy(CachePolicy.READ_ONLY)
             listener(
                 onStart = { onStart() },
                 onCancel = { onCancel() },

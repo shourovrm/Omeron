@@ -161,10 +161,33 @@ class FilmstripFrameAdapter(
             if (boundFrameId != frame.id) binding.image.setImageDrawable(null)
             boundFrameId = frame.id
 
-            loadImage(frame, frame.media?.url ?: frame.post?.preview)
+            val fullUrl = frame.media?.url
+            val previewUrl = frame.post?.preview?.takeIf { frame.indexInSource == 0 }
+            if (fullUrl == null || previewUrl == null || previewUrl == fullUrl) {
+                loadImage(frame, fullUrl ?: frame.post?.preview)
+            } else {
+                loadPreviewThenFull(frame, previewUrl, fullUrl)
+            }
 
             binding.loadingCradle.isVisible = frame.status == FrameStatus.LOADING
             if (frame.status == FrameStatus.FAILED) showRetry(frame) else binding.infoRetry.hide()
+        }
+
+        // The list has already downloaded the preview, so the page shows it at once and swaps in
+        // the full picture when that arrives. The full load starts only after the preview is
+        // settled, so a late preview can never replace the full picture.
+        private fun loadPreviewThenFull(frame: FilmstripFrame, previewUrl: String, fullUrl: String) {
+            val loadFull = {
+                // The holder may show another frame by the time the preview is settled.
+                if (boundFrameId == frame.id) loadImage(frame, fullUrl)
+            }
+            binding.image.loadViewerImage(
+                previewUrl,
+                onStart = { binding.loadingCradle.isVisible = true },
+                onCancel = loadFull,
+                onError = loadFull,
+                onSuccess = loadFull
+            )
         }
 
         private fun loadImage(frame: FilmstripFrame, url: String?) {
