@@ -13,58 +13,65 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/post_padding_horizontal">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_subreddit"
-            android:layout_width="wrap_content"
+        <!-- One line: the first views take what they need, the last one is cut with an ellipsis. -->
+        <LinearLayout
+            android:id="@+id/layout_post_info_line"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textAppearance="@style/TextAppearancePostEdgePrint"
-            tools:text="r/reddit" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/text_post_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/text_subreddit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_subreddit"
-            app:layout_constraintBottom_toBottomOf="@id/text_subreddit"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginStart="@dimen/space_4"
-            android:textAppearance="@style/TextAppearancePostEdgePrint"
-            android:text="@{@string/post_age_separated(DateUtil.getTimeDifference(context, post.created, false))}"
-            tools:text="· 5h"/>
+            <TextView
+                android:id="@+id/text_subreddit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearancePostCommunity"
+                tools:text="r/reddit" />
 
-        <TextView
-            android:id="@+id/text_post_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_subreddit"
-            android:textAppearance="@style/TextAppearancePostInfo"
-            tools:text="author"/>
+            <TextView
+                android:id="@+id/text_post_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearancePostEdgePrint"
+                android:text="@{@string/post_age_separated(DateUtil.getTimeDifference(context, post.created, false))}"
+                tools:text="· 5h"/>
 
-        <com.omeron.ui.common.widget.RedditFlairView
-            android:id="@+id/post_flair"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/text_post_author"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_post_author"
-            app:layout_constraintBottom_toBottomOf="@id/text_post_author"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginStart="@dimen/space_4"
-            android:paddingHorizontal="@dimen/post_flair_padding"
-            android:background="@drawable/post_flair_background"
-            android:visibility="gone"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4"
+                android:textAppearance="@style/TextAppearancePostEdgePrint"
+                android:text="@string/post_info_separator"/>
+
+            <TextView
+                android:id="@+id/text_post_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearancePostEdgePrint"
+                tools:text="author"/>
+
+            <com.omeron.ui.common.widget.RedditFlairView
+                android:id="@+id/post_flair"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_4"
+                android:paddingHorizontal="@dimen/post_flair_padding"
+                android:background="@drawable/post_flair_background"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_crosspost"
@@ -78,7 +85,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/text_crosspost_subreddit"
-            app:layout_constraintTop_toBottomOf="@id/text_post_author"
+            app:layout_constraintTop_toBottomOf="@id/layout_post_info_line"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
             android:textAppearance="@style/TextAppearancePostInfo"

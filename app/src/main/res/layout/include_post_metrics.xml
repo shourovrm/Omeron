@@ -10,31 +10,28 @@
             type="com.omeron.data.model.db.PostEntity" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/image_vote_icon"
-            android:layout_width="@dimen/post_icon_size"
-            android:layout_height="@dimen/post_icon_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="@dimen/post_padding_horizontal"
+            android:layout_width="@dimen/post_meta_icon_size"
+            android:layout_height="@dimen/post_meta_icon_size"
+            android:layout_marginStart="@dimen/space_12"
             android:importantForAccessibility="no"
             app:tint="@color/text_color_secondary"
-            app:srcCompat = "@drawable/ic_votes"/>
+            app:srcCompat="@drawable/ic_votes"/>
 
         <TextView
             android:id="@+id/text_post_vote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/image_vote_icon"
-            app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
-            app:layout_constraintStart_toEndOf="@id/image_vote_icon"
             android:layout_marginStart="@dimen/post_icon_text_margin"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
+            android:fontFeatureSettings="tnum"
+            android:textAppearance="@style/TextAppearance.App.BodySmall.Variant"
             android:text="@{post.score}"
             tools:text="12345"/>
 
@@ -42,21 +39,16 @@
             android:id="@+id/text_post_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/image_vote_icon"
-            app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
-            app:layout_constraintStart_toEndOf="@id/text_post_vote"
             android:layout_marginStart="@dimen/post_margin_horizontal"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
+            android:fontFeatureSettings="tnum"
+            android:textAppearance="@style/TextAppearance.App.BodySmall.Variant"
             tools:text="50%"/>
 
         <ImageView
             android:id="@+id/image_comments_icon"
-            android:layout_width="@dimen/post_icon_size"
-            android:layout_height="@dimen/post_icon_size"
-            app:layout_constraintTop_toTopOf="@id/image_vote_icon"
-            app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
-            app:layout_constraintStart_toEndOf="@id/text_post_ratio"
-            android:layout_marginStart="@dimen/space_24"
+            android:layout_width="@dimen/post_meta_icon_size"
+            android:layout_height="@dimen/post_meta_icon_size"
+            android:layout_marginStart="@dimen/space_12"
             android:importantForAccessibility="no"
             app:tint="@color/text_color_secondary"
             app:srcCompat="@drawable/ic_comments"/>
@@ -65,21 +57,26 @@
             android:id="@+id/text_post_comments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/image_vote_icon"
-            app:layout_constraintBottom_toBottomOf="@id/image_vote_icon"
-            app:layout_constraintStart_toEndOf="@id/image_comments_icon"
             android:layout_marginStart="@dimen/post_icon_text_margin"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
+            android:fontFeatureSettings="tnum"
+            android:textAppearance="@style/TextAppearance.App.BodySmall.Variant"
             android:text="@{post.commentsNumber}"
             tools:text="1234"/>
+
+        <com.omeron.ui.common.widget.CheckableImageView
+            android:id="@+id/button_save"
+            android:layout_width="@dimen/post_action_button_size"
+            android:layout_height="@dimen/post_action_button_size"
+            android:padding="@dimen/post_action_button_padding"
+            android:scaleType="fitCenter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/post_save_description"
+            app:srcCompat="@drawable/bookmark" />
 
         <ImageButton
             android:id="@+id/button_more"
             android:layout_width="@dimen/post_action_button_size"
             android:layout_height="@dimen/post_action_button_size"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/space_4"
             android:padding="@dimen/post_action_button_padding"
             android:scaleType="fitCenter"
@@ -87,18 +84,5 @@
             android:contentDescription="@string/post_more_description"
             app:srcCompat="@drawable/ic_more"/>
 
-        <com.omeron.ui.common.widget.CheckableImageView
-            android:id="@+id/button_save"
-            android:layout_width="@dimen/post_action_button_size"
-            android:layout_height="@dimen/post_action_button_size"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button_more"
-            android:padding="@dimen/post_action_button_padding"
-            android:scaleType="fitCenter"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/post_save_description"
-            app:srcCompat="@drawable/bookmark" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

@@ -6,30 +6,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <include
-        android:id="@+id/include_post_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/text_post_title"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintVertical_bias="0"
-        layout="@layout/include_post_info"/>
-
     <TextView
         android:id="@+id/text_post_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearancePostTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_post_info"
-        app:layout_constraintBottom_toTopOf="@id/image_post"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginHorizontal="@dimen/post_title_margin"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        android:layout_marginTop="@dimen/space_8"
         tools:text="This is a post" />
+
+    <include
+        android:id="@+id/include_post_flairs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_post_title"
+        android:layout_marginTop="@dimen/space_8"
+        layout="@layout/include_post_flairs"/>
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_post"
@@ -38,9 +35,8 @@
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_post_title"
-        app:layout_constraintBottom_toTopOf="@id/text_post"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        app:layout_constraintTop_toBottomOf="@id/include_post_flairs"
+        android:layout_marginTop="@dimen/space_8"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
         android:visibility="gone"
@@ -68,29 +64,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_post"
-        app:layout_constraintBottom_toTopOf="@id/include_post_flairs"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        android:layout_marginTop="@dimen/space_8"
         android:paddingHorizontal="@dimen/post_text_padding"
         android:visibility="gone"/>
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="image_post, text_post" />
-
-    <include
-        android:id="@+id/include_post_flairs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_post"
-        app:layout_constraintBottom_toTopOf="@id/scrollview_awards"
-        app:layout_constraintVertical_bias="0"
-        android:layout_marginTop="@dimen/post_margin_top_large"
-        layout="@layout/include_post_flairs"/>
 
     <include
         android:id="@+id/include_crosspost"
@@ -98,9 +74,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_post_flairs"
-        app:layout_constraintBottom_toTopOf="@id/scrollview_awards"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        app:layout_constraintTop_toBottomOf="@id/text_post"
+        android:layout_marginTop="@dimen/space_8"
         android:layout_marginHorizontal="@dimen/post_content_margin_horizontal"
         layout="@layout/include_crosspost"/>
 
@@ -109,10 +84,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/include_crosspost"
-        app:layout_constraintBottom_toTopOf="@id/include_post_metrics"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        android:layout_marginTop="@dimen/space_8"
         android:layout_marginHorizontal="@dimen/post_margin_horizontal"
         android:scrollbars="none"
         android:overScrollMode="never">
@@ -125,14 +99,35 @@
 
     </HorizontalScrollView>
 
-    <include
-        android:id="@+id/include_post_metrics"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/layout_post_rebate"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/space_48"
+        android:paddingStart="@dimen/space_16"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="?attr/omeronSurfaceContainerLow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scrollview_awards"
         app:layout_constraintBottom_toBottomOf="parent"
-        layout="@layout/include_post_metrics"/>
+        android:layout_marginTop="@dimen/space_8"
+        android:layout_marginBottom="@dimen/space_16">
+
+        <include
+            android:id="@+id/include_post_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            layout="@layout/include_post_info"/>
+
+        <include
+            android:id="@+id/include_post_metrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/include_post_metrics"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

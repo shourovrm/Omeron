@@ -8,9 +8,11 @@ the same commit as the UI.
 ## Departures
 
 Deliberate changes to Material 3, applied everywhere: post media is full width with square
-corners, never inside a card; posts are separated by space, not cards or dividers; a saved post
-carries the marker tick on its picture; text posts are a full-width surfaceContainerHigh frame with
-the title in headlineSmall. Kept from Material without exception: 48dp targets, contrast, sp text
+corners, never inside a card; posts are separated by space, not cards or dividers; the title sits
+above the picture and the community, age, counts and actions sit on one tinted rebate line under
+it; a saved post carries the marker tick on its picture; text posts are a full-width
+surfaceContainerHigh frame with the title in headlineSmall; compact rows are a strip of square
+pictures flush with the screen edge. Kept from Material without exception: 48dp targets, contrast, sp text
 that follows font scale, system Back, window insets, standard controls.
 
 ## Type
@@ -27,7 +29,7 @@ for the OMERON wordmark. Every TextView takes one role from `styles.xml`; layout
 | titleSmall | 14sp / 20sp | 500 | comment author, metric value |
 | bodyLarge | 16sp / 24sp | 400 | post self-text, comment body, settings category label |
 | bodyMedium | 14sp / 20sp | 400 | post info line, settings row summary, comment info |
-| bodySmall | 12sp / 16sp | 400 | domain, flair text, metric label, timestamps |
+| bodySmall | 12sp / 16sp | 400 | domain, flair text, rebate line, compact info line, timestamps |
 | labelLarge | 14sp / 20sp | 500 | button label, tab label, chip label |
 | labelMedium | 12sp / 16sp | 500 | bottom navigation label, award count |
 
@@ -82,14 +84,19 @@ under 18sp, 3:1 for larger text and icons.
 ## Layout of the Feed page
 
 Small top app bar (64dp): menu icon, OMERON wordmark, sort icon, layout icon. Below it the posts,
-16dp of space between them, no cards and no dividers. Card layout, top to bottom: edge print
-(community and age as bodySmall in onSurfaceVariant, 16dp side padding), media full width with
-square corners at 4:3 (portrait pictures up to 4:5), title as titleMedium at 16dp padding, author
-as bodyMedium, flair chips, action row of 48dp targets (vote with score, comments with count, save,
-more) and the domain as bodySmall. A saved post shows the marker tick on its picture. A text post is
-a full-width surfaceContainerHigh frame with the title in headlineSmall. Compact rows keep their
-thumbnail (8dp corners) and show the tick on it; the filmstrip grid marks saved tiles with the
-marker loop. Bottom navigation bar 80dp with Feed, Popular, Search, Multis, You. Error and login
+16dp of space between them, no cards and no dividers. Card layout, top to bottom: title as
+titleMedium at 16dp side padding and 8dp above and below; one row of status and flair chips, and
+for a link post its domain as bodySmall, only when there is any; media full width with square
+corners at 4:3 (a link post without a picture has no media block); the rebate line. The rebate
+line is one 48dp row in surfaceContainerLow with 16dp start padding: "community, age, author" as
+bodySmall on one ellipsized line (community in onSurface, weight 500), then score, comment count,
+save and more in 48dp targets. A saved post shows the marker tick on its picture. A text post
+replaces the title and media with a full-width surfaceContainerHigh frame with the title in
+headlineSmall. Compact rows are at least 72dp high with 2dp between them: a 72dp square picture
+with square corners flush with the left edge and the tick on it (a post without a picture shows
+the community's colour and first letter), then the title as titleMedium on at most two lines and
+one bodySmall line with community and age, score and comment count; the saved lists add a more
+button to that line. The filmstrip grid marks saved tiles with the marker loop. Bottom navigation bar 80dp with Feed, Popular, Search, Multis, You. Error and login
 states use the info bar: text wraps beside a 40dp text button.
 
 ## Layout of the You page

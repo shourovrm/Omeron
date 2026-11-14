@@ -476,4 +476,5 @@
     <string name="navigation_label_you">You</string>
     <string name="profile_history_select_day">Select this day</string>
     <string name="profile_history_deselect_day">Deselect this day</string>
+    <string name="post_info_separator" translatable="false">·</string>
 </resources>

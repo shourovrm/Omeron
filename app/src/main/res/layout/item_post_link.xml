@@ -6,58 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include
-        android:id="@id/include_post_info"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/text_post_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearancePostTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/barrier_top"
-        android:layout_marginBottom="@dimen/post_margin_top_large"
-        layout="@layout/include_post_info"/>
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        app:constraint_referenced_ids="image_post_link_preview, text_post_title" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/image_post_link_preview"
-        android:layout_width="@dimen/post_link_image_size"
-        android:layout_height="@dimen/post_link_image_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/text_post_title"
-        app:layout_constraintTop_toBottomOf="@id/barrier_top"
-        app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
-        android:layout_marginStart="@dimen/post_link_image_margin_horizontal"
-        android:contentDescription="@string/link_preview_image_description"
-        android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
-        tools:src="@tools:sample/backgrounds/scenic" />
-
-    <TextView
-        android:id="@+id/text_post_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearancePostTitle"
-        app:layout_constraintStart_toEndOf="@+id/image_post_link_preview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_top"
-        app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="1"
         android:layout_marginHorizontal="@dimen/post_title_margin"
-        tools:text="Title" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="image_post_link_preview, text_post_title" />
+        android:layout_marginTop="@dimen/space_8"
+        tools:text="This is a post" />
 
     <include
         android:id="@+id/include_post_flairs"
@@ -65,9 +24,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_bottom"
-        app:layout_constraintBottom_toTopOf="@id/awards"
-        android:layout_marginTop="@dimen/post_margin_top_large"
+        app:layout_constraintTop_toBottomOf="@id/text_post_title"
+        android:layout_marginTop="@dimen/space_8"
         layout="@layout/include_post_flairs"/>
 
     <com.omeron.ui.common.widget.AwardView
@@ -75,32 +33,66 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/include_post_flairs"
-        app:layout_constraintBottom_toTopOf="@id/include_post_metrics"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/post_margin_top_small"
-        android:layout_marginTop="@dimen/post_margin_top_large"
+        android:layout_marginStart="@dimen/post_padding_horizontal"
+        android:layout_marginTop="@dimen/space_8"
         android:paddingVertical="@dimen/award_chip_padding_vertical_post"
         android:paddingHorizontal="@dimen/award_chip_padding_horizontal_post"
         app:textStyle="@style/TextAppearanceAwardPost"/>
 
-    <include
-        android:id="@+id/include_post_metrics"
-        layout="@layout/include_post_metrics"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_post_link_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/awards"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/awards"
+        android:layout_marginTop="@dimen/space_8"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
+        android:contentDescription="@string/link_preview_image_description"
+        tools:src="@tools:sample/backgrounds/scenic"/>
+
+    <LinearLayout
+        android:id="@+id/layout_post_rebate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/space_48"
+        android:paddingStart="@dimen/space_16"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="?attr/omeronSurfaceContainerLow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_post_link_preview"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="@dimen/post_margin_top_small"/>
+        app:layout_goneMarginTop="@dimen/space_8"
+        android:layout_marginBottom="@dimen/space_16">
+
+        <include
+            android:id="@+id/include_post_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            layout="@layout/include_post_info"/>
+
+        <include
+            android:id="@+id/include_post_metrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/include_post_metrics"/>
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/image_post_marker"
-        android:layout_width="@dimen/post_marker_size_small"
-        android:layout_height="@dimen/post_marker_size_small"
+        android:layout_width="@dimen/post_marker_size"
+        android:layout_height="@dimen/post_marker_size"
         app:layout_constraintEnd_toEndOf="@id/image_post_link_preview"
         app:layout_constraintTop_toTopOf="@id/image_post_link_preview"
-        android:layout_margin="@dimen/post_marker_inset_small"
-        android:padding="@dimen/post_marker_padding_small"
+        android:layout_margin="@dimen/post_marker_inset"
+        android:padding="@dimen/post_marker_padding"
         android:background="@drawable/marker_scrim"
         android:importantForAccessibility="no"
         android:visibility="gone"

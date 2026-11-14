@@ -22,9 +22,26 @@ import com.omeron.databinding.ItemPostTextBinding
 import com.omeron.ui.common.widget.AwardView
 import com.omeron.util.ClickableMovementMethod
 import com.omeron.util.DateUtil
+import com.omeron.util.extension.fitTo
 import com.omeron.util.extension.load
 import com.omeron.util.extension.setRatio
 import com.omeron.util.extension.setSaved
+import com.omeron.util.extension.sum
+
+// The same ten colours and the same pick as AvatarView, so a community keeps its colour in the
+// avatar and on a compact row without a picture.
+private val COMMUNITY_COLORS = intArrayOf(
+    R.color.profile_background_1,
+    R.color.profile_background_2,
+    R.color.profile_background_3,
+    R.color.profile_background_4,
+    R.color.profile_background_5,
+    R.color.profile_background_6,
+    R.color.profile_background_7,
+    R.color.profile_background_8,
+    R.color.profile_background_9,
+    R.color.profile_background_10
+)
 
 abstract class PostViewHolder(
     itemView: View,
@@ -90,27 +107,16 @@ abstract class PostViewHolder(
             setTextColor(ContextCompat.getColor(context, postEntity.authorColor))
         }
 
-        when {
-            postEntity.hasFlairs -> {
-                postFlairsBinding.root.visibility = View.VISIBLE
-                postFlairsBinding.postFlair.apply {
-                    if (!postEntity.flair.isEmpty()) {
-                        visibility = View.VISIBLE
-
-                        setFlair(postEntity.flair)
-                    } else {
-                        visibility = View.GONE
-                    }
-                }
-            }
-
-            postEntity.isSelf -> {
-                postFlairsBinding.root.visibility = View.GONE
-            }
-
-            else -> {
-                postFlairsBinding.postFlair.visibility = View.GONE
-            }
+        // The row of chips and the domain exists only when it has something to show, so a post
+        // without any leaves no empty gap under its title.
+        val hasChips = postEntity.isOver18 || postEntity.isSpoiler || postEntity.isOC ||
+            postEntity.isStickied || postEntity.isArchived || postEntity.isLocked
+        val hasFlair = !postEntity.flair.isEmpty()
+        postFlairsBinding.root.isVisible =
+            hasChips || hasFlair || postEntity.type == PostType.LINK
+        postFlairsBinding.postFlair.isVisible = hasFlair
+        if (hasFlair) {
+            postFlairsBinding.postFlair.setFlair(postEntity.flair)
         }
 
         when {
@@ -290,10 +296,14 @@ abstract class PostViewHolder(
             binding.imagePostLinkPreview.setOnClickListener {
                 listener.onMediaClick(bindingAdapterPosition)
             }
+            // A link post without a picture opens its link from the domain.
+            binding.includePostFlairs.textDomain.setOnClickListener {
+                listener.onMediaClick(bindingAdapterPosition)
+            }
         }
 
         override fun showSavedMarker(saved: Boolean) {
-            binding.imagePostMarker.isVisible = saved
+            binding.imagePostMarker.isVisible = saved && binding.imagePostLinkPreview.isVisible
         }
 
         override fun bind(
@@ -302,12 +312,17 @@ abstract class PostViewHolder(
         ) {
             super.bind(postEntity, contentPreferences)
 
-            binding.imagePostLinkPreview.load(
-                postEntity.preview,
-                !postEntity.shouldShowPreview(contentPreferences)
-            ) {
-                error(R.drawable.preview_link_fallback)
-                fallback(R.drawable.preview_link_fallback)
+            val hasPreview = !postEntity.preview.isNullOrEmpty()
+            binding.imagePostLinkPreview.isVisible = hasPreview
+            showSavedMarker(postEntity.saved)
+            if (hasPreview) {
+                binding.imagePostLinkPreview.load(
+                    postEntity.preview,
+                    !postEntity.shouldShowPreview(contentPreferences)
+                ) {
+                    error(R.drawable.preview_link_fallback)
+                    fallback(R.drawable.preview_link_fallback)
+                }
             }
         }
     }
@@ -463,8 +478,9 @@ abstract class PostViewHolder(
     }
 
     // ponytail: same shape as GalleryPostViewHolder (no metrics/flairs/awards rows), just a
-    // horizontal row instead of a tile - title + subreddit/score on the left, small thumbnail
-    // on the right. Tap opens the post; one Listener call, no per-type media dispatch.
+    // horizontal row instead of a tile - square thumbnail on the left, title and a line with
+    // subreddit, age and counts beside it. Tap opens the post; one Listener call, no per-type
+    // media dispatch.
     class CompactPostViewHolder(
         private val binding: ItemPostCompactBinding,
         listener: PostListAdapter.Listener
@@ -490,7 +506,6 @@ abstract class PostViewHolder(
         }
 
         fun bind(postEntity: PostEntity, contentPreferences: ContentPreferences) {
-            binding.avatarCompactCommunity.setText(postEntity.subredditName)
             binding.textCompactSubreddit.text = postEntity.subreddit
             binding.textCompactAge.text = itemView.context.getString(
                 R.string.post_age_separated,
@@ -502,22 +517,17 @@ abstract class PostViewHolder(
                 setTextColor(ContextCompat.getColor(context, postEntity.textColor))
             }
 
-            // Plain text keeps the excerpt in the secondary colour; the styled preview text would
-            // bring its own link and emphasis colours.
-            val excerpt = postEntity.previewText
-                ?.takeIf { postEntity.shouldShowPreview(contentPreferences) }
-                ?.toString()
-                ?.trim()
-            binding.textCompactExcerpt.apply {
-                text = excerpt
-                isVisible = !excerpt.isNullOrEmpty()
-            }
-
             binding.textCompactScore.text = postEntity.score
             binding.textCompactComments.text = postEntity.commentsNumber
 
             val hasPreview = !postEntity.preview.isNullOrEmpty()
             binding.imageCompactPreview.isVisible = hasPreview
+            binding.textCompactInitial.apply {
+                isVisible = !hasPreview
+                text = postEntity.subredditName.take(1).uppercase()
+                val colorIndex = postEntity.subredditName.sum.fitTo(COMMUNITY_COLORS.indices)
+                setBackgroundColor(ContextCompat.getColor(context, COMMUNITY_COLORS[colorIndex]))
+            }
             if (hasPreview) {
                 binding.imageCompactPreview.load(
                     postEntity.preview,

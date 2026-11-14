@@ -6,6 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="com.omeron.data.model.PostType"/>
         <variable
             name="post"
             type="com.omeron.data.model.db.PostEntity" />
@@ -18,13 +19,12 @@
 
         <androidx.constraintlayout.helper.widget.Flow
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/text_domain"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:constraint_referenced_ids="nsfw_flair,spoiler_flair,oc_flair,post_flair,pinned_icon,archived_icon,locked_icon"
-            android:layout_marginEnd="@dimen/post_margin_horizontal"
+            app:constraint_referenced_ids="text_domain,nsfw_flair,spoiler_flair,oc_flair,post_flair,pinned_icon,archived_icon,locked_icon"
             app:flow_wrapMode="chain"
             app:flow_horizontalStyle="packed"
             app:flow_horizontalAlign="start"
@@ -104,12 +104,9 @@
             android:id="@+id/text_domain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:textAppearance="@style/TextAppearancePostDomain"
             android:text="@{post.domain}"
-            android:visibility="@{!post.isSelf ? View.VISIBLE : View.GONE}"
+            android:visibility="@{post.type == PostType.LINK ? View.VISIBLE : View.GONE}"
             tools:text="reddit.com"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

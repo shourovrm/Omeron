@@ -6,28 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include
-        android:id="@id/include_post_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/text_post_title"
-        layout="@layout/include_post_info"/>
-
     <TextView
         android:id="@+id/text_post_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearancePostTextFrameTitle"
         android:background="?attr/omeronSurfaceContainerHigh"
         android:padding="@dimen/space_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include_post_info"
-        app:layout_constraintBottom_toTopOf="@id/include_post_flairs"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="This is a post" />
 
     <include
@@ -37,20 +25,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_post_title"
-        app:layout_constraintBottom_toTopOf="@id/text_post_self"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        android:layout_marginTop="@dimen/space_8"
         layout="@layout/include_post_flairs"/>
 
     <com.omeron.ui.common.widget.RedditTextView
         android:id="@+id/text_post_self"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/include_post_flairs"
-        app:layout_constraintBottom_toTopOf="@id/awards"
         android:layout_marginHorizontal="@dimen/post_title_margin"
-        android:layout_marginTop="@dimen/post_margin_top_small"
+        android:layout_marginTop="@dimen/space_8"
         android:maxLines="3"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.App.BodyLarge"/>
@@ -60,23 +46,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/text_post_self"
-        app:layout_constraintBottom_toTopOf="@id/include_post_metrics"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/post_margin_top_small"
-        android:layout_marginTop="@dimen/post_margin_top_large"
+        android:layout_marginStart="@dimen/post_padding_horizontal"
+        android:layout_marginTop="@dimen/space_8"
         android:paddingVertical="@dimen/award_chip_padding_vertical_post"
         android:paddingHorizontal="@dimen/award_chip_padding_horizontal_post"
         app:textStyle="@style/TextAppearanceAwardPost"/>
 
-    <include
-        android:id="@+id/include_post_metrics"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/layout_post_rebate"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        layout="@layout/include_post_metrics"
+        android:minHeight="@dimen/space_48"
+        android:paddingStart="@dimen/space_16"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="?attr/omeronSurfaceContainerLow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/awards"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="@dimen/post_margin_top_small"/>
+        android:layout_marginTop="@dimen/space_8"
+        android:layout_marginBottom="@dimen/space_16">
+
+        <include
+            android:id="@+id/include_post_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            layout="@layout/include_post_info"/>
+
+        <include
+            android:id="@+id/include_post_metrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/include_post_metrics"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

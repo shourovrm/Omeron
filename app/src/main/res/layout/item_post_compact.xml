@@ -5,18 +5,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/space_16">
+    android:minHeight="@dimen/list_item_two_line"
+    android:layout_marginBottom="2dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_compact_preview"
         android:layout_width="@dimen/list_item_two_line"
         android:layout_height="@dimen/list_item_two_line"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/ThumbnailImageViewStyle"
+        app:shapeAppearanceOverlay="@style/SquareImageViewStyle"
         android:contentDescription="@null"
         tools:src="@tools:sample/backgrounds/scenic"/>
+
+    <!-- A post without a picture shows its community's colour and first letter instead. -->
+    <TextView
+        android:id="@+id/text_compact_initial"
+        android:layout_width="@dimen/list_item_two_line"
+        android:layout_height="@dimen/list_item_two_line"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:importantForAccessibility="no"
+        android:textColor="@android:color/white"
+        android:textAppearance="@style/TextAppearance.App.HeadlineSmall"
+        android:visibility="gone"
+        tools:text="R"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_compact_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="image_compact_preview,text_compact_initial"/>
 
     <com.omeron.ui.common.widget.CardButton
         android:id="@+id/button_compact_type_indicator"
@@ -29,137 +51,6 @@
         android:clickable="false"
         style="@style/CardButtonStyle"
         tools:icon="@drawable/ic_play"/>
-
-    <com.omeron.ui.common.widget.AvatarView
-        android:id="@+id/avatar_compact_community"
-        android:layout_width="@dimen/post_avatar_size"
-        android:layout_height="@dimen/post_avatar_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:importantForAccessibility="no"/>
-
-    <TextView
-        android:id="@+id/text_compact_subreddit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/avatar_compact_community"
-        app:layout_constraintTop_toTopOf="@id/avatar_compact_community"
-        app:layout_constraintBottom_toBottomOf="@id/avatar_compact_community"
-        android:layout_marginStart="@dimen/post_margin_top_small"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textAppearance="@style/TextAppearance.App.TitleMedium"
-        tools:text="r/LocalLLaMA"/>
-
-    <TextView
-        android:id="@+id/text_compact_age"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/text_compact_subreddit"
-        app:layout_constraintEnd_toStartOf="@id/image_compact_preview"
-        app:layout_constraintTop_toTopOf="@id/avatar_compact_community"
-        app:layout_constraintBottom_toBottomOf="@id/avatar_compact_community"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_goneMarginEnd="0dp"
-        android:layout_marginStart="@dimen/space_4"
-        android:layout_marginEnd="@dimen/space_12"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textAppearance="@style/TextAppearancePostInfo"
-        tools:text="· 4h"/>
-
-    <TextView
-        android:id="@+id/text_compact_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/post_margin_top_small"
-        android:layout_marginEnd="@dimen/space_12"
-        android:maxLines="3"
-        android:ellipsize="end"
-        android:textAppearance="@style/TextAppearancePostTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/image_compact_preview"
-        app:layout_constraintTop_toBottomOf="@id/avatar_compact_community"
-        app:layout_goneMarginEnd="0dp"
-        tools:text="This is a compact post title that can wrap onto up to three lines before it ellipsizes"/>
-
-    <TextView
-        android:id="@+id/text_compact_excerpt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_4"
-        android:layout_marginEnd="@dimen/space_12"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/image_compact_preview"
-        app:layout_constraintTop_toBottomOf="@id/text_compact_title"
-        app:layout_goneMarginEnd="0dp"
-        tools:text="First lines of the self post body appear here in a secondary colour."/>
-
-    <ImageView
-        android:id="@+id/image_compact_score_icon"
-        android:layout_width="@dimen/post_meta_icon_size"
-        android:layout_height="@dimen/post_meta_icon_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_compact_score"
-        app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
-        android:importantForAccessibility="no"
-        app:tint="@color/text_color_secondary"
-        app:srcCompat="@drawable/ic_votes"/>
-
-    <TextView
-        android:id="@+id/text_compact_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/post_icon_text_margin"
-        android:layout_marginTop="@dimen/post_margin_top_small"
-        android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
-        app:layout_constraintStart_toEndOf="@id/image_compact_score_icon"
-        app:layout_constraintTop_toBottomOf="@id/barrier_compact_content"
-        tools:text="14.3k"/>
-
-    <ImageView
-        android:id="@+id/image_compact_comments_icon"
-        android:layout_width="@dimen/post_meta_icon_size"
-        android:layout_height="@dimen/post_meta_icon_size"
-        app:layout_constraintStart_toEndOf="@id/text_compact_score"
-        app:layout_constraintTop_toTopOf="@id/text_compact_score"
-        app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
-        android:layout_marginStart="@dimen/space_16"
-        android:importantForAccessibility="no"
-        app:tint="@color/text_color_secondary"
-        app:srcCompat="@drawable/ic_comments"/>
-
-    <TextView
-        android:id="@+id/text_compact_comments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/post_icon_text_margin"
-        android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
-        app:layout_constraintStart_toEndOf="@id/image_compact_comments_icon"
-        app:layout_constraintTop_toTopOf="@id/text_compact_score"
-        app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
-        tools:text="1.2k"/>
-
-    <!-- Hidden in the feed, where long press opens the menu; the profile lists use long press to
-         select rows, so they show this button to keep the menu reachable. -->
-    <ImageButton
-        android:id="@+id/button_compact_more"
-        android:layout_width="@dimen/post_action_button_size"
-        android:layout_height="@dimen/post_action_button_size"
-        app:layout_constraintTop_toTopOf="@id/text_compact_score"
-        app:layout_constraintBottom_toBottomOf="@id/text_compact_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="@dimen/post_action_button_padding"
-        android:scaleType="fitCenter"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/post_more_description"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_more"
-        app:tint="@color/text_color_secondary"/>
 
     <ImageView
         android:id="@+id/image_compact_marker"
@@ -175,13 +66,103 @@
         app:srcCompat="@drawable/ic_marker_tick"
         tools:visibility="visible"/>
 
-    <!-- The counts row sits under whichever is taller, the text or the thumbnail, so the menu
-         button can take the right edge without landing on the picture. -->
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_compact_content"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_compact_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="text_compact_title,text_compact_excerpt,image_compact_preview"/>
+        app:layout_constraintStart_toEndOf="@id/barrier_compact_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/space_12"
+        android:layout_marginEnd="@dimen/space_16"
+        android:layout_marginTop="@dimen/space_4"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearancePostTitle"
+        tools:text="This is a compact post title that can wrap onto two lines before it ellipsizes"/>
+
+    <!-- The community and age come first and keep their size; the counts stay at the end. -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/text_compact_title"
+        app:layout_constraintEnd_toEndOf="@id/text_compact_title"
+        app:layout_constraintTop_toBottomOf="@id/text_compact_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="1"
+        android:layout_marginBottom="@dimen/space_4"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/text_compact_subreddit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearancePostCommunity"
+            tools:text="r/LocalLLaMA"/>
+
+        <TextView
+            android:id="@+id/text_compact_age"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/space_4"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearancePostEdgePrint"
+            tools:text="· 4h"/>
+
+        <ImageView
+            android:id="@+id/image_compact_score_icon"
+            android:layout_width="@dimen/post_meta_icon_size"
+            android:layout_height="@dimen/post_meta_icon_size"
+            android:importantForAccessibility="no"
+            app:tint="@color/text_color_secondary"
+            app:srcCompat="@drawable/ic_votes"/>
+
+        <TextView
+            android:id="@+id/text_compact_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/post_icon_text_margin"
+            android:fontFeatureSettings="tnum"
+            android:textAppearance="@style/TextAppearance.App.BodySmall.Variant"
+            tools:text="14.3k"/>
+
+        <ImageView
+            android:id="@+id/image_compact_comments_icon"
+            android:layout_width="@dimen/post_meta_icon_size"
+            android:layout_height="@dimen/post_meta_icon_size"
+            android:layout_marginStart="@dimen/space_12"
+            android:importantForAccessibility="no"
+            app:tint="@color/text_color_secondary"
+            app:srcCompat="@drawable/ic_comments"/>
+
+        <TextView
+            android:id="@+id/text_compact_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/post_icon_text_margin"
+            android:fontFeatureSettings="tnum"
+            android:textAppearance="@style/TextAppearance.App.BodySmall.Variant"
+            tools:text="1.2k"/>
+
+        <!-- Hidden in the feed, where long press opens the menu; the profile lists use long press to
+             select rows, so they show this button to keep the menu reachable. -->
+        <ImageButton
+            android:id="@+id/button_compact_more"
+            android:layout_width="@dimen/post_action_button_size"
+            android:layout_height="@dimen/post_action_button_size"
+            android:padding="@dimen/post_action_button_padding"
+            android:scaleType="fitCenter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/post_more_description"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_more"
+            app:tint="@color/text_color_secondary"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

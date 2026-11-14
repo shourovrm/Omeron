@@ -28,15 +28,14 @@
         <item name="cornerSize">0dp</item>
     </style>
 
-    <!-- Compact rows keep a small thumbnail with 8dp corners. -->
-    <style name="ThumbnailImageViewStyle" parent="">
-        <item name="cornerSize">8dp</item>
-    </style>
-
     <!-- A text post title sits in a full-width frame in the headlineSmall role. -->
     <style name="TextAppearancePostTextFrameTitle" parent="TextAppearance.App.HeadlineSmall"/>
 
-    <!-- Edge print: community and age above the picture. -->
+    <!-- Rebate line: the community in onSurface, the age and author in onSurfaceVariant. -->
+    <style name="TextAppearancePostCommunity" parent="TextAppearance.App.LabelMedium">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
     <style name="TextAppearancePostEdgePrint" parent="TextAppearance.App.BodySmall.Variant"/>
 
 </resources>
