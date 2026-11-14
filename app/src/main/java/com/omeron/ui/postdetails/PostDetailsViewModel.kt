@@ -139,17 +139,27 @@ class PostDetailsViewModel @Inject constructor(
                     }
                 }
                 .collect { listings ->
-                    val post = async { postMapper.dataToEntity(PostUtil.getPostData(listings)) }
-                    val comments = async {
-                        val list = commentMapper.dataToEntities(
-                            PostUtil.getCommentsData(listings),
-                            PostUtil.getPostData(listings)
-                        )
-                        getComments(list, DEPTH_LIMIT)
+                    val postData = PostUtil.getPostData(listings)
+                    val threads = PostUtil.getCommentsData(listings)
+                    val post = async { postMapper.dataToEntity(postData) }
+                    val firstThreads = async {
+                        commentMapper.dataToEntities(threads.take(FIRST_THREAD_COUNT), postData)
                     }
+                    val otherThreads = async {
+                        commentMapper.dataToEntities(threads.drop(FIRST_THREAD_COUNT), postData)
+                    }
+
                     val parsedPost = post.await()
                     _post.value = Resource.Success(parsedPost)
-                    _comments.value = Resource.Success(comments.await())
+
+                    // The first threads are shown while the rest is still being mapped. Both lists
+                    // hold the same entities for the first threads, so the adapter's diff keeps
+                    // them as they are.
+                    val first = firstThreads.await()
+                    _comments.value = Resource.Success(getComments(first, DEPTH_LIMIT))
+                    _comments.value = Resource.Success(
+                        getComments(first + otherThreads.await(), DEPTH_LIMIT)
+                    )
 
                     // The signed video address arrives after the page is shown.
                     val signedPost = repository.withSignedVideoUrl(parsedPost, permalink, sorting)
@@ -182,6 +192,7 @@ class PostDetailsViewModel @Inject constructor(
 
     companion object {
         private const val DEPTH_LIMIT = 3
+        private const val FIRST_THREAD_COUNT = 20
         private val DEFAULT_SORTING = Sorting(Sort.BEST)
     }
 }
