@@ -112,11 +112,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRedditOkHttpClient(
+        @GenericOkHttp genericClient: OkHttpClient,
         preferencesRepository: PreferencesRepository
     ): OkHttpClient {
         // Bare OkHttp UA on www.reddit.com gets intermittently 429/403'd (visible as
         // "error loading more comments"); send a browser UA + keep reddit's cookies.
-        return OkHttpClient.Builder()
+        return genericClient.newBuilder()
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()
@@ -127,12 +128,11 @@ object NetworkModule {
             .addInterceptor(RedditCookieInterceptor(preferencesRepository))
             .addInterceptor(RawJsonInterceptor())
             .addInterceptor(JsonInterceptor())
-            .connectTimeout(TIMEOUT.first, TIMEOUT.second)
-            .readTimeout(TIMEOUT.first, TIMEOUT.second)
-            .writeTimeout(TIMEOUT.first, TIMEOUT.second)
             .build()
     }
 
+    // The base of every client, and the one image loading uses: newBuilder() keeps this client's
+    // connection pool, dispatcher and timeouts, so all requests reuse the same connections.
     @GenericOkHttp
     @Provides
     @Singleton
@@ -148,11 +148,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRedditScrapOkHttpClient(
+        @GenericOkHttp genericClient: OkHttpClient,
         preferencesRepository: PreferencesRepository
     ): OkHttpClient {
         // Same UA as RedditLoginActivity's WebView so the captured session isn't UA-mismatched,
         // plus the browser headers reddit expects alongside a session cookie.
-        return OkHttpClient.Builder()
+        return genericClient.newBuilder()
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()
@@ -163,9 +164,6 @@ object NetworkModule {
                 )
             }
             .addInterceptor(RedditCookieInterceptor(preferencesRepository))
-            .connectTimeout(TIMEOUT.first, TIMEOUT.second)
-            .readTimeout(TIMEOUT.first, TIMEOUT.second)
-            .writeTimeout(TIMEOUT.first, TIMEOUT.second)
             .build()
     }
 

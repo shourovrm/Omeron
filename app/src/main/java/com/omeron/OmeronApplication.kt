@@ -11,10 +11,12 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.omeron.data.model.preferences.UiPreferences
 import com.omeron.data.repository.PreferencesRepository
+import com.omeron.di.NetworkModule.GenericOkHttp
 import com.omeron.util.FileUncaughtExceptionHandler
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -25,6 +27,10 @@ class OmeronApplication : Application(), ImageLoaderFactory, Configuration.Provi
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    @GenericOkHttp
+    lateinit var okHttpClient: OkHttpClient
 
     var appTheme: Int = -1
         set(mode) {
@@ -51,6 +57,7 @@ class OmeronApplication : Application(), ImageLoaderFactory, Configuration.Provi
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
+            .okHttpClient(okHttpClient)
             .components {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     add(ImageDecoderDecoder.Factory())
