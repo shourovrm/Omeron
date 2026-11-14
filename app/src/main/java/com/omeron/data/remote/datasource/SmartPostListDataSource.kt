@@ -35,6 +35,8 @@ class SmartPostListDataSource(
 
     override val keyReuseSupported: Boolean = true
 
+    private val returnedNames = mutableSetOf<String>()
+
     override suspend fun load(params: LoadParams<List<String>>): LoadResult<List<String>, Child> {
         return try {
             if (query.size > REDDIT_SUBREDDIT_LIMIT) getSmartData(params) else getData(params)
@@ -97,12 +99,15 @@ class SmartPostListDataSource(
             responses
                 .map { it?.data?.children.orEmpty() }
                 .sort(sorting)
+                .withoutReturned(returnedNames)
         }
 
         // Step 6: Retrieve the `after` key for each response and create a list out of them.
         // Once every chunk is exhausted there is no next page.
         val after = responses.map { it?.data?.after.orEmpty() }
-        val nextKey = if (after.all { it.isEmpty() }) null else after
+        // A page without any new post means the listing restarted: stop instead of looping.
+        val exhausted = after.all { it.isEmpty() } || (!isFirstLoad && data.isEmpty())
+        val nextKey = if (exhausted) null else after
 
         return LoadResult.Page(data, null, nextKey)
     }
@@ -116,8 +121,12 @@ class SmartPostListDataSource(
         )
 
         val data = response.data
+        val children = data.children.withoutReturned(returnedNames)
 
-        return LoadResult.Page(data.children, null, data.after?.let { listOf(it) })
+        // A page without any new post means the listing restarted: stop instead of looping.
+        if (params.key != null && children.isEmpty()) return LoadResult.Page(children, null, null)
+
+        return LoadResult.Page(children, null, data.after?.let { listOf(it) })
     }
 
     private fun List<List<Child>>.sort(sorting: Sorting): List<Child> {
@@ -135,4 +144,9 @@ class SmartPostListDataSource(
     companion object {
         private const val REDDIT_SUBREDDIT_LIMIT = 100
     }
+}
+
+/** Drops posts already in [returned] and records the names of the ones kept. */
+internal fun List<Child>.withoutReturned(returned: MutableSet<String>): List<Child> {
+    return filter { it !is PostChild || returned.add(it.data.name) }
 }
