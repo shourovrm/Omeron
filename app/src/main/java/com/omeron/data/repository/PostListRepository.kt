@@ -35,6 +35,7 @@ import com.omeron.di.DispatchersModule.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
@@ -48,14 +49,44 @@ class PostListRepository @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) {
 
+    private class CachedPostPage(val listings: List<Listing>, val fetchedAt: Long)
+
+    // Reopening a post within a short time reuses its page instead of downloading it again.
+    private val postPages = object : LinkedHashMap<String, CachedPostPage>(
+        POST_PAGE_CACHE_SIZE,
+        0.75f,
+        true
+    ) {
+        override fun removeEldestEntry(
+            eldest: MutableMap.MutableEntry<String, CachedPostPage>
+        ): Boolean = size > POST_PAGE_CACHE_SIZE
+    }
+
+    private fun postPageKey(permalink: String, sorting: Sorting) =
+        "$permalink ${sorting.generalSorting}"
+
     fun getPost(permalink: String, sorting: Sorting): Flow<List<Listing>> = flow {
+        val key = postPageKey(permalink, sorting)
+        val cached = synchronized(postPages) { postPages[key] }
+        if (cached != null && System.currentTimeMillis() - cached.fetchedAt < POST_PAGE_MAX_AGE) {
+            emit(cached.listings)
+            return@flow
+        }
+
         val listings = source.getPost(permalink, sort = sorting.generalSorting)
         // A removed post or an interstitial page scrapes to an empty listing. Failing here, inside
         // the flow, lets callers' catch operators show their error state instead of crashing
         // when the post is read afterwards.
         val hasPost = listings.firstOrNull()?.data?.children?.firstOrNull() is PostChild
         if (!hasPost) throw IOException("Post not found")
+        synchronized(postPages) { postPages[key] = CachedPostPage(listings, System.currentTimeMillis()) }
         emit(listings)
+    }
+
+    /** Like [getPost], but always downloads the page again. */
+    fun refreshPost(permalink: String, sorting: Sorting): Flow<List<Listing>> = flow {
+        synchronized(postPages) { postPages.remove(postPageKey(permalink, sorting)) }
+        emitAll(getPost(permalink, sorting))
     }
 
     /**
@@ -424,5 +455,7 @@ class PostListRepository @Inject constructor(
 
     companion object {
         private const val DEFAULT_LIMIT = 25
+        private const val POST_PAGE_CACHE_SIZE = 10
+        private const val POST_PAGE_MAX_AGE = 2 * 60 * 1000L
     }
 }

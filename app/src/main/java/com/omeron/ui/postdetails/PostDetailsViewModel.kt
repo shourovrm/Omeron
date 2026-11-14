@@ -107,7 +107,7 @@ class PostDetailsViewModel @Inject constructor(
             ) {
                 currentPermalink = _permalink.value
                 currentSorting = _sorting.value
-                loadPost(_permalink.value!!, _sorting.value)
+                loadPost(_permalink.value!!, _sorting.value, forceUpdate)
             }
         } else {
             _post.value = Resource.Error()
@@ -115,9 +115,14 @@ class PostDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadPost(permalink: String, sorting: Sorting) {
+    private fun loadPost(permalink: String, sorting: Sorting, forceUpdate: Boolean) {
         viewModelScope.launch {
-            repository.getPost(permalink, sorting)
+            val page = if (forceUpdate) {
+                repository.refreshPost(permalink, sorting)
+            } else {
+                repository.getPost(permalink, sorting)
+            }
+            page
                 .onStart {
                     _post.value = Resource.Loading()
                     _comments.value = Resource.Loading()
