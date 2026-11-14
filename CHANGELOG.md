@@ -1,3 +1,12 @@
+# 0.9.1 - 2026/11/14
+
+### Changed
+- Lists load a smaller version of each picture, so tiles and thumbnails
+  appear sooner and use less data
+- The full-screen view shows that version at once and swaps in the
+  original when it arrives
+- Reopening a picture does not download it again
+
 # 0.9.0 - 2026/11/14
 
 ### Changed
