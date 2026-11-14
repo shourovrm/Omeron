@@ -118,7 +118,9 @@ class MediaResolver @Inject constructor(
 
     /** Fetches the whole post behind a permalink, the way the post page does. */
     suspend fun fetchFullPost(permalink: String): PostEntity {
-        val listings = postListRepository.getPost(permalink, Sorting(Sort.BEST)).first()
-        return postMapper.dataToEntity(PostUtil.getPostData(listings))
+        val sorting = Sorting(Sort.BEST)
+        val listings = postListRepository.getPost(permalink, sorting).first()
+        val post = postMapper.dataToEntity(PostUtil.getPostData(listings))
+        return postListRepository.withSignedVideoUrl(post, permalink, sorting)
     }
 }

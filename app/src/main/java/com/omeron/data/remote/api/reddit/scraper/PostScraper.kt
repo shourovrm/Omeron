@@ -12,6 +12,7 @@ import com.omeron.data.remote.api.reddit.model.MediaMetadata
 import com.omeron.data.remote.api.reddit.model.PostChild
 import com.omeron.data.remote.api.reddit.model.PostData
 import com.omeron.data.remote.api.reddit.model.RedditVideoPreview
+import com.omeron.data.remote.api.reddit.model.UNSIGNED_DASH_SUFFIX
 import com.omeron.data.remote.scraper.Scraper
 import com.omeron.util.extension.toSeconds
 import kotlinx.coroutines.CoroutineDispatcher
@@ -154,7 +155,7 @@ class PostScraper(
                     ?: selectFirst("[data-mpd-url]")?.attr("data-mpd-url")?.ifBlank { null }
                     ?: expando?.selectFirst("[data-hls-url]")?.attr("data-hls-url")?.ifBlank { null }
                     ?: selectFirst("[data-hls-url]")?.attr("data-hls-url")?.ifBlank { null }
-                    ?: "$url/DASHPlaylist.mpd"
+                    ?: "$url$UNSIGNED_DASH_SUFFIX"
                 Media(
                     null,
                     null,

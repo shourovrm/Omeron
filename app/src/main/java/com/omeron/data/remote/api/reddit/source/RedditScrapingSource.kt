@@ -10,7 +10,7 @@ import com.omeron.data.remote.api.reddit.model.JsonMore
 import com.omeron.data.remote.api.reddit.model.Listing
 import com.omeron.data.remote.api.reddit.model.ListingData
 import com.omeron.data.remote.api.reddit.model.MoreChildren
-import com.omeron.data.remote.api.reddit.model.PostChild
+import com.omeron.data.remote.api.reddit.model.UNSIGNED_DASH_SUFFIX
 import com.omeron.data.remote.api.reddit.scraper.CommentScraper
 import com.omeron.data.remote.api.reddit.scraper.PostScraper
 import com.omeron.data.remote.api.reddit.scraper.PostSearchScraper
@@ -77,45 +77,21 @@ class RedditScrapingSource @Inject constructor(
             CommentScraper(ioDispatcher).scrap(body)
         }
 
-        return listOf(signVideoUrl(post.await(), permalink, sort), comments.await())
+        return listOf(post.await(), comments.await())
     }
 
     /**
      * The single-post HTML page carries no signed DASH manifest for v.redd.it, so
-     * [PostScraper] falls back to an unsigned "/DASHPlaylist.mpd" guess the CDN 403s.
-     * Pull the signed dash_url from the permalink's public .json instead (no auth).
+     * [PostScraper] falls back to an unsigned [UNSIGNED_DASH_SUFFIX] guess the CDN 403s.
+     * Pull the signed dash_url from the permalink's public .json instead (no auth). Kept apart
+     * from [getPost] so the page does not wait for this second request.
      */
-    private suspend fun signVideoUrl(listing: Listing, permalink: String, sort: Sort): Listing {
-        val child = listing.data.children.firstOrNull() as? PostChild ?: return listing
-        val video = child.data.media?.redditVideoPreview ?: return listing
-        if (!video.fallbackUrl.endsWith("/DASHPlaylist.mpd")) return listing
-
-        val signedUrl = runCatching {
-            val json = redditApi.getPost("${permalink.trimEnd('/')}.json", 1, sort).string()
-            DASH_URL_REGEX.find(json)?.groupValues?.get(1)
-                ?.replace("\\/", "/")
-                ?.replace("\\u0026", "&")
-                ?.replace("&amp;", "&")
-        }.getOrNull() ?: return listing
-
-        val signedChild = child.copy(
-            data = child.data.copy(
-                media = child.data.media?.copy(
-                    redditVideoPreview = video.copy(fallbackUrl = signedUrl)
-                )
-            )
-        )
-
-        return Listing(
-            listing.kind,
-            ListingData(
-                listing.data.modhash,
-                listing.data.dist,
-                listing.data.children.map { if (it === child) signedChild else it },
-                listing.data.after,
-                listing.data.before
-            )
-        )
+    override suspend fun getSignedVideoUrl(permalink: String, sort: Sort): String? {
+        val json = redditApi.getPost("${permalink.trimEnd('/')}.json", 1, sort).string()
+        return DASH_URL_REGEX.find(json)?.groupValues?.get(1)
+            ?.replace("\\/", "/")
+            ?.replace("\\u0026", "&")
+            ?.replace("&amp;", "&")
     }
 
     /**

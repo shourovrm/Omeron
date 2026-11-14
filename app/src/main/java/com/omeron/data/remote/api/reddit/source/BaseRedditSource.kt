@@ -35,6 +35,9 @@ sealed interface BaseRedditSource {
         sort: Sort
     ): List<Listing>
 
+    /** The playable video address of a post whose page carries none, or null when unknown. */
+    suspend fun getSignedVideoUrl(permalink: String, sort: Sort): String? = null
+
     suspend fun getMoreChildren(
         children: String,
         linkId: String,

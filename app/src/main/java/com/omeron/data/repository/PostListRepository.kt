@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -55,6 +56,23 @@ class PostListRepository @Inject constructor(
         val hasPost = listings.firstOrNull()?.data?.children?.firstOrNull() is PostChild
         if (!hasPost) throw IOException("Post not found")
         emit(listings)
+    }
+
+    /**
+     * The post page does not carry a playable video address, so [post] arrives with one the CDN
+     * rejects. Returns it with the signed address, or unchanged when that cannot be fetched (the
+     * player then stays disabled for it).
+     */
+    suspend fun withSignedVideoUrl(post: PostEntity, permalink: String, sorting: Sorting): PostEntity {
+        if (!post.hasUnsignedVideoUrl) return post
+        val signedUrl = try {
+            source.getSignedVideoUrl(permalink, sorting.generalSorting)
+        } catch (exception: IOException) {
+            null
+        } catch (exception: HttpException) {
+            null
+        }
+        return if (signedUrl == null) post else post.copy(mediaUrl = signedUrl)
     }
 
     fun getMoreChildren(children: String, linkId: String, depth: Int = 0): Flow<MoreChildren> =

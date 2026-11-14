@@ -16,6 +16,7 @@ import com.omeron.data.model.RedditText
 import com.omeron.data.model.Sorting
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.remote.api.reddit.model.Crosspost
+import com.omeron.data.remote.api.reddit.model.UNSIGNED_DASH_SUFFIX
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -179,6 +180,10 @@ data class PostEntity @JvmOverloads constructor(
     // means the full post still has to be fetched before its media can be found.
     val needsHydration: Boolean
         get() = url.isBlank()
+
+    // The post page scrapes a video address the CDN rejects until the signed one is fetched.
+    val hasUnsignedVideoUrl: Boolean
+        get() = mediaUrl.endsWith(UNSIGNED_DASH_SUFFIX)
 
     fun shouldShowPreview(contentPreferences: ContentPreferences): Boolean {
         return (contentPreferences.showNsfwPreview || !isOver18) &&

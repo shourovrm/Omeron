@@ -55,6 +55,10 @@ class CurrentSource @Inject constructor(
         return source.getPost(permalink, limit, sort)
     }
 
+    override suspend fun getSignedVideoUrl(permalink: String, sort: Sort): String? {
+        return source.getSignedVideoUrl(permalink, sort)
+    }
+
     override suspend fun getMoreChildren(
         children: String,
         linkId: String,

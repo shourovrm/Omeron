@@ -147,8 +147,13 @@ class PostDetailsViewModel @Inject constructor(
                         )
                         getComments(list, DEPTH_LIMIT)
                     }
-                    _post.value = Resource.Success(post.await())
+                    val parsedPost = post.await()
+                    _post.value = Resource.Success(parsedPost)
                     _comments.value = Resource.Success(comments.await())
+
+                    // The signed video address arrives after the page is shown.
+                    val signedPost = repository.withSignedVideoUrl(parsedPost, permalink, sorting)
+                    if (signedPost != parsedPost) _post.value = Resource.Success(signedPost)
                 }
         }
     }

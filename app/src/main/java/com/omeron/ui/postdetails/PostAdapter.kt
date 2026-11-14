@@ -130,7 +130,10 @@ class PostAdapter(
                         error(R.drawable.preview_video_fallback)
                         fallback(R.drawable.preview_video_fallback)
                     }
-                    binding.imagePost.setOnClickListener { postClickListener.onVideoClick(post) }
+                    // The header is bound again when the signed address replaces the unsigned one.
+                    binding.imagePost.setOnClickListener {
+                        if (!post.hasUnsignedVideoUrl) postClickListener.onVideoClick(post)
+                    }
                 }
                 else -> {
                     // Ignore
