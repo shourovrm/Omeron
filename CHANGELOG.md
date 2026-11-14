@@ -1,3 +1,21 @@
+# 0.9.0 - 2026/11/14
+
+### Changed
+- Card and compact layouts are tighter and share one order: title, picture,
+  then one line with community, age, score, comments, save and menu.
+  Compact rows show a square picture on the left edge
+- A post page shows its comments without waiting for the video address,
+  and the first comments appear before the rest are ready
+- Reopening a post within two minutes does not download it again
+- Pictures and pages share their connections
+
+### Fixed
+- A feed could show the same post twice, and going back from the viewer
+  landed on the first copy
+- Searching saved posts and comments did the same work on every key
+  press; it now waits for a pause in typing
+- Tapping a row while it was being removed from a list could close the app
+
 # 0.8.6 - 2026/10/28
 
 ### Fixed
