@@ -67,8 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_post_link_preview"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_goneMarginTop="@dimen/space_8"
-        android:layout_marginBottom="@dimen/space_16">
+        app:layout_goneMarginTop="@dimen/space_8">
 
         <include
             android:id="@+id/include_post_info"

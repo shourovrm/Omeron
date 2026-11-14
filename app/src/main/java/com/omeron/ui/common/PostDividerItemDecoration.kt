@@ -21,6 +21,9 @@ class PostDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration(
 
     private val postGap = context.resources.getDimensionPixelSize(R.dimen.space_16)
 
+    // Compact rows sit close enough for their square pictures to read as one strip.
+    private val compactGap = context.resources.getDimensionPixelSize(R.dimen.post_compact_gap)
+
     private val divider: Drawable = checkNotNull(
         ContextCompat.getDrawable(context, R.drawable.post_divider)
     )
@@ -32,7 +35,11 @@ class PostDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration(
         state: RecyclerView.State
     ) {
         if (!isSingleColumn(parent)) return
-        outRect.bottom = if (isPostRow(view, parent)) postGap else divider.intrinsicHeight
+        outRect.bottom = when {
+            parent.getChildViewHolder(view) is PostViewHolder.CompactPostViewHolder -> compactGap
+            isPostRow(view, parent) -> postGap
+            else -> divider.intrinsicHeight
+        }
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {

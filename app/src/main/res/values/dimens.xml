@@ -3,6 +3,7 @@
 
     <!-- Spacing scale, base unit 8dp. 2dp, 4dp, 6dp and 10dp may appear raw inside a component. -->
     <dimen name="space_4">4dp</dimen>
+    <dimen name="post_compact_gap">2dp</dimen>
     <dimen name="space_8">8dp</dimen>
     <dimen name="space_12">12dp</dimen>
     <dimen name="space_16">16dp</dimen>

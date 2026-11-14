@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/list_item_two_line"
-    android:layout_marginBottom="2dp">
+    android:minHeight="@dimen/list_item_two_line">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_compact_preview"
