@@ -177,10 +177,12 @@ class PostDetailsFragment : BaseFragment(),
             defaultDispatcher,
             repository,
             commentMapper,
-            this
-        ) {
-            CommentMenuFragment.show(childFragmentManager, it, CommentMenuFragment.MenuType.DETAILS)
-        }.apply {
+            this,
+            onCommentLongClick = {
+                CommentMenuFragment.show(childFragmentManager, it, CommentMenuFragment.MenuType.DETAILS)
+            },
+            onUserClick = ::openUser
+        ).apply {
             // Wait for data to restore adapter position
             stateRestorationPolicy = PREVENT_WHEN_EMPTY
         }
