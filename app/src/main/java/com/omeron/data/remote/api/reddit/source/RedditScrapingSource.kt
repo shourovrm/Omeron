@@ -67,7 +67,9 @@ class RedditScrapingSource @Inject constructor(
     }
 
     private fun savedPageFile(subreddit: String, sort: Sort, timeSorting: TimeSorting?): File {
-        val name = "$subreddit $sort $timeSorting".hashCode().toString(HEX_RADIX)
+        // The feed joins its communities in an order that changes between launches.
+        val communities = subreddit.split("+").sorted()
+        val name = "$communities $sort $timeSorting".hashCode().toString(HEX_RADIX)
         return File(File(context.cacheDir, SAVED_PAGES_DIRECTORY), "$name.html")
     }
 
