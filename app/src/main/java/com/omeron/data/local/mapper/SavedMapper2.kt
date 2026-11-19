@@ -2,6 +2,7 @@ package com.omeron.data.local.mapper
 
 import com.omeron.data.model.Block
 import com.omeron.data.model.Comment.CommentEntity
+import com.omeron.data.model.RedditText
 import com.omeron.data.model.SavedItem
 import com.omeron.data.model.db.History
 import com.omeron.data.model.db.PostEntity
@@ -9,6 +10,7 @@ import com.omeron.di.DispatchersModule
 import com.omeron.util.HtmlParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,6 +21,15 @@ class SavedMapper2 @Inject constructor(
 
     private val htmlParser: HtmlParser = HtmlParser(defaultDispatcher)
 
+    // The saved lists are mapped again on every database change. Parsing is the slow part and
+    // a row's HTML does not change, so each text is parsed once.
+    private val parsedTexts = ConcurrentHashMap<String, RedditText>()
+
+    private suspend fun parsed(html: String?): RedditText {
+        if (html == null) return htmlParser.separateHtmlBlocks(null)
+        return parsedTexts[html] ?: htmlParser.separateHtmlBlocks(html).also { parsedTexts[html] = it }
+    }
+
     override suspend fun toEntity(from: Any): SavedItem {
         throw UnsupportedOperationException()
     }
@@ -28,7 +39,7 @@ class SavedMapper2 @Inject constructor(
     }
 
     suspend fun dataToEntity(data: PostEntity): SavedItem = withContext(defaultDispatcher) {
-        val redditText = htmlParser.separateHtmlBlocks(data.selfTextHtml)
+        val redditText = parsed(data.selfTextHtml)
         SavedItem.Post(
             data.apply {
                 hasFlairs = isOver18 || isSpoiler || isOC || isStickied || isArchived || isLocked
@@ -41,7 +52,7 @@ class SavedMapper2 @Inject constructor(
     suspend fun dataToEntity(data: CommentEntity): SavedItem = withContext(defaultDispatcher) {
         SavedItem.Comment(
             data.apply {
-                body = htmlParser.separateHtmlBlocks(bodyHtml)
+                body = parsed(bodyHtml)
             }
         )
     }
