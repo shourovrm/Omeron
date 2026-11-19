@@ -139,6 +139,11 @@ class PostDetailsFragment : BaseFragment(),
             viewLifecycleOwner
         ) { _, _ -> viewModel.loadPost(true) }
 
+        parentFragmentManager.setFragmentResultListener(
+            PostMenuFragment.REQUEST_KEY_SORT,
+            viewLifecycleOwner
+        ) { _, _ -> showSortDialog() }
+
         showNavigation(false)
 
         binding.root.addListener(this)
@@ -230,12 +235,6 @@ class PostDetailsFragment : BaseFragment(),
             }
 
             launch {
-                viewModel.sorting.collect {
-                    binding.appBar.sortIcon.setSorting(it)
-                }
-            }
-
-            launch {
                 viewModel.singleThread.collect { isSingleThread ->
                     val transition = Slide(Gravity.TOP).apply {
                         duration = 500
@@ -257,7 +256,6 @@ class PostDetailsFragment : BaseFragment(),
     private fun initAppBar() {
         with(binding.appBar) {
             backCard.setOnClickListener { onBackPressed() }
-            sortCard.setOnClickListener { showSortDialog() }
             findCard.setOnClickListener { openFindBar() }
             moreCard.setOnClickListener { showMenu() }
         }
