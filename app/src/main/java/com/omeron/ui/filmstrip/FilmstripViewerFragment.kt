@@ -252,12 +252,26 @@ class FilmstripViewerFragment : BaseFragment() {
                 }
             },
             onPlayerChanged = { player ->
-                _binding?.videoSeek?.let { videoSeek ->
-                    videoSeek.setPlayer(player)
-                    if (player != null) videoSeek.show() else videoSeek.hide()
-                }
+                _binding?.videoSeek?.setPlayer(player)
+                showVideoSeekForFrame()
             }
         )
+    }
+
+    /**
+     * The seek bar keeps its place under a video that has no player yet, so the rail above it
+     * does not move under a finger when playback starts.
+     */
+    private fun showVideoSeekForFrame() {
+        val videoSeek = _binding?.videoSeek ?: return
+        when {
+            videoSeek.player != null -> videoSeek.show()
+            currentFrame?.isVideo == true -> videoSeek.isInvisible = true
+            else -> {
+                videoSeek.hide()
+                videoSeek.visibility = View.GONE
+            }
+        }
     }
 
     private fun initPager() {
@@ -690,6 +704,7 @@ class FilmstripViewerFragment : BaseFragment() {
             // The mute button reappears when the player reports an audio track. It keeps its place
             // meanwhile, so the buttons above it do not move under a finger.
             if (!frame.isVideo) buttonMute.isInvisible = true
+            showVideoSeekForFrame()
 
             buttonDownload.isEnabled = frame.status == FrameStatus.READY
             buttonDownload.alpha = if (buttonDownload.isEnabled) 1F else DISABLED_ACTION_ALPHA
