@@ -14,6 +14,8 @@ data class User(
 
     val icon: String?,
 
+    val banner: String?,
+
     val url: String?,
 
     val publicDescription: String?,

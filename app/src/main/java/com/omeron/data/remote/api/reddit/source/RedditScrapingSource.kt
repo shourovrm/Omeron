@@ -7,7 +7,9 @@ import android.content.Context
 import com.omeron.data.model.Sort
 import com.omeron.data.model.TimeSorting
 import com.omeron.data.remote.api.reddit.RedditApi
+import com.omeron.data.remote.api.reddit.model.AboutChildJsonAdapter
 import com.omeron.data.remote.api.reddit.model.AboutUserChild
+import com.omeron.data.remote.api.reddit.model.AboutUserChildJsonAdapter
 import com.omeron.data.remote.api.reddit.model.Child
 import com.omeron.data.remote.api.reddit.model.Data
 import com.omeron.data.remote.api.reddit.model.JsonMore
@@ -24,7 +26,11 @@ import com.omeron.data.remote.api.reddit.scraper.SubredditSearchScraper
 import com.omeron.data.remote.api.reddit.scraper.UserScaper
 import com.omeron.di.DispatchersModule.IoDispatcher
 import com.omeron.di.DispatchersModule.MainImmediateDispatcher
+import com.omeron.di.NetworkModule.RedditMoshi
 import com.omeron.di.NetworkModule.RedditScrap
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -41,11 +47,15 @@ import javax.inject.Singleton
 class RedditScrapingSource @Inject constructor(
     @ApplicationContext private val context: Context,
     @RedditScrap private val redditApi: RedditApi,
+    @RedditMoshi moshi: Moshi,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @MainImmediateDispatcher private val mainImmediateDispatcher: CoroutineDispatcher
 ) : BaseRedditSource {
 
     private val scope = CoroutineScope(mainImmediateDispatcher + SupervisorJob())
+
+    private val aboutChildAdapter = AboutChildJsonAdapter(moshi)
+    private val aboutUserChildAdapter = AboutUserChildJsonAdapter(moshi)
 
     override suspend fun getSubreddit(
         subreddit: String,
@@ -87,9 +97,30 @@ class RedditScrapingSource @Inject constructor(
             .forEach { it.delete() }
     }
 
+    // Old Reddit's pages carry no community picture, banner or profile picture, and often no
+    // member count. The JSON does, but Reddit serves it only to a logged-in session, so the page
+    // stays as the way in for everyone else.
     override suspend fun getSubredditInfo(subreddit: String): Child {
+        readJsonOrNull(aboutChildAdapter) { redditApi.getSubredditInfoJson(subreddit) }
+            ?.let { return it }
         val response = redditApi.getSubreddit(subreddit, Sort.HOT, null)
         return SubredditScraper(ioDispatcher).scrap(response.readText())
+    }
+
+    /** Null when Reddit refuses the JSON or sends something else, as it does without a login. */
+    private suspend fun <T : Any> readJsonOrNull(
+        adapter: JsonAdapter<T>,
+        request: suspend () -> ResponseBody
+    ): T? = withContext(ioDispatcher) {
+        try {
+            adapter.fromJson(request().source())
+        } catch (exception: IOException) {
+            null
+        } catch (exception: HttpException) {
+            null
+        } catch (exception: JsonDataException) {
+            null
+        }
     }
 
     override suspend fun searchInSubreddit(
@@ -177,6 +208,8 @@ class RedditScrapingSource @Inject constructor(
     }
 
     override suspend fun getUserInfo(user: String): Child {
+        readJsonOrNull(aboutUserChildAdapter) { redditApi.getUserInfoJson(user) }
+            ?.let { return it }
         val response = redditApi.getUserPosts(user, Sort.HOT, null)
         return UserScaper(ioDispatcher).scrap(response.readText())
     }

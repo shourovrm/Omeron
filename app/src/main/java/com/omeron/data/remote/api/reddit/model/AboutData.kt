@@ -1,6 +1,7 @@
 package com.omeron.data.remote.api.reddit.model
 
 import android.graphics.Color
+import com.omeron.util.PostUtil
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.util.concurrent.TimeUnit
@@ -59,20 +60,25 @@ data class AboutData(
     val url: String,
 
     @Json(name = "created_utc")
-    val created: Long
+    val created: Long,
+
+    @Json(name = "mobile_banner_image")
+    val mobileBannerImage: String? = null
 ) {
+    // Reddit's JSON escapes the "&" of its picture addresses.
     fun getIcon(): String? {
-        return when {
-            communityIcon.isNotEmpty() -> communityIcon
-            else -> iconImg
-        }
+        val icon = if (communityIcon.isNotEmpty()) communityIcon else iconImg
+        return icon?.takeIf { it.isNotEmpty() }?.let(PostUtil::getProcessedUrl)
     }
 
     fun getHeader(): String? {
-        return when {
+        // The phone banner is a few hundred pixels wide; the desktop one is up to 4000.
+        val header = when {
+            !mobileBannerImage.isNullOrEmpty() -> mobileBannerImage
             bannerBackgroundImage.isNotEmpty() -> bannerBackgroundImage
             else -> headerImg
         }
+        return header?.takeIf { it.isNotEmpty() }?.let(PostUtil::getProcessedUrl)
     }
 
     fun getTimeInMillis(): Long {

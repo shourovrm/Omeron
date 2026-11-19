@@ -28,6 +28,10 @@ interface RedditApi {
     @GET("/r/{subreddit}/about")
     suspend fun getSubredditInfo(@Path("subreddit") subreddit: String): ResponseBody
 
+    // The scraping client adds no ".json" of its own, hence the full path.
+    @GET("/r/{subreddit}/about.json")
+    suspend fun getSubredditInfoJson(@Path("subreddit") subreddit: String): ResponseBody
+
     @GET("/r/{subreddit}/search?restrict_sr=1&include_over_18=1")
     suspend fun searchInSubreddit(
         @Path("subreddit") subreddit: String,
@@ -59,6 +63,9 @@ interface RedditApi {
 
     @GET("/user/{user}/about")
     suspend fun getUserInfo(@Path("user") user: String): ResponseBody
+
+    @GET("/user/{user}/about.json")
+    suspend fun getUserInfoJson(@Path("user") user: String): ResponseBody
 
     @GET("/user/{user}/submitted/")
     suspend fun getUserPosts(

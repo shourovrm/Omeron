@@ -3,6 +3,7 @@ package com.omeron.data.local.mapper
 import com.omeron.data.model.User
 import com.omeron.data.remote.api.reddit.model.AboutUserData
 import com.omeron.di.DispatchersModule
+import com.omeron.util.PostUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,7 +20,8 @@ class UserMapper2 @Inject constructor(
                 name,
                 subreddit?.title,
                 subreddit?.over18 ?: false,
-                iconImg,
+                iconImg?.let(PostUtil::getProcessedUrl),
+                subreddit?.bannerImg?.takeIf { it.isNotEmpty() }?.let(PostUtil::getProcessedUrl),
                 subreddit?.url,
                 subreddit?.publicDescription,
                 linkKarma,
