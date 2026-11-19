@@ -51,11 +51,14 @@ import com.omeron.util.extension.setCommentListener
 import com.omeron.util.extension.setSortingListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,6 +67,8 @@ class PostDetailsFragment : BaseFragment(),
 
     private var _binding: FragmentPostDetailsBinding? = null
     private var currentPost: PostEntity? = null
+    private var subredditPictureJob: Job? = null
+    private var subredditPictureName: String? = null
     private var findMatchPositions: List<Int> = emptyList()
     private var findMatchIndex = -1
     private val binding get() = _binding!!
@@ -378,6 +383,7 @@ class PostDetailsFragment : BaseFragment(),
             DateUtil.getTimeDifference(requireContext(), post.created, false)
         )
         binding.appBar.subredditImage.loadSubredditIcon(null)
+        loadSubredditPicture(post.subreddit)
         binding.appBar.label.setOnClickListener { onSubredditClick(post.subreddit) }
         binding.appBar.subredditImage.setOnClickListener { onSubredditClick(post.subreddit) }
         binding.appBar.authorLabel.setOnClickListener { openUser(post.author) }
@@ -385,6 +391,21 @@ class PostDetailsFragment : BaseFragment(),
         postAdapter.setPost(post, fromCache)
         commentAdapter.postEntity = post
         viewModel.insertPostInHistory(post)
+    }
+
+    private fun loadSubredditPicture(subreddit: String) {
+        if (subreddit == subredditPictureName && subredditPictureJob != null) return
+        subredditPictureName = subreddit
+        subredditPictureJob?.cancel()
+        subredditPictureJob = viewLifecycleOwner.lifecycleScope.launch {
+            // A failed request keeps the placeholder that bindPost already shows.
+            try {
+                val about = repository.getSubredditInfo(subreddit).first()
+                binding.appBar.subredditImage.loadSubredditIcon(about.data.getIcon())
+            } catch (exception: IOException) {
+            } catch (exception: HttpException) {
+            }
+        }
     }
 
     private fun handleArguments() {
@@ -496,6 +517,7 @@ class PostDetailsFragment : BaseFragment(),
         clearSortingListener()
         clearCommentListener()
         _binding = null
+        subredditPictureJob = null
         commentAdapter.cleanUp()
     }
 

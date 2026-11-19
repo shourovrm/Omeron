@@ -1,5 +1,6 @@
 package com.omeron.data.repository
 
+import android.util.LruCache
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -33,10 +34,12 @@ import com.omeron.data.remote.datasource.SmartPostListDataSource
 import com.omeron.data.remote.datasource.SubredditSearchPostDataSource
 import com.omeron.data.remote.datasource.UserPostsDataSource
 import com.omeron.di.DispatchersModule.DefaultDispatcher
+import com.omeron.util.PostUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
@@ -62,6 +65,8 @@ class PostListRepository @Inject constructor(
             eldest: MutableMap.MutableEntry<String, CachedPostPage>
         ): Boolean = size > POST_PAGE_CACHE_SIZE
     }
+
+    private val userPictures = LruCache<String, String>(USER_PICTURE_CACHE_SIZE)
 
     private fun postPageKey(permalink: String, sorting: Sorting) =
         "$permalink ${sorting.generalSorting}"
@@ -292,6 +297,23 @@ class PostListRepository @Inject constructor(
         emit(source.getUserInfo(user) as AboutUserChild)
     }
 
+    // Each user info request is one network call, so a picture is requested once per user per run.
+    suspend fun getUserPicture(user: String): String? {
+        userPictures.get(user)?.let { return it }
+        // A failed request is not cached, so a later bind can try again.
+        val iconImg = try {
+            getUserInfo(user).first().data.iconImg
+        } catch (exception: IOException) {
+            return null
+        } catch (exception: HttpException) {
+            return null
+        }
+        if (iconImg.isNullOrEmpty()) return null
+        val picture = PostUtil.getProcessedUrl(iconImg)
+        userPictures.put(user, picture)
+        return picture
+    }
+
     //endregion
 
     //region Search
@@ -496,6 +518,7 @@ class PostListRepository @Inject constructor(
         private const val PREFETCH_PAGES = 2
         private const val POST_PAGE_CACHE_SIZE = 10
         private const val POST_PAGE_MAX_AGE = 2 * 60 * 1000L
+        private const val USER_PICTURE_CACHE_SIZE = 500
         // Rows hold the post's full text, so an unbounded history made the list slow to read.
         private const val HISTORY_LIMIT = 100
     }

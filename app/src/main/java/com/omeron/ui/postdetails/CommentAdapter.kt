@@ -24,6 +24,7 @@ import com.omeron.databinding.ItemCommentBinding
 import com.omeron.databinding.ItemMoreBinding
 import com.omeron.ui.common.widget.RedditView
 import com.omeron.util.extension.blurText
+import com.omeron.util.extension.loadSubredditIcon
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -320,8 +321,19 @@ class CommentAdapter(
         private val binding: ItemCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var pictureJob: Job? = null
+
         fun bind(comment: CommentEntity) {
             binding.comment = comment
+
+            pictureJob?.cancel()
+            binding.commentAuthorImage.loadSubredditIcon(null)
+            if (comment.author != "[deleted]") {
+                pictureJob = scope.launch {
+                    val picture = repository.getUserPicture(comment.author)
+                    if (picture != null) binding.commentAuthorImage.loadSubredditIcon(picture)
+                }
+            }
 
             binding.commentAuthor.apply {
                 setTextColor(ContextCompat.getColor(context, comment.posterType.color))
