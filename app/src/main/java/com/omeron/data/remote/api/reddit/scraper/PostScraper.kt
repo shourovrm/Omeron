@@ -293,7 +293,11 @@ class PostScraper(
 
                 val image = GalleryImage(0, 0, src, null)
 
-                GalleryItem(null, image, null, id)
+                val tileSrc = selectFirst("div.gallery-tile[data-media-id=$id] img.preview")
+                    ?.attr(Scraper.Selector.Attr.SRC)
+                val previews = tileSrc?.let { tile -> listOf(GalleryImage(0, 0, tile, null)) }
+
+                GalleryItem(null, image, previews, id)
             }
 
         return if (items.isNotEmpty()) MediaMetadata(items) else null

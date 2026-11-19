@@ -70,9 +70,11 @@ class FilmstripThumbnailAdapter(
                 frame.indexInSource + 1,
                 frame.framesInSource
             )
-            // The full image is what the page shows; the thumbnail only needs a small decode.
-            // A video has no still to load, so it keeps the dark tile.
-            binding.image.load(frame.media?.url?.takeUnless { frame.isVideo }) {
+            // Without a small still the full image is loaded and decoded small, which downloads
+            // the whole file: slow for a row of GIFs. A video has no still of its own, so it
+            // keeps the dark tile.
+            val fullImage = frame.media?.url?.takeUnless { frame.isVideo }
+            binding.image.load(frame.media?.thumbnail ?: fullImage) {
                 size(thumbnailSize)
                 scale(Scale.FILL)
                 error(R.drawable.preview_image_fallback)

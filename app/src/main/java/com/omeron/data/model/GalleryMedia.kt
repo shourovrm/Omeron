@@ -13,7 +13,10 @@ data class GalleryMedia(
 
     val sound: String? = null,
 
-    val description: String? = null
+    val description: String? = null,
+
+    /** A small still of the media, for the gallery's thumbnail row. */
+    val thumbnail: String? = null
 ) : Parcelable {
 
     enum class Type(val value: Int) {

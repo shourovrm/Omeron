@@ -234,7 +234,7 @@ data class PostData(
             mediaMetadata?.items?.find { galleryItem ->
                 galleryItem.id == galleryDataItem.mediaId
             }?.let { item ->
-                item.image?.media
+                item.image?.media?.copy(thumbnail = item.previews?.firstOrNull()?.url)
             }
         } ?: emptyList()
 

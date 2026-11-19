@@ -35,6 +35,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.omeron.R
 import com.omeron.UiViewModel
+import coil.Coil
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.omeron.data.model.MediaType
 import com.omeron.data.model.db.PostEntity
 import com.omeron.databinding.FragmentFilmstripViewerBinding
@@ -686,6 +689,26 @@ class FilmstripViewerFragment : BaseFragment() {
         viewModel.onFrameSelected(frame)
         frameAdapter.setActiveFrameId(frame.id)
         bindOverlay(frame)
+        preloadImagesAfter(frame)
+    }
+
+    /** Downloads the next images ahead of the swipe, so a page does not start loading on arrival. */
+    private fun preloadImagesAfter(frame: FilmstripFrame) {
+        val frames = frameAdapter.currentList
+        val index = frames.indexOfFirst { it.id == frame.id }
+        if (index < 0) return
+
+        val context = requireContext()
+        for (next in frames.drop(index + 1).take(PRELOADED_FRAMES)) {
+            val url = next.media?.url
+            if (url == null || next.isVideo) continue
+            // Only the download is wanted; decoding a GIF that may never be shown wastes memory.
+            val request = ImageRequest.Builder(context)
+                .data(url)
+                .memoryCachePolicy(CachePolicy.DISABLED)
+                .build()
+            Coil.imageLoader(context).enqueue(request)
+        }
     }
 
     private fun bindOverlay(frame: FilmstripFrame) {
@@ -949,6 +972,8 @@ class FilmstripViewerFragment : BaseFragment() {
 
     companion object {
         const val TAG = "FilmstripViewerFragment"
+
+        private const val PRELOADED_FRAMES = 2
 
         private const val KEY_POST_ID = "KEY_POST_ID"
         private const val KEY_SESSION_ID = "KEY_SESSION_ID"
