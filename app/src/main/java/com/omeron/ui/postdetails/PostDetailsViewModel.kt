@@ -95,6 +95,18 @@ class PostDetailsViewModel @Inject constructor(
             return@withContext comments
         }
 
+    /** [list] flattened the way the adapter shows it now: replies of expanded comments only. */
+    private fun shownComments(list: List<Comment>): List<Comment> {
+        val comments = mutableListOf<Comment>()
+        for (comment in list) {
+            comments.add(comment)
+            if (comment is CommentEntity && comment.isExpanded) {
+                comments.addAll(shownComments(comment.replies))
+            }
+        }
+        return comments
+    }
+
     private var currentPermalink: String? = null
     private var currentSorting: Sorting? = null
 
@@ -162,9 +174,9 @@ class PostDetailsViewModel @Inject constructor(
                     // them as they are.
                     val first = firstThreads.await()
                     _comments.value = Resource.Success(getComments(first, DEPTH_LIMIT))
-                    _comments.value = Resource.Success(
-                        getComments(first + otherThreads.await(), DEPTH_LIMIT)
-                    )
+                    val others = getComments(otherThreads.await(), DEPTH_LIMIT)
+                    // A thread the reader collapsed or expanded meanwhile stays that way.
+                    _comments.value = Resource.Success(shownComments(first) + others)
 
                     // The signed video address arrives after the page is shown.
                     val signedPost = repository.withSignedVideoUrl(parsedPost, permalink, sorting)
