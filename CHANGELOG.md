@@ -1,3 +1,24 @@
+# 0.10.1 - 2026/11/20
+
+### Added
+- Comment authors show their profile picture; tap the picture or name to
+  open the user
+- The post page bar shows the community picture, and under the community
+  the author and age; tap the author to open the user
+- Join button on the community header
+
+### Changed
+- Community and user pages have a shorter header with the banner behind
+  the picture, name and numbers, so posts start higher
+- Community pictures, banners, member counts and user pictures load when
+  logged in
+- Comments use one header line instead of two
+
+### Fixed
+- GIFs standing still in the media viewer and in galleries
+- Galleries of GIFs loading slowly: the thumbnail row no longer downloads
+  every full file, and the next two pictures load ahead
+
 # 0.10.0 - 2026/11/20
 
 ### Added
