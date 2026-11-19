@@ -36,6 +36,7 @@ class SmartPostListDataSource(
     override val keyReuseSupported: Boolean = true
 
     private val returnedNames = mutableSetOf<String>()
+    private val followedAfterKeys = mutableSetOf<String>()
 
     override suspend fun load(params: LoadParams<List<String>>): LoadResult<List<String>, Child> {
         return try {
@@ -104,10 +105,8 @@ class SmartPostListDataSource(
 
         // Step 6: Retrieve the `after` key for each response and create a list out of them.
         // Once every chunk is exhausted there is no next page.
-        val after = responses.map { it?.data?.after.orEmpty() }
-        // A page without any new post means the listing restarted: stop instead of looping.
-        val exhausted = after.all { it.isEmpty() } || (!isFirstLoad && data.isEmpty())
-        val nextKey = if (exhausted) null else after
+        val after = responses.map { unfollowedAfter(it?.data?.after) }
+        val nextKey = if (after.all { it.isEmpty() }) null else after
 
         return LoadResult.Page(data, null, nextKey)
     }
@@ -123,10 +122,18 @@ class SmartPostListDataSource(
         val data = response.data
         val children = data.children.withoutReturned(returnedNames)
 
-        // A page without any new post means the listing restarted: stop instead of looping.
-        if (params.key != null && children.isEmpty()) return LoadResult.Page(children, null, null)
+        val after = unfollowedAfter(data.after)
+        return LoadResult.Page(children, null, if (after.isEmpty()) null else listOf(after))
+    }
 
-        return LoadResult.Page(children, null, data.after?.let { listOf(it) })
+    /**
+     * [after] the first time it is seen, "" (no next page) when it is missing or was followed
+     * before. A repeated key means the listing restarted, and following it again would loop. A
+     * page of posts that were all returned before is not the end: its key is still new.
+     */
+    private fun unfollowedAfter(after: String?): String {
+        if (after.isNullOrEmpty() || !followedAfterKeys.add(after)) return ""
+        return after
     }
 
     private fun List<List<Child>>.sort(sorting: Sorting): List<Child> {
