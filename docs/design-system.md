@@ -123,9 +123,8 @@ The top app bar has two lines after a 40dp round community picture: the communit
 then the author in primary and the post's age as bodySmall. The picture and community open the
 community, the author opens the user. Then the post card as on the Feed, then comments. Each
 comment: 16dp side padding, 8dp vertical, depth indent 8dp per level with a 2dp outlineVariant
-rail, and one header line: a 20dp round author picture, author titleSmall, status pills, then
-score and age as bodyMedium; a long author is cut, score and age are not. The picture and author
-open the user. Body bodyLarge, 4dp under the header. "Load more" rows are 48dp text buttons.
+rail, and one header line: author titleSmall, status pills, then score and age as bodyMedium; a
+long author is cut, score and age are not. The author opens the user. Body bodyLarge, 4dp under the header. "Load more" rows are 48dp text buttons.
 
 ## Layout of the Search page
 
