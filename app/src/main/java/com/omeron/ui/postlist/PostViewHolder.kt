@@ -165,6 +165,10 @@ abstract class PostViewHolder(
             binding.imagePostPreview.setOnClickListener {
                 listener.onMediaClick(bindingAdapterPosition)
             }
+            binding.imagePostPreview.setOnLongClickListener {
+                listener.onClick(bindingAdapterPosition, true)
+                true
+            }
         }
 
         override fun showSavedMarker(saved: Boolean) {
@@ -214,6 +218,10 @@ abstract class PostViewHolder(
         init {
             binding.imagePostPreview.setOnClickListener {
                 listener.onMediaClick(bindingAdapterPosition)
+            }
+            binding.imagePostPreview.setOnLongClickListener {
+                listener.onClick(bindingAdapterPosition, true)
+                true
             }
         }
 
@@ -295,6 +303,10 @@ abstract class PostViewHolder(
         init {
             binding.imagePostLinkPreview.setOnClickListener {
                 listener.onMediaClick(bindingAdapterPosition)
+            }
+            binding.imagePostLinkPreview.setOnLongClickListener {
+                listener.onClick(bindingAdapterPosition, true)
+                true
             }
             // A link post without a picture opens its link from the domain.
             binding.includePostFlairs.textDomain.setOnClickListener {
