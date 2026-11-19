@@ -54,24 +54,6 @@
 
     <style name="TextAppearanceSubredditMetrics" parent="TextAppearance.App.TitleSmall"/>
 
-    <style name="TextAppearanceSubredditMetricsMain" parent="TextAppearance.App.TitleSmall">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="TextAppearanceSubredditMetricsMainLabel" parent="TextAppearance.App.BodySmall">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="TextAppearanceSubredditTitle" parent="TextAppearance.App.BodyLarge">
-        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
-        <item name="android:textAlignment">center</item>
-    </style>
-
-    <!-- User -->
-
-    <style name="TextAppearanceUserTitle" parent="TextAppearanceSubredditTitle"/>
-    <style name="TextAppearanceUserMetrics" parent="TextAppearanceSubredditMetricsMain"/>
-    <style name="TextAppearanceUserMetricsLabel" parent="TextAppearanceSubredditMetricsMainLabel"/>
 
     <style name="TextAppearanceUserCommentTitle" parent="TextAppearance.App.TitleMedium"/>
 

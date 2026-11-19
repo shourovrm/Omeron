@@ -284,6 +284,8 @@ class PostScraper(
     }
 
     private fun Element.toMediaMetadata(): MediaMetadata? {
+        // The 108px tiles of the gallery's grid, used as thumbnails of its pictures.
+        val tiles = select("div.gallery-tile")
         val items = select("div.gallery-preview")
             .map {
                 val id = it.attr(Scraper.Selector.Attr.ID).substringAfterLast("-")
@@ -293,7 +295,8 @@ class PostScraper(
 
                 val image = GalleryImage(0, 0, src, null)
 
-                val tileSrc = selectFirst("div.gallery-tile[data-media-id=$id] img.preview")
+                val tileSrc = tiles.firstOrNull { tile -> tile.attr(Selector.Attr.MEDIA_ID) == id }
+                    ?.selectFirst("img.preview")
                     ?.attr(Scraper.Selector.Attr.SRC)
                 val previews = tileSrc?.let { tile -> listOf(GalleryImage(0, 0, tile, null)) }
 

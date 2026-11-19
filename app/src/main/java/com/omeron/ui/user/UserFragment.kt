@@ -251,6 +251,14 @@ class UserFragment : BaseFragment() {
                 scale(Scale.FILL)
                 precision(Precision.AUTOMATIC)
             }
+            // Without a banner the header keeps its plain colour block.
+            if (banner != null) binding.userBanner.load(banner)
+            binding.userStats.text = getString(
+                R.string.user_stats,
+                getPostKarmaCount(),
+                getCommentKarmaCount(),
+                getCakeDay()
+            )
         }
     }
 

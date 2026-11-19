@@ -18,20 +18,27 @@
         app:layoutDescription="@xml/scene_user"
         tools:showPaths="true">
 
+        <!-- The banner is dimmed toward the surface colour, so the bar icons and the name keep
+             their contrast on any picture and in every theme. -->
         <ImageView
-            android:id="@+id/user_metrics_header"
+            android:id="@+id/user_banner"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/user_metrics_header_height"
+            android:layout_height="@dimen/user_banner_height"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
+            android:background="?attr/colorSurface"
             android:src="@color/colorPrimaryLight"/>
 
         <View
-            android:id="@+id/user_header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/user_header_height"
-            android:background="@drawable/header_background"/>
+            android:id="@+id/user_banner_scrim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/user_banner"
+            app:layout_constraintEnd_toEndOf="@id/user_banner"
+            app:layout_constraintTop_toTopOf="@id/user_banner"
+            app:layout_constraintBottom_toBottomOf="@id/user_banner"
+            android:background="@drawable/banner_scrim"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/back_card"
@@ -119,15 +126,13 @@
             tools:text="User"/>
 
         <TextView
-            android:id="@+id/user_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/user_stats"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{user.title}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserTitle"
-            android:textAlignment="center"
-            app:layout_constrainedWidth="true"
-            tools:text="Title"/>
+            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="10k post · 950 comment karma · since 01/01/21"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_app_bar"
@@ -140,7 +145,7 @@
             android:id="@+id/tabs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/user_metrics_header"
+            app:layout_constraintTop_toBottomOf="@id/user_banner"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/TabLayoutStyle"/>
 
@@ -152,57 +157,6 @@
             app:layout_constraintTop_toBottomOf="@id/tabs"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <TextView
-            android:id="@+id/user_link_karma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{user.getPostKarmaCount()}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserMetrics"
-            tools:text="10k"/>
-
-        <TextView
-            android:id="@+id/user_comment_karma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{user.getCommentKarmaCount()}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserMetrics"
-            tools:text="950"/>
-
-        <TextView
-            android:id="@+id/user_cake_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{user.getCakeDay()}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserMetrics"
-            tools:text="01/01/01"/>
-
-        <TextView
-            android:id="@+id/user_link_karma_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_post_karma"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserMetricsLabel"/>
-
-        <TextView
-            android:id="@+id/user_comment_karma_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_comment_karma"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserMetricsLabel"/>
-
-        <TextView
-            android:id="@+id/user_cake_day_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_cake_day"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceUserMetricsLabel"/>
 
         <com.omeron.ui.common.widget.InfoBarView
             android:id="@+id/info_retry"

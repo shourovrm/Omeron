@@ -382,7 +382,6 @@ class PostDetailsFragment : BaseFragment(),
             R.string.post_age_separated,
             DateUtil.getTimeDifference(requireContext(), post.created, false)
         )
-        binding.appBar.subredditImage.loadSubredditIcon(null)
         loadSubredditPicture(post.subreddit)
         binding.appBar.label.setOnClickListener { onSubredditClick(post.subreddit) }
         binding.appBar.subredditImage.setOnClickListener { onSubredditClick(post.subreddit) }
@@ -397,14 +396,17 @@ class PostDetailsFragment : BaseFragment(),
         if (subreddit == subredditPictureName && subredditPictureJob != null) return
         subredditPictureName = subreddit
         subredditPictureJob?.cancel()
+        binding.appBar.subredditImage.loadSubredditIcon(null)
         subredditPictureJob = viewLifecycleOwner.lifecycleScope.launch {
-            // A failed request keeps the placeholder that bindPost already shows.
-            try {
-                val about = repository.getSubredditInfo(subreddit).first()
-                binding.appBar.subredditImage.loadSubredditIcon(about.data.getIcon())
+            // A failed request leaves the placeholder.
+            val icon = try {
+                repository.getSubredditInfo(subreddit).first().data.getIcon()
             } catch (exception: IOException) {
+                null
             } catch (exception: HttpException) {
+                null
             }
+            binding.appBar.subredditImage.loadSubredditIcon(icon)
         }
     }
 

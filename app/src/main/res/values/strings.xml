@@ -126,9 +126,9 @@
     <string name="subreddit_subscribers">Subscribers</string>
     <string name="subreddit_active_users">Online</string>
 
-    <string name="user_post_karma">Post karma</string>
-    <string name="user_comment_karma">Comment karma</string>
-    <string name="user_cake_day">Cake day</string>
+    <string name="subreddit_members">%s members</string>
+
+    <string name="user_stats">%1$s post · %2$s comment karma · since %3$s</string>
 
     <string name="flair_nsfw">NSFW</string>
     <string name="flair_spoiler">Spoiler</string>

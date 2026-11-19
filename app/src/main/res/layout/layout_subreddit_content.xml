@@ -18,20 +18,27 @@
         app:layoutDescription="@xml/collapsing_toolbar"
         tools:showPaths="true">
 
+        <!-- The banner is dimmed toward the surface colour, so the bar icons and the name keep
+             their contrast on any picture and in every theme. -->
         <ImageView
-            android:id="@+id/subreddit_metrics_header"
+            android:id="@+id/subreddit_banner"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/subreddit_metrics_header_height"
+            android:layout_height="@dimen/subreddit_banner_height"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
+            android:background="?attr/colorSurface"
             android:src="@color/colorPrimaryLight"/>
 
         <View
-            android:id="@+id/subreddit_header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/subreddit_header_height"
-            android:background="@drawable/header_background"/>
+            android:id="@+id/subreddit_banner_scrim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/subreddit_banner"
+            app:layout_constraintEnd_toEndOf="@id/subreddit_banner"
+            app:layout_constraintTop_toTopOf="@id/subreddit_banner"
+            app:layout_constraintBottom_toBottomOf="@id/subreddit_banner"
+            android:background="@drawable/banner_scrim"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/subreddit_image"
@@ -54,15 +61,20 @@
             tools:text="Reddit"/>
 
         <TextView
-            android:id="@+id/subreddit_title"
+            android:id="@+id/subreddit_stats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium.Variant"
+            android:singleLine="true"
+            android:ellipsize="end"
+            tools:text="12.5M members"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/subreddit_join_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{subreddit.title}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceSubredditTitle"
-            android:textAlignment="center"
-            app:layout_constrainedWidth="true"
-            tools:text="Title"/>
+            android:enabled="false"
+            tools:text="@string/subreddit_button_subscribe"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/back_card"
@@ -132,7 +144,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_metrics_header">
+            app:layout_constraintTop_toBottomOf="@id/subreddit_banner">
 
             <com.omeron.ui.common.widget.PostRecyclerView
                 android:id="@+id/list_post"
@@ -142,47 +154,13 @@
                 android:overScrollMode="never"/>
         </com.omeron.ui.common.widget.PullToRefreshLayout>
 
-        <TextView
-            android:id="@+id/subreddit_subscribers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{subreddit.getSubscribersCount()}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceSubredditMetricsMain"
-            tools:text="12.5m"/>
-
-        <TextView
-            android:id="@+id/subreddit_subscribers_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/subreddit_subscribers"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceSubredditMetricsMainLabel"/>
-
-        <TextView
-            android:id="@+id/subreddit_active_users"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{subreddit.getActiveUsers()}"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceSubredditMetricsMain"
-            tools:text="14.6k"/>
-
-        <TextView
-            android:id="@+id/subreddit_active_users_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/subreddit_active_users"
-            android:textColor="@null"
-            android:textAppearance="@style/TextAppearanceSubredditMetricsMainLabel"/>
-
         <include
             android:id="@+id/loading_state"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_metrics_header"
+            app:layout_constraintTop_toBottomOf="@id/subreddit_banner"
             app:layout_constraintBottom_toBottomOf="parent"
             layout="@layout/include_loading_state"/>
 

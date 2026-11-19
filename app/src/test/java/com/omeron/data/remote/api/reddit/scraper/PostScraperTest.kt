@@ -65,4 +65,25 @@ class PostScraperTest {
 
         assertEquals("https://preview.redd.it/a.jpeg?width=960", post.data.previewUrl)
     }
+
+    @Test
+    fun `gallery picture takes its thumbnail from the tile with the same media id`() = runBlocking {
+        val html = imagePost(
+            "&lt;div class=&quot;gallery-tile&quot; id=&quot;media-tile-p1-m1&quot; data-media-id=&quot;m1&quot;&gt;" +
+                "&lt;div class=&quot;media-preview-content gallery-tile-content&quot;&gt;" +
+                "&lt;img class=&quot;preview&quot; src=&quot;https://preview.redd.it/m1.gif?width=108&quot;&gt;" +
+                "&lt;/div&gt;&lt;/div&gt;" +
+                "&lt;div class=&quot;gallery-preview&quot; id=&quot;gallery-preview-p1-m1&quot;&gt;" +
+                "&lt;div class=&quot;media-preview-content&quot;&gt;" +
+                "&lt;a href=&quot;https://i.redd.it/m1.gif&quot;&gt;" +
+                "&lt;img class=&quot;preview&quot; src=&quot;https://i.redd.it/m1.gif&quot;&gt;" +
+                "&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;"
+        )
+
+        val post = PostScraper(Dispatchers.Unconfined).scrap(html).data.children.first() as PostChild
+        val picture = post.data.gallery.single()
+
+        assertEquals("https://i.redd.it/m1.gif", picture.url)
+        assertEquals("https://preview.redd.it/m1.gif?width=108", picture.thumbnail)
+    }
 }

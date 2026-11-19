@@ -23,8 +23,8 @@ for the OMERON wordmark. Every TextView takes one role from `styles.xml`; layout
 
 | Role | Size / line | Weight | Used for |
 |---|---|---|---|
-| headlineSmall | 24sp / 32sp | 400 | subreddit and user name on their header |
-| titleLarge | 22sp / 28sp | 400 | app bar title, dialog title, sort sheet title |
+| headlineSmall | 24sp / 32sp | 400 | title of a text post |
+| titleLarge | 22sp / 28sp | 400 | app bar title, community and user name on their header, dialog title, sort sheet title |
 | titleMedium | 16sp / 24sp | 500 | post title, list item headline, settings row title |
 | titleSmall | 14sp / 20sp | 500 | comment author, metric value |
 | bodyLarge | 16sp / 24sp | 400 | post self-text, comment body, settings category label |
@@ -106,11 +106,26 @@ Reddit status) opens the switch-profile sheet. Then list items: Saved posts, Sav
 History with their counts, Communities and Multis with a "Manage" supporting line, and after 24dp
 of space Settings and About. The drawer keeps only the community filter, multis and communities.
 
+## Layout of the Community and User pages
+
+The header is a 144dp banner: the top app bar (64dp) and under it one 80dp row. The banner picture
+fills the block behind both, drawn at 150 of 255 over surface with a fade to surface at the bottom,
+so bar icons and text keep their contrast on any picture; without a banner the block is the marker
+colour treated the same way. The row holds a 56dp round picture at 16dp, then the name as
+titleLarge and one bodyMedium line in onSurfaceVariant (members for a community; karma and account
+age for a user, on up to two lines), and for a community the filled Join button at the end. On
+scroll the block folds into the small top app bar with a 42dp picture and the name; the numbers
+and Join are not shown there.
+
 ## Layout of the Post page
 
-The post card as on the Feed, then comments. Each comment: 16dp side padding, 8dp vertical, depth
-indent 8dp per level with a 2dp outlineVariant rail, author titleSmall, info bodyMedium, body
-bodyLarge. "Load more" rows are 48dp text buttons.
+The top app bar has two lines after a 40dp round community picture: the community as titleMedium,
+then the author in primary and the post's age as bodySmall. The picture and community open the
+community, the author opens the user. Then the post card as on the Feed, then comments. Each
+comment: 16dp side padding, 8dp vertical, depth indent 8dp per level with a 2dp outlineVariant
+rail, and one header line: a 20dp round author picture, author titleSmall, status pills, then
+score and age as bodyMedium; a long author is cut, score and age are not. The picture and author
+open the user. Body bodyLarge, 4dp under the header. "Load more" rows are 48dp text buttons.
 
 ## Layout of the Search page
 

@@ -15,88 +15,53 @@
 
     <ConstraintSet android:id="@+id/expanded">
         <Constraint
-            android:id="@id/subreddit_header"
+            android:id="@id/subreddit_banner"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/subreddit_header_height"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </Constraint>
-        <Constraint
-            android:id="@id/subreddit_metrics_header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/subreddit_metrics_header_height"
+            android:layout_height="@dimen/subreddit_banner_height"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
             <CustomAttribute
                 app:attributeName="imageAlpha"
-                app:customIntegerValue="255" />
+                app:customIntegerValue="@integer/banner_image_alpha" />
         </Constraint>
         <Constraint
             android:id="@id/subreddit_image"
             android:layout_width="@dimen/subreddit_image_size_expanded"
             android:layout_height="@dimen/subreddit_image_size_expanded"
-            android:layout_marginBottom="@dimen/subreddit_header_margin_bottom"
+            android:layout_marginStart="@dimen/space_16"
+            android:layout_marginBottom="@dimen/space_12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/subreddit_name">
+            app:layout_constraintBottom_toBottomOf="@id/subreddit_banner">
         </Constraint>
         <Constraint
             android:id="@id/subreddit_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:scaleX="@dimen/subreddit_name_scale_expanded"
-            android:scaleY="@dimen/subreddit_name_scale_expanded"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@id/subreddit_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            app:layout_constraintStart_toEndOf="@id/subreddit_image"
+            app:layout_constraintEnd_toStartOf="@id/subreddit_join_button"
+            app:layout_constraintTop_toTopOf="@id/subreddit_image"
+            app:layout_constraintBottom_toTopOf="@id/subreddit_stats"
+            app:layout_constraintVertical_chainStyle="packed">
         </Constraint>
         <Constraint
-            android:id="@id/subreddit_title"
-            android:layout_width="wrap_content"
+            android:id="@id/subreddit_stats"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/subreddit_header_margin_bottom"
-            android:layout_marginHorizontal="16dp"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_header"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-        </Constraint>
+            app:layout_constraintStart_toStartOf="@id/subreddit_name"
+            app:layout_constraintEnd_toEndOf="@id/subreddit_name"
+            app:layout_constraintTop_toBottomOf="@id/subreddit_name"
+            app:layout_constraintBottom_toBottomOf="@id/subreddit_image"/>
         <Constraint
-            android:id="@id/subreddit_subscribers"
+            android:id="@id/subreddit_join_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/subreddit_active_users"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_header"
-            app:layout_constraintBottom_toTopOf="@id/subreddit_subscribers_label"
-            app:layout_constraintVertical_chainStyle="packed"/>
-        <Constraint
-            android:id="@id/subreddit_subscribers_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/subreddit_subscribers"
-            app:layout_constraintEnd_toEndOf="@id/subreddit_subscribers"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_subscribers"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_metrics_header"/>
-        <Constraint
-            android:id="@id/subreddit_active_users"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/subreddit_subscribers"
+            android:layout_marginEnd="@dimen/space_16"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_header"
-            app:layout_constraintBottom_toTopOf="@id/subreddit_active_users_label"
-            app:layout_constraintVertical_chainStyle="packed"/>
-        <Constraint
-            android:id="@id/subreddit_active_users_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/subreddit_active_users"
-            app:layout_constraintEnd_toEndOf="@id/subreddit_active_users"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_active_users"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_metrics_header"/>
+            app:layout_constraintTop_toTopOf="@id/subreddit_image"
+            app:layout_constraintBottom_toBottomOf="@id/subreddit_image"/>
         <Constraint
             android:id="@id/pull_refresh">
             <PropertySet
@@ -107,15 +72,7 @@
 
     <ConstraintSet android:id="@+id/collapsed">
         <Constraint
-            android:id="@id/subreddit_header"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </Constraint>
-        <Constraint
-            android:id="@id/subreddit_metrics_header"
+            android:id="@id/subreddit_banner"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,75 +88,38 @@
             android:layout_height="@dimen/subreddit_image_size_collapsed"
             android:layout_marginStart="@dimen/app_bar_margin"
             app:layout_constraintStart_toEndOf="@id/back_card"
-            app:layout_constraintTop_toTopOf="@id/subreddit_header"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_header">
+            app:layout_constraintTop_toTopOf="@id/subreddit_banner"
+            app:layout_constraintBottom_toBottomOf="@id/subreddit_banner">
         </Constraint>
         <Constraint
             android:id="@id/subreddit_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:scaleX="1.0"
-            android:scaleY="1.0"
             android:layout_marginStart="@dimen/app_bar_margin"
             app:layout_constraintStart_toEndOf="@id/subreddit_image"
             app:layout_constraintEnd_toStartOf="@id/sort_icon"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_header"
-            app:layout_constraintTop_toTopOf="@id/subreddit_header">
+            app:layout_constraintBottom_toBottomOf="@id/subreddit_banner"
+            app:layout_constraintTop_toTopOf="@id/subreddit_banner">
         </Constraint>
         <Constraint
-            android:id="@id/subreddit_title"
+            android:id="@id/subreddit_stats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/subreddit_name"
+            app:layout_constraintEnd_toEndOf="@id/subreddit_name"
+            app:layout_constraintTop_toBottomOf="@id/subreddit_name"
+            android:alpha="0"/>
+        <!-- Invisible, not only transparent: a transparent button under the bar icons would
+             still take their taps. -->
+        <Constraint
+            android:id="@id/subreddit_join_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="@dimen/space_16"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_header"
-            android:alpha="0"/>
-        <Constraint
-            android:id="@id/subreddit_subscribers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/subreddit_active_users"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_header"
-            app:layout_constraintBottom_toTopOf="@id/subreddit_subscribers_label"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:scaleX="0.0"
-            android:scaleY="0.0"
-            android:alpha="0"/>
-        <Constraint
-            android:id="@id/subreddit_subscribers_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/subreddit_subscribers"
-            app:layout_constraintEnd_toEndOf="@id/subreddit_subscribers"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_subscribers"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_metrics_header"
-            android:scaleX="0.0"
-            android:scaleY="0.0"
-            android:alpha="0"/>
-        <Constraint
-            android:id="@id/subreddit_active_users"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/subreddit_subscribers"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_header"
-            app:layout_constraintBottom_toTopOf="@id/subreddit_active_users_label"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:scaleX="0.0"
-            android:scaleY="0.0"
-            android:alpha="0"/>
-        <Constraint
-            android:id="@id/subreddit_active_users_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/subreddit_active_users"
-            app:layout_constraintEnd_toEndOf="@id/subreddit_active_users"
-            app:layout_constraintTop_toBottomOf="@id/subreddit_active_users"
-            app:layout_constraintBottom_toBottomOf="@id/subreddit_metrics_header"
-            android:scaleX="0.0"
-            android:scaleY="0.0"
-            android:alpha="0"/>
+            app:layout_constraintTop_toBottomOf="@id/subreddit_banner"
+            android:alpha="0"
+            android:visibility="invisible"/>
         <Constraint
             android:id="@id/pull_refresh">
             <PropertySet

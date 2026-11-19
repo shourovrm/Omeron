@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import coil.load
 import com.omeron.R
 import com.omeron.UiViewModel
 import com.omeron.data.model.Resource
@@ -98,6 +99,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         get() = bindingAbout.subredditSubscribeButton.isEnabled
         set(value) {
             bindingAbout.subredditSubscribeButton.isEnabled = value
+            bindingContent.subredditJoinButton.isEnabled = value
         }
 
     @Inject
@@ -130,6 +132,7 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
         initDrawer()
         bindViewModel()
         bindingAbout.subredditSubscribeButton.setOnClickListener { toggleSubscription() }
+        bindingContent.subredditJoinButton.setOnClickListener { toggleSubscription() }
         bindingContent.loadingState.infoRetry.setActionClickListener {
             retryOrLogin { retry() }
         }
@@ -209,14 +212,14 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
 
             launch {
                 viewModel.isSubscribed.collect { isSubscribed ->
-                    with(bindingAbout.subredditSubscribeButton) {
-                        visibility = View.VISIBLE
-                        text = if (isSubscribed) {
-                            getString(R.string.subreddit_button_unsubscribe)
-                        } else {
-                            getString(R.string.subreddit_button_subscribe)
-                        }
+                    val label = if (isSubscribed) {
+                        getString(R.string.subreddit_button_unsubscribe)
+                    } else {
+                        getString(R.string.subreddit_button_subscribe)
                     }
+                    bindingAbout.subredditSubscribeButton.visibility = View.VISIBLE
+                    bindingAbout.subredditSubscribeButton.text = label
+                    bindingContent.subredditJoinButton.text = label
                 }
             }
 
@@ -334,6 +337,12 @@ class SubredditFragment : BaseFragment(), PopupMenu.OnMenuItemClickListener,
             bindingAbout.subreddit = this
 
             bindingContent.subredditImage.loadSubredditIcon(icon)
+            // Without a banner the header keeps its plain colour block.
+            if (header != null) bindingContent.subredditBanner.load(header)
+            if (subscribers != null) {
+                bindingContent.subredditStats.text =
+                    getString(R.string.subreddit_members, getSubscribersCount())
+            }
 
             if (publicDescription.isNotEmpty()) {
                 bindingAbout.subredditPublicDescription.apply {
