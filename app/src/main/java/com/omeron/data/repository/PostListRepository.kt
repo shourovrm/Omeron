@@ -119,7 +119,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             SmartPostListDataSource(
                 source,
                 listOf(subreddit),
@@ -134,7 +134,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             SmartPostListDataSource(
                 source,
                 subreddit,
@@ -253,7 +253,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             MultiredditDataSource(
                 source,
                 subreddits,
@@ -273,7 +273,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             UserPostsDataSource(source, user, sorting)
         }.flow
     }
@@ -283,7 +283,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             CommentsDataSource(source, user, sorting)
         }.flow
     }
@@ -301,7 +301,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             SearchPostDataSource(source, query, sorting)
         }.flow
     }
@@ -311,7 +311,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             SearchUserDataSource(source, query, sorting)
         }.flow
     }
@@ -321,7 +321,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             SearchSubredditDataSource(source, query, sorting)
         }.flow
     }
@@ -332,7 +332,7 @@ class PostListRepository @Inject constructor(
         sorting: Sorting,
         pageSize: Int = DEFAULT_LIMIT
     ): Flow<PagingData<Child>> {
-        return Pager(PagingConfig(pageSize = pageSize)) {
+        return Pager(pagingConfig(pageSize)) {
             SubredditSearchPostDataSource(source, subreddit, query, sorting)
         }.flow
     }
@@ -353,7 +353,10 @@ class PostListRepository @Inject constructor(
         val snapshot = History.fromPostEntity(post, System.currentTimeMillis()).copy(
             profileId = profileId
         )
-        redditDatabase.historyDao().upsert(snapshot)
+        redditDatabase.withTransaction {
+            redditDatabase.historyDao().upsert(snapshot)
+            redditDatabase.historyDao().deleteOlderThanNewest(profileId, HISTORY_LIMIT)
+        }
     }
 
     suspend fun deletePostFromHistory(postId: String, profileId: Int) {
@@ -481,9 +484,19 @@ class PostListRepository @Inject constructor(
 
     //endregion
 
+    // Loads the next page while the reader is still a few pages from the end of the list.
+    private fun pagingConfig(pageSize: Int) = PagingConfig(
+        pageSize = pageSize,
+        prefetchDistance = pageSize * PREFETCH_PAGES
+    )
+
     companion object {
         private const val DEFAULT_LIMIT = 25
+        // Paging's default prefetch is one page, which reached the loading dots in the 3-column grid.
+        private const val PREFETCH_PAGES = 2
         private const val POST_PAGE_CACHE_SIZE = 10
         private const val POST_PAGE_MAX_AGE = 2 * 60 * 1000L
+        // Rows hold the post's full text, so an unbounded history made the list slow to read.
+        private const val HISTORY_LIMIT = 100
     }
 }

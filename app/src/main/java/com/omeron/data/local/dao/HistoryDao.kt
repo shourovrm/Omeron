@@ -12,6 +12,12 @@ abstract class HistoryDao : BaseDao<History> {
     @Query("DELETE FROM history WHERE profile_id = :profileId")
     abstract suspend fun deleteFromProfile(profileId: Int)
 
+    @Query(
+        "DELETE FROM history WHERE profile_id = :profileId AND post_id NOT IN " +
+            "(SELECT post_id FROM history WHERE profile_id = :profileId ORDER BY time DESC LIMIT :keep)"
+    )
+    abstract suspend fun deleteOlderThanNewest(profileId: Int, keep: Int)
+
     @Query("DELETE FROM history WHERE post_id = :postId AND profile_id = :profileId")
     abstract suspend fun deleteFromIdAndProfile(postId: String, profileId: Int)
 
