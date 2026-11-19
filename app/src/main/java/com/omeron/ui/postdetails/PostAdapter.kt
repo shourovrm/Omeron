@@ -70,7 +70,8 @@ class PostAdapter(
         var payload: Any? = null
 
         if (fromCache || this.post == null || mediaChanged) {
-            preview = post.preview
+            // The post page has no still picture for a video; the one the list showed stays.
+            preview = post.preview ?: preview
         } else {
             payload = post
         }
