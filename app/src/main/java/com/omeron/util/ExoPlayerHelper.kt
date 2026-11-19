@@ -48,8 +48,9 @@ class ExoPlayerHelper(context: Context) {
         return defaultMediaSourceFactory.createMediaSource(mediaItem)
     }
 
+    // Releases the lock on the cache directory but keeps the data, so the next viewer reuses
+    // downloaded video. The size limit above still bounds it.
     fun clearCache() {
         simpleCache.release()
-        SimpleCache.delete(cacheDir, exoDatabaseProvider)
     }
 }
