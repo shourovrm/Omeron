@@ -1,5 +1,9 @@
 package com.omeron.data.remote.api.reddit.source
 
+import java.io.IOException
+import java.io.File
+import dagger.hilt.android.qualifiers.ApplicationContext
+import android.content.Context
 import com.omeron.data.model.Sort
 import com.omeron.data.model.TimeSorting
 import com.omeron.data.remote.api.reddit.RedditApi
@@ -26,6 +30,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
@@ -33,6 +39,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RedditScrapingSource @Inject constructor(
+    @ApplicationContext private val context: Context,
     @RedditScrap private val redditApi: RedditApi,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @MainImmediateDispatcher private val mainImmediateDispatcher: CoroutineDispatcher
@@ -46,13 +53,41 @@ class RedditScrapingSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
-        val response = redditApi.getSubreddit(subreddit, sort, timeSorting, after)
-        return PostScraper(ioDispatcher).scrap(response.string())
+        // Only a first page is kept: it is what a reader without a connection opens the app to.
+        val savedPage = if (after == null) savedPageFile(subreddit, sort, timeSorting) else null
+        val html = try {
+            redditApi.getSubreddit(subreddit, sort, timeSorting, after).readText()
+        } catch (exception: IOException) {
+            savedPage?.readSavedPage() ?: throw exception
+        }
+        val listing = PostScraper(ioDispatcher).scrap(html)
+        // A page without posts is a login wall or an error page, not a feed worth keeping.
+        if (savedPage != null && listing.data.children.isNotEmpty()) savePage(savedPage, html)
+        return listing
+    }
+
+    private fun savedPageFile(subreddit: String, sort: Sort, timeSorting: TimeSorting?): File {
+        val name = "$subreddit $sort $timeSorting".hashCode().toString(HEX_RADIX)
+        return File(File(context.cacheDir, SAVED_PAGES_DIRECTORY), "$name.html")
+    }
+
+    private suspend fun File.readSavedPage(): String? = withContext(ioDispatcher) {
+        if (exists()) readText() else null
+    }
+
+    private suspend fun savePage(file: File, html: String) = withContext(ioDispatcher) {
+        val directory = file.parentFile ?: return@withContext
+        directory.mkdirs()
+        file.writeText(html)
+        directory.listFiles().orEmpty()
+            .sortedByDescending { it.lastModified() }
+            .drop(SAVED_PAGES_LIMIT)
+            .forEach { it.delete() }
     }
 
     override suspend fun getSubredditInfo(subreddit: String): Child {
         val response = redditApi.getSubreddit(subreddit, Sort.HOT, null)
-        return SubredditScraper(ioDispatcher).scrap(response.string())
+        return SubredditScraper(ioDispatcher).scrap(response.readText())
     }
 
     override suspend fun searchInSubreddit(
@@ -64,12 +99,12 @@ class RedditScrapingSource @Inject constructor(
     ): Listing {
         // The subreddit's search page lists results with the same markup as the site-wide one.
         val response = redditApi.searchInSubreddit(subreddit, query, sort, timeSorting, after)
-        return PostSearchScraper(ioDispatcher).scrap(response.string())
+        return PostSearchScraper(ioDispatcher).scrap(response.readText())
     }
 
     override suspend fun getPost(permalink: String, limit: Int?, sort: Sort): List<Listing> {
         val response = redditApi.getPost(permalink, limit, sort)
-        val body = response.string()
+        val body = response.readText()
 
         val post = scope.async {
             PostScraper(ioDispatcher).scrap(body)
@@ -89,7 +124,7 @@ class RedditScrapingSource @Inject constructor(
      * from [getPost] so the page does not wait for this second request.
      */
     override suspend fun getSignedVideoUrl(permalink: String, sort: Sort): String? {
-        val json = redditApi.getPost("${permalink.trimEnd('/')}.json", 1, sort).string()
+        val json = redditApi.getPost("${permalink.trimEnd('/')}.json", 1, sort).readText()
         return DASH_URL_REGEX.find(json)?.groupValues?.get(1)
             ?.replace("\\/", "/")
             ?.replace("\\u0026", "&")
@@ -109,7 +144,7 @@ class RedditScrapingSource @Inject constructor(
     ): MoreChildren {
         val response = redditApi.getMoreChildren(children, linkId)
         // Empty children (a stale/empty stub) yields {"json": {"errors": []}} - no data key.
-        val things = JSONObject(response.string())
+        val things = JSONObject(response.readText())
             .getJSONObject("json")
             .optJSONObject("data")
             ?.optJSONArray("things")
@@ -141,7 +176,7 @@ class RedditScrapingSource @Inject constructor(
 
     override suspend fun getUserInfo(user: String): Child {
         val response = redditApi.getUserPosts(user, Sort.HOT, null)
-        return UserScaper(ioDispatcher).scrap(response.string())
+        return UserScaper(ioDispatcher).scrap(response.readText())
     }
 
     override suspend fun getUserPosts(
@@ -151,7 +186,7 @@ class RedditScrapingSource @Inject constructor(
         after: String?
     ): Listing {
         val response = redditApi.getUserPosts(user, sort, timeSorting, after)
-        return PostScraper(ioDispatcher).scrap(response.string())
+        return PostScraper(ioDispatcher).scrap(response.readText())
     }
 
     override suspend fun getUserComments(
@@ -161,7 +196,7 @@ class RedditScrapingSource @Inject constructor(
         after: String?
     ): Listing {
         val response = redditApi.getUserComments(user, sort, timeSorting, after)
-        return CommentScraper(ioDispatcher).scrap(response.string())
+        return CommentScraper(ioDispatcher).scrap(response.readText())
     }
 
     override suspend fun searchPost(
@@ -171,7 +206,7 @@ class RedditScrapingSource @Inject constructor(
         after: String?
     ): Listing {
         val response = redditApi.searchPost(query, sort, timeSorting, after)
-        return PostSearchScraper(ioDispatcher).scrap(response.string())
+        return PostSearchScraper(ioDispatcher).scrap(response.readText())
     }
 
     // old.reddit's /search?type=user renders no user rows at all (confirmed against a live
@@ -206,7 +241,7 @@ class RedditScrapingSource @Inject constructor(
             if (communities.data.children.isNotEmpty()) return communities
         }
         val response = redditApi.searchSubreddit(query, sort, timeSorting, after)
-        return SubredditSearchScraper(ioDispatcher).scrap(response.string())
+        return SubredditSearchScraper(ioDispatcher).scrap(response.readText())
     }
 
     private suspend fun searchCommunitiesOnNewReddit(query: String): Listing {
@@ -215,10 +250,17 @@ class RedditScrapingSource @Inject constructor(
         } catch (exception: HttpException) {
             return Listing("t5", ListingData(null, null, emptyList(), null, null))
         }
-        return CommunitySearchScraper(ioDispatcher).scrap(response.string())
+        return CommunitySearchScraper(ioDispatcher).scrap(response.readText())
     }
 
+    // Reading the body blocks on the network, so it must not run on the caller's dispatcher.
+    private suspend fun ResponseBody.readText(): String = withContext(ioDispatcher) { string() }
+
     companion object {
+        private const val SAVED_PAGES_DIRECTORY = "listing_pages"
+        private const val SAVED_PAGES_LIMIT = 10
+        private const val HEX_RADIX = 16
+
         private val DASH_URL_REGEX = Regex("\"dash_url\"\\s*:\\s*\"([^\"]+)\"")
     }
 }
