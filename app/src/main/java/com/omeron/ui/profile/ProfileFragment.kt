@@ -270,7 +270,7 @@ class ProfileFragment : BaseFragment() {
                 removed.count
             )
         }
-        Snackbar.make(root, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(root, message, UNDO_BAR_MILLIS)
             .setAction(R.string.profile_selection_undo) { viewModel.restore(removed) }
             .show()
     }
@@ -338,6 +338,9 @@ class ProfileFragment : BaseFragment() {
 
     private companion object {
         const val DISABLED_ACTION_ALPHA = 0.38f
+
+        // Deleting is destructive, so the Undo bar must stay up longer than LENGTH_LONG.
+        const val UNDO_BAR_MILLIS = 8000
     }
 }
 
