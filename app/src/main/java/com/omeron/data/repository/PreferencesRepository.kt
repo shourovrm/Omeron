@@ -6,7 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.omeron.data.local.RedditDatabase
+import com.omeron.data.model.Sort
+import com.omeron.data.model.Sorting
+import com.omeron.data.model.TimeSorting
 import com.omeron.data.model.db.Redirect
 import com.omeron.data.model.preferences.ContentPreferences
 import com.omeron.data.model.preferences.DataPreferences
@@ -170,6 +174,38 @@ class PreferencesRepository @Inject constructor(
         val key = name?.let { subredditPostLayoutKey(it) }
             ?: DataPreferences.PreferencesKeys.POST_LAYOUT
         preferencesDatastore.setValue(key, layout.value)
+    }
+
+    // Same per-subreddit key scheme as the layout above. Stored as "TOP|WEEK", time part empty when unset.
+    private fun subredditPostSortingKey(subreddit: String) =
+        stringPreferencesKey("post_sorting_" + subreddit.trim().lowercase())
+
+    fun getSubredditSorting(subreddit: String): Flow<Sorting?> {
+        val key = subredditPostSortingKey(subreddit)
+        return preferencesDatastore.data.catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences -> preferences[key]?.let { parseSorting(it) } }
+    }
+
+    suspend fun setSubredditSorting(subreddit: String, sorting: Sorting) {
+        val time = sorting.timeSorting?.name.orEmpty()
+        preferencesDatastore.setValue(
+            subredditPostSortingKey(subreddit),
+            "${sorting.generalSorting.name}|$time"
+        )
+    }
+
+    // Null for an unknown name, so the caller falls back to its own default.
+    private fun parseSorting(stored: String): Sorting? {
+        val general = Sort.values().find { it.name == stored.substringBefore("|") } ?: return null
+        val timeName = stored.substringAfter("|", "")
+        if (timeName.isEmpty()) return Sorting(general)
+        val time = TimeSorting.values().find { it.name == timeName } ?: return null
+        return Sorting(general, time)
     }
 
     private fun profileTabLayoutKey(tab: ProfileTab) =

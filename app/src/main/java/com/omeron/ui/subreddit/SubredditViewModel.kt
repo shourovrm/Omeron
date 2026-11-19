@@ -179,12 +179,18 @@ class SubredditViewModel @Inject constructor(
         }
     }
 
+    // Sorting is set before the subreddit, so the first page loads with the stored sort.
     fun setSubreddit(subreddit: String) {
-        _subreddit.updateValue(subreddit)
+        viewModelScope.launch {
+            val storedSorting = preferencesRepository.getSubredditSorting(subreddit).first()
+            _sorting.updateValue(storedSorting ?: DEFAULT_SORTING)
+            _subreddit.updateValue(subreddit)
+        }
     }
 
     fun setSorting(sorting: Sorting) {
         _sorting.updateValue(sorting)
+        viewModelScope.launch { preferencesRepository.setSubredditSorting(subreddit.value, sorting) }
     }
 
     fun setPostLayout(layout: PostLayout) {
