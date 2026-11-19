@@ -42,7 +42,8 @@ class CommentAdapter(
     private val repository: PostListRepository,
     private val commentMapper: CommentMapper2,
     private val onLinkClickListener: RedditView.OnLinkClickListener? = null,
-    private val onCommentLongClick: (CommentEntity) -> Unit
+    private val onCommentLongClick: (CommentEntity) -> Unit,
+    private val onUserClick: (String) -> Unit
 ) : ListAdapter<Comment, RecyclerView.ViewHolder>(COMMENT_COMPARATOR) {
 
     var postEntity: PostEntity? = null
@@ -330,6 +331,8 @@ class CommentAdapter(
 
             binding.commentColorIndicator.setCommentColor(comment)
 
+            bindAuthorClick(comment)
+
             bindCommentHiddenIndicator(comment, false)
 
             binding.commentFlair.apply {
@@ -375,6 +378,19 @@ class CommentAdapter(
                     true
                 }
             }
+        }
+
+        private fun bindAuthorClick(comment: CommentEntity) {
+            if (comment.author == "[deleted]") {
+                binding.commentAuthor.setOnClickListener(null)
+                binding.commentAuthorImage.setOnClickListener(null)
+                binding.commentAuthor.isClickable = false
+                binding.commentAuthorImage.isClickable = false
+                return
+            }
+            val openUserPage = View.OnClickListener { onUserClick(comment.author) }
+            binding.commentAuthor.setOnClickListener(openUserPage)
+            binding.commentAuthorImage.setOnClickListener(openUserPage)
         }
 
         fun bindCommentHiddenIndicator(comment: CommentEntity, showAnimation: Boolean) {

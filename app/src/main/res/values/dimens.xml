@@ -195,4 +195,5 @@
     <dimen name="post_marker_size_small">28dp</dimen>
     <dimen name="post_marker_padding_small">4dp</dimen>
     <dimen name="post_marker_inset_small">@dimen/space_4</dimen>
+    <dimen name="comment_author_image_size">20dp</dimen>
 </resources>
