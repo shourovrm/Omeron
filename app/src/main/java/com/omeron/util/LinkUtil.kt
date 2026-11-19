@@ -18,6 +18,7 @@ object LinkUtil {
     private val SUBREDDIT_REGEX = Regex("/r/[A-Za-z0-9_-]{3,21}")
     private val USER_REGEX = Regex("/u/[A-Za-z0-9_-]{3,20}")
 
+    private const val REDDIT_VIDEO_HOST = "v.redd.it"
     private val REDDIT_LINK = Regex("(.+?)\\.reddit\\.com")
     private val IMGUR_LINK = Regex("([im]\\.)?(stack\\.)?imgur\\.(com|io)")
     private val REDGIFS_LINK = Regex("(.+?\\.)?redgifs\\.com")
@@ -79,6 +80,17 @@ object LinkUtil {
         return link.toHttpUrlOrNull()?.pathSegments?.getOrNull(0) ?: ""
     }
 
+    /**
+     * Reddit wraps media in comments as reddit.com/media?url=<address>. Returns the address
+     * inside, or [link] itself when it is not wrapped.
+     */
+    fun unwrapMediaLink(link: String): String {
+        val httpUrl = link.toHttpUrlOrNull() ?: return link
+        val isRedditHost = httpUrl.host == "reddit.com" || httpUrl.host.matches(REDDIT_LINK)
+        if (!isRedditHost || httpUrl.encodedPath != "/media") return link
+        return httpUrl.queryParameter("url") ?: link
+    }
+
     fun getLinkType(link: String): MediaType {
         when {
             link.matches(SUBREDDIT_REGEX) -> return MediaType.REDDIT_SUBREDDIT
@@ -88,6 +100,8 @@ object LinkUtil {
 
         val httpUrl = link.toHttpUrlOrNull() ?: return MediaType.NO_MEDIA
         val domain = httpUrl.host
+        // v.redd.it/<id>/HLSPlaylist.m3u8 plays as it is; a bare v.redd.it/<id> is only a page.
+        if (domain == REDDIT_VIDEO_HOST && httpUrl.pathSegments.size > 1) return MediaType.VIDEO
         val extension by lazy { link.extension }
         val mime by lazy { MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "" }
 

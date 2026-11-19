@@ -25,8 +25,9 @@ class LinkHandler @Inject constructor(
         get() = fragment as? BaseFragment
 
     fun handleLink(link: String) {
-        val mediaType = LinkUtil.getLinkType(link)
-        handleLink(link, mediaType)
+        val mediaLink = LinkUtil.unwrapMediaLink(link)
+        val mediaType = LinkUtil.getLinkType(mediaLink)
+        handleLink(mediaLink, mediaType)
     }
 
     private fun handleLink(link: String, mediaType: MediaType) {
