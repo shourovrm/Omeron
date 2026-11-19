@@ -85,7 +85,7 @@
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginStart="@dimen/app_bar_margin"
             app:icon="@drawable/ic_arrow_back"
-            style="@style/CardButtonStyle"/>
+            style="@style/CardButtonStyle.OnBanner"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/more_card"
@@ -96,7 +96,7 @@
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginEnd="@dimen/app_bar_margin"
             app:icon="@drawable/ic_more"
-            style="@style/CardButtonStyle"/>
+            style="@style/CardButtonStyle.OnBanner"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/sort_card"
@@ -107,7 +107,7 @@
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:layout_marginEnd="@dimen/app_bar_margin"
             app:icon="@drawable/ic_sort"
-            style="@style/CardButtonStyle"/>
+            style="@style/CardButtonStyle.OnBanner"/>
 
         <com.omeron.ui.common.widget.CardButton
             android:id="@+id/layout_toggle_card"
@@ -118,7 +118,7 @@
             app:layout_constraintBottom_toBottomOf="@id/guideline_app_bar"
             android:contentDescription="@string/layout_toggle"
             app:icon="@drawable/ic_layout_card"
-            style="@style/CardButtonStyle"/>
+            style="@style/CardButtonStyle.OnBanner"/>
 
         <com.omeron.ui.common.widget.SortIconView
             android:id="@+id/sort_icon"

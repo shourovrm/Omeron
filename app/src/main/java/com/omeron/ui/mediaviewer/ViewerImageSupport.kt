@@ -37,6 +37,9 @@ fun ImageView.loadViewerImage(
             // The view target starts animated images; a plain setImageDrawable leaves a GIF on
             // its first frame.
             target(this@loadViewerImage)
+            // The view target clears the view when a load starts; keeping what is shown lets a
+            // preview stay up until the full picture replaces it.
+            placeholder(this@loadViewerImage.drawable)
         }.build()
     )
 }

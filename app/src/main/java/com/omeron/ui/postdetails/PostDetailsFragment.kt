@@ -382,7 +382,7 @@ class PostDetailsFragment : BaseFragment(),
             R.string.post_age_separated,
             DateUtil.getTimeDifference(requireContext(), post.created, false)
         )
-        loadSubredditPicture(post.subreddit)
+        loadSubredditPicture(post.subredditName)
         binding.appBar.label.setOnClickListener { onSubredditClick(post.subreddit) }
         binding.appBar.subredditImage.setOnClickListener { onSubredditClick(post.subreddit) }
         binding.appBar.authorLabel.setOnClickListener { openUser(post.author) }

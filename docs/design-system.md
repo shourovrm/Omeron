@@ -109,7 +109,7 @@ of space Settings and About. The drawer keeps only the community filter, multis 
 ## Layout of the Community and User pages
 
 The header is a 144dp banner: the top app bar (64dp) and under it one 80dp row. The banner picture
-fills the block behind both, drawn at 150 of 255 over surface with a fade to surface at the bottom,
+fills the block behind both, drawn at 150 of 255 over surface with a fade to surface at the top and the bottom,
 so bar icons and text keep their contrast on any picture; without a banner the block is the marker
 colour treated the same way. The row holds a 56dp round picture at 16dp, then the name as
 titleLarge and one bodyMedium line in onSurfaceVariant (members for a community; karma and account

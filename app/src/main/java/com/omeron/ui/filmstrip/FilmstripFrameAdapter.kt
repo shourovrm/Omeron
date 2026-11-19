@@ -162,7 +162,8 @@ class FilmstripFrameAdapter(
             boundFrameId = frame.id
 
             val fullUrl = frame.media?.url
-            val previewUrl = frame.post?.preview?.takeIf { frame.indexInSource == 0 }
+            // The feed's preview shows the post's first picture; the others have their tile.
+            val previewUrl = if (frame.indexInSource == 0) frame.post?.preview else frame.media?.thumbnail
             if (fullUrl == null || previewUrl == null || previewUrl == fullUrl) {
                 loadImage(frame, fullUrl ?: frame.post?.preview)
             } else {

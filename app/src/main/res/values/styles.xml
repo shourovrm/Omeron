@@ -170,6 +170,11 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <!-- A bar button drawn over a community or user banner: no card of its own. -->
+    <style name="CardButtonStyle.OnBanner">
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+    </style>
+
     <style name="RoundedImageViewStyle" parent="">
         <item name="cornerSize">@dimen/card_radius</item>
     </style>
