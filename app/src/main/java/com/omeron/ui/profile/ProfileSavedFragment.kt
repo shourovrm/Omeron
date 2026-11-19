@@ -66,6 +66,7 @@ abstract class ProfileSavedFragment : ProfileTabFragment<ProfileSavedAdapter>(),
         activity?.currentNavigationFragment
             ?.parentFragmentManager
             ?.beginTransaction()
+            ?.setReorderingAllowed(true)
             ?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             ?.add(
                 R.id.fragment_container,

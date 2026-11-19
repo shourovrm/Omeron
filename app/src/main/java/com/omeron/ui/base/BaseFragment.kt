@@ -285,6 +285,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
 
     private fun addViewer(fragmentManager: FragmentManager, viewer: FilmstripViewerFragment) {
         fragmentManager.beginTransaction()
+            .setReorderingAllowed(true)
             .setCustomAnimations(
                 R.anim.nav_enter_anim,
                 R.anim.nav_exit_anim,
@@ -346,6 +347,7 @@ open class BaseFragment : Fragment(), PostListAdapter.PostClickListener,
 
     protected open fun onClick(fragmentManager: FragmentManager, post: PostEntity) {
         fragmentManager.beginTransaction()
+            .setReorderingAllowed(true)
             .setCustomAnimations(
                 R.anim.nav_enter_anim,
                 R.anim.nav_exit_anim,

@@ -43,6 +43,7 @@ class UserCommentFragment : PagingListFragment<UserCommentsAdapter, Comment>(),
 
     override fun onClick(comment: Comment.CommentEntity) {
         requireActivity().supportFragmentManager.beginTransaction()
+            .setReorderingAllowed(true)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .add(
                 R.id.fragment_container,
