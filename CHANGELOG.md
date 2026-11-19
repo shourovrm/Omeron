@@ -1,3 +1,9 @@
+# 0.10.2 - 2026/11/20
+
+### Changed
+- Comments no longer show profile pictures; the author name still opens
+  the user
+
 # 0.10.1 - 2026/11/20
 
 ### Added
