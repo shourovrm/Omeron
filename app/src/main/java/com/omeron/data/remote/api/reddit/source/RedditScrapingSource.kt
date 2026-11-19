@@ -12,6 +12,7 @@ import com.omeron.data.remote.api.reddit.model.ListingData
 import com.omeron.data.remote.api.reddit.model.MoreChildren
 import com.omeron.data.remote.api.reddit.model.UNSIGNED_DASH_SUFFIX
 import com.omeron.data.remote.api.reddit.scraper.CommentScraper
+import com.omeron.data.remote.api.reddit.scraper.CommunitySearchScraper
 import com.omeron.data.remote.api.reddit.scraper.PostScraper
 import com.omeron.data.remote.api.reddit.scraper.PostSearchScraper
 import com.omeron.data.remote.api.reddit.scraper.SubredditScraper
@@ -20,6 +21,7 @@ import com.omeron.data.remote.api.reddit.scraper.UserScaper
 import com.omeron.di.DispatchersModule.IoDispatcher
 import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import com.omeron.di.NetworkModule.RedditScrap
+import retrofit2.HttpException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -196,8 +198,24 @@ class RedditScrapingSource @Inject constructor(
         timeSorting: TimeSorting?,
         after: String?
     ): Listing {
+        // old.reddit's community search returns nothing for many plain words ("funny"), so new
+        // Reddit's page is asked first. It has no second page; old.reddit serves the rest, and
+        // the whole search when new Reddit's page fails or its markup changes.
+        if (after == null) {
+            val communities = searchCommunitiesOnNewReddit(query)
+            if (communities.data.children.isNotEmpty()) return communities
+        }
         val response = redditApi.searchSubreddit(query, sort, timeSorting, after)
         return SubredditSearchScraper(ioDispatcher).scrap(response.string())
+    }
+
+    private suspend fun searchCommunitiesOnNewReddit(query: String): Listing {
+        val response = try {
+            redditApi.searchCommunities(query)
+        } catch (exception: HttpException) {
+            return Listing("t5", ListingData(null, null, emptyList(), null, null))
+        }
+        return CommunitySearchScraper(ioDispatcher).scrap(response.string())
     }
 
     companion object {

@@ -104,6 +104,10 @@ interface RedditApi {
         @Query("after") after: String? = null
     ): ResponseBody
 
+    // New Reddit's page; the API's base address is old.reddit, hence the full address.
+    @GET("https://www.reddit.com/search/?type=communities")
+    suspend fun searchCommunities(@Query("q") query: String): ResponseBody
+
     @POST("/over18")
     suspend fun consentOver18(@Body body: RequestBody, @Query("dest") dest: String): ResponseBody
 
