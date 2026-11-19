@@ -3,6 +3,7 @@ package com.omeron.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.room.withTransaction
 import com.omeron.data.local.RedditDatabase
 import com.omeron.data.model.Comment
 import com.omeron.data.model.Sorting
@@ -359,13 +360,22 @@ class PostListRepository @Inject constructor(
         redditDatabase.historyDao().deleteFromIdAndProfile(postId, profileId)
     }
 
+    // One transaction, so the history list is read again once and not after every row.
+    suspend fun deletePostsFromHistory(postIds: List<String>, profileId: Int) {
+        redditDatabase.withTransaction {
+            postIds.forEach { redditDatabase.historyDao().deleteFromIdAndProfile(it, profileId) }
+        }
+    }
+
     suspend fun clearHistory(profileId: Int) {
         redditDatabase.historyDao().deleteFromProfile(profileId)
     }
 
     // Puts back rows exactly as they were read, so the viewed time (and the order) is kept.
     suspend fun restoreHistoryEntries(entries: List<History>) {
-        entries.forEach { redditDatabase.historyDao().upsert(it) }
+        redditDatabase.withTransaction {
+            entries.forEach { redditDatabase.historyDao().upsert(it) }
+        }
     }
 
     //endregion
@@ -413,9 +423,17 @@ class PostListRepository @Inject constructor(
         redditDatabase.postDao().deleteFromIdAndProfile(post.id, profileId)
     }
 
+    suspend fun unsavePosts(posts: List<PostEntity>, profileId: Int) {
+        redditDatabase.withTransaction {
+            posts.forEach { redditDatabase.postDao().deleteFromIdAndProfile(it.id, profileId) }
+        }
+    }
+
     // Unlike savePost this keeps the saved time the post already had.
     suspend fun restoreSavedPosts(posts: List<PostEntity>) {
-        posts.forEach { redditDatabase.postDao().upsert(it) }
+        redditDatabase.withTransaction {
+            posts.forEach { redditDatabase.postDao().upsert(it) }
+        }
     }
 
     fun getSavedPosts(profileId: Int): Flow<List<PostEntity>> {
@@ -438,9 +456,19 @@ class PostListRepository @Inject constructor(
         redditDatabase.commentDao().deleteFromIdAndProfile(comment.name, profileId)
     }
 
+    suspend fun unsaveComments(comments: List<Comment.CommentEntity>, profileId: Int) {
+        redditDatabase.withTransaction {
+            comments.forEach {
+                redditDatabase.commentDao().deleteFromIdAndProfile(it.name, profileId)
+            }
+        }
+    }
+
     // Unlike saveComment this keeps the saved time the comment already had.
     suspend fun restoreSavedComments(comments: List<Comment.CommentEntity>) {
-        comments.forEach { redditDatabase.commentDao().upsert(it) }
+        redditDatabase.withTransaction {
+            comments.forEach { redditDatabase.commentDao().upsert(it) }
+        }
     }
 
     fun getSavedComments(profileId: Int): Flow<List<Comment.CommentEntity>> {

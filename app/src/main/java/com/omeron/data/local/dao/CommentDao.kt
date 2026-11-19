@@ -2,6 +2,7 @@ package com.omeron.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.omeron.data.model.Comment.CommentEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -17,6 +18,9 @@ abstract class CommentDao : BaseDao<CommentEntity> {
     @Query("SELECT name FROM comment WHERE profile_id = :profileId")
     abstract fun getSavedCommentIdsFromProfile(profileId: Int): Flow<List<String>>
 
+    // The rows carry post text and can span several cursor windows; the transaction keeps a
+    // write between two windows from breaking the read.
+    @Transaction
     @Query("SELECT * FROM comment WHERE profile_id = :profileId")
     abstract fun getSavedCommentsFromProfile(profileId: Int): Flow<List<CommentEntity>>
 }

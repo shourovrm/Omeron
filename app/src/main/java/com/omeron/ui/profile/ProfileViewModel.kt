@@ -191,17 +191,17 @@ class ProfileViewModel @Inject constructor(
             val removed = when (tab) {
                 ProfileTab.SAVED_POSTS -> {
                     val posts = _savedPosts.first().filter { it.id in rowIds }
-                    posts.forEach { repository.unsavePost(it, profileId) }
+                    repository.unsavePosts(posts, profileId)
                     RemovedRows.SavedPosts(posts)
                 }
                 ProfileTab.SAVED_COMMENTS -> {
                     val comments = _savedComments.first().filter { it.name in rowIds }
-                    comments.forEach { repository.unsaveComment(it, profileId) }
+                    repository.unsaveComments(comments, profileId)
                     RemovedRows.SavedComments(comments)
                 }
                 ProfileTab.HISTORY -> {
                     val entries = _history.first().filter { it.postId in rowIds }
-                    entries.forEach { repository.deletePostFromHistory(it.postId, profileId) }
+                    repository.deletePostsFromHistory(entries.map { it.postId }, profileId)
                     RemovedRows.HistoryEntries(entries)
                 }
             }
