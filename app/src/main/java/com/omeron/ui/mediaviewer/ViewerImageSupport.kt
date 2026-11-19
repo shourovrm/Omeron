@@ -34,7 +34,9 @@ fun ImageView.loadViewerImage(
                 onError = { _, _ -> onError() },
                 onSuccess = { _, _ -> onSuccess() }
             )
-            target { drawable -> setImageDrawable(drawable) }
+            // The view target starts animated images; a plain setImageDrawable leaves a GIF on
+            // its first frame.
+            target(this@loadViewerImage)
         }.build()
     )
 }
