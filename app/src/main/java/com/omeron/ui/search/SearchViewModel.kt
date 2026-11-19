@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -158,8 +159,13 @@ class SearchViewModel @Inject constructor(
         .flatMapLatest { request -> userData.take(1).map { request to it } }
 
     // Communities and users are only searched site-wide; a scoped search shows posts alone.
+    // A post sort change keeps the query and scope, so it must not restart these searches.
     private val siteWideData: Flow<Pair<SearchRequest, Data.User>> =
-        data.filter { it.first.subreddit == null }
+        data
+            .distinctUntilChanged { old, new ->
+                old.first.query == new.first.query && old.first.subreddit == new.first.subreddit
+            }
+            .filter { it.first.subreddit == null }
 
     init {
         postDataFlow = data
@@ -197,7 +203,7 @@ class SearchViewModel @Inject constructor(
         request: SearchRequest,
         user: Data.User
     ): Flow<PagingData<SubredditEntity>> {
-        return repository.searchSubreddit(request.query, request.sorting)
+        return repository.searchSubreddit(request.query, SITE_WIDE_SORTING)
             .map { pagingData ->
                 pagingData
                     .map { subredditMapper.dataToEntity((it as AboutChild).data) }
@@ -210,7 +216,7 @@ class SearchViewModel @Inject constructor(
         request: SearchRequest,
         user: Data.User
     ): Flow<PagingData<User>> {
-        return repository.searchUser(request.query, request.sorting)
+        return repository.searchUser(request.query, SITE_WIDE_SORTING)
             .map { pagingData ->
                 pagingData
                     .map { userMapper.dataToEntity((it as AboutUserChild).data) }
@@ -276,9 +282,12 @@ class SearchViewModel @Inject constructor(
         private const val KEY_QUERY = "KEY_QUERY"
         private const val KEY_SCOPE = "KEY_SCOPE"
 
+        // Reddit lists communities and users only by relevance; any other sort returns nothing.
+        private val SITE_WIDE_SORTING = Sorting(Sort.RELEVANCE, TimeSorting.ALL)
+
         private fun defaultSorting(subreddit: String?): Sorting {
             return if (subreddit == null) {
-                Sorting(Sort.RELEVANCE, TimeSorting.ALL)
+                SITE_WIDE_SORTING
             } else {
                 Sorting(Sort.NEW, TimeSorting.ALL)
             }
