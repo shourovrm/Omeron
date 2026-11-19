@@ -1,3 +1,30 @@
+# 0.10.0 - 2026/11/20
+
+### Added
+- The media viewer has a share button: share the picture or video link, or
+  the post link
+- The last feed page opens without a connection
+- Each community remembers the sort chosen in it
+- Videos linked in comments play in the app
+
+### Changed
+- Community search finds plain words such as "funny"
+- The post page shows the full community name; Sort moved into the menu
+- The Undo bar after a delete stays for 8 seconds
+- History keeps the 100 newest posts
+- A crosspost of a picture already in the feed is not shown twice
+- The feed loads further ahead, and watched videos are kept for replay
+
+### Fixed
+- Crash when deleting several history posts at once
+- Communities missing from search after changing the post sort
+- Viewer buttons moving when a video starts
+- Crash when switching tabs with a post open
+- Feed stopping after a page of repeated posts
+- A collapsed comment thread reopening while comments load
+- Long press on a card's picture not selecting it
+- Black box in place of a video's picture on the post page
+
 # 0.9.1 - 2026/11/14
 
 ### Changed
