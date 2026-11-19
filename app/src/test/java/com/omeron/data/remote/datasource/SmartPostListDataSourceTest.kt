@@ -34,7 +34,23 @@ class SmartPostListDataSourceTest {
         assertTrue(page.withoutReturned(returned).isEmpty())
     }
 
-    private fun post(name: String) = PostChild(
+    @Test
+    fun `crosspost of a returned picture is dropped`() {
+        val picture = "https://i.redd.it/abc.jpeg"
+        val page = listOf(post("t3_a", picture), post("t3_b", picture), post("t3_c"))
+
+        assertEquals(listOf(page[0], page[2]), page.withoutReturned(mutableSetOf()))
+    }
+
+    @Test
+    fun `posts sharing an outside link are both kept`() {
+        val link = "https://example.com/article"
+        val page = listOf(post("t3_a", link), post("t3_b", link))
+
+        assertEquals(page, page.withoutReturned(mutableSetOf()))
+    }
+
+    private fun post(name: String, url: String = "") = PostChild(
         PostData(
             subreddit = "popular",
             linkFlairRichText = emptyList(),
@@ -66,7 +82,7 @@ class SmartPostListDataSourceTest {
             commentsNumber = 0,
             permalink = "/r/popular/comments/$name/",
             isStickied = false,
-            url = "",
+            url = url,
             created = 0,
             media = null,
             mediaMetadata = null,

@@ -153,7 +153,18 @@ class SmartPostListDataSource(
     }
 }
 
-/** Drops posts already in [returned] and records the names of the ones kept. */
+/**
+ * Drops posts already in [returned] and records the ones kept. A post counts as returned by its
+ * name, and also by its picture or video when Reddit hosts it: a crosspost has a new name but
+ * the same media, and showed as a second identical tile.
+ */
 internal fun List<Child>.withoutReturned(returned: MutableSet<String>): List<Child> {
-    return filter { it !is PostChild || returned.add(it.data.name) }
+    return filter { child ->
+        if (child !is PostChild) return@filter true
+        if (!returned.add(child.data.name)) return@filter false
+        val media = child.data.url.takeIf { url -> REDDIT_MEDIA_HOSTS.any { url.contains(it) } }
+        media == null || returned.add(media)
+    }
 }
+
+private val REDDIT_MEDIA_HOSTS = listOf("://i.redd.it/", "://v.redd.it/", "reddit.com/gallery/")
