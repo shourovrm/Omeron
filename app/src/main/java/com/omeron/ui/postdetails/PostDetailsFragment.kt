@@ -34,6 +34,7 @@ import com.omeron.di.DispatchersModule.MainImmediateDispatcher
 import com.omeron.ui.base.BaseFragment
 import com.omeron.data.model.Comment
 import com.omeron.ui.commentmenu.CommentMenuFragment
+import com.omeron.util.DateUtil
 import com.omeron.util.containsIgnoreCase
 import com.omeron.ui.postmenu.PostMenuFragment
 import com.omeron.ui.common.ElasticDragDismissFrameLayout
@@ -44,6 +45,7 @@ import com.omeron.util.extension.betterSmoothScrollToPosition
 import com.omeron.util.extension.clearCommentListener
 import com.omeron.util.extension.clearSortingListener
 import com.omeron.util.extension.launchRepeat
+import com.omeron.util.extension.loadSubredditIcon
 import com.omeron.util.extension.parcelable
 import com.omeron.util.extension.setCommentListener
 import com.omeron.util.extension.setSortingListener
@@ -366,8 +368,17 @@ class PostDetailsFragment : BaseFragment(),
 
     private fun bindPost(post: PostEntity, fromCache: Boolean) {
         currentPost = post
-        // The title lives in the pinned strip and the post header; the bar names the subreddit.
+        // The title lives in the pinned strip and the post header; the bar names the subreddit, author and age.
         binding.appBar.label.text = post.subreddit
+        binding.appBar.authorLabel.text = getString(R.string.reddit_user_prefixed, post.author)
+        binding.appBar.ageLabel.text = getString(
+            R.string.post_age_separated,
+            DateUtil.getTimeDifference(requireContext(), post.created, false)
+        )
+        binding.appBar.subredditImage.loadSubredditIcon(null)
+        binding.appBar.label.setOnClickListener { onSubredditClick(post.subreddit) }
+        binding.appBar.subredditImage.setOnClickListener { onSubredditClick(post.subreddit) }
+        binding.appBar.authorLabel.setOnClickListener { openUser(post.author) }
         binding.textPinnedTitle.text = post.title
         postAdapter.setPost(post, fromCache)
         commentAdapter.postEntity = post

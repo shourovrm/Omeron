@@ -18,20 +18,60 @@
         app:icon="@drawable/ic_arrow_back"
         style="@style/CardButtonStyle"/>
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/subreddit_image"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        app:layout_constraintStart_toEndOf="@id/back_card"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:shapeAppearanceOverlay="@style/CircularImageViewStyle"
+        android:scaleType="centerCrop"
+        android:importantForAccessibility="no"/>
+
     <TextView
         android:id="@+id/label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/back_card"
+        app:layout_constraintStart_toEndOf="@id/subreddit_image"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/author_label"
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintEnd_toStartOf="@id/find_card"
-        android:layout_marginStart="@dimen/app_bar_margin"
-        android:textAppearance="@style/TextAppearanceAppBarLabel"
-        android:ellipsize="none"
+        android:layout_marginStart="@dimen/space_12"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:ellipsize="end"
         android:singleLine="true"
-        android:requiresFadingEdge="horizontal"
         tools:text="Subreddit"/>
+
+    <TextView
+        android:id="@+id/author_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/label"
+        app:layout_constraintEnd_toStartOf="@id/age_label"
+        app:layout_constraintTop_toBottomOf="@id/label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
+        android:textAppearance="@style/TextAppearance.App.BodySmall"
+        android:textColor="?attr/colorPrimary"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="author"/>
+
+    <TextView
+        android:id="@+id/age_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/author_label"
+        app:layout_constraintEnd_toStartOf="@id/find_card"
+        app:layout_constraintBaseline_toBaselineOf="@id/author_label"
+        android:layout_marginStart="@dimen/space_4"
+        android:textAppearance="@style/TextAppearance.App.BodySmall"
+        android:singleLine="true"
+        tools:text="· 5h"/>
 
     <com.omeron.ui.common.widget.CardButton
         android:id="@+id/more_card"
