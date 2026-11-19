@@ -157,6 +157,8 @@
     <string name="post_crosspost">Crosspost</string>
 
     <string name="network_retry_message">Could not load this page. Check your connection.</string>
+
+    <string name="video_not_ready">This video is not ready yet. Try again.</string>
     <string name="network_retry_action">Retry</string>
     <string name="login_required_message">Reddit requires a login to show posts. Log in once with a throwaway account.</string>
     <string name="login_required_action">Log in</string>
@@ -477,4 +479,6 @@
     <string name="profile_history_select_day">Select this day</string>
     <string name="profile_history_deselect_day">Deselect this day</string>
     <string name="post_info_separator" translatable="false">·</string>
+    <string name="menu_share_media_link">Share media link</string>
+    <string name="menu_share_post_link">Share post link</string>
 </resources>

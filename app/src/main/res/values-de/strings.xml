@@ -118,4 +118,7 @@
 
 
     <string name="navigation_label_settings">Optionen</string>
+    <string name="video_not_ready">Dieses Video ist noch nicht bereit. Versuche es erneut.</string>
+    <string name="menu_share_media_link">Medienlink teilen</string>
+    <string name="menu_share_post_link">Beitragslink teilen</string>
 </resources>

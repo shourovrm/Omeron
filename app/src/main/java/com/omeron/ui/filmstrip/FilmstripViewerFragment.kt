@@ -15,11 +15,13 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -245,7 +247,9 @@ class FilmstripViewerFragment : BaseFragment() {
         playback = FilmstripPlayback(
             requireContext(),
             onAudioAvailable = { hasAudio ->
-                _binding?.let { it.buttonMute.isVisible = hasAudio && currentFrame?.isVideo == true }
+                _binding?.let {
+                    it.buttonMute.isInvisible = !(hasAudio && currentFrame?.isVideo == true)
+                }
             },
             onPlayerChanged = { player ->
                 _binding?.videoSeek?.let { videoSeek ->
@@ -476,14 +480,14 @@ class FilmstripViewerFragment : BaseFragment() {
             railComments.setOnClickListener { openPost() }
             buttonSave.setOnClickListener { toggleSave() }
             buttonRotate.setOnClickListener { toggleOrientation() }
-            buttonShareLink.setOnClickListener { shareLink() }
+            buttonShareLink.setOnClickListener { showShareChoices(it) }
             buttonDownload.setOnClickListener { downloadCurrentMedia() }
             buttonMute.setOnCheckedChangeListener { _, isMuted -> viewModel.setMuted(isMuted) }
         }
         initInfoGestures()
     }
 
-    /** A link has no post, so the post's score, comments and save give way to share and download. */
+    /** A link has no post, so the post's score, comments and save give way to download. */
     private fun showControlsForViewerKind() {
         val isLinkViewer = viewModel.isLinkViewer
         binding.run {
@@ -492,7 +496,6 @@ class FilmstripViewerFragment : BaseFragment() {
             railScore.isVisible = !isLinkViewer
             railComments.isVisible = !isLinkViewer
             buttonSave.isVisible = !isLinkViewer
-            buttonShareLink.isVisible = isLinkViewer
             buttonDownload.isVisible = isLinkViewer
         }
     }
@@ -603,7 +606,7 @@ class FilmstripViewerFragment : BaseFragment() {
             detailsDim.setOnClickListener { collapseDetails() }
             buttonOpenPost.setOnClickListener { openPost() }
             actionSave.setOnClickListener { toggleSave() }
-            actionShare.setOnClickListener { sharePost() }
+            actionShare.setOnClickListener { showShareChoices(it) }
             actionDownload.setOnClickListener { downloadCurrentMedia() }
             linkSubreddit.setOnClickListener {
                 currentFrame?.post?.let { post ->
@@ -684,8 +687,9 @@ class FilmstripViewerFragment : BaseFragment() {
                 frame.framesInSource
             )
 
-            // The mute button reappears when the player reports an audio track.
-            if (!frame.isVideo) buttonMute.isVisible = false
+            // The mute button reappears when the player reports an audio track. It keeps its place
+            // meanwhile, so the buttons above it do not move under a finger.
+            if (!frame.isVideo) buttonMute.isInvisible = true
 
             buttonDownload.isEnabled = frame.status == FrameStatus.READY
             buttonDownload.alpha = if (buttonDownload.isEnabled) 1F else DISABLED_ACTION_ALPHA
@@ -809,14 +813,29 @@ class FilmstripViewerFragment : BaseFragment() {
         bindSavedState(post)
     }
 
-    private fun sharePost() {
-        val post = currentFrame?.post ?: return
-        shareExternalLink("https://www.reddit.com${post.permalink}", post.title)
+    /** Offers the address of the picture or video on screen and, when there is one, of its post. */
+    private fun showShareChoices(anchor: View) {
+        val frame = currentFrame ?: return
+        val post = frame.post
+        if (post == null) {
+            shareMediaLink(frame)
+            return
+        }
+        PopupMenu(requireContext(), anchor).apply {
+            menu.add(R.string.menu_share_media_link).setOnMenuItemClickListener {
+                shareMediaLink(frame)
+                true
+            }
+            menu.add(R.string.menu_share_post_link).setOnMenuItemClickListener {
+                shareExternalLink("https://www.reddit.com${post.permalink}", post.title)
+                true
+            }
+        }.show()
     }
 
-    private fun shareLink() {
-        val link = currentFrame?.source as? FrameSource.OfLink ?: return
-        shareExternalLink(link.url)
+    private fun shareMediaLink(frame: FilmstripFrame) {
+        val link = frame.media?.url ?: (frame.source as? FrameSource.OfLink)?.url ?: return
+        shareExternalLink(link)
     }
 
     private fun downloadCurrentMedia() {
@@ -874,6 +893,8 @@ class FilmstripViewerFragment : BaseFragment() {
 
     private fun setOverlayVisible(isVisible: Boolean) {
         viewModel.isOverlayVisible = isVisible
+        // A tap is confirmed after a delay and can arrive once the view is gone.
+        val binding = _binding ?: return
         binding.overlay.showWithAlpha(isVisible, OVERLAY_FADE_MILLIS)
         frameAdapter.areControlsVisible = isVisible
         showSystemBars(isVisible)

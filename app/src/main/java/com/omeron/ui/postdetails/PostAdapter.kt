@@ -3,6 +3,7 @@ package com.omeron.ui.postdetails
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -132,7 +133,12 @@ class PostAdapter(
                     }
                     // The header is bound again when the signed address replaces the unsigned one.
                     binding.imagePost.setOnClickListener {
-                        if (!post.hasUnsignedVideoUrl) postClickListener.onVideoClick(post)
+                        if (post.hasUnsignedVideoUrl) {
+                            Toast.makeText(it.context, R.string.video_not_ready, Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            postClickListener.onVideoClick(post)
+                        }
                     }
                 }
                 else -> {

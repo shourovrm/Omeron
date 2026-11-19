@@ -284,7 +284,6 @@
                     android:layout_height="@dimen/space_48"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/filmstrip_action_share"
-                    android:visibility="gone"
                     app:tint="@color/white"
                     app:srcCompat="@drawable/ic_share"/>
 
@@ -315,7 +314,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/filmstrip_mute_description"
                     android:tint="@color/mute_color_selector"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:srcCompat="@drawable/ic_mute"
                     tools:visibility="visible"/>
             </LinearLayout>
